@@ -14,7 +14,192 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      hazard_perception_attempts: {
+        Row: {
+          clip_slug: string
+          created_at: string
+          id: string
+          reaction_ms: number | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          clip_slug: string
+          created_at?: string
+          id?: string
+          reaction_ms?: number | null
+          score: number
+          user_id: string
+        }
+        Update: {
+          clip_slug?: string
+          created_at?: string
+          id?: string
+          reaction_ms?: number | null
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lesson_bookings: {
+        Row: {
+          created_at: string
+          duration_minutes: number
+          id: string
+          instructor_name: string
+          instructor_notes: string | null
+          pickup_location: string | null
+          rating: number | null
+          scheduled_at: string
+          skills_covered: string[]
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          instructor_name?: string
+          instructor_notes?: string | null
+          pickup_location?: string | null
+          rating?: number | null
+          scheduled_at: string
+          skills_covered?: string[]
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          instructor_name?: string
+          instructor_notes?: string | null
+          pickup_location?: string | null
+          rating?: number | null
+          scheduled_at?: string
+          skills_covered?: string[]
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount_pence: number
+          created_at: string
+          currency: string
+          hours_purchased: number
+          id: string
+          method: string | null
+          package_name: string
+          paid_at: string | null
+          reference: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_pence: number
+          created_at?: string
+          currency?: string
+          hours_purchased?: number
+          id?: string
+          method?: string | null
+          package_name: string
+          paid_at?: string | null
+          reference?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_pence?: number
+          created_at?: string
+          currency?: string
+          hours_purchased?: number
+          id?: string
+          method?: string | null
+          package_name?: string
+          paid_at?: string | null
+          reference?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          license_number: string | null
+          phone: string | null
+          postcode: string | null
+          target_test_date: string | null
+          transmission: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          license_number?: string | null
+          phone?: string | null
+          postcode?: string | null
+          target_test_date?: string | null
+          transmission?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          license_number?: string | null
+          phone?: string | null
+          postcode?: string | null
+          target_test_date?: string | null
+          transmission?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      theory_progress: {
+        Row: {
+          category_slug: string
+          created_at: string
+          id: string
+          last_studied_at: string
+          questions_answered: number
+          questions_correct: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_slug: string
+          created_at?: string
+          id?: string
+          last_studied_at?: string
+          questions_answered?: number
+          questions_correct?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_slug?: string
+          created_at?: string
+          id?: string
+          last_studied_at?: string
+          questions_answered?: number
+          questions_correct?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
