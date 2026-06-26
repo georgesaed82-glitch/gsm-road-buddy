@@ -1,110 +1,113 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X, Phone, Car } from "lucide-react";
+import { Menu, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { to: "/", label: "Home" },
-  { to: "/services", label: "Services" },
-  { to: "/instructors", label: "Instructors" },
-  { to: "/pricing", label: "Pricing" },
   { to: "/about", label: "About" },
+  { to: "/services", label: "Practical" },
+  { to: "/theory", label: "Theory" },
+  { to: "/pricing", label: "Pricing" },
+  { to: "/instructors", label: "Reviews" },
   { to: "/contact", label: "Contact" },
 ];
+
+function Monogram() {
+  return (
+    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/30 bg-card font-display text-[15px] font-semibold tracking-tight text-primary">
+      GSM
+    </div>
+  );
+}
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2 text-primary">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Car className="h-5 w-5" />
+    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-md">
+      <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex items-center gap-3 text-primary">
+          <Monogram />
+          <div className="leading-tight">
+            <div className="font-display text-[17px] font-semibold tracking-tight">GSM Driving School</div>
+            <div className="hidden text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:block">
+              George's School of Motoring · Est. 2005
+            </div>
           </div>
-          <span className="font-display text-lg font-bold tracking-tight sm:text-xl">
-            GSM Driving
-          </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={cn(
-                "rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                pathname === link.to
-                  ? "bg-secondary text-secondary-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-1 lg:flex">
+          {navLinks.map((link) => {
+            const active = pathname === link.to;
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={cn(
+                  "relative px-3 py-2 text-sm font-medium transition-colors",
+                  active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {link.label}
+                {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">
           <a
-            href="tel:+1234567890"
-            className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground sm:flex"
+            href="tel:+447961585231"
+            className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground md:flex"
           >
             <Phone className="h-4 w-4" />
-            <span>(123) 456-7890</span>
+            <span>07961 585231</span>
           </a>
-          <Button asChild size="sm" className="hidden md:inline-flex">
-            <Link to="/booking">Book a lesson</Link>
+          <Button asChild size="sm" className="hidden bg-primary text-primary-foreground hover:bg-primary/90 md:inline-flex">
+            <Link to="/dashboard">Learner portal</Link>
           </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild className="md:hidden">
+            <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="icon" aria-label="Open menu">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+            <SheetContent side="right" className="w-[300px] bg-background">
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
               <div className="flex flex-col gap-6 pt-6">
-                <Link to="/" className="flex items-center gap-2 text-primary" onClick={() => setOpen(false)}>
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    <Car className="h-5 w-5" />
-                  </div>
-                  <span className="font-display text-lg font-bold">GSM Driving</span>
+                <Link to="/" className="flex items-center gap-3 text-primary" onClick={() => setOpen(false)}>
+                  <Monogram />
+                  <span className="font-display text-lg font-semibold">GSM Driving School</span>
                 </Link>
-
-                <nav className="flex flex-col gap-1">
+                <nav className="flex flex-col">
                   {navLinks.map((link) => (
                     <Link
                       key={link.to}
                       to={link.to}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        "rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                        pathname === link.to
-                          ? "bg-secondary text-secondary-foreground"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                        "border-b border-border/60 py-3 font-display text-lg transition-colors",
+                        pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
                       )}
                     >
                       {link.label}
                     </Link>
                   ))}
                 </nav>
-
-                <div className="flex flex-col gap-3 pt-4">
+                <div className="flex flex-col gap-3 pt-2">
                   <Button asChild className="w-full">
-                    <Link to="/booking" onClick={() => setOpen(false)}>
-                      Book a lesson
-                    </Link>
+                    <Link to="/dashboard" onClick={() => setOpen(false)}>Learner portal</Link>
                   </Button>
                   <a
-                    href="tel:+1234567890"
+                    href="tel:+447961585231"
                     className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground"
                   >
                     <Phone className="h-4 w-4" />
-                    <span>(123) 456-7890</span>
+                    <span>07961 585231</span>
                   </a>
                 </div>
               </div>
