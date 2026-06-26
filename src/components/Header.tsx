@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { to: "/about", label: "About" },
   { to: "/services", label: "Practical" },
-  { to: "/theory", label: "Theory" },
   { to: "/pricing", label: "Pricing" },
   { to: "/instructors", label: "Reviews" },
   { to: "/contact", label: "Contact" },

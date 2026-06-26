@@ -17,6 +17,10 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTheoryRouteImport } from './routes/_authenticated/theory'
+import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
+import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
+import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_authenticated/hazard-perception'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const ServicesRoute = ServicesRouteImport.update({
@@ -58,6 +62,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTheoryRoute = AuthenticatedTheoryRouteImport.update({
+  id: '/theory',
+  path: '/theory',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPaymentsRoute = AuthenticatedPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLessonsRoute = AuthenticatedLessonsRouteImport.update({
+  id: '/lessons',
+  path: '/lessons',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHazardPerceptionRoute =
+  AuthenticatedHazardPerceptionRouteImport.update({
+    id: '/hazard-perception',
+    path: '/hazard-perception',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -73,6 +98,10 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/services': typeof ServicesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/lessons': typeof AuthenticatedLessonsRoute
+  '/payments': typeof AuthenticatedPaymentsRoute
+  '/theory': typeof AuthenticatedTheoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,6 +112,10 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/services': typeof ServicesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/lessons': typeof AuthenticatedLessonsRoute
+  '/payments': typeof AuthenticatedPaymentsRoute
+  '/theory': typeof AuthenticatedTheoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +128,10 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/services': typeof ServicesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
+  '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
+  '/_authenticated/theory': typeof AuthenticatedTheoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +144,10 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/services'
     | '/dashboard'
+    | '/hazard-perception'
+    | '/lessons'
+    | '/payments'
+    | '/theory'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -117,6 +158,10 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/services'
     | '/dashboard'
+    | '/hazard-perception'
+    | '/lessons'
+    | '/payments'
+    | '/theory'
   id:
     | '__root__'
     | '/'
@@ -128,6 +173,10 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/services'
     | '/_authenticated/dashboard'
+    | '/_authenticated/hazard-perception'
+    | '/_authenticated/lessons'
+    | '/_authenticated/payments'
+    | '/_authenticated/theory'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -199,6 +248,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/theory': {
+      id: '/_authenticated/theory'
+      path: '/theory'
+      fullPath: '/theory'
+      preLoaderRoute: typeof AuthenticatedTheoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/payments': {
+      id: '/_authenticated/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof AuthenticatedPaymentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/lessons': {
+      id: '/_authenticated/lessons'
+      path: '/lessons'
+      fullPath: '/lessons'
+      preLoaderRoute: typeof AuthenticatedLessonsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/hazard-perception': {
+      id: '/_authenticated/hazard-perception'
+      path: '/hazard-perception'
+      fullPath: '/hazard-perception'
+      preLoaderRoute: typeof AuthenticatedHazardPerceptionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -211,10 +288,18 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
+  AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
+  AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
+  AuthenticatedTheoryRoute: typeof AuthenticatedTheoryRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
+  AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
+  AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
+  AuthenticatedTheoryRoute: AuthenticatedTheoryRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
