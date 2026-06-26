@@ -80,14 +80,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
+      { title: "GSM Driving School — Notting Hill, Holland Park & Kensington" },
       { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { name: "author", content: "GSM Driving School" },
+      { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
+      { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005. Manual & automatic, with a full learner portal for theory and hazard perception." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
@@ -105,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400;9..144,500;9..144,600;9..144,700;9..144,400..700&family=Inter:wght@400;500;600;700&display=swap",
       },
     ],
   }),
