@@ -124,6 +124,13 @@ function ContactPage() {
                         </a>
                       </div>
                     </li>
+            <li className="flex items-start gap-3 text-sm text-muted-foreground">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <div>
+                        <p className="font-medium text-foreground">Address</p>
+                        <p>71 Sandbourne House, Dartmouth Close, London W11 1DS</p>
+                      </div>
+                    </li>
                     <li className="flex items-start gap-3 text-sm text-muted-foreground">
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <div>
