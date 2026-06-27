@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Check, X } from "lucide-react";
+import { Check, Mail, Phone } from "lucide-react";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/pricing")({
       { title: "Pricing | GSM Driving School" },
       {
         name: "description",
-        content: "Simple, transparent pricing for driving lessons and packages at GSM Driving School.",
+        content: "Flexible driving lesson packages at GSM Driving School. Single lessons, 12-hour blocks, intensive, weekend, refresher and Pass Plus courses.",
       },
       {
         property: "og:title",
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/pricing")({
       },
       {
         property: "og:description",
-        content: "Simple, transparent pricing for driving lessons and packages.",
+        content: "Flexible driving lesson packages tailored to your goals.",
       },
     ],
   }),
@@ -26,45 +26,81 @@ export const Route = createFileRoute("/pricing")({
 
 const packages = [
   {
-    name: "Single lesson",
-    price: "$55",
-    period: "per hour",
-    description: "Perfect for an assessment or refresher session.",
+    name: "Single lessons",
+    duration: "2 hours",
+    description: "Perfect for an assessment, refresher, or booking as you go.",
     features: [
-      { label: "1 hour 1-to-1 tuition", included: true },
-      { label: "Flexible location", included: true },
-      { label: "Progress feedback", included: true },
-      { label: "Discounted bulk rate", included: false },
+      "2 hours 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Pay-as-you-go",
     ],
-    cta: "Book single lesson",
+    cta: "Get pricing",
     popular: false,
   },
   {
-    name: "10-hour starter",
-    price: "$520",
-    period: "one-time",
-    description: "Save $30 and build solid foundations over 10 hours.",
+    name: "Twelve-hour packages",
+    duration: "12 hours",
+    description: "A structured block of lessons to build real confidence.",
     features: [
-      { label: "10 hours 1-to-1 tuition", included: true },
-      { label: "Flexible location", included: true },
-      { label: "Progress feedback", included: true },
-      { label: "$30 discount", included: true },
+      "12 hours 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Discount bundle rate",
     ],
-    cta: "Book starter package",
+    cta: "Get pricing",
     popular: true,
   },
   {
-    name: "20-hour pass-ready",
-    price: "$980",
-    period: "one-time",
-    description: "Best value for learners aiming to pass confidently.",
+    name: "Intense packages",
+    duration: "Intensive",
+    description: "Fast-track learning for learners who want to pass quickly.",
     features: [
-      { label: "20 hours 1-to-1 tuition", included: true },
-      { label: "Mock test included", included: true },
-      { label: "Progress feedback", included: true },
-      { label: "$120 discount", included: true },
+      "Concentrated 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Discount bundle rate",
     ],
-    cta: "Book pass-ready package",
+    cta: "Get pricing",
+    popular: false,
+  },
+  {
+    name: "Weekend packages",
+    duration: "Weekend",
+    description: "Saturday and Sunday sessions that fit around work or study.",
+    features: [
+      "Weekend 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Discount bundle rate",
+    ],
+    cta: "Get pricing",
+    popular: false,
+  },
+  {
+    name: "Refresher packages",
+    duration: "Refresher",
+    description: "Rebuild confidence after a break or returning to driving.",
+    features: [
+      "Tailored 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Discount bundle rate",
+    ],
+    cta: "Get pricing",
+    popular: false,
+  },
+  {
+    name: "Pass Plus",
+    duration: "Pass Plus",
+    description: "Advanced modules for motorway, night and all-weather driving.",
+    features: [
+      "Pass Plus 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Insurance discount potential",
+    ],
+    cta: "Get pricing",
     popular: false,
   },
 ];
@@ -75,17 +111,17 @@ function PricingPage() {
       <section className="bg-secondary/40 py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Simple, transparent pricing
+            Lesson packages
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Choose a package that fits your goals. No hidden fees.
+            Flexible driving lesson packages tailored to your goals. No hidden fees.
           </p>
         </div>
       </section>
 
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {packages.map((pkg) => (
               <Card
                 key={pkg.name}
@@ -100,42 +136,50 @@ function PricingPage() {
                   <h2 className="font-display text-xl font-semibold">{pkg.name}</h2>
                   <p className="text-sm text-muted-foreground">{pkg.description}</p>
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-foreground">{pkg.price}</span>
-                    <span className="text-sm text-muted-foreground">/{pkg.period}</span>
+                    <span className="text-4xl font-bold text-foreground">{pkg.duration}</span>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
                   <ul className="space-y-3">
                     {pkg.features.map((feature) => (
                       <li
-                        key={feature.label}
+                        key={feature}
                         className="flex items-center gap-2 text-sm text-muted-foreground"
                       >
-                        {feature.included ? (
-                          <Check className="h-4 w-4 shrink-0 text-success" />
-                        ) : (
-                          <X className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-                        )}
-                        {feature.label}
+                        <Check className="h-4 w-4 shrink-0 text-success" />
+                        {feature}
                       </li>
                     ))}
                   </ul>
                   <Button asChild className="mt-6 w-full" variant={pkg.popular ? "default" : "outline"}>
-                    <Link to="/booking">{pkg.cta}</Link>
+                    <Link to="/contact">{pkg.cta}</Link>
                   </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className="mt-12 text-center text-sm text-muted-foreground">
-            <p>
-              Need a custom intensive course?{" "}
-              <Link to="/contact" className="font-medium text-primary underline underline-offset-4">
-                Contact us
-              </Link>{" "}
-              for a personalised quote.
+          <div className="mt-16 rounded-lg border border-border bg-card p-8 text-center sm:p-10">
+            <h3 className="font-display text-2xl font-semibold text-foreground">
+              Need pricing details?
+            </h3>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              Every learner is different. Call or email us for a personalised quote based on your experience and goals.
             </p>
+            <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Button asChild variant="outline" className="h-11 gap-2">
+                <a href="tel:+447441234567">
+                  <Phone className="h-4 w-4" />
+                  Call us
+                </a>
+              </Button>
+              <Button asChild className="h-11 gap-2">
+                <Link to="/contact">
+                  <Mail className="h-4 w-4" />
+                  Email us
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
