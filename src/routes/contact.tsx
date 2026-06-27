@@ -150,6 +150,35 @@ function ContactPage() {
                 </CardContent>
               </Card>
 
+              <Card className="border-border bg-card overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="aspect-video w-full sm:aspect-[4/3]">
+                    <iframe
+                      title="GSM Driving School location"
+                      className="h-full w-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                      referrerPolicy="no-referrer-when-downgrade"
+                      src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY}&q=place_id:ChIJS9BLMgMQdkgRCs_x1LDs56o`}
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h2 className="font-display text-xl font-semibold">Find us</h2>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      71 Sandbourne House, Dartmouth Close, London W11 1DS
+                    </p>
+                    <a
+                      href="https://maps.google.com/?cid=12315071950298926858"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center text-sm font-medium text-primary hover:underline"
+                    >
+                      Open in Google Maps
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card className="border-border bg-card">
                 <CardContent className="p-6">
                   <h2 className="font-display text-xl font-semibold">Prefer to book online?</h2>
