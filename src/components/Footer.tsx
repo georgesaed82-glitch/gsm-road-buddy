@@ -1,6 +1,16 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, Mail } from "lucide-react";
+import { MapPin, Mail, Clock } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+
+const hours = [
+  ["Mon", "7:00 – 20:00"],
+  ["Tue", "7:00 – 21:00"],
+  ["Wed", "7:00 – 21:00"],
+  ["Thu", "7:00 – 20:30"],
+  ["Fri", "7:00 – 20:00"],
+  ["Sat", "7:00 – 18:00"],
+  ["Sun", "Closed"],
+];
 
 const groups = [
   {
@@ -27,7 +37,7 @@ export function Footer() {
   return (
     <footer className="mt-24 border-t border-border bg-primary text-primary-foreground">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr_1fr]">
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-full border border-primary-foreground/30 font-display text-base font-semibold">
@@ -86,6 +96,21 @@ export function Footer() {
                   hello@gsmdrivingschool.com
                 </a>
               </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-display text-base flex items-center gap-2">
+              <Clock className="h-4 w-4 text-accent" />
+              Opening hours
+            </h3>
+            <ul className="mt-4 space-y-1.5 text-sm">
+              {hours.map(([d, t]) => (
+                <li key={d} className="flex justify-between gap-4 opacity-80">
+                  <span>{d}</span>
+                  <span>{t}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
