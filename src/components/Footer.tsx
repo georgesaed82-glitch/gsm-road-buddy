@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, Mail, Clock, Instagram } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { trackContactClick } from "@/lib/trackContactClick";
 
 const hours = [
   ["Mon", "7:00 – 20:00"],
@@ -99,6 +100,7 @@ export function Footer() {
                   href="https://wa.me/447961585231"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackContactClick("whatsapp", "Footer")}
                   className="opacity-80 hover:opacity-100"
                 >
                   WhatsApp 07961 585231
@@ -106,7 +108,11 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="h-4 w-4 shrink-0 text-accent" />
-                <a href="mailto:gsmdrivingschool@outlook.com" className="opacity-80 hover:opacity-100">
+                <a
+                  href="mailto:gsmdrivingschool@outlook.com"
+                  onClick={() => trackContactClick("email", "Footer")}
+                  className="opacity-80 hover:opacity-100"
+                >
                   gsmdrivingschool@outlook.com
                 </a>
               </li>
