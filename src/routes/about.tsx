@@ -9,7 +9,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "GSM Driving School has been helping learners pass their driving tests for over twenty years with safety-first tuition.",
+          "GSM Driving School has been helping learners pass their driving tests for over 20 years with safety-first tuition.",
       },
       {
         property: "og:title",
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/about")({
       },
       {
         property: "og:description",
-        content: "Over twenty years of safety-first driving tuition.",
+        content: "Over 20 years of safety-first driving tuition.",
       },
     ],
   }),
@@ -78,7 +78,7 @@ function AboutPage() {
             About GSM Driving School
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Over twenty years of helping learners become safe, confident drivers.
+            Over 20 years of helping learners become safe, confident drivers.
           </p>
         </div>
       </section>
