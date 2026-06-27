@@ -53,7 +53,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "GSM Driving School — Drive today. Succeed tomorrow." },
-      { name: "description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 144 five-star Google reviews." },
+      { name: "description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 144 five-star Google reviews, full theory & hazard perception portal." },
       { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
       { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005." },
       { property: "og:image", content: heroImage.url },
