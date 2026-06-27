@@ -135,10 +135,12 @@ function Home() {
                   WhatsApp 07961 585231
                 </a>
               </Button>
-              <div className="inline-flex h-12 items-center gap-2 rounded-none border border-accent/40 bg-accent/10 px-6 text-accent">
-                <span className="h-2 w-2 rounded-full bg-accent" />
-                <span className="text-sm font-semibold">GSM Driving School at alpha.com</span>
-              </div>
+              <Button asChild size="lg" variant="outline" className="h-12 rounded-none border-primary/30 px-6 text-primary hover:bg-primary hover:text-primary-foreground">
+                <Link to="/dashboard">
+                  Open learner portal
+                  <ArrowUpRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </div>
 
