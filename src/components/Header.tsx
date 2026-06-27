@@ -61,17 +61,27 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <a
-            href="https://wa.me/447961585231"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp 07961 585231"
-            className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-[#25D366] md:flex"
-          >
-            <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
-            <span>07961 585231</span>
-          </a>
+        <div className="flex items-center gap-3">
+          <div className="hidden flex-col items-end md:flex">
+            <a
+              href="https://wa.me/447961585231"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp 07961 585231"
+              className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
+            >
+              <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
+              <span>07961 585231</span>
+            </a>
+            <a
+              href="mailto:gsmdrivingschool@outlook.com"
+              aria-label="Email gsmdrivingschool@outlook.com"
+              className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary"
+            >
+              <Mail className="h-3.5 w-3.5 text-accent" />
+              <span>gsmdrivingschool@outlook.com</span>
+            </a>
+          </div>
           <Button asChild size="sm" className="hidden bg-primary text-primary-foreground hover:bg-primary/90 md:inline-flex">
             <Link to="/dashboard">Learner portal</Link>
           </Button>
