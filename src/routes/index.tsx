@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 144 five-star Google reviews, full theory & hazard perception portal." },
       { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
       { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005." },
-      { property: "og:image", content: heroImage },
+      { property: "og:image", content: heroImage.url },
     ],
   }),
   component: Home,
@@ -101,8 +101,8 @@ function Home() {
           <div className="relative">
             <div className="overflow-hidden bg-muted shadow-2xl">
               <img
-                src={heroImage}
-                alt="A learner driver's car on a leafy West London street"
+                src={heroImage.url}
+                alt="The GSM Driving School Volkswagen T-Cross on a leafy West London street"
                 className="aspect-[4/5] w-full object-cover"
                 width={1600}
                 height={1200}
