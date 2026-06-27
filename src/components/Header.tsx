@@ -82,7 +82,9 @@ export function Header() {
               <span>gsmdrivingschool@outlook.com</span>
             </a>
           </div>
-          <span className="hidden text-sm font-semibold text-accent md:inline-flex">GSM Driving School at alpha.com</span>
+          <Button asChild size="sm" className="hidden bg-primary text-primary-foreground hover:bg-primary/90 md:inline-flex">
+            <Link to="/dashboard">Learner portal</Link>
+          </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="lg:hidden">
