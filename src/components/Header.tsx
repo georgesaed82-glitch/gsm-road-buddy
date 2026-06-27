@@ -37,7 +37,7 @@ export function Header() {
           <div className="leading-tight">
             <div className="font-display text-[17px] font-semibold tracking-tight">GSM Driving School</div>
             <div className="hidden text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:block">
-              George's School of Motoring · Established 2025
+              George's School of Motoring · Established 2005
             </div>
           </div>
         </Link>
@@ -90,7 +90,7 @@ export function Header() {
                   <div className="leading-tight">
                     <span className="font-display text-lg font-semibold">GSM Driving School</span>
                     <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      George's School of Motoring · Established 2025
+                      George's School of Motoring · Established 2005
                     </div>
                   </div>
                 </Link>
