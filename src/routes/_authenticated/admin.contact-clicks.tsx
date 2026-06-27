@@ -5,7 +5,7 @@ import { PortalShell } from "@/components/PortalShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 
-export const Route = createFileRoute("/_authenticated/contact-clicks")({
+export const Route = createFileRoute("/_authenticated/admin/contact-clicks")({
   component: ContactClicksPage,
 });
 

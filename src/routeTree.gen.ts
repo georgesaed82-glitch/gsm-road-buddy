@@ -24,9 +24,9 @@ import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
 import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_authenticated/hazard-perception'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedContactClicksRouteImport } from './routes/_authenticated/contact-clicks'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminContactClicksRouteImport } from './routes/_authenticated/admin.contact-clicks'
 
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
@@ -103,12 +103,6 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedContactClicksRoute =
-  AuthenticatedContactClicksRouteImport.update({
-    id: '/contact-clicks',
-    path: '/contact-clicks',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -119,6 +113,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminContactClicksRoute =
+  AuthenticatedAdminContactClicksRouteImport.update({
+    id: '/contact-clicks',
+    path: '/contact-clicks',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -130,13 +130,13 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/contact-clicks': typeof AuthenticatedContactClicksRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/lessons': typeof AuthenticatedLessonsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/theory': typeof AuthenticatedTheoryRoute
+  '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -148,13 +148,13 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
-  '/contact-clicks': typeof AuthenticatedContactClicksRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/lessons': typeof AuthenticatedLessonsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/theory': typeof AuthenticatedTheoryRoute
+  '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -169,13 +169,13 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/_authenticated/contact-clicks': typeof AuthenticatedContactClicksRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/theory': typeof AuthenticatedTheoryRoute
+  '/_authenticated/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -190,13 +190,13 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/services'
     | '/admin'
-    | '/contact-clicks'
     | '/dashboard'
     | '/hazard-perception'
     | '/lessons'
     | '/payments'
     | '/profile'
     | '/theory'
+    | '/admin/contact-clicks'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -208,13 +208,13 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reviews'
     | '/services'
-    | '/contact-clicks'
     | '/dashboard'
     | '/hazard-perception'
     | '/lessons'
     | '/payments'
     | '/profile'
     | '/theory'
+    | '/admin/contact-clicks'
     | '/admin'
   id:
     | '__root__'
@@ -228,13 +228,13 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/services'
     | '/_authenticated/admin'
-    | '/_authenticated/contact-clicks'
     | '/_authenticated/dashboard'
     | '/_authenticated/hazard-perception'
     | '/_authenticated/lessons'
     | '/_authenticated/payments'
     | '/_authenticated/profile'
     | '/_authenticated/theory'
+    | '/_authenticated/admin/contact-clicks'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -357,13 +357,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/contact-clicks': {
-      id: '/_authenticated/contact-clicks'
-      path: '/contact-clicks'
-      fullPath: '/contact-clicks'
-      preLoaderRoute: typeof AuthenticatedContactClicksRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -378,14 +371,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/contact-clicks': {
+      id: '/_authenticated/admin/contact-clicks'
+      path: '/contact-clicks'
+      fullPath: '/admin/contact-clicks'
+      preLoaderRoute: typeof AuthenticatedAdminContactClicksRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminContactClicksRoute: typeof AuthenticatedAdminContactClicksRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminContactClicksRoute: AuthenticatedAdminContactClicksRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
@@ -394,7 +396,6 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
-  AuthenticatedContactClicksRoute: typeof AuthenticatedContactClicksRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
@@ -405,7 +406,6 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
-  AuthenticatedContactClicksRoute: AuthenticatedContactClicksRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
