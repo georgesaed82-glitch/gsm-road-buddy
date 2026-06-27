@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, BarChart3 } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 const items = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -12,13 +13,13 @@ const items = [
   { to: "/theory", label: "Theory portal", icon: BookOpen },
   { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
   { to: "/profile", label: "Profile", icon: UserCircle2 },
-  { to: "/contact-clicks", label: "Contact clicks", icon: BarChart3 },
 ];
 
 export function PortalShell({ children, title, eyebrow }: { children: ReactNode; title: string; eyebrow?: string }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { isAdmin } = useIsAdmin();
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
@@ -56,6 +57,14 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
               );
             })}
           </nav>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="mt-2 flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-accent transition-colors hover:text-foreground"
+            >
+              <ShieldCheck className="h-4 w-4" /> Admin portal
+            </Link>
+          )}
           <button
             onClick={onSignOut}
             className="mt-2 flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
