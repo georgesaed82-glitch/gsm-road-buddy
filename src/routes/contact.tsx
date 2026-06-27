@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, MapPin, Clock, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
