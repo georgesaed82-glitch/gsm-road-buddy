@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, Mail } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -68,6 +69,7 @@ export function Header() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp 07961 585231"
+              onClick={() => trackContactClick("whatsapp", "Header (desktop)")}
               className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
             >
               <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
@@ -76,6 +78,7 @@ export function Header() {
             <a
               href="mailto:gsmdrivingschool@outlook.com"
               aria-label="Email gsmdrivingschool@outlook.com"
+              onClick={() => trackContactClick("email", "Header (desktop)")}
               className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary"
             >
               <Mail className="h-3.5 w-3.5 text-accent" />
@@ -128,6 +131,7 @@ export function Header() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="WhatsApp 07961 585231"
+                    onClick={() => trackContactClick("whatsapp", "Header (mobile)")}
                     className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
                   >
                     <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
@@ -136,6 +140,7 @@ export function Header() {
                   <a
                     href="mailto:gsmdrivingschool@outlook.com"
                     aria-label="Email gsmdrivingschool@outlook.com"
+                    onClick={() => trackContactClick("email", "Header (mobile)")}
                     className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground hover:text-primary"
                   >
                     <Mail className="h-3.5 w-3.5 text-accent" />

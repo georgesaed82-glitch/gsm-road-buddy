@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, MapPin, Clock, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -57,7 +58,11 @@ function ContactPage() {
                       </a>
                     </Button>
                     <Button asChild variant="outline" className="w-full gap-2">
-                      <a href="mailto:gsmdrivingschool@outlook.com" aria-label="Email gsmdrivingschool@outlook.com">
+                      <a
+                        href="mailto:gsmdrivingschool@outlook.com"
+                        aria-label="Email gsmdrivingschool@outlook.com"
+                        onClick={() => trackContactClick("email", "Contact page – instant CTA")}
+                      >
                         <Mail className="h-4 w-4" />
                         Email us
                       </a>
@@ -78,6 +83,7 @@ function ContactPage() {
                           href="https://wa.me/447961585231"
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => trackContactClick("whatsapp", "Contact page – details")}
                           className="hover:text-foreground"
                         >
                           07961 585231
@@ -88,7 +94,11 @@ function ContactPage() {
                       <Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <div>
                         <p className="font-medium text-foreground">Email</p>
-                        <a href="mailto:gsmdrivingschool@outlook.com" className="hover:text-foreground">
+                        <a
+                          href="mailto:gsmdrivingschool@outlook.com"
+                          onClick={() => trackContactClick("email", "Contact page – details")}
+                          className="hover:text-foreground"
+                        >
                           gsmdrivingschool@outlook.com
                         </a>
                       </div>

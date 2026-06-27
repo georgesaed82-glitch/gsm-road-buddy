@@ -6,6 +6,7 @@ import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
+import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
@@ -137,6 +138,7 @@ function Home() {
                   href="https://wa.me/447961585231"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackContactClick("whatsapp", "Home hero")}
                   className="inline-flex items-center gap-2"
                 >
                   <WhatsAppIcon className="h-4 w-4" />
@@ -144,7 +146,11 @@ function Home() {
                 </a>
               </Button>
               <Button asChild size="lg" variant="outline" className="h-12 rounded-none border-primary/30 px-6 text-primary hover:bg-primary hover:text-primary-foreground">
-                <a href="mailto:gsmdrivingschool@outlook.com" className="inline-flex items-center gap-2">
+                <a
+                  href="mailto:gsmdrivingschool@outlook.com"
+                  onClick={() => trackContactClick("email", "Home hero")}
+                  className="inline-flex items-center gap-2"
+                >
                   <Mail className="h-4 w-4" />
                   gsmdrivingschool@outlook.com
                 </a>
@@ -412,6 +418,7 @@ function Home() {
               href="https://wa.me/447961585231"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackContactClick("whatsapp", "Home bottom CTA")}
               className="inline-flex items-center gap-3"
             >
               <WhatsAppIcon className="h-5 w-5" />
