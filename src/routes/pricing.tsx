@@ -168,9 +168,9 @@ function PricingPage() {
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild variant="outline" className="h-11 gap-2">
-                <a href="tel:+447441234567">
+                <a href="https://wa.me/447961585231">
                   <Phone className="h-4 w-4" />
-                  Call us
+                  WhatsApp us
                 </a>
               </Button>
               <Button asChild className="h-11 gap-2">
