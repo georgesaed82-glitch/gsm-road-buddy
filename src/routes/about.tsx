@@ -51,11 +51,11 @@ const faqs = [
   {
     question: "How many lessons will I need?",
     answer:
-      "It depends on your experience and confidence. Most beginners need 20–40 hours. We can assess your progress after a few lessons.",
+      "It depends on your experience. We normally recommend beginners take around 45 hours of lessons plus 20 hours of practice outside of lessons with friends or family. If you are partly experienced, we usually suggest around 25 hours, and if you are already experienced, around 18 hours should be enough to get you ready for a first-time pass.",
   },
   {
     question: "Do you offer automatic lessons?",
-    answer: "Yes, some of our instructors use automatic cars. Check instructor profiles to see transmission options.",
+    answer: "Yes — we offer both automatic and manual lessons. Please check with your instructor to confirm what car and transmission they will be using for your lessons.",
   },
   {
     question: "Can I pick my instructor?",
