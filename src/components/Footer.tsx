@@ -125,7 +125,7 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-primary-foreground/15 pt-6 text-xs opacity-70 sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} George's School of Motoring. All rights reserved.</span>
+          <span>© 2005 George's School of Motoring. All rights reserved.</span>
           <span>DVSA approved · ADI registered · Fully insured</span>
         </div>
       </div>
