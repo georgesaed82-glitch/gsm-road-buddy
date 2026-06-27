@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, Phone } from "lucide-react";
+import { Menu } from "lucide-react";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -59,10 +60,13 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <a
-            href="tel:+447961585231"
-            className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground md:flex"
+            href="https://wa.me/447961585231"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp 07961 585231"
+            className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-[#25D366] md:flex"
           >
-            <Phone className="h-4 w-4" />
+            <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
             <span>07961 585231</span>
           </a>
           <Button asChild size="sm" className="hidden bg-primary text-primary-foreground hover:bg-primary/90 md:inline-flex">
@@ -102,11 +106,14 @@ export function Header() {
                     <Link to="/dashboard" onClick={() => setOpen(false)}>Learner portal</Link>
                   </Button>
                   <a
-                    href="tel:+447961585231"
+                    href="https://wa.me/447961585231"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="WhatsApp 07961 585231"
                     className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground"
                   >
-                    <Phone className="h-4 w-4" />
-                    <span>07961 585231</span>
+                    <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
+                    <span>WhatsApp 07961 585231</span>
                   </a>
                 </div>
               </div>
