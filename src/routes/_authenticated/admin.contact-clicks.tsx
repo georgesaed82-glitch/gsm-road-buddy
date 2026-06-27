@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { PortalShell } from "@/components/PortalShell";
+import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 
@@ -44,7 +44,7 @@ function ContactClicksPage() {
     .sort((a, b) => b.total - a.total);
 
   return (
-    <PortalShell eyebrow="Insights" title="Contact clicks">
+    <AdminShell eyebrow="Insights" title="Contact clicks">
       <p className="mb-6 text-sm text-muted-foreground">
         Every time a visitor taps WhatsApp or Email on a package, it's logged here. Showing the latest 500.
       </p>
@@ -110,6 +110,6 @@ function ContactClicksPage() {
           )}
         </CardContent>
       </Card>
-    </PortalShell>
+    </AdminShell>
   );
 }
