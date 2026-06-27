@@ -148,10 +148,13 @@ function Home() {
             <div className="overflow-hidden bg-muted shadow-2xl">
               <img
                 src={heroImage.url}
-                alt="A happy GSM student holding their practical driving test pass certificate in front of the GSM car"
+                alt="GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London."
                 className="aspect-[4/5] w-full object-cover"
                 width={1600}
                 height={1200}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
               />
             </div>
             <div className="absolute -bottom-6 -left-6 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 sm:-left-8">
