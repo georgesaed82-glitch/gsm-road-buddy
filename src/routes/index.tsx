@@ -143,7 +143,7 @@ function Home() {
             <div className="overflow-hidden bg-muted shadow-2xl">
               <img
                 src={heroImage.url}
-                alt="The GSM Driving School Volkswagen T-Cross on a leafy West London street"
+                alt="A happy GSM student holding their practical driving test pass certificate in front of the GSM car"
                 className="aspect-[4/5] w-full object-cover"
                 width={1600}
                 height={1200}
