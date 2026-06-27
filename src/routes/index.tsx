@@ -4,7 +4,7 @@ import { ArrowUpRight, Star, ArrowRight } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
-import heroImage from "@/assets/gsm-car-blurred.jpg.asset.json";
+import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
@@ -143,7 +143,7 @@ function Home() {
             <div className="overflow-hidden bg-muted shadow-2xl">
               <img
                 src={heroImage.url}
-                alt="The GSM Driving School Volkswagen T-Cross on a leafy West London street"
+                alt="A happy GSM student holding their practical driving test pass certificate in front of the GSM car"
                 className="aspect-[4/5] w-full object-cover"
                 width={1600}
                 height={1200}
