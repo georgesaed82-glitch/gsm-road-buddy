@@ -17,16 +17,6 @@ import g7 from "@/assets/gallery/gsm-gallery-7.jpg.asset.json";
 import g8 from "@/assets/gallery/gsm-gallery-8.jpg.asset.json";
 import g9 from "@/assets/gallery/gsm-gallery-9.jpg.asset.json";
 import g10 from "@/assets/gallery/gsm-gallery-10.jpg.asset.json";
-import ig5194 from "@/assets/instagram/IMG_5194.jpg.asset.json";
-import ig5195 from "@/assets/instagram/IMG_5195.jpg.asset.json";
-import ig5196 from "@/assets/instagram/IMG_5196.jpg.asset.json";
-import ig5197 from "@/assets/instagram/IMG_5197.jpg.asset.json";
-import ig5198 from "@/assets/instagram/IMG_5198.jpg.asset.json";
-import ig5199 from "@/assets/instagram/IMG_5199.jpg.asset.json";
-import ig5200 from "@/assets/instagram/IMG_5200.jpg.asset.json";
-import ig5201 from "@/assets/instagram/IMG_5201.jpg.asset.json";
-import ig5202 from "@/assets/instagram/IMG_5202.jpg.asset.json";
-import ig5203 from "@/assets/instagram/IMG_5203.jpg.asset.json";
 
 const galleryCaptions = [
   "The GSM Driving School T-Cross — Notting Hill",
