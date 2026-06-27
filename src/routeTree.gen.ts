@@ -24,6 +24,7 @@ import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
 import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_authenticated/hazard-perception'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedContactClicksRouteImport } from './routes/_authenticated/contact-clicks'
 
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
@@ -100,6 +101,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedContactClicksRoute =
+  AuthenticatedContactClicksRouteImport.update({
+    id: '/contact-clicks',
+    path: '/contact-clicks',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
+  '/contact-clicks': typeof AuthenticatedContactClicksRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/lessons': typeof AuthenticatedLessonsRoute
@@ -126,6 +134,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
+  '/contact-clicks': typeof AuthenticatedContactClicksRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/lessons': typeof AuthenticatedLessonsRoute
@@ -144,6 +153,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
+  '/_authenticated/contact-clicks': typeof AuthenticatedContactClicksRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reviews'
     | '/services'
+    | '/contact-clicks'
     | '/dashboard'
     | '/hazard-perception'
     | '/lessons'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reviews'
     | '/services'
+    | '/contact-clicks'
     | '/dashboard'
     | '/hazard-perception'
     | '/lessons'
@@ -195,6 +207,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reviews'
     | '/services'
+    | '/_authenticated/contact-clicks'
     | '/_authenticated/dashboard'
     | '/_authenticated/hazard-perception'
     | '/_authenticated/lessons'
@@ -322,10 +335,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/contact-clicks': {
+      id: '/_authenticated/contact-clicks'
+      path: '/contact-clicks'
+      fullPath: '/contact-clicks'
+      preLoaderRoute: typeof AuthenticatedContactClicksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedContactClicksRoute: typeof AuthenticatedContactClicksRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
@@ -335,6 +356,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedContactClicksRoute: AuthenticatedContactClicksRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,

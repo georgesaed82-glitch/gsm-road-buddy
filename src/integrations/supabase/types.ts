@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_clicks: {
+        Row: {
+          channel: string
+          created_at: string
+          id: string
+          package: string | null
+          page: string | null
+          referrer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          id?: string
+          package?: string | null
+          page?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          id?: string
+          package?: string | null
+          page?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       hazard_perception_attempts: {
         Row: {
           clip_slug: string
