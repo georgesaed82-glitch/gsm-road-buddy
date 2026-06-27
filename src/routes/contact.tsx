@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Mail, MapPin, Clock } from "lucide-react";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
