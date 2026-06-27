@@ -100,7 +100,7 @@ function Home() {
           <div className="flex flex-col justify-center">
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               <span className="h-px w-8 bg-accent" />
-              Notting Hill Gate · Holland Park · Kensington
+              Notting Hill Gate · Holland Park · High Street Kensington · Bayswater
             </div>
             <h1 className="mt-6 text-balance font-display text-[44px] font-medium leading-[1.05] text-foreground sm:text-6xl lg:text-[72px]">
               Drive today.{" "}
