@@ -100,18 +100,6 @@ const featuredReviews = [
 function Home() {
   return (
     <div className="flex flex-col">
-      {/* INSTAGRAM BANNER */}
-      <section className="bg-primary text-primary-foreground">
-        <a
-          href="https://www.instagram.com/gsm_driving_school_"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium hover:opacity-90 sm:px-6 lg:px-8"
-        >
-          <Instagram className="h-4 w-4" />
-          <span>Follow us on Instagram</span>
-        </a>
-      </section>
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-background">
