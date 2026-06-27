@@ -5,6 +5,7 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 
 const navLinks = [
   { to: "/about", label: "About" },
@@ -16,9 +17,11 @@ const navLinks = [
 
 function Monogram() {
   return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/30 bg-card font-display text-[15px] font-semibold tracking-tight text-primary">
-      GSM
-    </div>
+    <img
+      src={gsmLogo.url}
+      alt="GSM Driving School logo"
+      className="h-11 w-11 rounded-full object-cover ring-1 ring-primary/20"
+    />
   );
 }
 
