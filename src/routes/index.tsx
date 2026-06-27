@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, Star, ArrowRight, Mail, ExternalLink, Instagram } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
@@ -157,6 +158,19 @@ function Home() {
                 <a href="mailto:gsmdrivingschool@outlook.com" className="inline-flex items-center gap-2">
                   <Mail className="h-4 w-4" />
                   gsmdrivingschool@outlook.com
+                </a>
+              </Button>
+            </div>
+            <div className="mt-3">
+              <Button asChild size="lg" className="h-12 w-full rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] px-6 text-white hover:opacity-90 sm:w-auto">
+                <a
+                  href="https://www.instagram.com/gsm_driving_school_"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2"
+                >
+                  <InstagramBrandIcon className="h-5 w-5" />
+                  Follow us on Instagram
                 </a>
               </Button>
             </div>
