@@ -77,6 +77,21 @@ function ContactPage() {
                   <Button type="submit" className="w-full">
                     Send message
                   </Button>
+                  <p className="text-center text-xs text-muted-foreground">
+                    Prefer to message directly?{" "}
+                    <a
+                      href="https://wa.me/447961585231"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-foreground"
+                    >
+                      WhatsApp 07961 585231
+                    </a>{" "}
+                    or{" "}
+                    <a href="mailto:gsmdrivingschool@outlook.com" className="hover:text-foreground">
+                      email gsmdrivingschool@outlook.com
+                    </a>
+                  </p>
                 </form>
               </CardContent>
             </Card>
