@@ -16,6 +16,7 @@ import g6 from "@/assets/gallery/gsm-gallery-6.jpg.asset.json";
 import g7 from "@/assets/gallery/gsm-gallery-7.jpg.asset.json";
 import g8 from "@/assets/gallery/gsm-gallery-8.jpg.asset.json";
 import g9 from "@/assets/gallery/gsm-gallery-9.jpg.asset.json";
+import g10 from "@/assets/gallery/gsm-gallery-10.jpg.asset.json";
 
 const galleryCaptions = [
   "The GSM Driving School T-Cross — Notting Hill",
@@ -28,9 +29,10 @@ const galleryCaptions = [
   "Confidence behind the wheel",
   "Another GSM pass",
   "20+ years teaching West London",
+  "Street view — GSM service area",
 ];
 
-const galleryPhotos = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9].map((img, i) => ({
+const galleryPhotos = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10].map((img, i) => ({
   url: img.url,
   caption: galleryCaptions[i],
 }));
