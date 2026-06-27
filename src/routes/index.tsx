@@ -5,6 +5,7 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
+import heroImage2 from "@/assets/gsm-hero-student-2.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
@@ -145,17 +146,30 @@ function Home() {
           </div>
 
           <div className="relative">
-            <div className="overflow-hidden bg-muted shadow-2xl">
-              <img
-                src={heroImage.url}
-                alt="GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London."
-                className="aspect-[4/5] w-full object-cover"
-                width={1600}
-                height={1200}
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-              />
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="overflow-hidden bg-muted shadow-2xl">
+                <img
+                  src={heroImage.url}
+                  alt="GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London."
+                  className="aspect-[4/5] w-full object-cover"
+                  width={1600}
+                  height={1200}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              </div>
+              <div className="overflow-hidden bg-muted shadow-2xl mt-8">
+                <img
+                  src={heroImage2.url}
+                  alt="GSM Driving School student standing next to the GSM car on a West London street."
+                  className="aspect-[4/5] w-full object-cover"
+                  width={1600}
+                  height={1200}
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
             </div>
             <div className="absolute -bottom-6 -left-6 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 sm:-left-8">
               <div className="text-[11px] uppercase tracking-[0.2em] opacity-70">About GSM</div>
