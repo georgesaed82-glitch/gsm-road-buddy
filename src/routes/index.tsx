@@ -305,9 +305,27 @@ function Home() {
                 5.0 stars. <span className="italic text-accent">{allReviews.length}+ of them.</span>
               </h2>
             </div>
-            <Link to="/reviews" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent">
-              Read all {allReviews.length} reviews <ArrowUpRight className="h-4 w-4" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href="https://maps.google.com/?cid=12315071950298926858"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:opacity-90"
+              >
+                <ExternalLink className="h-4 w-4" /> Open on Google
+              </a>
+              <a
+                href="https://www.instagram.com/gsm_driving_school_"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 border border-foreground px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground hover:text-background"
+              >
+                <Instagram className="h-4 w-4" /> Open Instagram
+              </a>
+              <Link to="/reviews" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent">
+                Read all {allReviews.length} <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
