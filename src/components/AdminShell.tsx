@@ -1,25 +1,19 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, BarChart3, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 const items = [
-  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { to: "/lessons", label: "Lessons & progress", icon: CalendarCheck },
-  { to: "/payments", label: "Payments", icon: CreditCard },
-  { to: "/theory", label: "Theory portal", icon: BookOpen },
-  { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
-  { to: "/profile", label: "Profile", icon: UserCircle2 },
-];
+  { to: "/admin", label: "Overview", icon: LayoutDashboard },
+  { to: "/admin/contact-clicks", label: "Contact clicks", icon: BarChart3 },
+] as const;
 
-export function PortalShell({ children, title, eyebrow }: { children: ReactNode; title: string; eyebrow?: string }) {
+export function AdminShell({ children, title, eyebrow }: { children: ReactNode; title: string; eyebrow?: string }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAdmin } = useIsAdmin();
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
@@ -33,8 +27,8 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
       <aside className="lg:sticky lg:top-24 lg:h-fit">
         <div className="border border-border bg-card p-2">
           <div className="border-b border-border px-3 py-3">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Learner portal</div>
-            <div className="mt-1 font-display text-lg text-foreground">Your dashboard</div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-accent">Admin portal</div>
+            <div className="mt-1 font-display text-lg text-foreground">GSM control</div>
           </div>
           <nav className="mt-2 flex flex-col gap-0.5">
             {items.map((item) => {
@@ -57,17 +51,15 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
               );
             })}
           </nav>
-          {isAdmin && (
-            <Link
-              to="/admin"
-              className="mt-2 flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-accent transition-colors hover:text-foreground"
-            >
-              <ShieldCheck className="h-4 w-4" /> Admin portal
-            </Link>
-          )}
+          <Link
+            to="/dashboard"
+            className="mt-2 flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            ← Learner portal
+          </Link>
           <button
             onClick={onSignOut}
-            className="mt-2 flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
