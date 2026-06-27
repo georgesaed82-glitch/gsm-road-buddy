@@ -51,10 +51,15 @@ export function Footer() {
             <p className="max-w-sm text-sm leading-relaxed opacity-80">
               DVSA-approved driving instruction across Notting Hill, Holland Park, Kensington and the surrounding W-postcodes. Manual and automatic, same instructor from first lesson to test day.
             </p>
-            <div className="flex items-center gap-1 text-sm">
+            <a
+              href="https://maps.google.com/?cid=12315071950298926858"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-sm hover:opacity-80"
+            >
               <span className="text-accent">★★★★★</span>
               <span className="ml-2 opacity-80">5.0 from 144 Google reviews</span>
-            </div>
+            </a>
             <a
               href="https://www.instagram.com/gsm_driving_school_?igsh=Nmx3NjRyYXkwcjJz&utm_source=qr"
               target="_blank"

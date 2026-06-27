@@ -112,14 +112,19 @@ function Home() {
               <span className="italic text-accent">Succeed</span>{" "}
               tomorrow.
             </h1>
-            <div className="mt-6 flex items-center gap-3">
+            <a
+              href="https://maps.google.com/?cid=12315071950298926858"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 flex items-center gap-3 hover:opacity-80"
+            >
               <div className="flex text-accent">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-accent" />
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">5.0 from 144 Google reviews</span>
-            </div>
+            </a>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
               GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.
             </p>
@@ -229,14 +234,19 @@ function Home() {
               <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
                 This is what success looks like at GSM — real students, real test centres, real certificates. We teach the skills, you earn the freedom.
               </p>
-              <div className="mt-8 flex items-center gap-4">
+              <a
+                href="https://maps.google.com/?cid=12315071950298926858"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 flex items-center gap-4 hover:opacity-80"
+              >
                 <div className="flex text-accent">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-accent" />
                   ))}
                 </div>
                 <span className="text-sm text-muted-foreground">5.0 from 144 Google reviews</span>
-              </div>
+              </a>
             </div>
           </div>
         </div>
