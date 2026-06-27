@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, Mail, Clock } from "lucide-react";
+import { MapPin, Mail, Clock, Instagram } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 const hours = [
