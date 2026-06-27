@@ -82,7 +82,9 @@ export function Header() {
               <span>gsmdrivingschool@outlook.com</span>
             </a>
           </div>
-          <span className="hidden text-sm font-semibold text-accent md:inline-flex">GSM Driving School at alpha.com</span>
+          <Button asChild size="sm" className="hidden bg-primary text-primary-foreground hover:bg-primary/90 md:inline-flex">
+            <Link to="/dashboard">Learner portal</Link>
+          </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="lg:hidden">
@@ -118,9 +120,9 @@ export function Header() {
                   ))}
                 </nav>
                 <div className="flex flex-col gap-3 pt-2">
-                <div className="rounded-md border border-accent/30 bg-accent/10 px-4 py-3 text-center text-sm font-semibold text-accent">
-                  GSM Driving School at alpha.com
-                </div>
+                  <Button asChild className="w-full">
+                    <Link to="/dashboard" onClick={() => setOpen(false)}>Learner portal</Link>
+                  </Button>
                   <a
                     href="https://wa.me/447961585231"
                     target="_blank"

@@ -17,7 +17,7 @@ const groups = [
     title: "Learn",
     links: [
       { to: "/services", label: "Practical lessons" },
-      { to: "/theory", label: "Theory materials" },
+      { to: "/theory", label: "Theory portal" },
       { to: "/pricing", label: "Pricing & packages" },
       { to: "/instructors", label: "Reviews" },
     ],
@@ -28,6 +28,7 @@ const groups = [
       { to: "/about", label: "About GSM" },
       { to: "/contact", label: "Contact" },
       { to: "/auth", label: "Sign in" },
+      { to: "/dashboard", label: "Learner portal" },
     ],
   },
 ];
