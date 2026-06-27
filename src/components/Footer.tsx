@@ -55,6 +55,15 @@ export function Footer() {
               <span className="text-accent">★★★★★</span>
               <span className="ml-2 opacity-80">5.0 from 144 Google reviews</span>
             </div>
+            <a
+              href="https://www.instagram.com/gsm_driving_school_?igsh=Nmx3NjRyYXkwcjJz&utm_source=qr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm opacity-80 hover:opacity-100"
+            >
+              <Instagram className="h-4 w-4" />
+              <span>Follow us on Instagram</span>
+            </a>
           </div>
 
           {groups.map((g) => (
