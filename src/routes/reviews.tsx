@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Star, ArrowLeft, Search, ExternalLink, Instagram } from "lucide-react";
+import { Star, ArrowLeft, Search, ExternalLink, Instagram, Facebook } from "lucide-react";
 import { reviews } from "@/data/reviews";
 
 export const Route = createFileRoute("/reviews")({
@@ -64,7 +64,7 @@ function ReviewsPage() {
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href="https://maps.google.com/?cid=12315071950298926858"
+              href="https://www.google.com/maps/search/?api=1&query=GSM+Driving+School+71+Sandbourne+House+London+W11+1DS"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90"
@@ -73,13 +73,22 @@ function ReviewsPage() {
               Read & post reviews on Google
             </a>
             <a
-              href="https://www.instagram.com/gsm_driving_school_"
+              href="https://www.instagram.com/gsm_driving_school_/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
             >
               <Instagram className="h-4 w-4" />
               See comments on Instagram
+            </a>
+            <a
+              href="https://www.facebook.com/search/top?q=gsm%20driving%20school%20london"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
+            >
+              <Facebook className="h-4 w-4" />
+              See reviews on Facebook
             </a>
           </div>
 
