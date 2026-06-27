@@ -128,10 +128,18 @@ export function Header() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="WhatsApp 07961 585231"
-                    className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground"
+                    className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
                   >
                     <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
                     <span>WhatsApp 07961 585231</span>
+                  </a>
+                  <a
+                    href="mailto:gsmdrivingschool@outlook.com"
+                    aria-label="Email gsmdrivingschool@outlook.com"
+                    className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground hover:text-primary"
+                  >
+                    <Mail className="h-3.5 w-3.5 text-accent" />
+                    <span>gsmdrivingschool@outlook.com</span>
                   </a>
                 </div>
               </div>
