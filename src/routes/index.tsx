@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, Star, ArrowRight, Mail, ExternalLink, Instagram } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
@@ -149,7 +150,7 @@ function Home() {
                 </a>
               </Button>
             </div>
-            <div className="mt-3">
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="h-12 w-full rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] px-6 text-white hover:opacity-90 sm:w-auto">
                 <a
                   href="https://www.instagram.com/gsm_driving_school_"
@@ -159,6 +160,17 @@ function Home() {
                 >
                   <InstagramBrandIcon className="h-5 w-5" />
                   Follow us on Instagram
+                </a>
+              </Button>
+              <Button asChild size="lg" className="h-12 w-full rounded-none bg-[#1877F2] px-6 text-white hover:bg-[#166fe5] sm:w-auto">
+                <a
+                  href="https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2"
+                >
+                  <FacebookBrandIcon className="h-5 w-5" />
+                  Follow us on Facebook
                 </a>
               </Button>
             </div>
