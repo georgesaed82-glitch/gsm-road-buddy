@@ -28,7 +28,6 @@ const groups = [
       { to: "/about", label: "About GSM" },
       { to: "/contact", label: "Contact" },
       { to: "/auth", label: "Sign in" },
-      { to: "/dashboard", label: "Learner portal" },
     ],
   },
 ];

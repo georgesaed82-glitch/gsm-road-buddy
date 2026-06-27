@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Star, ArrowRight } from "lucide-react";
+import { ArrowUpRight, Star } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "GSM Driving School — Drive today. Succeed tomorrow." },
-      { name: "description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 144 five-star Google reviews, full theory & hazard perception portal." },
+      { name: "description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 144 five-star Google reviews." },
       { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
       { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005." },
       { property: "og:image", content: heroImage.url },
@@ -83,7 +83,7 @@ const reasons = [
   {
     n: "03",
     title: "Full support",
-    body: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other.",
+    body: "Practical lessons paired with theory and hazard perception support so revision and driving reinforce each other.",
   },
 ];
 
@@ -121,7 +121,7 @@ function Home() {
               <span className="text-sm text-muted-foreground">5.0 from 144 Google reviews</span>
             </div>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-              GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.
+              GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and instructor feedback, from instructors who know these roads.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="h-12 rounded-none bg-[#25D366] px-6 text-white hover:bg-[#1ebe57]">
@@ -135,12 +135,10 @@ function Home() {
                   WhatsApp 07961 585231
                 </a>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-12 rounded-none border-primary/30 px-6 text-primary hover:bg-primary hover:text-primary-foreground">
-                <Link to="/dashboard">
-                  Open learner portal
-                  <ArrowUpRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
+              <div className="inline-flex h-12 items-center gap-2 rounded-none border border-accent/40 bg-accent/10 px-6 text-accent">
+                <span className="h-2 w-2 rounded-full bg-accent" />
+                <span className="text-sm font-semibold">GSM Driving School at alpha.com</span>
+              </div>
             </div>
           </div>
 
@@ -238,46 +236,6 @@ function Home() {
                 <span className="text-sm text-muted-foreground">5.0 from 144 Google reviews</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PORTAL FEATURE */}
-      <section className="bg-primary py-20 text-primary-foreground sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
-            <div>
-              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/60">
-                <span className="h-px w-8 bg-accent" />
-                The learner portal
-              </div>
-              <h2 className="mt-4 font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-                Everything you need <span className="italic text-accent">in one place.</span>
-              </h2>
-              <p className="mt-6 max-w-md text-lg leading-relaxed opacity-80">
-                Lesson notes, payment history, theory revision and hazard perception — synced from your instructor's tablet after every session.
-              </p>
-              <Button asChild size="lg" className="mt-8 h-12 rounded-none bg-accent px-6 text-accent-foreground hover:bg-accent/90">
-                <Link to="/dashboard">
-                  Open your portal
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-
-            <ul className="grid gap-px bg-primary-foreground/10 sm:grid-cols-2">
-              {[
-                ["Lesson progress", "Skills mastered, hours logged, instructor notes."],
-                ["Payments", "Package balance, receipts, hours remaining."],
-                ["Theory materials", "All 14 Highway Code categories with sample questions."],
-                ["Hazard perception", "Real West London clips, scored on reaction time."],
-              ].map(([t, d]) => (
-                <li key={t} className="bg-primary p-6">
-                  <h3 className="font-display text-xl">{t}</h3>
-                  <p className="mt-2 text-sm leading-relaxed opacity-75">{d}</p>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </section>

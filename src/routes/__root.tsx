@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Lovable Generated Project" },
       { name: "author", content: "GSM Driving School" },
       { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
-      { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005. Manual & automatic, with a full learner portal for theory and hazard perception." },
+      { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005. Manual & automatic." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
