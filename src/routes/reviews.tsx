@@ -64,7 +64,7 @@ function ReviewsPage() {
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href="https://www.google.com/search?q=GSM+Driving+School+London+W11+1DS#lrd=0x48760ff32586b6f9:0xaae9e7d5d2bbe48a,1"
+              href="https://www.google.com/maps/place/?q=place_id:ChIJ-bZmJfMPdkgRiuS70tXn6ao"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90"
