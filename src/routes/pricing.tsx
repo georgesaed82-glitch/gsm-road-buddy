@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Check, Mail, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -154,13 +155,21 @@ function PricingPage() {
                   </ul>
                   <div className="mt-6 flex flex-col gap-2">
                     <Button asChild variant={pkg.popular ? "default" : "outline"} className="w-full gap-2">
-                      <a href="https://wa.me/447961585231" target="_blank" rel="noopener noreferrer">
+                      <a
+                        href="https://wa.me/447961585231"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => trackContactClick("whatsapp", pkg.name)}
+                      >
                         <WhatsAppIcon className="h-4 w-4" />
                         WhatsApp us
                       </a>
                     </Button>
                     <Button asChild variant="ghost" className="w-full gap-2 text-muted-foreground hover:text-primary">
-                      <a href="mailto:gsmdrivingschool@outlook.com">
+                      <a
+                        href="mailto:gsmdrivingschool@outlook.com"
+                        onClick={() => trackContactClick("email", pkg.name)}
+                      >
                         <Mail className="h-4 w-4" />
                         Email us
                       </a>
@@ -180,13 +189,16 @@ function PricingPage() {
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild variant="outline" className="h-11 gap-2">
-                <a href="https://wa.me/447961585231">
+                <a
+                  href="https://wa.me/447961585231"
+                  onClick={() => trackContactClick("whatsapp", "Pricing CTA")}
+                >
                   <Phone className="h-4 w-4" />
                   WhatsApp us
                 </a>
               </Button>
               <Button asChild className="h-11 gap-2">
-                <Link to="/contact">
+                <Link to="/contact" onClick={() => trackContactClick("email", "Pricing CTA")}>
                   <Mail className="h-4 w-4" />
                   Email us
                 </Link>
