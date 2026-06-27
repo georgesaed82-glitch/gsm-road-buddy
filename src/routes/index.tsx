@@ -242,6 +242,46 @@ function Home() {
         </div>
       </section>
 
+      {/* PORTAL FEATURE */}
+      <section className="bg-primary py-20 text-primary-foreground sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+            <div>
+              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/60">
+                <span className="h-px w-8 bg-accent" />
+                The learner portal
+              </div>
+              <h2 className="mt-4 font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
+                Everything you need <span className="italic text-accent">in one place.</span>
+              </h2>
+              <p className="mt-6 max-w-md text-lg leading-relaxed opacity-80">
+                Lesson notes, payment history, theory revision and hazard perception — synced from your instructor's tablet after every session.
+              </p>
+              <Button asChild size="lg" className="mt-8 h-12 rounded-none bg-accent px-6 text-accent-foreground hover:bg-accent/90">
+                <Link to="/dashboard">
+                  Open your portal
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+
+            <ul className="grid gap-px bg-primary-foreground/10 sm:grid-cols-2">
+              {[
+                ["Lesson progress", "Skills mastered, hours logged, instructor notes."],
+                ["Payments", "Package balance, receipts, hours remaining."],
+                ["Theory materials", "All 14 Highway Code categories with sample questions."],
+                ["Hazard perception", "Real West London clips, scored on reaction time."],
+              ].map(([t, d]) => (
+                <li key={t} className="bg-primary p-6">
+                  <h3 className="font-display text-xl">{t}</h3>
+                  <p className="mt-2 text-sm leading-relaxed opacity-75">{d}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       {/* REVIEWS */}
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
