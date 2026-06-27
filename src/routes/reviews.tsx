@@ -64,7 +64,7 @@ function ReviewsPage() {
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href="https://www.google.com/maps/place/?q=place_id:ChIJ-bZmJfMPdkgRiuS70tXn6ao"
+              href="https://www.google.com/maps/search/?api=1&query=GSM+Driving+School+71+Sandbourne+House+London+W11+1DS"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90"
