@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, Star, Phone, ArrowRight } from "lucide-react";
+import { PhotoGallery } from "@/components/PhotoGallery";
 import heroImage from "@/assets/gsm-car-blurred.jpg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
@@ -14,7 +15,23 @@ import g7 from "@/assets/gallery/gsm-gallery-7.jpg.asset.json";
 import g8 from "@/assets/gallery/gsm-gallery-8.jpg.asset.json";
 import g9 from "@/assets/gallery/gsm-gallery-9.jpg.asset.json";
 
-const gallery = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9];
+const galleryCaptions = [
+  "The GSM Driving School T-Cross — Notting Hill",
+  "Student pass — Greenford Test Centre",
+  "On lesson around Holland Park",
+  "Pass certificate moment",
+  "DVSA test pass — West London",
+  "Manual & automatic lessons available",
+  "Local pickup — W11 / W14 / W8",
+  "Confidence behind the wheel",
+  "Another GSM pass",
+  "20+ years teaching West London",
+];
+
+const galleryPhotos = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9].map((img, i) => ({
+  url: img.url,
+  caption: galleryCaptions[i],
+}));
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -304,17 +321,8 @@ function Home() {
           <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
             Pass certificates, smiles, <span className="italic text-accent">and the GSM car.</span>
           </h2>
-          <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {gallery.map((img, i) => (
-              <div key={i} className="aspect-square overflow-hidden bg-background">
-                <img
-                  src={img.url}
-                  alt={`GSM Driving School student photo ${i + 1}`}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-            ))}
+          <div className="mt-12">
+            <PhotoGallery photos={galleryPhotos} />
           </div>
         </div>
       </section>
