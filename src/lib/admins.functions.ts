@@ -40,20 +40,18 @@ export const listAdmins = createServerFn({ method: "GET" })
 export const addAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ email: z.string().trim().toLowerCase().email().max(255) }).parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data: input, context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Page through users to find matching email (Auth Admin API has no direct lookup).
     let target: { id: string } | null = null;
     for (let page = 1; page <= 20 && !target; page++) {
-      const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+      const { data: list, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
       if (error) throw new Error(error.message);
-      const found = data.users.find((u) => (u.email ?? "").toLowerCase() === data.email);
-      if (found) { target = { id: found.id }; break; }
-      const match = data.users.find((u) => (u.email ?? "").toLowerCase() === data.email);
-      if (match) target = { id: match.id };
-      if (data.users.length < 200) break;
+      const match = list.users.find((u) => (u.email ?? "").toLowerCase() === input.email);
+      if (match) { target = { id: match.id }; break; }
+      if (list.users.length < 200) break;
     }
     if (!target) throw new Error("No account found for that email. Ask them to sign up first.");
 
@@ -67,9 +65,9 @@ export const addAdmin = createServerFn({ method: "POST" })
 export const removeAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ user_id: z.string().uuid() }).parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data: input, context }) => {
     await assertAdmin(context.supabase, context.userId);
-    if (data.user_id === context.userId) throw new Error("You can't remove your own admin access.");
+    if (input.user_id === context.userId) throw new Error("You can't remove your own admin access.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { count } = await supabaseAdmin
@@ -81,7 +79,7 @@ export const removeAdmin = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin
       .from("user_roles")
       .delete()
-      .eq("user_id", data.user_id)
+      .eq("user_id", input.user_id)
       .eq("role", "admin");
     if (error) throw new Error(error.message);
     return { ok: true };
