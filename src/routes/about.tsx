@@ -65,7 +65,7 @@ const faqs = [
   {
     question: "What happens if I need to cancel?",
     answer:
-      "You can reschedule or cancel up to 24 hours before your lesson through your student dashboard.",
+      "You can reschedule or cancel up to 48 hours before your lesson through your student dashboard.",
   },
 ];
 
