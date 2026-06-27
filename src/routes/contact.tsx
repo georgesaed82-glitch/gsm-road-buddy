@@ -87,11 +87,16 @@ function ContactPage() {
                   <h2 className="font-display text-xl font-semibold">Contact details</h2>
                   <ul className="mt-4 space-y-4">
                     <li className="flex items-start gap-3 text-sm text-muted-foreground">
-                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <WhatsAppIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#25D366]" />
                       <div>
-                        <p className="font-medium text-foreground">Phone</p>
-                        <a href="tel:+1234567890" className="hover:text-foreground">
-                          (123) 456-7890
+                        <p className="font-medium text-foreground">WhatsApp</p>
+                        <a
+                          href="https://wa.me/447961585231"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-foreground"
+                        >
+                          07961 585231
                         </a>
                       </div>
                     </li>
@@ -99,8 +104,8 @@ function ContactPage() {
                       <Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <div>
                         <p className="font-medium text-foreground">Email</p>
-                        <a href="mailto:hello@gsmdriving.com" className="hover:text-foreground">
-                          hello@gsmdriving.com
+                        <a href="mailto:gsmdrivingschool@outlook.com" className="hover:text-foreground">
+                          gsmdrivingschool@outlook.com
                         </a>
                       </div>
                     </li>
