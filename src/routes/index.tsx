@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, Star, Phone, ArrowRight } from "lucide-react";
 import { PhotoGallery } from "@/components/PhotoGallery";
+import { reviews as allReviews } from "@/data/reviews";
 import heroImage from "@/assets/gsm-car-blurred.jpg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
@@ -65,8 +66,6 @@ const reasons = [
     body: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other.",
   },
 ];
-
-import { reviews as allReviews } from "@/data/reviews";
 
 const featuredReviews = [
   allReviews.find((r) => r.name === "Tabitha Hull"),
