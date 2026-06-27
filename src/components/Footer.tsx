@@ -69,8 +69,15 @@ export function Footer() {
                 <span className="opacity-80">Notting Hill Gate · Holland Park · Kensington W8 W11 W14</span>
               </li>
               <li className="flex items-center gap-2.5">
-                <Phone className="h-4 w-4 shrink-0 text-accent" />
-                <a href="tel:+447961585231" className="opacity-80 hover:opacity-100">07961 585231</a>
+                <WhatsAppIcon className="h-4 w-4 shrink-0 text-[#25D366]" />
+                <a
+                  href="https://wa.me/447961585231"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="opacity-80 hover:opacity-100"
+                >
+                  WhatsApp 07961 585231
+                </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="h-4 w-4 shrink-0 text-accent" />
