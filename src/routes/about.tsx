@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, Award, Heart } from "lucide-react";
+import { Shield, Users, Award, Heart, UserCheck, Star, Sun, Headphones } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -45,6 +45,13 @@ const values = [
     title: "High standards",
     description: "All instructors are certified and regularly assessed for quality.",
   },
+];
+
+const keyPoints = [
+  { icon: UserCheck, title: "DVSA-Approved Instructors" },
+  { icon: Star, title: "High Pass Rate & Proven Results" },
+  { icon: Sun, title: "Flexible Lessons to Suit You" },
+  { icon: Headphones, title: "Patient, Friendly & Supportive" },
 ];
 
 const faqs = [
@@ -95,6 +102,26 @@ function AboutPage() {
             dual-control vehicles and keep our booking process simple so you can spend more time learning
             and less time on admin.
           </p>
+        </div>
+      </section>
+
+      <section className="bg-secondary/30 py-16 sm:py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Why choose us
+          </h2>
+          <div className="mt-12 grid grid-cols-2 gap-8 sm:gap-12 lg:grid-cols-4">
+            {keyPoints.map((point) => (
+              <div key={point.title} className="flex flex-col items-center text-center">
+                <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                  <point.icon className="h-8 w-8 text-primary" strokeWidth={2} />
+                </div>
+                <h3 className="font-display text-base font-semibold text-foreground sm:text-lg">
+                  {point.title}
+                </h3>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
