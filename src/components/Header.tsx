@@ -87,7 +87,12 @@ export function Header() {
               <div className="flex flex-col gap-6 pt-6">
                 <Link to="/" className="flex items-center gap-3 text-primary" onClick={() => setOpen(false)}>
                   <Monogram />
-                  <span className="font-display text-lg font-semibold">GSM Driving School</span>
+                  <div className="leading-tight">
+                    <span className="font-display text-lg font-semibold">GSM Driving School</span>
+                    <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      George's School of Motoring · Established 2025
+                    </div>
+                  </div>
                 </Link>
                 <nav className="flex flex-col">
                   {navLinks.map((link) => (
