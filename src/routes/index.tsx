@@ -62,7 +62,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const postcodes = ["W8", "W9", "W10", "W11", "W12", "W14", "W4", "W3"];
+const postcodes = ["W2", "W3", "W4", "SW6", "W8", "W10", "W11", "W12", "W14"];
 
 const reasons = [
   {
