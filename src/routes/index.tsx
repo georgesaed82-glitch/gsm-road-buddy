@@ -104,10 +104,15 @@ function Home() {
               GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button asChild size="lg" className="h-12 rounded-none bg-accent px-6 text-accent-foreground hover:bg-accent/90">
-                <a href="tel:+447961585231" className="inline-flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  07961 585231
+              <Button asChild size="lg" className="h-12 rounded-none bg-[#25D366] px-6 text-white hover:bg-[#1ebe57]">
+                <a
+                  href="https://wa.me/447961585231"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2"
+                >
+                  <WhatsAppIcon className="h-4 w-4" />
+                  WhatsApp 07961 585231
                 </a>
               </Button>
               <Button asChild size="lg" variant="outline" className="h-12 rounded-none border-primary/30 px-6 text-primary hover:bg-primary hover:text-primary-foreground">
@@ -324,10 +329,15 @@ function Home() {
           <h2 className="max-w-xl font-display text-4xl font-medium leading-[1.05]">
             Ready to start? Call George.
           </h2>
-          <Button asChild size="lg" className="h-14 rounded-none bg-primary px-8 text-primary-foreground hover:bg-primary/90">
-            <a href="tel:+447961585231" className="inline-flex items-center gap-3">
-              <Phone className="h-5 w-5" />
-              07961 585231
+          <Button asChild size="lg" className="h-14 rounded-none bg-[#25D366] px-8 text-white hover:bg-[#1ebe57]">
+            <a
+              href="https://wa.me/447961585231"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3"
+            >
+              <WhatsAppIcon className="h-5 w-5" />
+              WhatsApp 07961 585231
             </a>
           </Button>
         </div>
