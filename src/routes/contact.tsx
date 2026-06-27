@@ -99,6 +99,29 @@ function ContactPage() {
             <div className="space-y-6">
               <Card className="border-border bg-card">
                 <CardContent className="p-6">
+                  <h2 className="font-display text-xl font-semibold">Talk to us instantly</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Tap below to call or email — we're here to help you book.
+                  </p>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    <Button asChild className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                      <a href="tel:+447961585231" aria-label="Call 07961 585231">
+                        <Phone className="h-4 w-4" />
+                        Call 07961 585231
+                      </a>
+                    </Button>
+                    <Button asChild variant="outline" className="w-full gap-2">
+                      <a href="mailto:gsmdrivingschool@outlook.com" aria-label="Email gsmdrivingschool@outlook.com">
+                        <Mail className="h-4 w-4" />
+                        Email us
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border bg-card">
+                <CardContent className="p-6">
                   <h2 className="font-display text-xl font-semibold">Contact details</h2>
                   <ul className="mt-4 space-y-4">
                     <li className="flex items-start gap-3 text-sm text-muted-foreground">
