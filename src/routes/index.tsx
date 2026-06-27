@@ -83,7 +83,7 @@ const reasons = [
   {
     n: "03",
     title: "Full support",
-    body: "Practical lessons paired with theory and hazard perception support so revision and driving reinforce each other.",
+    body: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other.",
   },
 ];
 
