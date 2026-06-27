@@ -153,7 +153,7 @@ function Home() {
                 width={1600}
                 height={1200}
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
                 decoding="async"
               />
             </div>
