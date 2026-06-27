@@ -36,7 +36,7 @@ export function Header() {
           <Monogram />
           <div className="leading-tight">
             <div className="font-display text-[17px] font-semibold tracking-tight">GSM Driving School</div>
-            <div className="hidden text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:block">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               George's School of Motoring · Established 2005
             </div>
           </div>
