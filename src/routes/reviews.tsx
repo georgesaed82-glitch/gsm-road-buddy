@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Star, ArrowLeft, Search } from "lucide-react";
+import { Star, ArrowLeft, Search, ExternalLink, Instagram } from "lucide-react";
 import { reviews } from "@/data/reviews";
 
 export const Route = createFileRoute("/reviews")({
@@ -61,6 +61,27 @@ function ReviewsPage() {
             Verified students from Notting Hill, Holland Park, Kensington and beyond. First-time
             passes, refreshers, intensive courses and international licence conversions.
           </p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href="https://maps.google.com/?cid=12315071950298926858"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Read & post reviews on Google
+            </a>
+            <a
+              href="https://www.instagram.com/gsm_driving_school_"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
+            >
+              <Instagram className="h-4 w-4" />
+              See comments on Instagram
+            </a>
+          </div>
 
           <div className="mt-10 grid max-w-3xl grid-cols-3 gap-6 border-t border-primary-foreground/15 pt-8">
             <Stat value="5.0" label="Google rating" />
