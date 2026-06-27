@@ -53,7 +53,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "GSM Driving School — Drive today. Succeed tomorrow." },
-      { name: "description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 144 five-star Google reviews, full theory & hazard perception portal." },
+      { name: "description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 144 five-star Google reviews." },
       { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
       { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005." },
       { property: "og:image", content: heroImage.url },
@@ -83,7 +83,7 @@ const reasons = [
   {
     n: "03",
     title: "Full support",
-    body: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other.",
+    body: "Practical lessons paired with theory and hazard perception support so revision and driving reinforce each other.",
   },
 ];
 
@@ -121,7 +121,7 @@ function Home() {
               <span className="text-sm text-muted-foreground">5.0 from 144 Google reviews</span>
             </div>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-              GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.
+              GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and instructor feedback, from instructors who know these roads.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="h-12 rounded-none bg-[#25D366] px-6 text-white hover:bg-[#1ebe57]">
@@ -135,12 +135,10 @@ function Home() {
                   WhatsApp 07961 585231
                 </a>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-12 rounded-none border-primary/30 px-6 text-primary hover:bg-primary hover:text-primary-foreground">
-                <Link to="/dashboard">
-                  Open learner portal
-                  <ArrowUpRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
+              <div className="inline-flex h-12 items-center gap-2 rounded-none border border-accent/40 bg-accent/10 px-6 text-accent">
+                <span className="h-2 w-2 rounded-full bg-accent" />
+                <span className="text-sm font-semibold">GSM Driving School at alpha.com</span>
+              </div>
             </div>
           </div>
 
