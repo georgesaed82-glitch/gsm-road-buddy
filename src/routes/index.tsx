@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, Star, Phone, ArrowRight } from "lucide-react";
 import { PhotoGallery } from "@/components/PhotoGallery";
+import { reviews as allReviews } from "@/data/reviews";
 import heroImage from "@/assets/gsm-car-blurred.jpg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
@@ -66,33 +67,14 @@ const reasons = [
   },
 ];
 
-const reviews = [
-  {
-    quote: "I'm really happy to have passed my driving test at Greenford Test Centre, all thanks to Abdul! He's a patient, professional, and supportive instructor who explains everything clearly and helps build your confidence with each lesson. I always felt well prepared going into my test.",
-    name: "Robert McIlwham",
-    note: "Passed · a month ago",
-  },
-  {
-    quote: "From the first lesson George showed incredible patience and understanding. He took me from 0 to 1 in driving — explaining basics, first steps, up to my pass. He's really passionate about teaching and has techniques you can't Google.",
-    name: "Valeria Rozov",
-    note: "Passed · a month ago",
-  },
-  {
-    quote: "I passed my driving test first time with such ease all thanks to George. He keeps a calm and friendly atmosphere while still being an amazing instructor. He tailored my lessons to suit me — an absolute pleasure.",
-    name: "Ramiz",
-    note: "Passed first time · 2 months ago",
-  },
-  {
-    quote: "I'm 17 and juggling school. I failed my first test, but George helped me focus on exactly what I needed and even found me another test quickly. Lessons were calm — Spotify, a laugh, petrol-station snacks to keep nerves away. 100% the one.",
-    name: "Raniaa Salman",
-    note: "Passed · 6 months ago",
-  },
-  {
-    quote: "I cannot recommend George enough. His knowledge of the DVSA test is second to none. I moved to the UK from the US with an expired licence — George guided me from start to finish and I now feel completely confident on UK roads.",
-    name: "Tommy Yong",
-    note: "Passed · 7 months ago",
-  },
-];
+const featuredReviews = [
+  allReviews.find((r) => r.name === "Tabitha Hull"),
+  allReviews.find((r) => r.name === "Olivia Cunningham"),
+  allReviews.find((r) => r.name === "Tommy Yong"),
+  allReviews.find((r) => r.name === "Zack Lui"),
+  allReviews.find((r) => r.name === "Raniaa Salman"),
+  allReviews.find((r) => r.name === "Clemence Lellouche"),
+].filter((r): r is (typeof allReviews)[number] => Boolean(r));
 
 function Home() {
   return (
@@ -282,16 +264,16 @@ function Home() {
                 Reviews
               </div>
               <h2 className="mt-4 max-w-xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-                5.0 stars. <span className="italic text-accent">144 of them.</span>
+                5.0 stars. <span className="italic text-accent">{allReviews.length}+ of them.</span>
               </h2>
             </div>
-            <Link to="/instructors" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent">
-              Read all reviews <ArrowUpRight className="h-4 w-4" />
+            <Link to="/reviews" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent">
+              Read all {allReviews.length} reviews <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {reviews.map((r) => (
+            {featuredReviews.map((r) => (
               <figure key={r.name} className="flex flex-col border border-border bg-card p-7">
                 <div className="flex text-accent">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -307,6 +289,15 @@ function Home() {
                 </figcaption>
               </figure>
             ))}
+          </div>
+
+          <div className="mt-10 flex justify-center sm:hidden">
+            <Link
+              to="/reviews"
+              className="inline-flex items-center gap-2 border border-foreground bg-foreground px-6 py-3 text-xs uppercase tracking-[0.22em] text-background"
+            >
+              Read all {allReviews.length} reviews <ArrowUpRight className="h-3 w-3" />
+            </Link>
           </div>
         </div>
       </section>
