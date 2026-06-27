@@ -4,7 +4,7 @@ import { ArrowUpRight, Star, ArrowRight } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
-import heroImage from "@/assets/gsm-car-blurred.jpg.asset.json";
+import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
