@@ -86,7 +86,7 @@ export function Footer() {
             <ul className="mt-4 space-y-3 text-sm">
               <li className="flex items-start gap-2.5">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                <span className="opacity-80">Notting Hill Gate · Holland Park · Kensington W8 W11 W14</span>
+                <span className="opacity-80">Notting Hill Gate · Holland Park · High Street Kensington · Bayswater</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <WhatsAppIcon className="h-4 w-4 shrink-0 text-[#25D366]" />
