@@ -1,30 +1,14 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import {
-  LayoutDashboard,
-  Users,
-  GraduationCap,
-  CalendarDays,
-  BookOpen,
-  StickyNote,
-  LifeBuoy,
-  BarChart3,
-  LogOut,
-} from "lucide-react";
+import { LayoutDashboard, BarChart3, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
 const items = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard },
-  { to: "/admin/students", label: "Students", icon: Users },
-  { to: "/admin/passes", label: "Passes & results", icon: GraduationCap },
-  { to: "/admin/calendar", label: "Calendar", icon: CalendarDays },
-  { to: "/admin/modules", label: "Modules", icon: BookOpen },
-  { to: "/admin/lesson-notes", label: "Lesson notes", icon: StickyNote },
-  { to: "/admin/support", label: "Student support", icon: LifeBuoy },
   { to: "/admin/contact-clicks", label: "Contact clicks", icon: BarChart3 },
-];
+] as const;
 
 export function AdminShell({ children, title, eyebrow }: { children: ReactNode; title: string; eyebrow?: string }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
