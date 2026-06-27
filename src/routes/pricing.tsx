@@ -152,9 +152,20 @@ function PricingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Button asChild className="mt-6 w-full" variant={pkg.popular ? "default" : "outline"}>
-                    <Link to="/contact">{pkg.cta}</Link>
-                  </Button>
+                  <div className="mt-6 flex flex-col gap-2">
+                    <Button asChild variant={pkg.popular ? "default" : "outline"} className="w-full gap-2">
+                      <a href="https://wa.me/447961585231" target="_blank" rel="noopener noreferrer">
+                        <WhatsAppIcon className="h-4 w-4" />
+                        WhatsApp us
+                      </a>
+                    </Button>
+                    <Button asChild variant="ghost" className="w-full gap-2 text-muted-foreground hover:text-primary">
+                      <a href="mailto:gsmdrivingschool@outlook.com">
+                        <Mail className="h-4 w-4" />
+                        Email us
+                      </a>
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
