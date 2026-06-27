@@ -17,7 +17,7 @@ const groups = [
     title: "Learn",
     links: [
       { to: "/services", label: "Practical lessons" },
-      { to: "/theory", label: "Theory portal" },
+      { to: "/theory", label: "Theory materials" },
       { to: "/pricing", label: "Pricing & packages" },
       { to: "/instructors", label: "Reviews" },
     ],
