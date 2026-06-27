@@ -30,16 +30,6 @@ const galleryCaptions = [
   "Another GSM pass",
   "20+ years teaching West London",
   "Street view — GSM service area",
-  "Student pass shared on Instagram — May",
-  "Another GSM pass day in West London",
-  "Congratulations creative — GSM Driving School",
-  "Fresh pass beside the GSM T-Cross",
-  "Thumbs up after a successful practical test",
-  "New driver, new freedom, GSM lesson car",
-  "March pass photo with the GSM T-Cross",
-  "Pass success captured outside the test route",
-  "Celebration post from the GSM Instagram feed",
-  "College Street student drivers celebration post",
 ];
 
 const galleryPhotos = [
