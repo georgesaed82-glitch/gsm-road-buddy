@@ -127,8 +127,8 @@ function ContactPage() {
                     <li className="flex items-start gap-3 text-sm text-muted-foreground">
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <div>
-                        <p className="font-medium text-foreground">Address</p>
-                        <p>123 Main Street, Driving City, DC 12345</p>
+                        <p className="font-medium text-foreground">Areas covered</p>
+                        <p>Notting Hill Gate · Holland Park · High Street Kensington · Bayswater</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3 text-sm text-muted-foreground">
