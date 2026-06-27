@@ -161,6 +161,19 @@ function Home() {
                 </a>
               </Button>
             </div>
+            <div className="mt-3">
+              <Button asChild size="lg" className="h-12 w-full rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] px-6 text-white hover:opacity-90 sm:w-auto">
+                <a
+                  href="https://www.instagram.com/gsm_driving_school_"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2"
+                >
+                  <InstagramBrandIcon className="h-5 w-5" />
+                  Follow us on Instagram
+                </a>
+              </Button>
+            </div>
           </div>
 
           <div className="relative">
