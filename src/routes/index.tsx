@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Star, ArrowRight } from "lucide-react";
+import { ArrowUpRight, Star, ArrowRight, Mail } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
@@ -136,10 +136,10 @@ function Home() {
                 </a>
               </Button>
               <Button asChild size="lg" variant="outline" className="h-12 rounded-none border-primary/30 px-6 text-primary hover:bg-primary hover:text-primary-foreground">
-                <Link to="/dashboard">
-                  Open learner portal
-                  <ArrowUpRight className="ml-1 h-4 w-4" />
-                </Link>
+                <a href="mailto:gsmdrivingschool@outlook.com" className="inline-flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  gsmdrivingschool@outlook.com
+                </a>
               </Button>
             </div>
           </div>
