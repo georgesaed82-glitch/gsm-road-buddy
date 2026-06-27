@@ -17,6 +17,16 @@ import g7 from "@/assets/gallery/gsm-gallery-7.jpg.asset.json";
 import g8 from "@/assets/gallery/gsm-gallery-8.jpg.asset.json";
 import g9 from "@/assets/gallery/gsm-gallery-9.jpg.asset.json";
 import g10 from "@/assets/gallery/gsm-gallery-10.jpg.asset.json";
+import ig5194 from "@/assets/instagram/IMG_5194.jpg.asset.json";
+import ig5195 from "@/assets/instagram/IMG_5195.jpg.asset.json";
+import ig5196 from "@/assets/instagram/IMG_5196.jpg.asset.json";
+import ig5197 from "@/assets/instagram/IMG_5197.jpg.asset.json";
+import ig5198 from "@/assets/instagram/IMG_5198.jpg.asset.json";
+import ig5199 from "@/assets/instagram/IMG_5199.jpg.asset.json";
+import ig5200 from "@/assets/instagram/IMG_5200.jpg.asset.json";
+import ig5201 from "@/assets/instagram/IMG_5201.jpg.asset.json";
+import ig5202 from "@/assets/instagram/IMG_5202.jpg.asset.json";
+import ig5203 from "@/assets/instagram/IMG_5203.jpg.asset.json";
 
 const galleryCaptions = [
   "The GSM Driving School T-Cross — Notting Hill",
@@ -30,9 +40,41 @@ const galleryCaptions = [
   "Another GSM pass",
   "20+ years teaching West London",
   "Street view — GSM service area",
+  "Student pass shared on Instagram — May",
+  "Another GSM pass day in West London",
+  "Congratulations creative — GSM Driving School",
+  "Fresh pass beside the GSM T-Cross",
+  "Thumbs up after a successful practical test",
+  "New driver, new freedom, GSM lesson car",
+  "March pass photo with the GSM T-Cross",
+  "Pass success captured outside the test route",
+  "Celebration post from the GSM Instagram feed",
+  "College Street student drivers celebration post",
 ];
 
-const galleryPhotos = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10].map((img, i) => ({
+const galleryPhotos = [
+  g0,
+  g1,
+  g2,
+  g3,
+  g4,
+  g5,
+  g6,
+  g7,
+  g8,
+  g9,
+  g10,
+  ig5194,
+  ig5195,
+  ig5196,
+  ig5197,
+  ig5198,
+  ig5199,
+  ig5200,
+  ig5201,
+  ig5202,
+  ig5203,
+].map((img, i) => ({
   url: img.url,
   caption: galleryCaptions[i],
 }));
