@@ -1,8 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, MapPin, Clock, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
@@ -44,58 +41,7 @@ function ContactPage() {
 
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-2">
-            <Card className="border-border bg-card">
-              <CardContent className="p-6 sm:p-8">
-                <h2 className="font-display text-2xl font-semibold">Send a message</h2>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Fill out the form and we'll get back to you within one business day.
-                </p>
-                <form className="mt-6 space-y-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName">First name</Label>
-                      <Input id="firstName" placeholder="Jane" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName">Last name</Label>
-                      <Input id="lastName" placeholder="Doe" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="jane@example.com" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" type="tel" placeholder="(123) 456-7890" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" placeholder="How can we help?" rows={4} />
-                  </div>
-                  <Button type="submit" className="w-full">
-                    Send message
-                  </Button>
-                  <p className="text-center text-xs text-muted-foreground">
-                    Prefer to message directly?{" "}
-                    <a
-                      href="https://wa.me/447961585231"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-foreground"
-                    >
-                      WhatsApp 07961 585231
-                    </a>{" "}
-                    or{" "}
-                    <a href="mailto:gsmdrivingschool@outlook.com" className="hover:text-foreground">
-                      email gsmdrivingschool@outlook.com
-                    </a>
-                  </p>
-                </form>
-              </CardContent>
-            </Card>
-
+          <div className="grid gap-10 lg:grid-cols-1">
             <div className="space-y-6">
               <Card className="border-border bg-card">
                 <CardContent className="p-6">
