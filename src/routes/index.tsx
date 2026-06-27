@@ -57,6 +57,11 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
       { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005." },
       { property: "og:image", content: heroImage.url },
+      { property: "og:image:alt", content: "GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London." },
+      { property: "og:image:width", content: "1600" },
+      { property: "og:image:height", content: "1200" },
+      { property: "og:image:type", content: "image/jpeg" },
+      { name: "twitter:image:alt", content: "GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London." },
     ],
   }),
   component: Home,
@@ -143,10 +148,13 @@ function Home() {
             <div className="overflow-hidden bg-muted shadow-2xl">
               <img
                 src={heroImage.url}
-                alt="A happy GSM student holding their practical driving test pass certificate in front of the GSM car"
+                alt="GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London."
                 className="aspect-[4/5] w-full object-cover"
                 width={1600}
                 height={1200}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
             </div>
             <div className="absolute -bottom-6 -left-6 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 sm:-left-8">
