@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Mail } from "lucide-react";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 const groups = [
   {
