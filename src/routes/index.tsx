@@ -121,7 +121,7 @@ function Home() {
               <span className="text-sm text-muted-foreground">5.0 from 144 Google reviews</span>
             </div>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-              GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and instructor feedback, from instructors who know these roads.
+              GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="h-12 rounded-none bg-[#25D366] px-6 text-white hover:bg-[#1ebe57]">
