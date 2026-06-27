@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as InstructorsRouteImport } from './routes/instructors'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -26,6 +27,11 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
+  '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
+  '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
+  '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/instructors'
     | '/pricing'
+    | '/reviews'
     | '/services'
     | '/dashboard'
     | '/hazard-perception'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/instructors'
     | '/pricing'
+    | '/reviews'
     | '/services'
     | '/dashboard'
     | '/hazard-perception'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/instructors'
     | '/pricing'
+    | '/reviews'
     | '/services'
     | '/_authenticated/dashboard'
     | '/_authenticated/hazard-perception'
@@ -187,6 +199,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   InstructorsRoute: typeof InstructorsRoute
   PricingRoute: typeof PricingRoute
+  ReviewsRoute: typeof ReviewsRoute
   ServicesRoute: typeof ServicesRoute
 }
 
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -313,6 +333,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   InstructorsRoute: InstructorsRoute,
   PricingRoute: PricingRoute,
+  ReviewsRoute: ReviewsRoute,
   ServicesRoute: ServicesRoute,
 }
 export const routeTree = rootRouteImport
