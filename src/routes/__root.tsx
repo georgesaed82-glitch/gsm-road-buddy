@@ -131,6 +131,30 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (e.defaultPrevented) return;
+      if (e.button !== 0) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const target = (e.target as HTMLElement | null)?.closest("a");
+      if (!target) return;
+      const href = target.getAttribute("href");
+      if (!href) return;
+      if (href.startsWith("mailto:") || href.startsWith("tel:")) return;
+      let url: URL;
+      try {
+        url = new URL(href, window.location.href);
+      } catch {
+        return;
+      }
+      if (url.origin === window.location.origin) return;
+      e.preventDefault();
+      window.open(url.href, "_blank", "noopener,noreferrer");
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col">
