@@ -117,7 +117,7 @@ function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden bg-background">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-8 lg:pb-24 lg:pt-20">
-          <div className="order-2 flex flex-col justify-center lg:order-1">
+          <div className="flex flex-col justify-center">
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               <span className="h-px w-8 bg-accent" />
               Notting Hill Gate · Holland Park · High Street Kensington · Bayswater
