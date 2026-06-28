@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type ContactChannel = "whatsapp" | "email" | "phone";
+export type ContactChannel = "whatsapp" | "email" | "phone" | "portal_view";
 
 export function trackContactClick(channel: ContactChannel, pkg?: string) {
   if (typeof window === "undefined") return;
