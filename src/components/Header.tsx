@@ -1,41 +1,21 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Menu, Mail, ChevronDown } from "lucide-react";
+import { Menu, Mail } from "lucide-react";
 import { Lock, LogOut } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 
-type NavLink =
-  | { to: string; label: string }
-  | { label: string; children: { to: string; label: string }[] };
-
-const navLinks: NavLink[] = [
+const navLinks = [
   { to: "/about", label: "About" },
-  {
-    label: "Lessons",
-    children: [
-      { to: "/services", label: "Practical" },
-      { to: "/pricing", label: "Pricing" },
-    ],
-  },
+  { to: "/services", label: "Practical" },
+  { to: "/pricing", label: "Pricing" },
   { to: "/reviews", label: "Reviews" },
   { to: "/contact", label: "Contact" },
 ];
@@ -85,40 +65,6 @@ export function Header() {
 
         <nav className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => {
-            if ("children" in link) {
-              const active = link.children.some((c) => pathname === c.to);
-              return (
-                <DropdownMenu key={link.label}>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      className={cn(
-                        "relative flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors outline-none",
-                        active ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                      )}
-                    >
-                      {link.label}
-                      <ChevronDown className="h-3.5 w-3.5" />
-                      {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="min-w-[180px]">
-                    {link.children.map((child) => (
-                      <DropdownMenuItem key={child.to} asChild>
-                        <Link
-                          to={child.to}
-                          className={cn(
-                            "w-full cursor-pointer",
-                            pathname === child.to && "text-primary",
-                          )}
-                        >
-                          {child.label}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              );
-            }
             const active = pathname === link.to;
             return (
               <Link
@@ -199,54 +145,19 @@ export function Header() {
                   </div>
                 </Link>
                 <nav className="flex flex-col">
-                  {navLinks.map((link) => {
-                    if ("children" in link) {
-                      const active = link.children.some((c) => pathname === c.to);
-                      return (
-                        <Collapsible key={link.label} defaultOpen={active}>
-                          <CollapsibleTrigger
-                            className={cn(
-                              "flex w-full items-center justify-between border-b border-border/60 py-3 font-display text-lg transition-colors [&[data-state=open]>svg]:rotate-180",
-                              active ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                            )}
-                          >
-                            {link.label}
-                            <ChevronDown className="h-4 w-4 transition-transform" />
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <div className="flex flex-col pl-4">
-                              {link.children.map((child) => (
-                                <Link
-                                  key={child.to}
-                                  to={child.to}
-                                  onClick={() => setOpen(false)}
-                                  className={cn(
-                                    "border-b border-border/40 py-2.5 font-display text-base transition-colors",
-                                    pathname === child.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                                  )}
-                                >
-                                  {child.label}
-                                </Link>
-                              ))}
-                            </div>
-                          </CollapsibleContent>
-                        </Collapsible>
-                      );
-                    }
-                    return (
-                      <Link
-                        key={link.to}
-                        to={link.to}
-                        onClick={() => setOpen(false)}
-                        className={cn(
-                          "border-b border-border/60 py-3 font-display text-lg transition-colors",
-                          pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                        )}
-                      >
-                        {link.label}
-                      </Link>
-                    );
-                  })}
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "border-b border-border/60 py-3 font-display text-lg transition-colors",
+                        pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </nav>
                 <div className="flex flex-col gap-3 pt-2">
                   <Button className="w-full" disabled variant="outline" title="Learner portal coming soon">
