@@ -33,7 +33,6 @@ function ContactClicksPage() {
 
   const rows = data ?? [];
   const portalViews = rows.filter((r) => r.channel === "portal_view");
-  const contactRows = rows.filter((r) => r.channel !== "portal_view");
   const summary = new Map<string, { whatsapp: number; email: number; phone: number }>();
   for (const r of rows) {
     if (r.channel === "portal_view") continue;
