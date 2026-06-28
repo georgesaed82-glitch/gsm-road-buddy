@@ -63,7 +63,7 @@
   --radius: 0.75rem;
 
   /* Obsidian & gold — full dark luxury palette for GSM Driving School */
-  /* background obsidian #0F0F0F, foreground warm white #F5F5F0, gold #C9A962 */
+  /* background obsidian #0F0F0F, foreground warm white #F5F5F0, gold accent #C9A962 */
   --background: #0F0F0F;
   --foreground: #F5F5F0;
 
@@ -72,8 +72,8 @@
   --popover: #151515;
   --popover-foreground: #F5F5F0;
 
-  --primary: #C9A962;
-  --primary-foreground: #0F0F0F;
+  --primary: #151515;
+  --primary-foreground: #F5F5F0;
 
   --secondary: #1A1A1A;
   --secondary-foreground: #F5F5F0;
