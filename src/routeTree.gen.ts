@@ -26,6 +26,7 @@ import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
 import { Route as AuthenticatedAdminContactClicksRouteImport } from './routes/_authenticated/admin.contact-clicks'
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -115,6 +116,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminEmailRoute = AuthenticatedAdminEmailRouteImport.update({
+  id: '/email',
+  path: '/email',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminContactClicksRoute =
   AuthenticatedAdminContactClicksRouteImport.update({
     id: '/contact-clicks',
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/theory': typeof AuthenticatedTheoryRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
+  '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/theory': typeof AuthenticatedTheoryRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
+  '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/_authenticated/theory': typeof AuthenticatedTheoryRoute
   '/_authenticated/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/_authenticated/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
+  '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/theory'
     | '/admin/admins'
     | '/admin/contact-clicks'
+    | '/admin/email'
     | '/admin/'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/theory'
     | '/admin/admins'
     | '/admin/contact-clicks'
+    | '/admin/email'
     | '/admin'
     | '/lovable/email/queue/process'
   id:
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/_authenticated/theory'
     | '/_authenticated/admin/admins'
     | '/_authenticated/admin/contact-clicks'
+    | '/_authenticated/admin/email'
     | '/_authenticated/admin/'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
@@ -398,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/email': {
+      id: '/_authenticated/admin/email'
+      path: '/email'
+      fullPath: '/admin/email'
+      preLoaderRoute: typeof AuthenticatedAdminEmailRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/contact-clicks': {
       id: '/_authenticated/admin/contact-clicks'
       path: '/contact-clicks'
@@ -425,12 +444,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAdminsRoute: typeof AuthenticatedAdminAdminsRoute
   AuthenticatedAdminContactClicksRoute: typeof AuthenticatedAdminContactClicksRoute
+  AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAdminsRoute: AuthenticatedAdminAdminsRoute,
   AuthenticatedAdminContactClicksRoute: AuthenticatedAdminContactClicksRoute,
+  AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
