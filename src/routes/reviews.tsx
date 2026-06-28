@@ -6,16 +6,24 @@ import { reviews } from "@/data/reviews";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: "Reviews — GSM Driving School (111 five-star reviews)" },
+      { title: "Reviews — GSM Driving School (143 five-star Google reviews)" },
       {
         name: "description",
         content:
-          "Read 111 verified five-star reviews from GSM Driving School learners across Notting Hill, Holland Park, Kensington and West London.",
+          "Read 143 verified five-star Google reviews from GSM Driving School learners across Notting Hill, Holland Park, Kensington and West London.",
       },
-      { property: "og:title", content: "111 five-star reviews — GSM Driving School" },
+      { property: "og:title", content: "143 five-star Google reviews — GSM Driving School" },
       {
         property: "og:description",
-        content: "Real student stories from West London first-time passes, intensive courses and refresher lessons.",
+        content:
+          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Rated 5.0 from 143 Google reviews.",
+      },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "143 five-star Google reviews — GSM Driving School" },
+      {
+        name: "twitter:description",
+        content:
+          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Rated 5.0 from 143 Google reviews.",
       },
     ],
   }),
