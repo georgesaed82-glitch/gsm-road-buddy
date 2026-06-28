@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, MapPin, Clock, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
+import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/contact")({
@@ -48,23 +50,56 @@ function ContactPage() {
                 <CardContent className="p-6">
                   <h2 className="font-display text-xl font-semibold">Talk to us instantly</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Tap below to call or email — we're here to help you book.
+                    Tap below to message, call, email or follow us — we're here to help you book.
                   </p>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <Button asChild className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
-                      <a href="tel:+447961585231" aria-label="Call 07961 585231">
+                  <div className="mt-4 grid gap-3">
+                    <Button asChild size="lg" className="h-12 w-full justify-center gap-2 rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">
+                      <a
+                        href="https://wa.me/447961585231"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")}
+                      >
+                        <WhatsAppIcon className="h-4 w-4" />
+                        WhatsApp 07961 585231
+                      </a>
+                    </Button>
+                    <Button asChild size="lg" variant="outline" className="h-12 w-full justify-center gap-2 rounded-none">
+                      <a
+                        href="tel:+447961585231"
+                        onClick={() => trackContactClick("phone", "Contact page – instant CTA")}
+                      >
                         <Phone className="h-4 w-4" />
                         Call 07961 585231
                       </a>
                     </Button>
-                    <Button asChild variant="outline" className="w-full gap-2">
+                    <Button asChild size="lg" variant="outline" className="h-12 w-full justify-center gap-2 rounded-none">
                       <a
                         href="mailto:gsmdrivingschool@outlook.com"
-                        aria-label="Email gsmdrivingschool@outlook.com"
                         onClick={() => trackContactClick("email", "Contact page – instant CTA")}
                       >
                         <Mail className="h-4 w-4" />
-                        Email us
+                        gsmdrivingschool@outlook.com
+                      </a>
+                    </Button>
+                    <Button asChild size="lg" className="h-12 w-full justify-center gap-2 rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] text-white hover:opacity-90">
+                      <a
+                        href="https://www.instagram.com/gsm_driving_school_"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <InstagramBrandIcon className="h-5 w-5" />
+                        Follow us on Instagram
+                      </a>
+                    </Button>
+                    <Button asChild size="lg" className="h-12 w-full justify-center gap-2 rounded-none bg-[#1877F2] text-white hover:bg-[#166fe5]">
+                      <a
+                        href="https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FacebookBrandIcon className="h-5 w-5" />
+                        Follow us on Facebook
                       </a>
                     </Button>
                   </div>
