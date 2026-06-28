@@ -144,7 +144,7 @@ function Home() {
               GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button asChild size="lg" className="h-12 rounded-none bg-accent px-6 text-accent-foreground hover:bg-accent/90">
+              <Button asChild size="lg" className="h-12 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90">
                 <Link to="/contact" className="inline-flex items-center gap-2">
                   Get in touch
                   <ArrowRight className="h-4 w-4" />
