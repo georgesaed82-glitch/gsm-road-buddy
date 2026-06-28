@@ -7,7 +7,6 @@ import { reviews as allReviews } from "@/data/reviews";
 import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import taglineVideo from "@/assets/gsm-tagline.mp4.asset.json";
-import taglinePoster from "@/assets/gsm-tagline-poster.jpg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
@@ -149,26 +148,14 @@ function Home() {
             <div className="overflow-hidden bg-muted shadow-2xl">
               <video
                 src={taglineVideo.url}
-                poster={taglinePoster.url}
-                className="aspect-square w-full object-cover"
+                poster={heroImage.url}
+                className="aspect-[4/5] w-full object-cover"
                 autoPlay
                 muted
                 loop
                 playsInline
                 preload="auto"
                 aria-label="GSM Driving School — Drive today. Succeed tomorrow."
-              />
-            </div>
-            <div className="mt-6 overflow-hidden bg-muted shadow-2xl">
-              <img
-                src={heroImage.url}
-                alt="GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London."
-                className="aspect-[4/5] w-full object-cover"
-                width={1600}
-                height={1200}
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
               />
             </div>
             <div className="absolute -bottom-6 -left-6 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 sm:-left-8">
