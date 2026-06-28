@@ -111,16 +111,27 @@ function AboutPage() {
             Why choose us
           </h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {keyPoints.map((point) => (
-              <Card key={point.title} className="border-border bg-background">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
-                    <point.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold">{point.title}</h3>
-                </CardContent>
-              </Card>
-            ))}
+            {keyPoints.map((point) => {
+              const titleId = point.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              return (
+                <Card
+                  key={point.title}
+                  role="group"
+                  tabIndex={0}
+                  aria-labelledby={titleId}
+                  className="border-border bg-background transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <CardContent className="p-6">
+                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
+                      <point.icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <h3 id={titleId} className="font-display text-lg font-semibold">
+                      {point.title}
+                    </h3>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
