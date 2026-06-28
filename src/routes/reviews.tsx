@@ -67,6 +67,10 @@ function ReviewsPage() {
               href="https://www.google.com/maps/search/?api=1&query=GSM+Driving+School+71+Sandbourne+House+London+W11+1DS"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
+              }}
               className="inline-flex items-center gap-2 bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90"
             >
               <ExternalLink className="h-4 w-4" />
@@ -76,6 +80,10 @@ function ReviewsPage() {
               href="https://www.instagram.com/gsm_driving_school_/"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
+              }}
               className="inline-flex items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
             >
               <Instagram className="h-4 w-4" />
@@ -85,6 +93,10 @@ function ReviewsPage() {
               href="https://www.facebook.com/search/top?q=gsm%20driving%20school%20london"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
+              }}
               className="inline-flex items-center gap-2 border border-primary-foreground/30 px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary-foreground/10"
             >
               <Facebook className="h-4 w-4" />
