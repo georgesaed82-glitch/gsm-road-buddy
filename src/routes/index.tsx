@@ -6,7 +6,6 @@ import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
 import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
-import taglineVideo from "@/assets/gsm-tagline.mp4.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
@@ -118,7 +117,7 @@ function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden bg-background">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-8 lg:pb-24 lg:pt-20">
-          <div className="order-2 flex flex-col justify-center lg:order-1">
+          <div className="flex flex-col justify-center">
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               <span className="h-px w-8 bg-accent" />
               Notting Hill Gate · Holland Park · High Street Kensington · Bayswater
@@ -154,18 +153,14 @@ function Home() {
             </div>
           </div>
 
-          <div className="relative order-1 lg:order-2">
+          <div className="relative">
             <div className="overflow-hidden bg-muted shadow-2xl">
-              <video
-                src={taglineVideo.url}
-                poster={heroImage.url}
+              <img
+                src={heroImage.url}
+                alt="A happy GSM Driving School student showing their DVSA practical driving test pass certificate next to the GSM car in Notting Hill, West London."
                 className="aspect-[4/5] w-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                aria-label="GSM Driving School — Drive today. Succeed tomorrow."
+                width={1600}
+                height={1200}
               />
             </div>
             <div className="absolute -bottom-6 -left-6 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 sm:-left-8">
