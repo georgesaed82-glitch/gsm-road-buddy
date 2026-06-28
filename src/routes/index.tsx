@@ -6,6 +6,7 @@ import { PhotoGallery } from "@/components/PhotoGallery";
 import { reviews as allReviews } from "@/data/reviews";
 import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
+import taglineVideo from "@/assets/gsm-tagline.mp4.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
@@ -178,6 +179,22 @@ function Home() {
               </span>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* TAGLINE VIDEO */}
+      <section className="bg-background py-14 sm:py-20">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <video
+            src={taglineVideo.url}
+            className="aspect-square w-full shadow-xl"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label="GSM Driving School — Drive today. Succeed tomorrow."
+          />
         </div>
       </section>
 
