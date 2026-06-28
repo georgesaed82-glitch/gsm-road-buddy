@@ -169,10 +169,21 @@ function Home() {
 
       {/* POSTCODE STRIP */}
       <section className="border-y border-border bg-card">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-6 sm:px-6 lg:px-8">
+          <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Postcodes covered</div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-display text-lg text-primary">
+            {postcodes.map((p, i) => (
+              <span key={p} className="flex items-center gap-6">
+                {p}
+                {i < postcodes.length - 1 && <span className="h-1 w-1 rounded-full bg-accent" />}
+              </span>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* TAGLINE VIDEO */}
-      <section className="bg-background py-12 sm:py-16">
+      <section className="bg-background py-14 sm:py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <video
             src={taglineVideo.url}
@@ -184,21 +195,6 @@ function Home() {
             preload="metadata"
             aria-label="GSM Driving School — Drive today. Succeed tomorrow."
           />
-        </div>
-      </section>
-
-      {/* (continued) */}
-      <section className="hidden">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-6 sm:px-6 lg:px-8">
-          <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Postcodes covered</div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-display text-lg text-primary">
-            {postcodes.map((p, i) => (
-              <span key={p} className="flex items-center gap-6">
-                {p}
-                {i < postcodes.length - 1 && <span className="h-1 w-1 rounded-full bg-accent" />}
-              </span>
-            ))}
-          </div>
         </div>
       </section>
 
