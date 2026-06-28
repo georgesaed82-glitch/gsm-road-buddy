@@ -110,16 +110,16 @@ function AboutPage() {
           <h2 className="text-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Why choose us
           </h2>
-          <div className="mt-12 grid grid-cols-2 gap-8 sm:gap-12 lg:grid-cols-4">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {keyPoints.map((point) => (
-              <div key={point.title} className="flex flex-col items-center text-center">
-                <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                  <point.icon className="h-8 w-8 text-primary" strokeWidth={2} />
-                </div>
-                <h3 className="font-display text-base font-semibold text-foreground sm:text-lg">
-                  {point.title}
-                </h3>
-              </div>
+              <Card key={point.title} className="border-border bg-background">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
+                    <point.icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold">{point.title}</h3>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
