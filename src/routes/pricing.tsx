@@ -127,10 +127,10 @@ function PricingPage() {
             {packages.map((pkg) => (
               <Card
                 key={pkg.name}
-                className={`relative border-border bg-card ${pkg.popular ? "ring-2 ring-primary" : ""}`}
+                className={`relative border-border bg-card ${pkg.popular ? "ring-2 ring-accent" : ""}`}
               >
                 {pkg.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
                     Most popular
                   </div>
                 )}
