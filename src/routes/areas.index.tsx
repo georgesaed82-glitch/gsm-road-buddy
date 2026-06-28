@@ -5,9 +5,9 @@ import { areas } from "@/data/areas";
 export const Route = createFileRoute("/areas/")({
   head: () => ({
     meta: [
-      { title: "Driving Lessons in West London — Areas We Cover | GSM Driving School" },
+      { title: "West London Driving Lesson Areas | GSM Driving School" },
       { name: "description", content: "GSM Driving School covers Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and Fulham. Find driving lessons in your postcode." },
-      { property: "og:title", content: "Driving Lessons in West London — Areas We Cover | GSM Driving School" },
+      { property: "og:title", content: "West London Driving Lesson Areas | GSM Driving School" },
       { property: "og:description", content: "Driving lessons across W2, W4, W8, W10, W11, W12, W14 and SW6. Local instructor, manual & automatic." },
       { property: "og:url", content: "https://www.gsmdrivingschool.com/areas" },
     ],
