@@ -156,16 +156,12 @@ function Home() {
 
           <div className="relative order-1 lg:order-2">
             <div className="overflow-hidden bg-muted shadow-2xl">
-              <video
-                src={taglineVideo.url}
-                poster={heroImage.url}
+              <img
+                src={heroImage.url}
+                alt="A happy GSM Driving School student showing their DVSA practical driving test pass certificate next to the GSM car in Notting Hill, West London."
                 className="aspect-[4/5] w-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                aria-label="GSM Driving School — Drive today. Succeed tomorrow."
+                width={1600}
+                height={1200}
               />
             </div>
             <div className="absolute -bottom-6 -left-6 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 sm:-left-8">
