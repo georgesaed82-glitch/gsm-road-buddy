@@ -319,7 +319,7 @@ function Home() {
                 ["Hazard perception", "Real West London clips, scored on reaction time."],
               ].map(([t, d]) => (
                 <li key={t} className="bg-primary p-6">
-                  <h3 className="font-display text-xl">{t}</h3>
+                  <h2 className="font-display text-xl">{t}</h2>
                   <p className="mt-2 text-sm leading-relaxed opacity-75">{d}</p>
                 </li>
               ))}
