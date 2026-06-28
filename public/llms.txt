@@ -1,0 +1,26 @@
+# GSM Driving School
+
+> DVSA-approved driving school in West London. Manual and automatic driving lessons in Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and Fulham. Established 2005, rated 5.0 from 143 Google reviews.
+
+George's School of Motoring (GSM) is a family-run driving school based in W11. We teach learners across postcodes W2, W3, W4, W6, W8, W10, W11, W12, W14 and SW6 in both manual and automatic cars.
+
+## Pages
+
+- [Home](/): Overview, service area, reviews and contact details.
+- [About](/about): Our story, instructor background and why students choose GSM.
+- [Services](/services): Beginner lessons, refresher courses, intensive courses, Pass Plus and motorway lessons.
+- [Pricing](/pricing): Lesson packages and how to enquire about rates.
+- [Instructors](/instructors): Meet the GSM instructor team.
+- [Reviews](/reviews): 143 five-star Google reviews from West London learners.
+- [Areas](/areas): Index of West London areas we cover with local route guides.
+- [Contact](/contact): Phone, WhatsApp, email and address (71 Sandbourne House, London W11 1DS).
+
+## Areas We Cover
+
+- [Notting Hill](/areas/notting-hill)
+- [Kensington](/areas/kensington)
+- [Holland Park](/areas/holland-park)
+- [Bayswater](/areas/bayswater)
+- [Shepherd's Bush](/areas/shepherds-bush)
+- [Chiswick](/areas/chiswick)
+- [Fulham](/areas/fulham)
