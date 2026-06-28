@@ -154,7 +154,7 @@ function PricingPage() {
                     ))}
                   </ul>
                   <div className="mt-6 flex flex-col gap-2">
-                    <Button asChild variant={pkg.popular ? "default" : "outline"} className="w-full gap-2">
+                    <Button asChild variant={pkg.popular ? "default" : "outline"} className={`w-full gap-2 ${pkg.popular ? "bg-accent text-accent-foreground hover:bg-accent/90" : ""}`}>
                       <a
                         href="https://wa.me/447961585231"
                         target="_blank"
