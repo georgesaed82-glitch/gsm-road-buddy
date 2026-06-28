@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
+Disallow: /auth
+Disallow: /dashboard
+Disallow: /lessons
+Disallow: /payments
+Disallow: /hazard-perception
+Disallow: /profile
+Disallow: /admin
 
 Sitemap: https://www.gsmdrivingschool.com/sitemap.xml
