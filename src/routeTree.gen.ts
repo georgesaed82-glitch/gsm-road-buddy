@@ -28,6 +28,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminContactClicksRouteImport } from './routes/_authenticated/admin.contact-clicks'
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
@@ -126,6 +127,12 @@ const AuthenticatedAdminAdminsRoute =
     path: '/admins',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -165,6 +173,7 @@ export interface FileRoutesByTo {
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -187,6 +196,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/_authenticated/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/admin/admins'
     | '/admin/contact-clicks'
     | '/admin/'
+    | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/admin/admins'
     | '/admin/contact-clicks'
     | '/admin'
+    | '/lovable/email/queue/process'
   id:
     | '__root__'
     | '/'
@@ -249,6 +261,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/admins'
     | '/_authenticated/admin/contact-clicks'
     | '/_authenticated/admin/'
+    | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -261,6 +274,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   ReviewsRoute: typeof ReviewsRoute
   ServicesRoute: typeof ServicesRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -398,6 +412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -449,6 +470,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   ReviewsRoute: ReviewsRoute,
   ServicesRoute: ServicesRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
