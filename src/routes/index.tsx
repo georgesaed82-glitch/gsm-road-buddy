@@ -153,7 +153,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="relative order-1 lg:order-2">
+          <div className="relative">
             <div className="overflow-hidden bg-muted shadow-2xl">
               <img
                 src={heroImage.url}
