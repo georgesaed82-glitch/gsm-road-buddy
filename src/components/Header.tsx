@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, Mail } from "lucide-react";
+import { Lock } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
@@ -95,6 +96,11 @@ export function Header() {
           >
             Learner portal <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">Coming soon</Badge>
           </Button>
+          <Button size="sm" variant="ghost" asChild className="hidden md:inline-flex">
+            <Link to="/auth" aria-label="Admin login">
+              <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
+            </Link>
+          </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="lg:hidden">
@@ -132,6 +138,11 @@ export function Header() {
                 <div className="flex flex-col gap-3 pt-2">
                   <Button className="w-full" disabled variant="outline" title="Learner portal coming soon">
                     Learner portal <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">Coming soon</Badge>
+                  </Button>
+                  <Button asChild className="w-full" variant="ghost">
+                    <Link to="/auth" onClick={() => setOpen(false)} aria-label="Admin login">
+                      <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
+                    </Link>
                   </Button>
                   <a
                     href="https://wa.me/447961585231"
