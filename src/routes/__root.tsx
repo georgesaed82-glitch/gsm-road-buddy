@@ -80,13 +80,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "GSM Driving School — Notting Hill, Holland Park & Kensington" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "GSM Driving School — West London Driving Lessons" },
+      { name: "description", content: "DVSA-approved manual and automatic driving lessons in Notting Hill, Holland Park, Kensington and West London." },
       { name: "author", content: "GSM Driving School" },
-      { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
-      { property: "og:description", content: "DVSA-approved driving lessons in West London since 2005. Manual & automatic." },
+      { property: "og:title", content: "GSM Driving School — West London Driving Lessons" },
+      { property: "og:description", content: "DVSA-approved manual and automatic driving lessons in Notting Hill, Holland Park, Kensington and West London." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "GSM Driving School — West London Driving Lessons" },
+      { name: "twitter:description", content: "DVSA-approved manual and automatic driving lessons across West London." },
     ],
     links: [
       {
