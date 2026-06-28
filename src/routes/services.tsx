@@ -102,17 +102,3 @@ function ServicesPage() {
         </div>
       </section>
 
-      <section className="bg-primary py-16 text-primary-foreground">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight">Not sure which service is right?</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg opacity-90">
-            Book a single assessment lesson and your instructor will recommend the best path.
-          </p>
-          <Button asChild size="lg" variant="secondary" className="mt-8 text-base">
-            <Link to="/booking">Book an assessment lesson</Link>
-          </Button>
-        </div>
-      </section>
-    </div>
-  );
-}
