@@ -59,7 +59,7 @@ export function Footer() {
               className="flex items-center gap-1 text-sm hover:opacity-80"
             >
               <span className="text-accent">★★★★★</span>
-              <span className="ml-2 opacity-80">5.0 from 144 Google reviews</span>
+              <span className="ml-2 opacity-80">5.0 from 143 Google reviews</span>
             </a>
             <a
               href="https://www.instagram.com/gsm_driving_school_?igsh=Nmx3NjRyYXkwcjJz&utm_source=qr"
