@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin, Star } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
-import { areas, getArea } from "@/data/areas";
+import { areas, getArea, type AreaPage } from "@/data/areas";
 
 export const Route = createFileRoute("/areas/$area")({
   loader: ({ params }) => {
@@ -89,7 +89,7 @@ export const Route = createFileRoute("/areas/$area")({
 });
 
 function AreaPage() {
-  const a = Route.useLoaderData();
+  const a = Route.useLoaderData() as AreaPage;
 
   return (
     <div className="flex flex-col">
