@@ -27,6 +27,7 @@ const groups = [
     title: "School",
     links: [
       { to: "/about", label: "About GSM" },
+      { to: "/areas", label: "Areas we cover" },
       { to: "/contact", label: "Contact" },
       { to: "/auth", label: "Sign in" },
       { to: "/dashboard", label: "Learner portal" },
