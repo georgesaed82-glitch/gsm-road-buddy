@@ -146,15 +146,15 @@ function Home() {
 
           <div className="relative">
             <div className="overflow-hidden bg-muted shadow-2xl">
-              <img
-                src={heroImage.url}
-                alt="GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London."
-                className="aspect-[4/5] w-full object-cover"
-                width={1600}
-                height={1200}
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
+              <video
+                src={taglineVideo.url}
+                className="aspect-square w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-label="GSM Driving School — Drive today. Succeed tomorrow."
               />
             </div>
             <div className="absolute -bottom-6 -left-6 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 sm:-left-8">
@@ -179,22 +179,6 @@ function Home() {
               </span>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* TAGLINE VIDEO */}
-      <section className="bg-background py-14 sm:py-20">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <video
-            src={taglineVideo.url}
-            className="aspect-square w-full shadow-xl"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-label="GSM Driving School — Drive today. Succeed tomorrow."
-          />
         </div>
       </section>
 
