@@ -127,10 +127,10 @@ function PricingPage() {
             {packages.map((pkg) => (
               <Card
                 key={pkg.name}
-                className={`relative border-border bg-card ${pkg.popular ? "ring-2 ring-primary" : ""}`}
+                className={`relative border-border bg-card ${pkg.popular ? "ring-2 ring-accent" : ""}`}
               >
                 {pkg.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
                     Most popular
                   </div>
                 )}
@@ -154,7 +154,7 @@ function PricingPage() {
                     ))}
                   </ul>
                   <div className="mt-6 flex flex-col gap-2">
-                    <Button asChild variant={pkg.popular ? "default" : "outline"} className="w-full gap-2">
+                    <Button asChild variant={pkg.popular ? "default" : "outline"} className={`w-full gap-2 ${pkg.popular ? "bg-accent text-accent-foreground hover:bg-accent/90" : ""}`}>
                       <a
                         href="https://wa.me/447961585231"
                         target="_blank"
@@ -188,7 +188,7 @@ function PricingPage() {
               Every learner is different. Call or email us for a personalised quote based on your experience and goals.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button asChild variant="outline" className="h-11 gap-2">
+              <Button asChild variant="outline" className="h-11 gap-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground">
                 <a
                   href="https://wa.me/447961585231"
                   onClick={() => trackContactClick("whatsapp", "Pricing CTA")}
@@ -197,7 +197,7 @@ function PricingPage() {
                   WhatsApp us
                 </a>
               </Button>
-              <Button asChild className="h-11 gap-2">
+              <Button asChild className="h-11 gap-2 bg-accent text-accent-foreground hover:bg-accent/90">
                 <Link to="/contact" onClick={() => trackContactClick("email", "Pricing CTA")}>
                   <Mail className="h-4 w-4" />
                   Email us
