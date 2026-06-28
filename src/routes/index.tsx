@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Star, ArrowRight, Mail, ExternalLink, Instagram } from "lucide-react";
+import { ArrowUpRight, Star, ArrowRight, Mail, ExternalLink, Instagram, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
@@ -143,6 +143,16 @@ function Home() {
                 >
                   <WhatsAppIcon className="h-4 w-4" />
                   WhatsApp 07961 585231
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="h-12 rounded-none border-primary/30 px-6 text-primary hover:bg-primary hover:text-primary-foreground">
+                <a
+                  href="tel:+447961585231"
+                  onClick={() => trackContactClick("phone", "Home hero")}
+                  className="inline-flex items-center gap-2"
+                >
+                  <Phone className="h-4 w-4" />
+                  Call 07961 585231
                 </a>
               </Button>
               <Button asChild size="lg" variant="outline" className="h-12 rounded-none border-primary/30 px-6 text-primary hover:bg-primary hover:text-primary-foreground">
@@ -413,18 +423,30 @@ function Home() {
           <h2 className="max-w-xl font-display text-4xl font-medium leading-[1.05]">
             Ready to start? Call George.
           </h2>
-          <Button asChild size="lg" className="h-14 rounded-none bg-[#25D366] px-8 text-white hover:bg-[#1ebe57]">
-            <a
-              href="https://wa.me/447961585231"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackContactClick("whatsapp", "Home bottom CTA")}
-              className="inline-flex items-center gap-3"
-            >
-              <WhatsAppIcon className="h-5 w-5" />
-              WhatsApp 07961 585231
-            </a>
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg" className="h-14 rounded-none bg-[#25D366] px-8 text-white hover:bg-[#1ebe57]">
+              <a
+                href="https://wa.me/447961585231"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackContactClick("whatsapp", "Home bottom CTA")}
+                className="inline-flex items-center gap-3"
+              >
+                <WhatsAppIcon className="h-5 w-5" />
+                WhatsApp 07961 585231
+              </a>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="h-14 rounded-none border-accent-foreground/30 bg-transparent px-8 text-accent-foreground hover:bg-accent-foreground hover:text-accent">
+              <a
+                href="tel:+447961585231"
+                onClick={() => trackContactClick("phone", "Home bottom CTA")}
+                className="inline-flex items-center gap-3"
+              >
+                <Phone className="h-5 w-5" />
+                Call 07961 585231
+              </a>
+            </Button>
+          </div>
         </div>
       </section>
     </div>
