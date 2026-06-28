@@ -62,56 +62,56 @@
 :root {
   --radius: 0.75rem;
 
-  /* Cream, Forest Green & Terracotta — editorial driving-school palette */
-  /* cream #F9F7F2, forest green #2D5A4A, terracotta #C87654 */
-  --background: oklch(0.97 0.01 95);
-  --foreground: oklch(0.25 0.03 155);
+  /* Midnight navy & sand — fresh luxury palette for GSM Driving School */
+  /* background sand #F8F5F2, navy #1E293B, warm gold #B9975B */
+  --background: #F8F5F2;
+  --foreground: #1E293B;
 
-  --card: oklch(0.99 0.005 95);
-  --card-foreground: oklch(0.25 0.03 155);
-  --popover: oklch(0.99 0.005 95);
-  --popover-foreground: oklch(0.25 0.03 155);
+  --card: #FDFBF9;
+  --card-foreground: #1E293B;
+  --popover: #FDFBF9;
+  --popover-foreground: #1E293B;
 
-  --primary: oklch(0.45 0.08 155);
-  --primary-foreground: oklch(0.97 0.01 95);
+  --primary: #1E293B;
+  --primary-foreground: #F8F5F2;
 
-  --secondary: oklch(0.94 0.02 95);
-  --secondary-foreground: oklch(0.25 0.03 155);
+  --secondary: #E8E2D9;
+  --secondary-foreground: #1E293B;
 
-  --muted: oklch(0.93 0.01 95);
-  --muted-foreground: oklch(0.55 0.03 150);
+  --muted: #E8E2D9;
+  --muted-foreground: #8C8273;
 
-  --accent: oklch(0.65 0.12 50);
-  --accent-foreground: oklch(0.99 0.005 95);
+  --accent: #B9975B;
+  --accent-foreground: #1E293B;
 
-  --destructive: oklch(0.55 0.2 28);
-  --destructive-foreground: oklch(0.99 0.005 95);
+  --destructive: #C45B4A;
+  --destructive-foreground: #F8F5F2;
 
-  --border: oklch(0.88 0.01 100);
-  --input: oklch(0.88 0.01 100);
-  --ring: oklch(0.45 0.08 155);
+  --border: #E8E2D9;
+  --input: #E8E2D9;
+  --ring: #B9975B;
 
-  --success: oklch(0.55 0.13 155);
-  --success-foreground: oklch(0.99 0.005 95);
-  --warning: oklch(0.72 0.16 70);
-  --warning-foreground: oklch(0.25 0.03 155);
-  --info: oklch(0.55 0.09 220);
-  --info-foreground: oklch(0.99 0.005 95);
+  --success: #2D5A4A;
+  --success-foreground: #F8F5F2;
+  --warning: #B76E2D;
+  --warning-foreground: #F8F5F2;
+  --info: #3A5A7C;
+  --info-foreground: #F8F5F2;
 
-  --chart-1: oklch(0.45 0.08 155);
-  --chart-2: oklch(0.65 0.12 50);
-  --chart-3: oklch(0.55 0.03 150);
-  --chart-4: oklch(0.72 0.16 70);
-  --chart-5: oklch(0.45 0.06 200);
+  --chart-1: #1E293B;
+  --chart-2: #B9975B;
+  --chart-3: #8C8273;
+  --chart-4: #2D5A4A;
+  --chart-5: #3A5A7C;
 
-  --sidebar: oklch(0.25 0.03 155);
-  --sidebar-foreground: oklch(0.94 0.02 95);
-  --sidebar-primary: oklch(0.65 0.12 50);
-  --sidebar-primary-foreground: oklch(0.25 0.03 155);
-  --sidebar-accent: oklch(0.35 0.05 155);
-  --sidebar-accent-foreground: oklch(0.97 0.01 95);
-  --sidebar-border: oklch(0.35 0.05 155);
-  --sidebar-ring: oklch(0.65 0.12 50);
+  --sidebar: #1E293B;
+  --sidebar-foreground: #F8F5F2;
+  --sidebar-primary: #B9975B;
+  --sidebar-primary-foreground: #1E293B;
+  --sidebar-accent: #E8E2D9;
+  --sidebar-accent-foreground: #1E293B;
+  --sidebar-border: #3A4A5C;
+  --sidebar-ring: #B9975B;
 }
 
 @layer base {
