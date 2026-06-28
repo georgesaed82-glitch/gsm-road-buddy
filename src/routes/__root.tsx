@@ -132,27 +132,45 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
+    function handleExternalClick(e: MouseEvent) {
       if (e.defaultPrevented) return;
       if (e.button !== 0) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      const target = (e.target as HTMLElement | null)?.closest("a");
-      if (!target) return;
-      const href = target.getAttribute("href");
+
+      const link = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>("a[href]");
+      if (!link) return;
+
+      const href = link.getAttribute("href");
       if (!href) return;
       if (href.startsWith("mailto:") || href.startsWith("tel:")) return;
+
       let url: URL;
       try {
         url = new URL(href, window.location.href);
       } catch {
         return;
       }
+
       if (url.origin === window.location.origin) return;
+
       e.preventDefault();
-      window.open(url.href, "_blank", "noopener,noreferrer");
+
+      const openedWindow = window.open(url.href, "_blank");
+      if (openedWindow) {
+        openedWindow.opener = null;
+        openedWindow.focus();
+        return;
+      }
+
+      try {
+        window.top?.location.assign(url.href);
+      } catch {
+        window.location.assign(url.href);
+      }
     }
-    document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+
+    document.addEventListener("click", handleExternalClick, { capture: true });
+    return () => document.removeEventListener("click", handleExternalClick, { capture: true });
   }, []);
 
   return (
