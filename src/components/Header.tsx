@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { Menu, Mail } from "lucide-react";
-import { Lock } from "lucide-react";
+import { Lock, LogOut } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 
 const navLinks = [
@@ -30,7 +32,23 @@ function Monogram() {
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsAuthed(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setOpen(false);
+    navigate({ to: "/", replace: true });
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-md">
@@ -96,11 +114,17 @@ export function Header() {
           >
             Learner portal <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">Coming soon</Badge>
           </Button>
-          <Button size="sm" variant="ghost" asChild className="hidden md:inline-flex">
-            <Link to="/auth" aria-label="Admin login">
-              <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
-            </Link>
-          </Button>
+          {isAuthed ? (
+            <Button size="sm" variant="ghost" onClick={handleSignOut} className="hidden md:inline-flex">
+              <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
+            </Button>
+          ) : (
+            <Button size="sm" variant="ghost" asChild className="hidden md:inline-flex">
+              <Link to="/auth" aria-label="Admin login">
+                <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
+              </Link>
+            </Button>
+          )}
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="lg:hidden">
@@ -139,11 +163,17 @@ export function Header() {
                   <Button className="w-full" disabled variant="outline" title="Learner portal coming soon">
                     Learner portal <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">Coming soon</Badge>
                   </Button>
-                  <Button asChild className="w-full" variant="ghost">
-                    <Link to="/auth" onClick={() => setOpen(false)} aria-label="Admin login">
-                      <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
-                    </Link>
-                  </Button>
+                  {isAuthed ? (
+                    <Button className="w-full" variant="ghost" onClick={handleSignOut}>
+                      <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
+                    </Button>
+                  ) : (
+                    <Button asChild className="w-full" variant="ghost">
+                      <Link to="/auth" onClick={() => setOpen(false)} aria-label="Admin login">
+                        <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
+                      </Link>
+                    </Button>
+                  )}
                   <a
                     href="https://wa.me/447961585231"
                     target="_blank"
