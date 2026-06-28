@@ -4,6 +4,7 @@ import { Menu, Mail } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
@@ -85,8 +86,14 @@ export function Header() {
               <span>gsmdrivingschool@outlook.com</span>
             </a>
           </div>
-          <Button asChild size="sm" className="hidden bg-primary text-primary-foreground hover:bg-primary/90 md:inline-flex">
-            <Link to="/dashboard">Learner portal</Link>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled
+            className="hidden cursor-not-allowed md:inline-flex"
+            title="Learner portal coming soon"
+          >
+            Learner portal <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">Coming soon</Badge>
           </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
@@ -123,8 +130,8 @@ export function Header() {
                   ))}
                 </nav>
                 <div className="flex flex-col gap-3 pt-2">
-                  <Button asChild className="w-full">
-                    <Link to="/dashboard" onClick={() => setOpen(false)}>Learner portal</Link>
+                  <Button className="w-full" disabled variant="outline" title="Learner portal coming soon">
+                    Learner portal <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">Coming soon</Badge>
                   </Button>
                   <a
                     href="https://wa.me/447961585231"
