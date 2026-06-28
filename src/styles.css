@@ -62,56 +62,56 @@
 :root {
   --radius: 0.75rem;
 
-  /* Midnight navy & sand — fresh luxury palette for GSM Driving School */
-  /* background sand #F8F5F2, navy #1E293B, warm gold #B9975B */
-  --background: #F8F5F2;
-  --foreground: #1E293B;
+  /* Obsidian & gold — full dark luxury palette for GSM Driving School */
+  /* background obsidian #0F0F0F, foreground warm white #F5F5F0, gold #C9A962 */
+  --background: #0F0F0F;
+  --foreground: #F5F5F0;
 
-  --card: #FDFBF9;
-  --card-foreground: #1E293B;
-  --popover: #FDFBF9;
-  --popover-foreground: #1E293B;
+  --card: #151515;
+  --card-foreground: #F5F5F0;
+  --popover: #151515;
+  --popover-foreground: #F5F5F0;
 
-  --primary: #1E293B;
-  --primary-foreground: #F8F5F2;
+  --primary: #C9A962;
+  --primary-foreground: #0F0F0F;
 
-  --secondary: #E8E2D9;
-  --secondary-foreground: #1E293B;
+  --secondary: #1A1A1A;
+  --secondary-foreground: #F5F5F0;
 
-  --muted: #E8E2D9;
-  --muted-foreground: #8C8273;
+  --muted: #1A1A1A;
+  --muted-foreground: #9A958C;
 
-  --accent: #B9975B;
-  --accent-foreground: #1E293B;
+  --accent: #C9A962;
+  --accent-foreground: #0F0F0F;
 
   --destructive: #C45B4A;
-  --destructive-foreground: #F8F5F2;
+  --destructive-foreground: #F5F5F0;
 
-  --border: #E8E2D9;
-  --input: #E8E2D9;
-  --ring: #B9975B;
+  --border: #2A2A2A;
+  --input: #2A2A2A;
+  --ring: #C9A962;
 
   --success: #2D5A4A;
-  --success-foreground: #F8F5F2;
+  --success-foreground: #F5F5F0;
   --warning: #B76E2D;
-  --warning-foreground: #F8F5F2;
-  --info: #3A5A7C;
-  --info-foreground: #F8F5F2;
+  --warning-foreground: #F5F5F0;
+  --info: #5A7A9A;
+  --info-foreground: #F5F5F0;
 
-  --chart-1: #1E293B;
-  --chart-2: #B9975B;
-  --chart-3: #8C8273;
+  --chart-1: #C9A962;
+  --chart-2: #9A958C;
+  --chart-3: #5A7A9A;
   --chart-4: #2D5A4A;
-  --chart-5: #3A5A7C;
+  --chart-5: #B76E2D;
 
-  --sidebar: #1E293B;
-  --sidebar-foreground: #F8F5F2;
-  --sidebar-primary: #B9975B;
-  --sidebar-primary-foreground: #1E293B;
-  --sidebar-accent: #E8E2D9;
-  --sidebar-accent-foreground: #1E293B;
-  --sidebar-border: #3A4A5C;
-  --sidebar-ring: #B9975B;
+  --sidebar: #0F0F0F;
+  --sidebar-foreground: #F5F5F0;
+  --sidebar-primary: #C9A962;
+  --sidebar-primary-foreground: #0F0F0F;
+  --sidebar-accent: #1A1A1A;
+  --sidebar-accent-foreground: #F5F5F0;
+  --sidebar-border: #2A2A2A;
+  --sidebar-ring: #C9A962;
 }
 
 @layer base {
