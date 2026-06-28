@@ -5,9 +5,10 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -26,6 +27,13 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const tracked = useRef(false);
+
+  useEffect(() => {
+    if (tracked.current) return;
+    tracked.current = true;
+    trackContactClick("portal_view", "learner-portal");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
