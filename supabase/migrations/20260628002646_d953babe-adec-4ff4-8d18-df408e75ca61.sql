@@ -1,0 +1,1 @@
+ALTER TABLE public.contact_clicks DROP CONSTRAINT IF EXISTS contact_clicks_channel_check; ALTER TABLE public.contact_clicks ADD CONSTRAINT contact_clicks_channel_check CHECK (channel IN ('whatsapp','email','phone'));
