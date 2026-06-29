@@ -1,14 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
-
-const ADMIN_PASSWORD = "7777"; // shared admin gate; can be overridden via env
+import { verifyAdminPasswordServer } from "./portal-access.functions";
 
 function dayAgo(days: number) {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
 }
 
 async function adminClient(password: string) {
-  const expected = process.env.ADMIN_PASSWORD || ADMIN_PASSWORD;
-  if (!password || password !== expected) {
+  if (!(await verifyAdminPasswordServer(password))) {
     throw new Response("Unauthorized", { status: 401 });
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
