@@ -34,6 +34,7 @@ import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
 import { Route as AuthenticatedAdminContactClicksRouteImport } from './routes/_authenticated/admin.contact-clicks'
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
+import { Route as AuthenticatedAdminAccessRouteImport } from './routes/_authenticated/admin.access'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -164,6 +165,12 @@ const AuthenticatedAdminAdminsRoute =
     path: '/admins',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminAccessRoute =
+  AuthenticatedAdminAccessRouteImport.update({
+    id: '/access',
+    path: '/access',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -191,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/areas/': typeof AreasIndexRoute
+  '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/email': typeof AuthenticatedAdminEmailRoute
@@ -217,6 +225,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/areas': typeof AreasIndexRoute
+  '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/email': typeof AuthenticatedAdminEmailRoute
@@ -246,6 +255,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/areas/': typeof AreasIndexRoute
+  '/_authenticated/admin/access': typeof AuthenticatedAdminAccessRoute
   '/_authenticated/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/_authenticated/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
@@ -275,6 +285,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/areas/$area'
     | '/areas/'
+    | '/admin/access'
     | '/admin/admins'
     | '/admin/contact-clicks'
     | '/admin/email'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/areas/$area'
     | '/areas'
+    | '/admin/access'
     | '/admin/admins'
     | '/admin/contact-clicks'
     | '/admin/email'
@@ -329,6 +341,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/areas/$area'
     | '/areas/'
+    | '/_authenticated/admin/access'
     | '/_authenticated/admin/admins'
     | '/_authenticated/admin/contact-clicks'
     | '/_authenticated/admin/email'
@@ -531,6 +544,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/access': {
+      id: '/_authenticated/admin/access'
+      path: '/access'
+      fullPath: '/admin/access'
+      preLoaderRoute: typeof AuthenticatedAdminAccessRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -542,6 +562,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAccessRoute: typeof AuthenticatedAdminAccessRoute
   AuthenticatedAdminAdminsRoute: typeof AuthenticatedAdminAdminsRoute
   AuthenticatedAdminContactClicksRoute: typeof AuthenticatedAdminContactClicksRoute
   AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
@@ -550,6 +571,7 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAccessRoute: AuthenticatedAdminAccessRoute,
   AuthenticatedAdminAdminsRoute: AuthenticatedAdminAdminsRoute,
   AuthenticatedAdminContactClicksRoute: AuthenticatedAdminContactClicksRoute,
   AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
