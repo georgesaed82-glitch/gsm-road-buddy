@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_alert_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          notify_on_enquiry_spike: boolean
+          notify_on_system_critical: boolean
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          notify_on_enquiry_spike?: boolean
+          notify_on_system_critical?: boolean
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          notify_on_enquiry_spike?: boolean
+          notify_on_system_critical?: boolean
+        }
+        Relationships: []
+      }
       contact_clicks: {
         Row: {
           channel: string

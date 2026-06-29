@@ -1,8 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
-import { getAdminOverview } from "@/lib/admin-stats.functions";
+import {
+  getAdminOverview,
+  listAdminAlertSubscribers,
+  subscribeAdminAlert,
+  unsubscribeAdminAlert,
+} from "@/lib/admin-stats.functions";
 import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { theoryCategories } from "@/data/theory";
@@ -25,6 +30,9 @@ import {
   PoundSterling,
   Film,
   ClipboardList,
+  AlertTriangle,
+  Bell,
+  X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -57,6 +65,10 @@ function AdminOverviewPage() {
   const navigate = useNavigate();
   const [range, setRange] = useState<RangeDays>(30);
   const fetchOverview = useServerFn(getAdminOverview);
+  const fetchSubs = useServerFn(listAdminAlertSubscribers);
+  const subscribe = useServerFn(subscribeAdminAlert);
+  const unsubscribe = useServerFn(unsubscribeAdminAlert);
+  const qc = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-overview-stats", range],
@@ -76,6 +88,30 @@ function AdminOverviewPage() {
     }
   }, [error, navigate]);
 
+  const { data: subs } = useQuery({
+    queryKey: ["admin-alert-subscribers"],
+    queryFn: () => fetchSubs({ data: { password: getAdminPassword() } }),
+    retry: false,
+  });
+
+  const alerts = useMemo(() => computeAlerts(data, !!error), [data, error]);
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  const visibleAlerts = alerts.filter((a) => !dismissed.has(a.id));
+
+  const [email, setEmail] = useState("");
+  const [showSubs, setShowSubs] = useState(false);
+  const subMut = useMutation({
+    mutationFn: (e: string) => subscribe({ data: { password: getAdminPassword(), email: e } }),
+    onSuccess: () => {
+      setEmail("");
+      qc.invalidateQueries({ queryKey: ["admin-alert-subscribers"] });
+    },
+  });
+  const unsubMut = useMutation({
+    mutationFn: (id: string) => unsubscribe({ data: { password: getAdminPassword(), id } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-alert-subscribers"] }),
+  });
+
   const fmt = (n: number | undefined) => (n === undefined ? "—" : n.toLocaleString());
   const rangeLabel = useMemo(
     () => (range === 7 ? "This week" : range === 30 ? "This month" : "Last 90 days"),
@@ -87,6 +123,102 @@ function AdminOverviewPage() {
       <p className="-mt-3 mb-6 text-sm text-muted-foreground">
         Here's what's happening with GSM Driving School today.
       </p>
+
+      {visibleAlerts.length > 0 && (
+        <div className="mb-6 space-y-2">
+          {visibleAlerts.map((a) => (
+            <div
+              key={a.id}
+              className={`flex items-start gap-3 border p-4 ${
+                a.severity === "critical"
+                  ? "border-destructive/40 bg-destructive/10 text-destructive"
+                  : "border-amber-400/50 bg-amber-50 text-amber-900"
+              }`}
+            >
+              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-current/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                    {a.severity === "critical" ? "Critical" : "Alert"}
+                  </span>
+                  <span className="font-display text-base">{a.title}</span>
+                </div>
+                <p className="mt-1 text-sm opacity-90">{a.detail}</p>
+              </div>
+              <button
+                onClick={() => setDismissed((p) => new Set(p).add(a.id))}
+                className="rounded p-1 hover:bg-black/5"
+                aria-label="Dismiss"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Email notifications */}
+      <div className="mb-8 border border-border bg-card p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Bell className="h-4 w-4" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="font-display text-base text-foreground">Alert notifications</div>
+            <div className="text-xs text-muted-foreground">
+              Get an email when enquiries spike or system status turns critical.
+              {subs && subs.length > 0 && (
+                <>
+                  {" "}
+                  <button onClick={() => setShowSubs((s) => !s)} className="underline">
+                    {subs.length} subscribed
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (email.trim()) subMut.mutate(email.trim());
+            }}
+            className="flex w-full gap-2 sm:w-auto"
+          >
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="min-w-0 flex-1 border border-border bg-background px-3 py-1.5 text-sm sm:w-64"
+            />
+            <button
+              type="submit"
+              disabled={subMut.isPending}
+              className="bg-foreground px-3 py-1.5 text-sm font-medium text-background hover:opacity-90 disabled:opacity-50"
+            >
+              {subMut.isPending ? "…" : "Subscribe"}
+            </button>
+          </form>
+        </div>
+        {showSubs && subs && subs.length > 0 && (
+          <ul className="mt-3 divide-y divide-border border-t border-border text-sm">
+            {subs.map((s) => (
+              <li key={s.id} className="flex items-center justify-between py-2">
+                <span className="text-foreground">{s.email}</span>
+                <button
+                  onClick={() => unsubMut.mutate(s.id)}
+                  className="text-xs text-muted-foreground hover:text-destructive"
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {subMut.isSuccess && <p className="mt-2 text-xs text-emerald-600">Subscribed — you'll be emailed when alerts fire.</p>}
+        {subMut.isError && <p className="mt-2 text-xs text-destructive">Could not subscribe. Check the email and try again.</p>}
+      </div>
 
       <div className="mb-8 flex flex-wrap items-center gap-2">
         <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Compare</span>
@@ -287,6 +419,50 @@ function delta(current?: number, previous?: number): { pct: number; direction: "
   if (previous === 0) return current === 0 ? { pct: 0, direction: "flat" } : { pct: 100, direction: "up" };
   const pct = Math.round(((current - previous) / previous) * 100);
   return { pct: Math.abs(pct), direction: pct > 0 ? "up" : pct < 0 ? "down" : "flat" };
+}
+
+type AdminAlert = { id: string; severity: "warning" | "critical"; title: string; detail: string };
+
+function computeAlerts(data: any, hasError: boolean): AdminAlert[] {
+  const out: AdminAlert[] = [];
+  if (hasError) {
+    out.push({
+      id: "system-fetch",
+      severity: "critical",
+      title: "Backend unreachable",
+      detail: "Live admin stats failed to load. Check the database and server function logs.",
+    });
+  }
+  if (data) {
+    const cur = data.contactClicksCurrentTotal ?? 0;
+    const prev = data.contactClicksPreviousTotal ?? 0;
+    if (cur >= 5 && cur >= prev * 2 && prev >= 0) {
+      const mult = prev === 0 ? cur : Math.round((cur / prev) * 10) / 10;
+      out.push({
+        id: "enquiry-spike",
+        severity: "warning",
+        title: "Enquiry spike detected",
+        detail: `${cur} enquiries this period vs ${prev} previously (${prev === 0 ? "new activity" : `${mult}× higher`}). Make sure WhatsApp and email are being answered quickly.`,
+      });
+    }
+    if ((data.pageViewsCurrent ?? 0) === 0 && (data.pageViewsTotal ?? 0) > 0) {
+      out.push({
+        id: "no-traffic",
+        severity: "critical",
+        title: "No page views in this range",
+        detail: "Tracking may be broken or the site is offline. Verify gsmdrivingschool.com is loading.",
+      });
+    }
+    if ((data.bookingsUpcoming ?? 0) === 0 && (data.bookingsTotal ?? 0) > 0) {
+      out.push({
+        id: "no-upcoming",
+        severity: "warning",
+        title: "No upcoming lessons scheduled",
+        detail: "The calendar is empty going forward — consider reaching out to recent enquiries.",
+      });
+    }
+  }
+  return out;
 }
 
 function BigStat({
