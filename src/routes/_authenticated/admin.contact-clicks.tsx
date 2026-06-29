@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getContactClicks } from "@/lib/admin-stats.functions";
+import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
@@ -18,17 +20,14 @@ type Click = {
 };
 
 function ContactClicksPage() {
+  const fetchClicks = useServerFn(getContactClicks);
   const { data, isLoading } = useQuery({
     queryKey: ["contact_clicks"],
     queryFn: async (): Promise<Click[]> => {
-      const { data, error } = await supabase
-        .from("contact_clicks")
-        .select("id,package,channel,page,created_at")
-        .order("created_at", { ascending: false })
-        .limit(500);
-      if (error) throw error;
-      return (data ?? []) as Click[];
+      const rows = await fetchClicks({ data: { password: getAdminPassword() } });
+      return rows as Click[];
     },
+    retry: false,
   });
 
   const rows = data ?? [];
