@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { theoryCategories, sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, BookOpen, FileText, Lightbulb, Sparkles, Target, Clock, ShieldCheck, Eye as Eye2 } from "lucide-react";
+import { CheckCircle2, XCircle, BookOpen, FileText, Lightbulb, Sparkles, Target, Clock, ShieldCheck, Eye as Eye2, Trophy } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/theory")({
   head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
@@ -28,6 +28,7 @@ function TheoryPage() {
   const totalAnswered = progress.reduce((s, p) => s + p.questions_answered, 0);
   const totalCorrect = progress.reduce((s, p) => s + p.questions_correct, 0);
   const accuracy = totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+  const completedCount = progress.filter((p) => p.completed_at).length;
 
   if (active) {
     return (
@@ -42,7 +43,7 @@ function TheoryPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat label="Questions answered" value={String(totalAnswered)} />
         <Stat label="Accuracy" value={`${accuracy}%`} accent />
-        <Stat label="Categories started" value={`${progress.length} / ${theoryCategories.length}`} />
+        <Stat label="Topics completed" value={`${completedCount} / ${theoryCategories.length}`} />
       </div>
 
       <StudyPack />
@@ -55,8 +56,10 @@ function TheoryPage() {
         {theoryCategories.map((c) => {
           const p = progress.find((x) => x.category_slug === c.slug);
           const answered = p?.questions_answered ?? 0;
-          const correct = p?.questions_correct ?? 0;
-          const pct = answered ? Math.round((correct / answered) * 100) : 0;
+          const best = p?.best_score_pct ?? 0;
+          const last = p?.last_score_pct ?? 0;
+          const attempts = p?.attempts ?? 0;
+          const completed = !!p?.completed_at;
           return (
             <button
               key={c.slug}
@@ -65,7 +68,14 @@ function TheoryPage() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-display text-xl text-foreground">{c.title}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-display text-xl text-foreground">{c.title}</h3>
+                    {completed && (
+                      <span title="Quiz passed" className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-success">
+                        <Trophy className="h-3 w-3" /> Passed
+                      </span>
+                    )}
+                  </div>
                   <p className="mt-1 text-sm text-muted-foreground">{c.description}</p>
                 </div>
                 <BookOpen className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-accent" />
@@ -74,10 +84,14 @@ function TheoryPage() {
                 {c.topics.map((t) => <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>)}
               </div>
               <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{answered} / {c.totalQuestions} attempted</span>
-                {answered > 0 && <span className="font-medium text-foreground">{pct}% correct</span>}
+                <span>{attempts === 0 ? "Not started" : `${attempts} attempt${attempts === 1 ? "" : "s"}`}</span>
+                {attempts > 0 && (
+                  <span className="font-medium text-foreground">
+                    Best {best}% · Last {last}%
+                  </span>
+                )}
               </div>
-              <Progress value={(answered / c.totalQuestions) * 100} className="mt-2 h-1" />
+              <Progress value={best} className="mt-2 h-1" />
             </button>
           );
         })}
@@ -114,6 +128,40 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
           category_slug: slug,
           questions_answered: delta.answered,
           questions_correct: delta.correct,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ["theory_progress"] });
+    },
+  });
+
+  const saveAttempt = useMutation({
+    mutationFn: async (attempt: { answered: number; correct: number }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const pct = attempt.answered ? Math.round((attempt.correct / attempt.answered) * 100) : 0;
+      const { data: existing } = await supabase
+        .from("theory_progress")
+        .select("*").eq("user_id", user.id).eq("category_slug", slug).maybeSingle();
+      const completedAt = pct >= 86
+        ? (existing?.completed_at ?? new Date().toISOString())
+        : (existing?.completed_at ?? null);
+      const best = Math.max(existing?.best_score_pct ?? 0, pct);
+      if (existing) {
+        await supabase.from("theory_progress").update({
+          best_score_pct: best,
+          last_score_pct: pct,
+          attempts: (existing.attempts ?? 0) + 1,
+          completed_at: completedAt,
+          last_studied_at: new Date().toISOString(),
+        }).eq("id", existing.id);
+      } else {
+        await supabase.from("theory_progress").insert({
+          user_id: user.id,
+          category_slug: slug,
+          best_score_pct: pct,
+          last_score_pct: pct,
+          attempts: 1,
+          completed_at: completedAt,
         });
       }
       queryClient.invalidateQueries({ queryKey: ["theory_progress"] });
@@ -165,6 +213,7 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
 
   const next = () => {
     if (idx + 1 >= pool.length) {
+      saveAttempt.mutate({ answered: score.answered, correct: score.correct });
       setFinished(true);
     } else {
       setChosen(null);

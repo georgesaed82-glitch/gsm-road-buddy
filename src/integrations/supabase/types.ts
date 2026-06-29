@@ -352,9 +352,13 @@ export type Database = {
       }
       theory_progress: {
         Row: {
+          attempts: number
+          best_score_pct: number
           category_slug: string
+          completed_at: string | null
           created_at: string
           id: string
+          last_score_pct: number
           last_studied_at: string
           questions_answered: number
           questions_correct: number
@@ -362,9 +366,13 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          attempts?: number
+          best_score_pct?: number
           category_slug: string
+          completed_at?: string | null
           created_at?: string
           id?: string
+          last_score_pct?: number
           last_studied_at?: string
           questions_answered?: number
           questions_correct?: number
@@ -372,9 +380,13 @@ export type Database = {
           user_id: string
         }
         Update: {
+          attempts?: number
+          best_score_pct?: number
           category_slug?: string
+          completed_at?: string | null
           created_at?: string
           id?: string
+          last_score_pct?: number
           last_studied_at?: string
           questions_answered?: number
           questions_correct?: number
