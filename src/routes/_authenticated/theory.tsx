@@ -474,7 +474,7 @@ function MockExam({ onExit }: { onExit: () => void }) {
   };
 
   if (finished) {
-    const correctCount = answers.reduce(
+    const correctCount = answers.reduce<number>(
       (s, a, i) => s + (a !== null && a === pool[i].correctIndex ? 1 : 0),
       0,
     );
