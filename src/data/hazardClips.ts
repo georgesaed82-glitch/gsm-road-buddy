@@ -5,6 +5,8 @@ export type HazardClip = {
   difficulty: "Easy" | "Medium" | "Hard";
   durationSeconds: number;
   developingHazard: string;
+  videoUrl?: string;
+  posterUrl?: string;
 };
 
 export const hazardClips: HazardClip[] = [
