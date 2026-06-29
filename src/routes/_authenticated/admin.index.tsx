@@ -12,7 +12,6 @@ import {
   CalendarCheck,
   TrendingUp,
   LogIn,
-  MessageCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
