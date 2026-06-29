@@ -1,7 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { useEffect, useState } from "react";
+import { getAdminOverview } from "@/lib/admin-stats.functions";
+import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -21,10 +23,6 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminOverview,
 });
 
-function dayAgo(days: number) {
-  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
-}
-
 type RangeDays = 7 | 30 | 90;
 const RANGE_OPTIONS: { value: RangeDays; label: string }[] = [
   { value: 7, label: "7 days" },
@@ -33,173 +31,27 @@ const RANGE_OPTIONS: { value: RangeDays; label: string }[] = [
 ];
 
 function AdminOverview() {
+  const navigate = useNavigate();
   const [range, setRange] = useState<RangeDays>(30);
-  const { data, isLoading } = useQuery({
+  const fetchOverview = useServerFn(getAdminOverview);
+
+  const { data, isLoading, error } = useQuery({
     queryKey: ["admin-overview-stats", range],
-    queryFn: async () => {
-      const sinceCurrent = dayAgo(range);
-      const sincePrevious = dayAgo(range * 2);
-
-      const [
-        profiles,
-        pageViewsTotal,
-        pageViewsCurrent,
-        pageViewsPrevious,
-        portalLogins,
-        portalLoginsCurrent,
-        portalLoginsPrevious,
-        payments,
-        paidPayments,
-        paidPaymentsCurrent,
-        paidSum,
-        paidSumCurrent,
-        bookingsTotal,
-        bookingsUpcoming,
-        bookingsCompleted,
-        bookingsCurrent,
-        bookingsPrevious,
-        theoryRows,
-        contactClicksCurrent,
-        contactClicksPrevious,
-        recentPageViews,
-      ] = await Promise.all([
-        supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("page_views").select("id", { count: "exact", head: true }),
-        supabase
-          .from("page_views")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", sinceCurrent),
-        supabase
-          .from("page_views")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", sincePrevious)
-          .lt("created_at", sinceCurrent),
-        supabase
-          .from("contact_clicks")
-          .select("id", { count: "exact", head: true })
-          .eq("channel", "portal_view"),
-        supabase
-          .from("contact_clicks")
-          .select("id", { count: "exact", head: true })
-          .eq("channel", "portal_view")
-          .gte("created_at", sinceCurrent),
-        supabase
-          .from("contact_clicks")
-          .select("id", { count: "exact", head: true })
-          .eq("channel", "portal_view")
-          .gte("created_at", sincePrevious)
-          .lt("created_at", sinceCurrent),
-        supabase.from("payments").select("id", { count: "exact", head: true }),
-        supabase
-          .from("payments")
-          .select("id", { count: "exact", head: true })
-          .eq("status", "paid"),
-        supabase
-          .from("payments")
-          .select("id", { count: "exact", head: true })
-          .eq("status", "paid")
-          .gte("created_at", sinceCurrent),
-        supabase.from("payments").select("amount_pence,status"),
-        supabase
-          .from("payments")
-          .select("amount_pence,status")
-          .eq("status", "paid")
-          .gte("created_at", sinceCurrent),
-        supabase.from("lesson_bookings").select("id", { count: "exact", head: true }),
-        supabase
-          .from("lesson_bookings")
-          .select("id", { count: "exact", head: true })
-          .gte("scheduled_at", new Date().toISOString()),
-        supabase
-          .from("lesson_bookings")
-          .select("id", { count: "exact", head: true })
-          .eq("status", "completed"),
-        supabase
-          .from("lesson_bookings")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", sinceCurrent),
-        supabase
-          .from("lesson_bookings")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", sincePrevious)
-          .lt("created_at", sinceCurrent),
-        supabase
-          .from("theory_progress")
-          .select("questions_answered,questions_correct,best_score_pct,completed_at,user_id"),
-        supabase
-          .from("contact_clicks")
-          .select("channel")
-          .gte("created_at", sinceCurrent),
-        supabase
-          .from("contact_clicks")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", sincePrevious)
-          .lt("created_at", sinceCurrent),
-        supabase
-          .from("page_views")
-          .select("path,created_at")
-          .order("created_at", { ascending: false })
-          .limit(500),
-      ]);
-
-      const paidPence = (paidSum.data ?? [])
-        .filter((p) => p.status === "paid")
-        .reduce((sum, p) => sum + (p.amount_pence ?? 0), 0);
-      const paidPenceCurrent = (paidSumCurrent.data ?? [])
-        .reduce((sum, p) => sum + (p.amount_pence ?? 0), 0);
-
-      const theory = theoryRows.data ?? [];
-      const totalAnswered = theory.reduce((s, r) => s + (r.questions_answered ?? 0), 0);
-      const totalCorrect = theory.reduce((s, r) => s + (r.questions_correct ?? 0), 0);
-      const topicsPassed = theory.filter((r) => (r.best_score_pct ?? 0) >= 86).length;
-      const theoryLearners = new Set(theory.map((r) => r.user_id)).size;
-
-      const clicksByChannel: Record<string, number> = {};
-      for (const c of contactClicksCurrent.data ?? []) {
-        const ch = c.channel ?? "unknown";
-        clicksByChannel[ch] = (clicksByChannel[ch] ?? 0) + 1;
-      }
-      const contactClicksCurrentTotal = (contactClicksCurrent.data ?? []).length;
-
-      const topPaths: Record<string, number> = {};
-      for (const v of recentPageViews.data ?? []) {
-        topPaths[v.path] = (topPaths[v.path] ?? 0) + 1;
-      }
-      const topPathsSorted = Object.entries(topPaths)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 6);
-
-      return {
-        students: profiles.count ?? 0,
-        pageViewsTotal: pageViewsTotal.count ?? 0,
-        pageViewsCurrent: pageViewsCurrent.count ?? 0,
-        pageViewsPrevious: pageViewsPrevious.count ?? 0,
-        portalLogins: portalLogins.count ?? 0,
-        portalLoginsCurrent: portalLoginsCurrent.count ?? 0,
-        portalLoginsPrevious: portalLoginsPrevious.count ?? 0,
-        payments: payments.count ?? 0,
-        paidPayments: paidPayments.count ?? 0,
-        paidPaymentsCurrent: paidPaymentsCurrent.count ?? 0,
-        paidPounds: paidPence / 100,
-        paidPoundsCurrent: paidPenceCurrent / 100,
-        bookingsTotal: bookingsTotal.count ?? 0,
-        bookingsUpcoming: bookingsUpcoming.count ?? 0,
-        bookingsCompleted: bookingsCompleted.count ?? 0,
-        bookingsCurrent: bookingsCurrent.count ?? 0,
-        bookingsPrevious: bookingsPrevious.count ?? 0,
-        totalAnswered,
-        totalCorrect,
-        theoryAccuracy: totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0,
-        topicsPassed,
-        theoryLearners,
-        clicksByChannel,
-        contactClicksCurrentTotal,
-        contactClicksPreviousTotal: contactClicksPrevious.count ?? 0,
-        topPathsSorted,
-      };
-    },
+    queryFn: () => fetchOverview({ data: { password: getAdminPassword(), rangeDays: range } }),
     refetchInterval: 60_000,
+    retry: false,
   });
+
+  useEffect(() => {
+    const status = (error as any)?.status ?? (error as any)?.response?.status;
+    if (status === 401) {
+      if (typeof window !== "undefined") {
+        window.sessionStorage.removeItem("admin_unlocked");
+        window.sessionStorage.removeItem("admin_password");
+      }
+      navigate({ to: "/auth", search: { admin: 1 } });
+    }
+  }, [error, navigate]);
 
   const fmt = (n: number | undefined) => (n === undefined ? "—" : n.toLocaleString());
   const rangeLabel = `${range} days`;
