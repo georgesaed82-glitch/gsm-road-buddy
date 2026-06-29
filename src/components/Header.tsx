@@ -17,6 +17,7 @@ const navLinks = [
   { to: "/pricing", label: "Pricing" },
   { to: "/reviews", label: "Reviews" },
   { to: "/contact", label: "Contact" },
+  { to: "/auth", label: "Learner portal" },
 ];
 
 function Monogram() {
@@ -104,14 +105,8 @@ export function Header() {
               <span>gsmdrivingschool@outlook.com</span>
             </a>
           </div>
-          <Button
-            size="sm"
-            variant="outline"
-            disabled
-            className="hidden cursor-not-allowed md:inline-flex"
-            title="Learner portal coming soon"
-          >
-            Learner portal
+          <Button size="sm" variant="outline" asChild className="hidden md:inline-flex">
+            <Link to="/auth">Learner portal</Link>
           </Button>
           {isAuthed ? (
             <Button size="sm" variant="ghost" onClick={handleSignOut} className="hidden md:inline-flex">
@@ -159,8 +154,10 @@ export function Header() {
                   ))}
                 </nav>
                 <div className="flex flex-col gap-3 pt-2">
-                  <Button className="w-full" disabled variant="outline" title="Learner portal coming soon">
-                    Learner portal
+                  <Button asChild className="w-full" variant="outline">
+                    <Link to="/auth" onClick={() => setOpen(false)}>
+                      Learner portal
+                    </Link>
                   </Button>
                   {isAuthed ? (
                     <Button className="w-full" variant="ghost" onClick={handleSignOut}>
