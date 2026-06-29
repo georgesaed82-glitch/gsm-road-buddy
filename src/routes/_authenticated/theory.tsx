@@ -208,7 +208,8 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
   }
 
   if (finished) {
-    const pct = score.answered ? Math.round((score.correct / score.answered) * 100) : 0;
+    // DVSA: scored out of the full paper, not just answered questions.
+    const pct = pool.length ? Math.round((score.correct / pool.length) * 100) : 0;
     const passed = pct >= 86;
     const resetAll = () => {
       setPoolIndices(fullPool.map((_, i) => i));
@@ -229,7 +230,7 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
         <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{retakeMode ? "Retake complete" : "Quiz complete"}</div>
         <h2 className="mt-2 font-display text-3xl">{category?.title}</h2>
         <div className={`mt-6 font-display text-6xl ${passed ? "text-success" : "text-foreground"}`}>{pct}%</div>
-        <p className="mt-2 text-sm text-muted-foreground">You got {score.correct} of {score.answered} correct.</p>
+        <p className="mt-2 text-sm text-muted-foreground">You got {score.correct} of {pool.length} correct.</p>
         <p className="mt-1 text-xs text-muted-foreground">{passed ? "Above the DVSA pass mark (86%). Strong work." : "Aim for 86% to match the DVSA pass mark."}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {missed.length > 0 && (
@@ -262,7 +263,7 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
 
   const next = () => {
     if (idx + 1 >= pool.length) {
-      saveAttempt.mutate({ answered: score.answered, correct: score.correct });
+      saveAttempt.mutate({ answered: pool.length, correct: score.correct });
       setFinished(true);
     } else {
       setChosen(null);
