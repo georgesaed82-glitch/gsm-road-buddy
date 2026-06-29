@@ -421,8 +421,6 @@ function Home() {
         </div>
       </section>
 
-      <InstallAppCard />
-
       {/* CTA */}
       <section className="border-t border-border bg-accent text-accent-foreground">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
