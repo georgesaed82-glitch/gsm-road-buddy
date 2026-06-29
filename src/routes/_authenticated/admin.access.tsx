@@ -25,6 +25,123 @@ export const Route = createFileRoute("/_authenticated/admin/access")({
   component: AdminAccessPage,
 });
 
+const DAY_MS = 86_400_000;
+
+function formatRelative(diffMs: number): string {
+  const abs = Math.abs(diffMs);
+  const future = diffMs > 0;
+  const minutes = Math.round(abs / 60_000);
+  if (minutes < 60) return future ? `in ${minutes} min` : `${minutes} min ago`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return future ? `in ${hours} h` : `${hours} h ago`;
+  const days = Math.round(hours / 24);
+  if (days < 30) return future ? `in ${days} day${days === 1 ? "" : "s"}` : `${days} day${days === 1 ? "" : "s"} ago`;
+  const months = Math.round(days / 30);
+  return future ? `in ${months} mo` : `${months} mo ago`;
+}
+
+type ExpiryInfo = {
+  label: string;
+  sublabel: string;
+  tone: "neutral" | "active" | "warning" | "danger" | "muted";
+  progress: number | null; // 0..1 remaining, null if no expiry
+};
+
+function computeExpiry(row: AccessCodeRow): ExpiryInfo {
+  if (row.revoked) {
+    return { label: "Revoked", sublabel: "Access blocked", tone: "muted", progress: 0 };
+  }
+  if (!row.expires_at) {
+    return { label: "No expiry", sublabel: "Never expires", tone: "active", progress: null };
+  }
+  const expiresAt = new Date(row.expires_at).getTime();
+  const now = Date.now();
+  const diff = expiresAt - now;
+  const createdAt = row.created_at ? new Date(row.created_at).getTime() : expiresAt - 30 * DAY_MS;
+  const total = Math.max(expiresAt - createdAt, DAY_MS);
+  const progress = Math.max(0, Math.min(1, diff / total));
+  const dateStr = new Date(expiresAt).toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  if (diff <= 0) {
+    return { label: dateStr, sublabel: `Expired ${formatRelative(diff)}`, tone: "danger", progress: 0 };
+  }
+  const days = diff / DAY_MS;
+  const tone: ExpiryInfo["tone"] = days <= 3 ? "warning" : "active";
+  return { label: dateStr, sublabel: `Expires ${formatRelative(diff)}`, tone, progress };
+}
+
+const TONE_STYLES: Record<ExpiryInfo["tone"], { badge: string; bar: string; text: string }> = {
+  active: {
+    badge: "bg-emerald-100 text-emerald-900 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:border-emerald-500/30",
+    bar: "bg-emerald-500",
+    text: "text-emerald-700 dark:text-emerald-300",
+  },
+  warning: {
+    badge: "bg-amber-100 text-amber-900 border-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:border-amber-500/30",
+    bar: "bg-amber-500",
+    text: "text-amber-700 dark:text-amber-300",
+  },
+  danger: {
+    badge: "bg-rose-100 text-rose-900 border-rose-200 dark:bg-rose-500/15 dark:text-rose-200 dark:border-rose-500/30",
+    bar: "bg-rose-500",
+    text: "text-rose-700 dark:text-rose-300",
+  },
+  muted: {
+    badge: "bg-muted text-muted-foreground border-border",
+    bar: "bg-muted-foreground/40",
+    text: "text-muted-foreground",
+  },
+  neutral: {
+    badge: "bg-secondary text-secondary-foreground border-border",
+    bar: "bg-foreground/40",
+    text: "text-muted-foreground",
+  },
+};
+
+function StatusPill({ row }: { row: AccessCodeRow }) {
+  const info = computeExpiry(row);
+  const label =
+    row.revoked
+      ? "Revoked"
+      : info.tone === "danger"
+        ? "Expired"
+        : info.tone === "warning"
+          ? "Expiring soon"
+          : row.expires_at
+            ? "Active"
+            : "Active · no expiry";
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium ${TONE_STYLES[info.tone].badge}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${TONE_STYLES[info.tone].bar}`} />
+      {label}
+    </span>
+  );
+}
+
+function ExpiryCell({ row }: { row: AccessCodeRow }) {
+  const info = computeExpiry(row);
+  const tone = TONE_STYLES[info.tone];
+  return (
+    <div className="min-w-[160px]">
+      <div className="font-medium">{info.label}</div>
+      <div className={`text-xs ${tone.text}`}>{info.sublabel}</div>
+      {info.progress !== null && (
+        <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-muted">
+          <div
+            className={`h-full ${tone.bar} transition-all`}
+            style={{ width: `${Math.round(info.progress * 100)}%` }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AdminAccessPage() {
   const password = getAdminPassword();
   const qc = useQueryClient();
@@ -120,7 +237,10 @@ function AdminAccessPage() {
           <CardHeader>
             <CardTitle>Subscription codes</CardTitle>
             <CardDescription>
-              {subs.length} total · {subs.reduce((n, r) => n + (r.use_count || 0), 0)} total logins
+              {subs.length} total · {subs.filter((r) => computeExpiry(r).tone === "active").length} active ·{" "}
+              {subs.filter((r) => computeExpiry(r).tone === "warning").length} expiring soon ·{" "}
+              {subs.filter((r) => computeExpiry(r).tone === "danger").length} expired ·{" "}
+              {subs.reduce((n, r) => n + (r.use_count || 0), 0)} total logins
             </CardDescription>
           </CardHeader>
           <CardContent>
