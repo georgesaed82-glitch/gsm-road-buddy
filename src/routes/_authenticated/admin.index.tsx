@@ -563,12 +563,14 @@ function ChartCard({
   total,
   delta,
   series,
+  onExport,
 }: {
   title: string;
   subtitle: string;
   total: number;
   delta?: { pct: number; direction: "up" | "down" | "flat" };
   series: { date: string; count: number }[];
+  onExport?: () => void;
 }) {
   const fmtDate = (d: string) => {
     const dt = new Date(d);
@@ -603,6 +605,15 @@ function ChartCard({
           {subtitle}
         </span>
       </div>
+      {onExport && (
+        <button
+          onClick={onExport}
+          disabled={!series.length}
+          className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
+        >
+          <Download className="h-3 w-3" /> Export CSV
+        </button>
+      )}
       <div className="mt-4 h-44 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={series} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
