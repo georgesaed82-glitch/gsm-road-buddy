@@ -3,6 +3,18 @@ import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
+const CORRECT_PHONE_DISPLAY = "+44 7961 585231";
+const CORRECT_WHATSAPP_URL = "https://wa.me/447961585231";
+
+function fixPhoneNumbers(content: string) {
+  return content
+    .replace(/https:\/\/wa\.me\/447956195602/g, CORRECT_WHATSAPP_URL)
+    .replace(/wa\.me\/447956195602/g, "wa.me/447961585231")
+    .replace(/\+44\s*7956\s*195602/g, CORRECT_PHONE_DISPLAY)
+    .replace(/07956\s*195602/g, "07961 585231")
+    .replace(/447956195602/g, "447961585231");
+}
+
 const SUGGESTIONS = [
   "What areas do you cover?",
   "Manual or automatic?",
@@ -28,10 +40,15 @@ export function AIChatWidget() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    setMessages((current) => current.map((message) => ({ ...message, content: fixPhoneNumbers(message.content) })));
+  }, []);
+
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
-    const next: Msg[] = [...messages, { role: "user", content: trimmed }];
+    const cleanMessages = messages.map((message) => ({ ...message, content: fixPhoneNumbers(message.content) }));
+    const next: Msg[] = [...cleanMessages, { role: "user", content: trimmed }];
     setMessages(next);
     setInput("");
     setLoading(true);
@@ -49,7 +66,7 @@ export function AIChatWidget() {
 
       if (!res.ok || !res.body) {
         const errText = await res.text().catch(() => "Sorry, something went wrong.");
-        setMessages((m) => [...m, { role: "assistant", content: errText || "Sorry, I had trouble responding. Please WhatsApp George on +44 7961 585231." }]);
+        setMessages((m) => [...m, { role: "assistant", content: fixPhoneNumbers(errText || `Sorry, I had trouble responding. Please WhatsApp George on ${CORRECT_PHONE_DISPLAY}.`) }]);
         return;
       }
 
@@ -75,7 +92,7 @@ export function AIChatWidget() {
             if (delta) {
               setMessages((m) => {
                 const copy = [...m];
-                copy[copy.length - 1] = { role: "assistant", content: copy[copy.length - 1].content + delta };
+                copy[copy.length - 1] = { role: "assistant", content: fixPhoneNumbers(copy[copy.length - 1].content + delta) };
                 return copy;
               });
             }
@@ -86,7 +103,7 @@ export function AIChatWidget() {
       }
     } catch (e) {
       if ((e as Error).name !== "AbortError") {
-        setMessages((m) => [...m, { role: "assistant", content: "Connection issue. Please try again or WhatsApp George on +44 7961 585231." }]);
+        setMessages((m) => [...m, { role: "assistant", content: `Connection issue. Please try again or WhatsApp George on ${CORRECT_PHONE_DISPLAY}.` }]);
       }
     } finally {
       setLoading(false);
