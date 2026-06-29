@@ -16,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/theory")({
 
 function TheoryPage() {
   const [active, setActive] = useState<string | null>(null);
+  const [mock, setMock] = useState(false);
 
   const { data: progress = [] } = useQuery({
     queryKey: ["theory_progress"],
@@ -29,6 +30,14 @@ function TheoryPage() {
   const totalCorrect = progress.reduce((s, p) => s + p.questions_correct, 0);
   const accuracy = totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
   const completedCount = progress.filter((p) => p.completed_at).length;
+
+  if (mock) {
+    return (
+      <PortalShell eyebrow="DVSA mock test" title="Full mock theory test">
+        <MockExam onExit={() => setMock(false)} />
+      </PortalShell>
+    );
+  }
 
   if (active) {
     return (
@@ -47,6 +56,19 @@ function TheoryPage() {
       </div>
 
       <StudyPack />
+
+      <div className="mt-10 border border-border bg-card p-6 sm:p-8">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Exam simulation</div>
+            <h2 className="mt-2 font-display text-2xl">Full DVSA mock test</h2>
+            <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+              45 questions mixed across all 14 categories. Same 57-minute timer and 86% pass mark as the real DVSA test. Correct answers and explanations are shown the moment you get one wrong.
+            </p>
+          </div>
+          <Button onClick={() => setMock(true)} className="rounded-none" size="lg">Start mock test →</Button>
+        </div>
+      </div>
 
       <h2 className="mt-12 font-display text-2xl">All 14 DVSA categories</h2>
       <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
