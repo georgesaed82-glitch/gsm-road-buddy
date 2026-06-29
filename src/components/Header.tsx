@@ -1,12 +1,17 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Menu, Mail } from "lucide-react";
-import { Lock, LogOut } from "lucide-react";
+import { Menu, Mail, Lock, LogOut, ChevronDown, ChevronUp, BookOpen, Eye, GraduationCap, LayoutDashboard } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
@@ -17,7 +22,13 @@ const navLinks = [
   { to: "/pricing", label: "Pricing" },
   { to: "/reviews", label: "Reviews" },
   { to: "/contact", label: "Contact" },
-  { to: "/auth", label: "Learner portal", locked: true },
+];
+
+const portalLinks = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/theory", label: "Theory practice", icon: BookOpen },
+  { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
+  { to: "/lessons", label: "Lessons & progress", icon: GraduationCap },
 ];
 
 function Monogram() {
@@ -30,8 +41,20 @@ function Monogram() {
   );
 }
 
+function PortalMenuItem({ to, label, icon: Icon, onClick }: { to: string; label: string; icon: typeof BookOpen; onClick?: () => void }) {
+  return (
+    <DropdownMenuItem asChild className="cursor-pointer">
+      <Link to={to} onClick={onClick} className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-muted-foreground" />
+        <span>{label}</span>
+      </Link>
+    </DropdownMenuItem>
+  );
+}
+
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [portalOpen, setPortalOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
@@ -49,6 +72,8 @@ export function Header() {
     setOpen(false);
     navigate({ to: "/", replace: true });
   };
+
+  const isPortalActive = pathname.startsWith("/dashboard") || pathname.startsWith("/theory") || pathname.startsWith("/hazard-perception") || pathname.startsWith("/lessons") || pathname.startsWith("/payments") || pathname.startsWith("/profile");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-md">
@@ -75,12 +100,33 @@ export function Header() {
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {link.locked && <Lock className="h-3.5 w-3.5" aria-hidden="true" />}
                 {link.label}
                 {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
               </Link>
             );
           })}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={cn(
+                  "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors outline-none",
+                  isPortalActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                )}
+                aria-label="Learner portal menu"
+              >
+                <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>Learner portal</span>
+                <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+                {isPortalActive && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[11rem]">
+              {portalLinks.map((link) => (
+                <PortalMenuItem key={link.to} {...link} />
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -147,10 +193,52 @@ export function Header() {
                         pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
                       )}
                     >
-                      {link.locked && <Lock className="h-4 w-4" aria-hidden="true" />}
                       {link.label}
                     </Link>
                   ))}
+
+                  <Collapsible open={portalOpen} onOpenChange={setPortalOpen}>
+                    <CollapsibleTrigger asChild>
+                      <button
+                        className={cn(
+                          "flex w-full items-center justify-between gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors outline-none",
+                          isPortalActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                        )}
+                        aria-label="Learner portal menu"
+                      >
+                        <span className="flex items-center gap-2">
+                          <Lock className="h-4 w-4" aria-hidden="true" />
+                          <span>Learner portal</span>
+                        </span>
+                        {portalOpen ? (
+                          <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                        )}
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="flex flex-col border-b border-border/60 pb-2">
+                        {portalLinks.map((link) => {
+                          const Icon = link.icon;
+                          return (
+                            <Link
+                              key={link.to}
+                              to={link.to}
+                              onClick={() => setOpen(false)}
+                              className={cn(
+                                "flex items-center gap-2 py-2.5 pl-7 text-sm transition-colors",
+                                pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                              )}
+                            >
+                              <Icon className="h-4 w-4" />
+                              <span>{link.label}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </nav>
                 <div className="flex flex-col gap-3 pt-2">
                   {isAuthed ? (
