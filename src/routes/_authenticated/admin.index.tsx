@@ -7,6 +7,8 @@ import {
   listAdminAlertSubscribers,
   subscribeAdminAlert,
   unsubscribeAdminAlert,
+  exportAdminCsv,
+  type AdminCsvDataset,
 } from "@/lib/admin-stats.functions";
 import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
@@ -69,7 +71,21 @@ function AdminOverviewPage() {
   const fetchSubs = useServerFn(listAdminAlertSubscribers);
   const subscribe = useServerFn(subscribeAdminAlert);
   const unsubscribe = useServerFn(unsubscribeAdminAlert);
+  const exportCsv = useServerFn(exportAdminCsv);
   const qc = useQueryClient();
+
+  const [exporting, setExporting] = useState<AdminCsvDataset | null>(null);
+  const downloadDataset = async (dataset: AdminCsvDataset) => {
+    try {
+      setExporting(dataset);
+      const res = await exportCsv({ data: { password: getAdminPassword(), dataset, rangeDays: range } });
+      triggerCsvDownload(res.filename, res.csv);
+    } catch (e) {
+      console.error("CSV export failed", e);
+    } finally {
+      setExporting(null);
+    }
+  };
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-overview-stats", range],
@@ -302,14 +318,8 @@ function AdminOverviewPage() {
           delta={delta(data?.studentsCurrent, data?.studentsPrevious)}
           subtitle={rangeLabel}
           series={data?.registrationsSeries ?? []}
-          onExport={() =>
-            downloadCsv(
-              `learner-registrations.csv`,
-              ["date", "count"],
-              (data?.registrationsSeries ?? []).map((r) => [r.date, String(r.count)]),
-              range,
-            )
-          }
+          onExport={() => downloadDataset("registrations")}
+          exporting={exporting === "registrations"}
         />
         <ChartCard
           title="Theory Users Overview"
@@ -317,14 +327,8 @@ function AdminOverviewPage() {
           delta={delta(data?.theoryLearnersCurrent, data?.theoryLearnersPrevious)}
           subtitle={rangeLabel}
           series={data?.theorySeries ?? []}
-          onExport={() =>
-            downloadCsv(
-              `theory-users.csv`,
-              ["date", "count"],
-              (data?.theorySeries ?? []).map((r) => [r.date, String(r.count)]),
-              range,
-            )
-          }
+          onExport={() => downloadDataset("theory-users")}
+          exporting={exporting === "theory-users"}
         />
       </section>
 
@@ -335,18 +339,11 @@ function AdminOverviewPage() {
             <h3 className="font-display text-lg">Recent Activity</h3>
             <div className="flex items-center gap-3">
               <button
-                onClick={() =>
-                  downloadCsv(
-                    `recent-activity.csv`,
-                    ["timestamp", "type", "label", "detail"],
-                    (data?.recentActivity ?? []).map((a) => [a.at, a.type, a.label, a.sub]),
-                    range,
-                  )
-                }
-                disabled={!data?.recentActivity?.length}
+                onClick={() => downloadDataset("recent-activity")}
+                disabled={exporting === "recent-activity"}
                 className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
               >
-                <Download className="h-3.5 w-3.5" /> CSV
+                <Download className="h-3.5 w-3.5" /> {exporting === "recent-activity" ? "Exporting…" : "CSV"}
               </button>
               <Link to="/admin/contact-clicks" className="text-sm font-medium text-primary hover:underline">
                 View all
@@ -456,40 +453,7 @@ function delta(current?: number, previous?: number): { pct: number; direction: "
 
 type AdminAlert = { id: string; severity: "warning" | "critical"; title: string; detail: string };
 
-function downloadCsv(
-  baseName: string,
-  headers: string[],
-  rows: string[][],
-  rangeDays?: number,
-) {
-  const esc = (v: string) => {
-    const s = v ?? "";
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
-  let from = "";
-  let to = "";
-  let filename = baseName;
-  const preface: string[][] = [];
-  if (rangeDays && Number.isFinite(rangeDays)) {
-    const toDate = new Date();
-    const fromDate = new Date();
-    fromDate.setDate(fromDate.getDate() - (rangeDays - 1));
-    const fmt = (d: Date) => d.toISOString().slice(0, 10);
-    from = fmt(fromDate);
-    to = fmt(toDate);
-    // Inject date range into filename: foo.csv -> foo_2026-06-01_to_2026-06-29.csv
-    const dot = baseName.lastIndexOf(".");
-    filename =
-      dot > 0
-        ? `${baseName.slice(0, dot)}_${from}_to_${to}${baseName.slice(dot)}`
-        : `${baseName}_${from}_to_${to}`;
-    preface.push(["Range", from, to]);
-    preface.push([`Exported ${new Date().toISOString()}`]);
-    preface.push([]);
-  }
-  const csv = [...preface, headers, ...rows]
-    .map((r) => r.map(esc).join(","))
-    .join("\n");
+function triggerCsvDownload(filename: string, csv: string) {
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -612,6 +576,7 @@ function ChartCard({
   delta,
   series,
   onExport,
+  exporting,
 }: {
   title: string;
   subtitle: string;
@@ -619,6 +584,7 @@ function ChartCard({
   delta?: { pct: number; direction: "up" | "down" | "flat" };
   series: { date: string; count: number }[];
   onExport?: () => void;
+  exporting?: boolean;
 }) {
   const fmtDate = (d: string) => {
     const dt = new Date(d);
@@ -656,10 +622,10 @@ function ChartCard({
       {onExport && (
         <button
           onClick={onExport}
-          disabled={!series.length}
+          disabled={!series.length || exporting}
           className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
         >
-          <Download className="h-3 w-3" /> Export CSV
+          <Download className="h-3 w-3" /> {exporting ? "Exporting…" : "Export CSV"}
         </button>
       )}
       <div className="mt-4 h-44 w-full">
