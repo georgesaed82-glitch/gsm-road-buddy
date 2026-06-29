@@ -295,6 +295,28 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
+      <div className="col-span-full border border-border bg-card p-4 sm:p-5">
+        <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-3">
+            <div className={`flex h-10 w-10 items-center justify-center rounded-full border ${lowTime ? "border-destructive bg-destructive/10" : "border-border bg-secondary/50"}`}>
+              <Clock className={`h-5 w-5 ${lowTime ? "text-destructive" : "text-accent"}`} />
+            </div>
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Time remaining</div>
+              <div className={`font-display text-3xl tabular-nums leading-none ${lowTime ? "text-destructive" : "text-foreground"}`}>{mm}:{ss}</div>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+            <span className="rounded-none border border-border px-3 py-1.5">Question {idx + 1} of {pool.length}</span>
+            <span className="rounded-none border border-border px-3 py-1.5">{score.answered} answered</span>
+            <span className="rounded-none border border-border px-3 py-1.5">Pass at 86%</span>
+          </div>
+        </div>
+        <div className="mt-3">
+          <Progress value={score.answered ? (score.correct / score.answered) * 100 : 0} className="h-1.5" />
+        </div>
+      </div>
+
       <div className="border border-border bg-card p-6 sm:p-8">
         {category && category.keyPoints.length > 0 && (
           <div className="mb-6 border border-border bg-secondary/40 p-4">
@@ -369,13 +391,6 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
       <aside className="border border-border bg-card p-5">
         <div className="flex items-center justify-between">
           <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">This session</div>
-        </div>
-        <div className={`mt-3 flex items-center gap-2 border p-3 ${lowTime ? "border-destructive bg-destructive/10" : "border-border bg-secondary/30"}`}>
-          <Clock className={`h-4 w-4 ${lowTime ? "text-destructive" : "text-accent"}`} />
-          <div className="flex-1">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Time remaining</div>
-            <div className={`font-display text-2xl tabular-nums ${lowTime ? "text-destructive" : "text-foreground"}`}>{mm}:{ss}</div>
-          </div>
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">DVSA pace · {SECONDS_PER_Q}s per question.</p>
         <div className="mt-4 grid grid-cols-2 gap-3">
