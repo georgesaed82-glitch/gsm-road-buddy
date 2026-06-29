@@ -93,11 +93,18 @@ export function InstallAppCard() {
                 <Download className="mr-2 h-5 w-5" />
                 {platform.ios ? "Add to Home Screen" : "Install the GSM app"}
               </Button>
-              {canPrompt && !platform.ios && (
+              {platform.ios ? (
+                <div className="max-w-[16rem] text-xs leading-relaxed text-muted-foreground lg:text-right">
+                  <span className="font-medium text-foreground">iPhone / iPad:</span> tap{" "}
+                  <Share className="inline h-3.5 w-3.5 text-accent" />, then{" "}
+                  <Plus className="inline h-3.5 w-3.5 text-accent" />{" "}
+                  <strong className="text-foreground">Add to Home Screen</strong>.
+                </div>
+              ) : canPrompt ? (
                 <p className="text-xs text-muted-foreground lg:text-right">
                   Your browser is ready to install.
                 </p>
-              )}
+              ) : null}
             </div>
           </div>
 
