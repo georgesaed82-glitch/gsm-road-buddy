@@ -178,6 +178,9 @@ function Home() {
         </div>
       </section>
 
+      {/* DOWNLOAD APP */}
+      <InstallAppCard />
+
       {/* POSTCODE STRIP */}
       <section className="border-y border-border bg-card">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-6 sm:px-6 lg:px-8">
