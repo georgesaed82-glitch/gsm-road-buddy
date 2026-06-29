@@ -89,11 +89,11 @@ function TheoryPage() {
 function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }) {
   const queryClient = useQueryClient();
   const category = theoryCategories.find((c) => c.slug === slug);
-  const questions = sampleTheoryQuestions.filter((q) => q.category === slug);
-  const pool = questions.length > 0 ? questions : sampleTheoryQuestions;
+  const pool = sampleTheoryQuestions.filter((q) => q.category === slug);
   const [idx, setIdx] = useState(0);
   const [chosen, setChosen] = useState<number | null>(null);
   const [score, setScore] = useState({ answered: 0, correct: 0 });
+  const [finished, setFinished] = useState(false);
 
   const save = useMutation({
     mutationFn: async (delta: { answered: number; correct: number }) => {
@@ -120,7 +120,38 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
     },
   });
 
-  const q: TheoryQuestion = pool[idx % pool.length];
+  if (pool.length === 0) {
+    return (
+      <div className="border border-border bg-card p-8 text-center">
+        <p className="text-sm text-muted-foreground">No quiz questions for this topic yet.</p>
+        <Button onClick={onExit} className="mt-4 rounded-none" size="sm">← Back to categories</Button>
+      </div>
+    );
+  }
+
+  if (finished) {
+    const pct = score.answered ? Math.round((score.correct / score.answered) * 100) : 0;
+    const passed = pct >= 86;
+    return (
+      <div className="mx-auto max-w-xl border border-border bg-card p-8 text-center">
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Quiz complete</div>
+        <h2 className="mt-2 font-display text-3xl">{category?.title}</h2>
+        <div className={`mt-6 font-display text-6xl ${passed ? "text-success" : "text-foreground"}`}>{pct}%</div>
+        <p className="mt-2 text-sm text-muted-foreground">You got {score.correct} of {score.answered} correct.</p>
+        <p className="mt-1 text-xs text-muted-foreground">{passed ? "Above the DVSA pass mark (86%). Strong work." : "Aim for 86% to match the DVSA pass mark."}</p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Button
+            onClick={() => { setIdx(0); setChosen(null); setScore({ answered: 0, correct: 0 }); setFinished(false); }}
+            className="rounded-none"
+            size="sm"
+          >Retake quiz</Button>
+          <Button onClick={onExit} variant="outline" className="rounded-none" size="sm">Back to categories</Button>
+        </div>
+      </div>
+    );
+  }
+
+  const q: TheoryQuestion = pool[idx];
   const answered = chosen !== null;
   const correct = chosen === q.correctIndex;
 
@@ -132,7 +163,14 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
     save.mutate(delta);
   };
 
-  const next = () => { setChosen(null); setIdx((i) => i + 1); };
+  const next = () => {
+    if (idx + 1 >= pool.length) {
+      setFinished(true);
+    } else {
+      setChosen(null);
+      setIdx((i) => i + 1);
+    }
+  };
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
@@ -150,7 +188,7 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
           </div>
         )}
         <div className="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground">
-          <span>Question {idx + 1}</span>
+          <span>Question {idx + 1} of {pool.length}</span>
           <button onClick={onExit} className="hover:text-foreground">Back to categories →</button>
         </div>
         <h2 className="mt-4 font-display text-2xl leading-snug text-foreground">{q.question}</h2>
@@ -191,7 +229,9 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
               {correct ? "Correct" : "Not quite"}
             </div>
             <p className="mt-1 text-sm text-muted-foreground">{q.explanation}</p>
-            <Button onClick={next} className="mt-4 rounded-none" size="sm">Next question →</Button>
+            <Button onClick={next} className="mt-4 rounded-none" size="sm">
+              {idx + 1 >= pool.length ? "See your score →" : "Next question →"}
+            </Button>
           </div>
         )}
       </div>
