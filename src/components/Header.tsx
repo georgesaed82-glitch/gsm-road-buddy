@@ -112,7 +112,7 @@ export function Header() {
             className="hidden cursor-not-allowed md:inline-flex"
             title="Learner portal coming soon"
           >
-            Learner portal <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">Coming soon</Badge>
+            Learner portal
           </Button>
           {isAuthed ? (
             <Button size="sm" variant="ghost" onClick={handleSignOut} className="hidden md:inline-flex">
@@ -161,7 +161,7 @@ export function Header() {
                 </nav>
                 <div className="flex flex-col gap-3 pt-2">
                   <Button className="w-full" disabled variant="outline" title="Learner portal coming soon">
-                    Learner portal <Badge variant="secondary" className="ml-2 text-[10px] px-1.5 py-0">Coming soon</Badge>
+                    Learner portal
                   </Button>
                   {isAuthed ? (
                     <Button className="w-full" variant="ghost" onClick={handleSignOut}>
