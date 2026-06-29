@@ -42,6 +42,9 @@ function HazardPage() {
         <p className="mt-2 text-sm text-muted-foreground">
           Each clip is a 30–45 second drive recorded around West London. Watch carefully and click the moment you spot a <span className="text-foreground">developing hazard</span>. Score 5 for early, drop to 0 if you miss it. Real DVSA test has 14 clips — practise here to sharpen your timing.
         </p>
+        <p className="mt-3 text-xs text-muted-foreground">
+          New clips are being filmed around Notting Hill, Holland Park and Kensington — they'll appear here as soon as they're uploaded.
+        </p>
       </div>
 
       <h2 className="mt-12 font-display text-2xl">Clip library</h2>
@@ -141,6 +144,16 @@ function ClipPractice({ clip, onExit }: { clip: HazardClip; onExit: () => void }
           onClick={onClickClip}
           className={`relative mt-4 aspect-video w-full overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-primary/70 ${running && clicked === null ? "cursor-crosshair" : ""}`}
         >
+          {clip.videoUrl && running && (
+            <video
+              src={clip.videoUrl}
+              poster={clip.posterUrl}
+              autoPlay
+              muted
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          )}
           {/* Simulated dashcam */}
           <div className="absolute inset-0 flex items-center justify-center">
             {!running && !done && (
@@ -148,10 +161,11 @@ function ClipPractice({ clip, onExit }: { clip: HazardClip; onExit: () => void }
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent">
                   <Play className="h-9 w-9 text-accent-foreground" />
                 </div>
-                <span className="text-sm uppercase tracking-[0.2em] opacity-80">Start clip</span>
+                <span className="text-sm uppercase tracking-[0.2em] opacity-80">{clip.videoUrl ? "Start clip" : "Start clip (preview)"}</span>
+                {!clip.videoUrl && <span className="mt-1 text-[10px] uppercase tracking-[0.2em] opacity-60">Real footage coming soon</span>}
               </button>
             )}
-            {running && (
+            {running && !clip.videoUrl && (
               <div className="text-center text-primary-foreground/80">
                 <Eye className="mx-auto h-10 w-10 text-accent" />
                 <div className="mt-3 text-xs uppercase tracking-[0.22em]">Watch the road</div>
@@ -159,7 +173,7 @@ function ClipPractice({ clip, onExit }: { clip: HazardClip; onExit: () => void }
               </div>
             )}
             {done && (
-              <div className="text-center text-primary-foreground">
+              <div className="relative z-10 rounded bg-primary/80 p-4 text-center text-primary-foreground backdrop-blur-sm">
                 <div className="text-[11px] uppercase tracking-[0.22em] opacity-60">You scored</div>
                 <div className="mt-2 font-display text-7xl">{score}<span className="text-3xl opacity-60">/5</span></div>
                 <div className="mt-2 text-sm opacity-80">Hazard: {clip.developingHazard}</div>
