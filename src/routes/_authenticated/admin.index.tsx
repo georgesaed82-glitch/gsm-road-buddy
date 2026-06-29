@@ -1,26 +1,43 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getAdminOverview } from "@/lib/admin-stats.functions";
 import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { theoryCategories } from "@/data/theory";
+import { formatDistanceToNow } from "date-fns";
 import {
-  BarChart3,
   Users,
-  Eye,
-  CreditCard,
-  GraduationCap,
   CalendarCheck,
+  BookOpen,
+  Star,
+  ShoppingBag,
+  Headphones,
   TrendingUp,
   TrendingDown,
-  LogIn,
+  UserPlus,
+  Calendar as CalIcon,
+  CheckCircle2,
+  PlayCircle,
+  MessageSquare,
+  BarChart3,
+  PoundSterling,
+  Film,
+  ClipboardList,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip as RTooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
-  component: AdminOverview,
+  component: AdminOverviewPage,
 });
 
 type RangeDays = 7 | 30 | 90;
@@ -30,7 +47,13 @@ const RANGE_OPTIONS: { value: RangeDays; label: string }[] = [
   { value: 90, label: "90 days" },
 ];
 
-function AdminOverview() {
+const topicTitle = (slug: string) => {
+  const t = theoryCategories.find((c) => c.slug === slug);
+  if (t) return t.title;
+  return slug.split("-").map((w) => w[0]?.toUpperCase() + w.slice(1)).join(" ");
+};
+
+function AdminOverviewPage() {
   const navigate = useNavigate();
   const [range, setRange] = useState<RangeDays>(30);
   const fetchOverview = useServerFn(getAdminOverview);
@@ -54,13 +77,19 @@ function AdminOverview() {
   }, [error, navigate]);
 
   const fmt = (n: number | undefined) => (n === undefined ? "—" : n.toLocaleString());
-  const rangeLabel = `${range} days`;
-  const prevLabel = `prev ${range}d`;
+  const rangeLabel = useMemo(
+    () => (range === 7 ? "This week" : range === 30 ? "This month" : "Last 90 days"),
+    [range],
+  );
 
   return (
-    <AdminShell eyebrow="Admin" title="Overview">
-      <div className="mb-6 flex flex-wrap items-center gap-2">
-        <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Compare range</span>
+    <AdminShell eyebrow="Admin" title="Welcome back, Admin 👋">
+      <p className="-mt-3 mb-6 text-sm text-muted-foreground">
+        Here's what's happening with GSM Driving School today.
+      </p>
+
+      <div className="mb-8 flex flex-wrap items-center gap-2">
+        <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Compare</span>
         <div className="inline-flex overflow-hidden rounded-md border border-border">
           {RANGE_OPTIONS.map((opt) => (
             <button
@@ -78,149 +107,180 @@ function AdminOverview() {
         </div>
       </div>
 
-      <section>
-        <h2 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Website traffic
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={Eye} label="Total page views" value={fmt(data?.pageViewsTotal)} loading={isLoading} />
-          <StatCard
-            icon={TrendingUp}
-            label={`Views (last ${rangeLabel})`}
-            value={fmt(data?.pageViewsCurrent)}
-            delta={delta(data?.pageViewsCurrent, data?.pageViewsPrevious)}
-            deltaSuffix={prevLabel}
-            loading={isLoading}
-          />
-          <StatCard
-            icon={LogIn}
-            label={`Portal logins (${rangeLabel})`}
-            value={fmt(data?.portalLoginsCurrent)}
-            delta={delta(data?.portalLoginsCurrent, data?.portalLoginsPrevious)}
-            deltaSuffix={prevLabel}
-            loading={isLoading}
-          />
-          <StatCard icon={LogIn} label="Portal logins (all time)" value={fmt(data?.portalLogins)} loading={isLoading} />
-        </div>
-      </section>
+      {/* Top stat cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <BigStat
+          icon={Users}
+          label="Total Learners"
+          value={fmt(data?.students)}
+          delta={delta(data?.studentsCurrent, data?.studentsPrevious)}
+          loading={isLoading}
+        />
+        <BigStat
+          icon={CalendarCheck}
+          label="Lessons Booked"
+          value={fmt(data?.bookingsTotal)}
+          delta={delta(data?.bookingsCurrent, data?.bookingsPrevious)}
+          loading={isLoading}
+        />
+        <BigStat
+          icon={BookOpen}
+          label="Active Theory Users"
+          value={fmt(data?.theoryLearners)}
+          delta={delta(data?.theoryLearnersCurrent, data?.theoryLearnersPrevious)}
+          loading={isLoading}
+        />
+        <BigStat
+          icon={Star}
+          label="Google Reviews"
+          value={fmt(data?.reviewsTotal)}
+          delta={delta(data?.reviewsCurrent, data?.reviewsPrevious)}
+          loading={isLoading}
+        />
+        <BigStat
+          icon={ShoppingBag}
+          label="Paid Packages"
+          value={fmt(data?.paidPayments)}
+          delta={delta(data?.paidPaymentsCurrent, undefined)}
+          loading={isLoading}
+        />
+        <BigStat
+          icon={Headphones}
+          label="Enquiries"
+          value={fmt(data?.contactClicksCurrentTotal)}
+          delta={delta(data?.contactClicksCurrentTotal, data?.contactClicksPreviousTotal)}
+          loading={isLoading}
+        />
+      </div>
 
-      <section className="mt-8">
-        <h2 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Payments
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={CreditCard} label="Total payment records" value={fmt(data?.payments)} loading={isLoading} />
-          <StatCard icon={CreditCard} label="Paid (all time)" value={fmt(data?.paidPayments)} loading={isLoading} />
-          <StatCard
-            icon={CreditCard}
-            label={`Paid (${rangeLabel})`}
-            value={fmt(data?.paidPaymentsCurrent)}
-            loading={isLoading}
-          />
-          <StatCard
-            icon={CreditCard}
-            label={`Revenue (${rangeLabel})`}
-            value={data ? `£${data.paidPoundsCurrent.toFixed(2)}` : "—"}
-            loading={isLoading}
-          />
-        </div>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Revenue all time: {data ? `£${data.paidPounds.toFixed(2)}` : "—"}
-        </p>
-      </section>
+      {/* Revenue + Traffic strip */}
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <MiniStat icon={PoundSterling} label={`Revenue (${rangeLabel.toLowerCase()})`} value={data ? `£${data.paidPoundsCurrent.toFixed(2)}` : "—"} loading={isLoading} />
+        <MiniStat icon={PoundSterling} label="Revenue (all time)" value={data ? `£${data.paidPounds.toFixed(2)}` : "—"} loading={isLoading} />
+        <MiniStat icon={BarChart3} label="Page views" value={fmt(data?.pageViewsCurrent)} loading={isLoading} />
+        <MiniStat icon={CalIcon} label="Upcoming lessons" value={fmt(data?.bookingsUpcoming)} loading={isLoading} />
+      </div>
 
-      <section className="mt-8">
-        <h2 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Driving lessons
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={CalendarCheck} label="Bookings (all time)" value={fmt(data?.bookingsTotal)} loading={isLoading} />
-          <StatCard
-            icon={CalendarCheck}
-            label={`New bookings (${rangeLabel})`}
-            value={fmt(data?.bookingsCurrent)}
-            delta={delta(data?.bookingsCurrent, data?.bookingsPrevious)}
-            deltaSuffix={prevLabel}
-            loading={isLoading}
-          />
-          <StatCard icon={CalendarCheck} label="Upcoming" value={fmt(data?.bookingsUpcoming)} loading={isLoading} />
-          <StatCard icon={GraduationCap} label="Completed" value={fmt(data?.bookingsCompleted)} loading={isLoading} />
-        </div>
-      </section>
-
-      <section className="mt-8">
-        <h2 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Theory progress
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={Users} label="Active learners" value={fmt(data?.theoryLearners)} loading={isLoading} />
-          <StatCard icon={GraduationCap} label="Questions answered" value={fmt(data?.totalAnswered)} loading={isLoading} />
-          <StatCard
-            icon={TrendingUp}
-            label="Average accuracy"
-            value={data ? `${data.theoryAccuracy}%` : "—"}
-            loading={isLoading}
-          />
-          <StatCard icon={GraduationCap} label="Topics passed (≥86%)" value={fmt(data?.topicsPassed)} loading={isLoading} />
-        </div>
-      </section>
-
+      {/* Trend charts */}
       <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <h3 className="font-display text-lg">Top pages (recent)</h3>
-            <p className="text-xs text-muted-foreground">From the last 500 page views</p>
-          </CardHeader>
-          <CardContent>
-            {data?.topPathsSorted.length ? (
-              <ul className="space-y-2 text-sm">
-                {data.topPathsSorted.map(([path, count]) => (
-                  <li key={path} className="flex items-center justify-between gap-3">
-                    <span className="truncate text-muted-foreground">{path}</span>
-                    <span className="font-medium tabular-nums">{count}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">No page views yet.</p>
-            )}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <h3 className="font-display text-lg">Contact clicks (last {rangeLabel})</h3>
-            <p className="text-xs text-muted-foreground">
-              WhatsApp, email, phone & portal opens · {fmt(data?.contactClicksCurrentTotal)} this period
-              {data && data.contactClicksPreviousTotal !== undefined && (
-                <> · {fmt(data.contactClicksPreviousTotal)} prev {range}d</>
-              )}
-            </p>
-          </CardHeader>
-          <CardContent>
-            {data && Object.keys(data.clicksByChannel).length ? (
-              <ul className="space-y-2 text-sm">
-                {Object.entries(data.clicksByChannel).map(([ch, n]) => (
-                  <li key={ch} className="flex items-center justify-between gap-3">
-                    <span className="capitalize text-muted-foreground">{ch.replace("_", " ")}</span>
-                    <span className="font-medium tabular-nums">{n}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">No clicks in the last {rangeLabel}.</p>
-            )}
-            <Link
-              to="/admin/contact-clicks"
-              className="mt-4 inline-flex items-center gap-2 text-sm text-primary underline-offset-4 hover:underline"
-            >
-              <BarChart3 className="h-4 w-4" /> Full click breakdown
+        <ChartCard
+          title="Learner Registrations"
+          total={data?.studentsCurrent ?? 0}
+          delta={delta(data?.studentsCurrent, data?.studentsPrevious)}
+          subtitle={rangeLabel}
+          series={data?.registrationsSeries ?? []}
+        />
+        <ChartCard
+          title="Theory Users Overview"
+          total={data?.theoryLearnersCurrent ?? 0}
+          delta={delta(data?.theoryLearnersCurrent, data?.theoryLearnersPrevious)}
+          subtitle={rangeLabel}
+          series={data?.theorySeries ?? []}
+        />
+      </section>
+
+      {/* Recent activity */}
+      <section className="mt-8 grid gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-3 border border-border bg-card">
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
+            <h3 className="font-display text-lg">Recent Activity</h3>
+            <Link to="/admin/contact-clicks" className="text-sm font-medium text-primary hover:underline">
+              View all
             </Link>
-          </CardContent>
-        </Card>
+          </div>
+          <ul className="divide-y divide-border">
+            {(data?.recentActivity ?? []).map((a, i) => (
+              <li key={i} className="flex items-center gap-3 px-5 py-3">
+                <ActivityIcon type={a.type} />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium text-foreground">{a.label}</div>
+                  <div className="truncate text-xs capitalize text-muted-foreground">{a.sub}</div>
+                </div>
+                <div className="shrink-0 text-xs text-muted-foreground">
+                  {a.at ? formatDistanceToNow(new Date(a.at), { addSuffix: true }) : ""}
+                </div>
+              </li>
+            ))}
+            {!isLoading && (data?.recentActivity ?? []).length === 0 && (
+              <li className="px-5 py-6 text-sm text-muted-foreground">No activity yet.</li>
+            )}
+          </ul>
+        </div>
+
+        {/* System overview */}
+        <div className="lg:col-span-2 border border-border bg-card">
+          <div className="border-b border-border px-5 py-4">
+            <h3 className="font-display text-lg">System Overview</h3>
+          </div>
+          <ul className="divide-y divide-border text-sm">
+            <StatusRow label="Website Status" status="Online" />
+            <StatusRow label="Payments" status="All Good" />
+            <StatusRow label="Email Notifications" status="Active" />
+            <StatusRow label="Server Status" status="Healthy" />
+            <StatusRow label="Hazard Videos" status="Live" />
+          </ul>
+        </div>
+      </section>
+
+      {/* Mock test performance */}
+      <section className="mt-8 border border-border bg-card">
+        <div className="border-b border-border px-5 py-4">
+          <h3 className="font-display text-lg">Mock Test Performance</h3>
+          <p className="text-xs text-muted-foreground">
+            Average correct answers by topic — lowest first, so you can spot where learners struggle.
+          </p>
+        </div>
+        <div className="space-y-4 px-5 py-5">
+          {(data?.topicPerformance ?? []).slice(0, 8).map((t) => (
+            <div key={t.slug}>
+              <div className="flex items-baseline justify-between text-sm">
+                <span className="font-medium text-foreground">{topicTitle(t.slug)}</span>
+                <span
+                  className={`font-display text-base ${
+                    t.accuracy < 60 ? "text-destructive" : t.accuracy < 80 ? "text-amber-600" : "text-emerald-600"
+                  }`}
+                >
+                  {t.accuracy}%
+                </span>
+              </div>
+              <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className={`h-full rounded-full ${
+                    t.accuracy < 60 ? "bg-destructive" : t.accuracy < 80 ? "bg-amber-500" : "bg-emerald-500"
+                  }`}
+                  style={{ width: `${Math.max(2, Math.min(100, t.accuracy))}%` }}
+                />
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">{t.answers.toLocaleString()} answers</div>
+            </div>
+          ))}
+          {!isLoading && (data?.topicPerformance ?? []).length === 0 && (
+            <p className="text-sm text-muted-foreground">
+              No mock test data yet — performance will appear here as learners complete quizzes.
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* Quick actions */}
+      <section className="mt-8 border border-border bg-card">
+        <div className="border-b border-border px-5 py-4">
+          <h3 className="font-display text-lg">Quick Actions</h3>
+        </div>
+        <div className="grid grid-cols-2 gap-3 p-5 sm:grid-cols-3">
+          <QuickAction icon={Film} label="Hazard videos" to="/admin/hazard-videos" />
+          <QuickAction icon={BarChart3} label="Contact clicks" to="/admin/contact-clicks" />
+          <QuickAction icon={MessageSquare} label="Email settings" to="/admin/email" />
+          <QuickAction icon={Users} label="Admin accounts" to="/admin/admins" />
+          <QuickAction icon={ClipboardList} label="Learner portal" to="/dashboard" />
+          <QuickAction icon={Star} label="Reviews page" to="/reviews" />
+        </div>
       </section>
     </AdminShell>
   );
 }
+
+/* ---------------- helpers ---------------- */
 
 function delta(current?: number, previous?: number): { pct: number; direction: "up" | "down" | "flat" } | undefined {
   if (current === undefined || previous === undefined) return undefined;
@@ -229,46 +289,183 @@ function delta(current?: number, previous?: number): { pct: number; direction: "
   return { pct: Math.abs(pct), direction: pct > 0 ? "up" : pct < 0 ? "down" : "flat" };
 }
 
-function StatCard({
+function BigStat({
+  icon: Icon,
   label,
   value,
-  icon: Icon,
-  loading,
   delta,
-  deltaSuffix,
+  loading,
 }: {
+  icon: LucideIcon;
   label: string;
-  value: number | string;
-  icon?: LucideIcon;
-  loading?: boolean;
+  value: string;
   delta?: { pct: number; direction: "up" | "down" | "flat" };
-  deltaSuffix?: string;
+  loading?: boolean;
 }) {
   return (
-    <Card>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground">
-          <span>{label}</span>
-          {Icon ? <Icon className="h-4 w-4" /> : null}
+    <div className="border border-border bg-card p-5">
+      <div className="flex items-start gap-4">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <Icon className="h-5 w-5" />
         </div>
-        <div className="mt-2 font-display text-3xl">{loading ? "…" : value}</div>
-        {delta && !loading && (
-          <div
-            className={`mt-2 inline-flex items-center gap-1 text-xs font-medium ${
-              delta.direction === "up"
-                ? "text-success"
-                : delta.direction === "down"
-                ? "text-destructive"
-                : "text-muted-foreground"
-            }`}
-          >
-            {delta.direction === "up" && <TrendingUp className="h-3 w-3" />}
-            {delta.direction === "down" && <TrendingDown className="h-3 w-3" />}
-            {delta.direction === "flat" ? "No change" : `${delta.pct}%`}
-            {deltaSuffix && <span className="text-muted-foreground">vs {deltaSuffix}</span>}
+        <div className="min-w-0 flex-1">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
+          <div className="mt-1 font-display text-3xl font-medium leading-none text-foreground">
+            {loading ? "…" : value}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+      {delta && !loading && (
+        <div
+          className={`mt-3 inline-flex items-center gap-1 text-xs font-medium ${
+            delta.direction === "up"
+              ? "text-emerald-600"
+              : delta.direction === "down"
+              ? "text-destructive"
+              : "text-muted-foreground"
+          }`}
+        >
+          {delta.direction === "up" && <TrendingUp className="h-3 w-3" />}
+          {delta.direction === "down" && <TrendingDown className="h-3 w-3" />}
+          {delta.direction === "flat" ? "No change" : `${delta.pct}%`}
+          <span className="text-muted-foreground">from last period</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MiniStat({ icon: Icon, label, value, loading }: { icon: LucideIcon; label: string; value: string; loading?: boolean }) {
+  return (
+    <div className="border border-border bg-card p-4">
+      <div className="flex items-center gap-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <Icon className="h-4 w-4" />
+        </div>
+        <div className="min-w-0">
+          <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+          <div className="font-display text-xl text-foreground">{loading ? "…" : value}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ChartCard({
+  title,
+  subtitle,
+  total,
+  delta,
+  series,
+}: {
+  title: string;
+  subtitle: string;
+  total: number;
+  delta?: { pct: number; direction: "up" | "down" | "flat" };
+  series: { date: string; count: number }[];
+}) {
+  const fmtDate = (d: string) => {
+    const dt = new Date(d);
+    return dt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  };
+  return (
+    <div className="border border-border bg-card p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-display text-lg">{title}</h3>
+          <div className="mt-1 flex items-baseline gap-2">
+            <span className="text-xs text-muted-foreground">Total</span>
+            <span className="font-display text-2xl text-foreground">{total.toLocaleString()}</span>
+            {delta && (
+              <span
+                className={`inline-flex items-center gap-0.5 text-xs font-medium ${
+                  delta.direction === "up"
+                    ? "text-emerald-600"
+                    : delta.direction === "down"
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {delta.direction === "up" && <TrendingUp className="h-3 w-3" />}
+                {delta.direction === "down" && <TrendingDown className="h-3 w-3" />}
+                {delta.direction === "flat" ? "—" : `${delta.pct}%`}
+              </span>
+            )}
+          </div>
+        </div>
+        <span className="rounded-md border border-border px-2 py-1 text-[11px] uppercase tracking-wider text-muted-foreground">
+          {subtitle}
+        </span>
+      </div>
+      <div className="mt-4 h-44 w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={series} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id={`grad-${title}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="date"
+              tickFormatter={fmtDate}
+              tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+              axisLine={false}
+              tickLine={false}
+              minTickGap={28}
+            />
+            <YAxis hide />
+            <RTooltip
+              contentStyle={{ fontSize: 12, borderRadius: 0 }}
+              labelFormatter={(v: string) => fmtDate(v)}
+              formatter={(value: number) => [value, "Count"]}
+            />
+            <Area type="monotone" dataKey="count" stroke="hsl(var(--primary))" strokeWidth={2} fill={`url(#grad-${title})`} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">Hover any point to see that day's count.</p>
+    </div>
+  );
+}
+
+function ActivityIcon({ type }: { type: string }) {
+  const map: Record<string, LucideIcon> = {
+    learner: UserPlus,
+    booking: CalIcon,
+    mock: CheckCircle2,
+    review: Star,
+    click: MessageSquare,
+    hazard: PlayCircle,
+  };
+  const Icon = map[type] || UserPlus;
+  return (
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+      <Icon className="h-4 w-4" />
+    </div>
+  );
+}
+
+function StatusRow({ label, status }: { label: string; status: string }) {
+  return (
+    <li className="flex items-center justify-between px-5 py-4">
+      <span className="text-foreground">{label}</span>
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
+        <CheckCircle2 className="h-3 w-3" />
+        {status}
+      </span>
+    </li>
+  );
+}
+
+function QuickAction({ icon: Icon, label, to }: { icon: LucideIcon; label: string; to: string }) {
+  return (
+    <Link
+      to={to}
+      className="group flex flex-col items-center justify-center gap-2 rounded-md bg-foreground px-3 py-5 text-center text-background transition-transform hover:-translate-y-0.5"
+    >
+      <Icon className="h-5 w-5 text-primary" />
+      <span className="text-xs font-medium">{label}</span>
+    </Link>
   );
 }
