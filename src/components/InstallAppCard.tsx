@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { Download, Smartphone, Share, Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { triggerPwaInstallPrompt } from "@/components/PWAInstallTracker";
+
+const APP_URL = "https://www.gsmdrivingschool.com";
 
 function detectPlatform() {
   if (typeof navigator === "undefined") return { ios: false, android: false, standalone: false };
