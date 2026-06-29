@@ -42,9 +42,11 @@ function AuthPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    if (password.trim() === "7777") {
+    const pw = password.trim();
+    if (pw === "7777") {
       window.sessionStorage.setItem("portal_unlocked", "1");
       window.sessionStorage.setItem("admin_unlocked", "1");
+      window.sessionStorage.setItem("admin_password", pw);
       toast.success(isAdmin ? "Admin access granted." : "Access granted. Welcome to the learner portal.");
       navigate({ to: isAdmin ? "/admin" : "/dashboard" });
       return;

@@ -22,6 +22,7 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
     queryClient.clear();
     if (typeof window !== "undefined") {
       window.sessionStorage.removeItem("admin_unlocked");
+      window.sessionStorage.removeItem("admin_password");
     }
     navigate({ to: "/", replace: true });
   };
