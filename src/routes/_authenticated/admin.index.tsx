@@ -318,14 +318,8 @@ function AdminOverviewPage() {
           delta={delta(data?.studentsCurrent, data?.studentsPrevious)}
           subtitle={rangeLabel}
           series={data?.registrationsSeries ?? []}
-          onExport={() =>
-            downloadCsv(
-              `learner-registrations.csv`,
-              ["date", "count"],
-              (data?.registrationsSeries ?? []).map((r) => [r.date, String(r.count)]),
-              range,
-            )
-          }
+          onExport={() => downloadDataset("registrations")}
+          exporting={exporting === "registrations"}
         />
         <ChartCard
           title="Theory Users Overview"
@@ -333,14 +327,8 @@ function AdminOverviewPage() {
           delta={delta(data?.theoryLearnersCurrent, data?.theoryLearnersPrevious)}
           subtitle={rangeLabel}
           series={data?.theorySeries ?? []}
-          onExport={() =>
-            downloadCsv(
-              `theory-users.csv`,
-              ["date", "count"],
-              (data?.theorySeries ?? []).map((r) => [r.date, String(r.count)]),
-              range,
-            )
-          }
+          onExport={() => downloadDataset("theory-users")}
+          exporting={exporting === "theory-users"}
         />
       </section>
 
@@ -351,18 +339,11 @@ function AdminOverviewPage() {
             <h3 className="font-display text-lg">Recent Activity</h3>
             <div className="flex items-center gap-3">
               <button
-                onClick={() =>
-                  downloadCsv(
-                    `recent-activity.csv`,
-                    ["timestamp", "type", "label", "detail"],
-                    (data?.recentActivity ?? []).map((a) => [a.at, a.type, a.label, a.sub]),
-                    range,
-                  )
-                }
-                disabled={!data?.recentActivity?.length}
+                onClick={() => downloadDataset("recent-activity")}
+                disabled={exporting === "recent-activity"}
                 className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
               >
-                <Download className="h-3.5 w-3.5" /> CSV
+                <Download className="h-3.5 w-3.5" /> {exporting === "recent-activity" ? "Exporting…" : "CSV"}
               </button>
               <Link to="/admin/contact-clicks" className="text-sm font-medium text-primary hover:underline">
                 View all
