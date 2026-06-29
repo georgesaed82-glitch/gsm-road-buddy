@@ -406,6 +406,223 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
   );
 }
 
+const MOCK_TOTAL = 45;
+const MOCK_SECONDS = 57 * 60;
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function MockExam({ onExit }: { onExit: () => void }) {
+  const [pool, setPool] = useState<TheoryQuestion[]>(() =>
+    shuffle(sampleTheoryQuestions).slice(0, Math.min(MOCK_TOTAL, sampleTheoryQuestions.length)),
+  );
+  const [idx, setIdx] = useState(0);
+  const [chosen, setChosen] = useState<number | null>(null);
+  const [answers, setAnswers] = useState<(number | null)[]>(() => Array(pool.length).fill(null));
+  const [finished, setFinished] = useState(false);
+  const [deadline] = useState(() => Date.now() + MOCK_SECONDS * 1000);
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    if (finished) return;
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, [finished]);
+
+  const secondsLeft = Math.max(0, Math.round((deadline - now) / 1000));
+  useEffect(() => {
+    if (secondsLeft === 0 && !finished) setFinished(true);
+  }, [secondsLeft, finished]);
+
+  const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+  const ss = String(secondsLeft % 60).padStart(2, "0");
+  const lowTime = secondsLeft <= 60;
+
+  const q = pool[idx];
+  const answered = chosen !== null;
+  const correct = chosen === q?.correctIndex;
+
+  const onChoose = (i: number) => {
+    if (answered) return;
+    setChosen(i);
+    setAnswers((a) => {
+      const next = a.slice();
+      next[idx] = i;
+      return next;
+    });
+  };
+
+  const next = () => {
+    if (idx + 1 >= pool.length) {
+      setFinished(true);
+    } else {
+      setChosen(answers[idx + 1] ?? null);
+      setIdx((i) => i + 1);
+    }
+  };
+
+  const prev = () => {
+    if (idx === 0) return;
+    setChosen(answers[idx - 1] ?? null);
+    setIdx((i) => i - 1);
+  };
+
+  if (finished) {
+    const correctCount = answers.reduce(
+      (s, a, i) => s + (a !== null && a === pool[i].correctIndex ? 1 : 0),
+      0,
+    );
+    const pct = pool.length ? Math.round((correctCount / pool.length) * 100) : 0;
+    const passed = pct >= 86;
+    const restart = () => {
+      const fresh = shuffle(sampleTheoryQuestions).slice(0, Math.min(MOCK_TOTAL, sampleTheoryQuestions.length));
+      setPool(fresh);
+      setAnswers(Array(fresh.length).fill(null));
+      setIdx(0);
+      setChosen(null);
+      setFinished(false);
+      // deadline is locked via useState init — force remount instead:
+      onExit();
+    };
+    return (
+      <div className="mx-auto max-w-2xl border border-border bg-card p-8">
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">Mock test complete</div>
+        <div className={`mt-4 text-center font-display text-6xl ${passed ? "text-success" : "text-foreground"}`}>{pct}%</div>
+        <p className="mt-2 text-center text-sm text-muted-foreground">
+          You got {correctCount} of {pool.length} correct. {passed ? "Above the DVSA pass mark of 86%." : "Aim for 86% (≥39/45) to match the DVSA pass mark."}
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Button onClick={restart} className="rounded-none" size="sm">Take another mock →</Button>
+          <Button onClick={onExit} variant="outline" className="rounded-none" size="sm">Back to theory</Button>
+        </div>
+        <div className="mt-8 border-t border-border pt-6">
+          <h3 className="font-display text-lg">Review every question</h3>
+          <ul className="mt-4 space-y-4">
+            {pool.map((qq, i) => {
+              const a = answers[i];
+              const isCorrect = a !== null && a === qq.correctIndex;
+              const unanswered = a === null;
+              return (
+                <li key={i} className="border border-border p-4">
+                  <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <span>Q{i + 1}</span>
+                    <span className={isCorrect ? "text-success" : "text-destructive"}>
+                      {unanswered ? "Unanswered" : isCorrect ? "Correct" : "Wrong"}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-foreground">{qq.question}</p>
+                  <p className="mt-2 text-xs text-success">
+                    Correct answer: {String.fromCharCode(65 + qq.correctIndex)}. {qq.options[qq.correctIndex]}
+                  </p>
+                  {!isCorrect && !unanswered && a !== null && (
+                    <p className="mt-1 text-xs text-destructive">
+                      Your answer: {String.fromCharCode(65 + a)}. {qq.options[a]}
+                    </p>
+                  )}
+                  <p className="mt-2 text-xs text-muted-foreground">{qq.explanation}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+  if (!q) return null;
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
+      <div className="border border-border bg-card p-6 sm:p-8">
+        <div className="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground">
+          <span>Question {idx + 1} of {pool.length}</span>
+          <button onClick={onExit} className="hover:text-foreground">Exit mock →</button>
+        </div>
+        <h2 className="mt-4 font-display text-2xl leading-snug text-foreground">{q.question}</h2>
+        <ul className="mt-6 space-y-3">
+          {q.options.map((opt, i) => {
+            const isChosen = chosen === i;
+            const isCorrect = q.correctIndex === i;
+            const state = !answered ? (isChosen ? "selected" : "default") : isCorrect ? "correct" : isChosen ? "wrong" : "default";
+            return (
+              <li key={i}>
+                <button
+                  onClick={() => onChoose(i)}
+                  disabled={answered}
+                  className={`flex w-full items-start gap-3 border p-4 text-left transition-colors ${
+                    state === "correct" ? "border-success bg-success/10" :
+                    state === "wrong" ? "border-destructive bg-destructive/10" :
+                    state === "selected" ? "border-primary" :
+                    "border-border hover:border-primary"
+                  } ${answered ? "cursor-default" : ""}`}
+                >
+                  <span className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-medium ${
+                    state === "correct" ? "border-success bg-success text-success-foreground" :
+                    state === "wrong" ? "border-destructive bg-destructive text-destructive-foreground" :
+                    "border-border"
+                  }`}>
+                    {state === "correct" ? <CheckCircle2 className="h-3.5 w-3.5" /> :
+                     state === "wrong" ? <XCircle className="h-3.5 w-3.5" /> :
+                     String.fromCharCode(65 + i)}
+                  </span>
+                  <span className="text-sm leading-relaxed">{opt}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        {answered && (
+          <div className="mt-6 border-l-4 border-accent bg-accent/5 p-4">
+            <div className={`text-sm font-medium ${correct ? "text-success" : "text-destructive"}`}>
+              {correct ? "Correct" : `Not quite — the correct answer is ${String.fromCharCode(65 + q.correctIndex)}. ${q.options[q.correctIndex]}`}
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">{q.explanation}</p>
+          </div>
+        )}
+        <div className="mt-6 flex items-center justify-between gap-3">
+          <Button onClick={prev} disabled={idx === 0} variant="outline" className="rounded-none" size="sm">← Previous</Button>
+          <div className="flex items-center gap-3">
+            {!answered && (
+              <button onClick={() => { setAnswers((a) => { const n = a.slice(); n[idx] = null; return n; }); next(); }} className="text-sm text-muted-foreground hover:text-foreground">
+                Skip
+              </button>
+            )}
+            <Button onClick={next} className="rounded-none" size="sm">
+              {idx + 1 >= pool.length ? "Finish & see score →" : "Next →"}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <aside className="border border-border bg-card p-5">
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">DVSA mock</div>
+        <div className={`mt-3 flex items-center gap-2 border p-3 ${lowTime ? "border-destructive bg-destructive/10" : "border-border bg-secondary/30"}`}>
+          <Clock className={`h-4 w-4 ${lowTime ? "text-destructive" : "text-accent"}`} />
+          <div className="flex-1">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Time remaining</div>
+            <div className={`font-display text-2xl tabular-nums ${lowTime ? "text-destructive" : "text-foreground"}`}>{mm}:{ss}</div>
+          </div>
+        </div>
+        <p className="mt-2 text-[11px] text-muted-foreground">57 minutes for {pool.length} questions · pass at 86%.</p>
+        <div className="mt-4">
+          <div className="text-xs text-muted-foreground">Answered</div>
+          <div className="font-display text-2xl">{answers.filter((a) => a !== null).length} / {pool.length}</div>
+        </div>
+        <Progress value={(answers.filter((a) => a !== null).length / pool.length) * 100} className="mt-3 h-1.5" />
+        <Button onClick={() => setFinished(true)} variant="outline" className="mt-5 w-full rounded-none" size="sm">
+          Finish test now
+        </Button>
+      </aside>
+    </div>
+  );
+}
+
 function StudyPack() {
   const facts = [
     { icon: Target, label: "Pass mark", value: "43 / 50 (86%)" },
