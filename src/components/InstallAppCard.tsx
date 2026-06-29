@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { Download, Smartphone, Share, Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { triggerPwaInstallPrompt } from "@/components/PWAInstallTracker";
+
+const APP_URL = "https://www.gsmdrivingschool.com";
 
 function detectPlatform() {
   if (typeof navigator === "undefined") return { ios: false, android: false, standalone: false };
@@ -84,27 +87,43 @@ export function InstallAppCard() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 lg:items-end">
-              <Button
-                size="lg"
-                onClick={handleInstall}
-                className="h-14 rounded-none bg-accent px-8 text-sm uppercase tracking-[0.22em] text-accent-foreground hover:bg-accent/90"
-              >
-                <Download className="mr-2 h-5 w-5" />
-                {platform.ios ? "Add to Home Screen" : "Install the GSM app"}
-              </Button>
-              {platform.ios ? (
-                <div className="max-w-[16rem] text-xs leading-relaxed text-muted-foreground lg:text-right">
-                  <span className="font-medium text-foreground">iPhone / iPad:</span> tap{" "}
-                  <Share className="inline h-3.5 w-3.5 text-accent" />, then{" "}
-                  <Plus className="inline h-3.5 w-3.5 text-accent" />{" "}
-                  <strong className="text-foreground">Add to Home Screen</strong>.
-                </div>
-              ) : canPrompt ? (
-                <p className="text-xs text-muted-foreground lg:text-right">
-                  Your browser is ready to install.
-                </p>
-              ) : null}
+            <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-end">
+              <div className="flex flex-col items-center gap-2">
+                <QRCodeSVG
+                  value={APP_URL}
+                  size={120}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="M"
+                  aria-label="QR code to install the GSM Driving School app"
+                />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  Scan to install
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-3 lg:items-end">
+                <Button
+                  size="lg"
+                  onClick={handleInstall}
+                  className="h-14 rounded-none bg-accent px-8 text-sm uppercase tracking-[0.22em] text-accent-foreground hover:bg-accent/90"
+                >
+                  <Download className="mr-2 h-5 w-5" />
+                  {platform.ios ? "Add to Home Screen" : "Install the GSM app"}
+                </Button>
+                {platform.ios ? (
+                  <div className="max-w-[16rem] text-xs leading-relaxed text-muted-foreground lg:text-right">
+                    <span className="font-medium text-foreground">iPhone / iPad:</span> tap{" "}
+                    <Share className="inline h-3.5 w-3.5 text-accent" />, then{" "}
+                    <Plus className="inline h-3.5 w-3.5 text-accent" />{" "}
+                    <strong className="text-foreground">Add to Home Screen</strong>.
+                  </div>
+                ) : canPrompt ? (
+                  <p className="text-xs text-muted-foreground lg:text-right">
+                    Your browser is ready to install.
+                  </p>
+                ) : null}
+              </div>
             </div>
           </div>
 
