@@ -330,3 +330,140 @@ export const unsubscribeAdminAlert = createServerFn({ method: "POST" })
     if (error) throw new Response(error.message, { status: 500 });
     return { ok: true };
   });
+
+export type AdminCsvDataset =
+  | "registrations"
+  | "theory-users"
+  | "recent-activity"
+  | "contact-clicks";
+
+export type AdminCsvResult = { filename: string; csv: string; rangeFrom: string; rangeTo: string };
+
+function csvEscape(v: unknown): string {
+  const s = v == null ? "" : String(v);
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function toCsv(rows: (string | number | null | undefined)[][]): string {
+  return rows.map((r) => r.map(csvEscape).join(",")).join("\r\n");
+}
+
+function ymd(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+
+export const exportAdminCsv = createServerFn({ method: "POST" })
+  .inputValidator((d: { password: string; dataset: AdminCsvDataset; rangeDays: number }) => d)
+  .handler(async ({ data }): Promise<AdminCsvResult> => {
+    const supabase = await adminClient(data.password);
+    const range = [7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 30;
+    const toDate = new Date();
+    const fromDate = new Date();
+    fromDate.setDate(toDate.getDate() - (range - 1));
+    const sinceIso = new Date(toDate.getTime() - range * 24 * 60 * 60 * 1000).toISOString();
+    const from = ymd(fromDate);
+    const to = ymd(toDate);
+
+    const header: (string | number)[][] = [
+      ["Dataset", data.dataset],
+      ["Range (days)", range],
+      ["From", from],
+      ["To", to],
+      ["Exported (UTC)", new Date().toISOString()],
+      [],
+    ];
+
+    let columns: string[] = [];
+    let rows: (string | number | null | undefined)[][] = [];
+
+    if (data.dataset === "registrations") {
+      const { data: profiles, error } = await supabase
+        .from("profiles")
+        .select("id,full_name,created_at")
+        .gte("created_at", sinceIso)
+        .order("created_at", { ascending: false });
+      if (error) throw new Response(error.message, { status: 500 });
+      const byDay: Record<string, number> = {};
+      for (let i = range - 1; i >= 0; i--) {
+        const d = new Date(toDate);
+        d.setDate(toDate.getDate() - i);
+        byDay[ymd(d)] = 0;
+      }
+      for (const p of profiles ?? []) {
+        const k = (p as any).created_at?.slice(0, 10);
+        if (k && k in byDay) byDay[k] += 1;
+      }
+      columns = ["date", "registrations"];
+      rows = Object.entries(byDay).map(([d, c]) => [d, c]);
+    } else if (data.dataset === "theory-users") {
+      const { data: theory, error } = await supabase
+        .from("theory_progress")
+        .select("user_id,created_at")
+        .gte("created_at", sinceIso);
+      if (error) throw new Response(error.message, { status: 500 });
+      const byDay: Record<string, Set<string>> = {};
+      for (let i = range - 1; i >= 0; i--) {
+        const d = new Date(toDate);
+        d.setDate(toDate.getDate() - i);
+        byDay[ymd(d)] = new Set();
+      }
+      for (const r of theory ?? []) {
+        const k = (r as any).created_at?.slice(0, 10);
+        if (k && k in byDay) byDay[k].add((r as any).user_id);
+      }
+      columns = ["date", "unique_learners"];
+      rows = Object.entries(byDay).map(([d, set]) => [d, set.size]);
+    } else if (data.dataset === "recent-activity") {
+      const [profilesRecent, bookingsRecent, theoryRecent, clicksRecent] = await Promise.all([
+        supabase.from("profiles").select("full_name,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }),
+        supabase.from("lesson_bookings").select("duration_minutes,pickup_location,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }),
+        supabase.from("theory_progress").select("category_slug,last_score_pct,completed_at,updated_at").gte("updated_at", sinceIso).order("updated_at", { ascending: false }),
+        supabase.from("contact_clicks").select("channel,package,page,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }),
+      ]);
+      type Row = { at: string; type: string; label: string; detail: string };
+      const out: Row[] = [];
+      for (const p of (profilesRecent.data ?? []) as any[]) {
+        out.push({ at: p.created_at, type: "learner", label: "New learner registered", detail: p.full_name || "" });
+      }
+      for (const b of (bookingsRecent.data ?? []) as any[]) {
+        const hours = Math.round((b.duration_minutes ?? 60) / 60);
+        out.push({ at: b.created_at, type: "booking", label: `Lesson booked (${hours}h)`, detail: b.pickup_location || "" });
+      }
+      for (const t of (theoryRecent.data ?? []) as any[]) {
+        if (!t.completed_at && (t.last_score_pct ?? 0) === 0) continue;
+        out.push({
+          at: t.updated_at,
+          type: "mock",
+          label: t.completed_at ? "Mock test completed" : "Theory topic updated",
+          detail: (t.category_slug || "").replace(/-/g, " "),
+        });
+      }
+      for (const c of (clicksRecent.data ?? []) as any[]) {
+        out.push({
+          at: c.created_at,
+          type: "click",
+          label:
+            c.channel === "whatsapp" ? "WhatsApp enquiry" :
+            c.channel === "email" ? "Email enquiry" :
+            c.channel === "phone" ? "Phone enquiry" : "Portal opened",
+          detail: c.package || c.page || "",
+        });
+      }
+      out.sort((a, b) => (a.at < b.at ? 1 : -1));
+      columns = ["timestamp", "type", "label", "detail"];
+      rows = out.map((r) => [r.at, r.type, r.label, r.detail]);
+    } else if (data.dataset === "contact-clicks") {
+      const { data: clicks, error } = await supabase
+        .from("contact_clicks")
+        .select("id,package,channel,page,created_at")
+        .gte("created_at", sinceIso)
+        .order("created_at", { ascending: false });
+      if (error) throw new Response(error.message, { status: 500 });
+      columns = ["timestamp", "channel", "package", "page", "id"];
+      rows = (clicks ?? []).map((c: any) => [c.created_at, c.channel, c.package, c.page, c.id]);
+    }
+
+    const csv = toCsv([...header, columns, ...rows]);
+    const filename = `${data.dataset}_${from}_to_${to}.csv`;
+    return { filename, csv, rangeFrom: from, rangeTo: to };
+  });
