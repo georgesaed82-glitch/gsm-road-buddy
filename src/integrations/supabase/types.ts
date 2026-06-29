@@ -332,8 +332,10 @@ export type Database = {
           id: string
           kind: string
           label: string | null
+          last_used_at: string | null
           revoked: boolean
           updated_at: string
+          use_count: number
         }
         Insert: {
           code: string
@@ -343,8 +345,10 @@ export type Database = {
           id?: string
           kind: string
           label?: string | null
+          last_used_at?: string | null
           revoked?: boolean
           updated_at?: string
+          use_count?: number
         }
         Update: {
           code?: string
@@ -354,10 +358,47 @@ export type Database = {
           id?: string
           kind?: string
           label?: string | null
+          last_used_at?: string | null
           revoked?: boolean
           updated_at?: string
+          use_count?: number
         }
         Relationships: []
+      }
+      portal_access_uses: {
+        Row: {
+          code_id: string
+          id: string
+          ip_hash: string | null
+          mode: string
+          used_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          code_id: string
+          id?: string
+          ip_hash?: string | null
+          mode: string
+          used_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          code_id?: string
+          id?: string
+          ip_hash?: string | null
+          mode?: string
+          used_at?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_access_uses_code_id_fkey"
+            columns: ["code_id"]
+            isOneToOne: false
+            referencedRelation: "portal_access_codes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       portal_launch_subscribers: {
         Row: {
