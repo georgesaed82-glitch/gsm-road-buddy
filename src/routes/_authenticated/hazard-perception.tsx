@@ -16,6 +16,37 @@ export const Route = createFileRoute("/_authenticated/hazard-perception")({
 function HazardPage() {
   const [active, setActive] = useState<HazardClip | null>(null);
 
+  const { data: clipVideos = {} } = useQuery({
+    queryKey: ["hazard_clip_videos_signed"],
+    queryFn: async () => {
+      const { data: rows } = await supabase.from("hazard_clip_videos").select("clip_slug, video_path, poster_path");
+      const map: Record<string, { videoUrl?: string; posterUrl?: string }> = {};
+      await Promise.all(
+        (rows ?? []).map(async (r) => {
+          const { data: signed } = await supabase.storage
+            .from("hazard-clips")
+            .createSignedUrl(r.video_path, 3600);
+          let posterUrl: string | undefined;
+          if (r.poster_path) {
+            const { data: ps } = await supabase.storage
+              .from("hazard-clips")
+              .createSignedUrl(r.poster_path, 3600);
+            posterUrl = ps?.signedUrl;
+          }
+          map[r.clip_slug] = { videoUrl: signed?.signedUrl, posterUrl };
+        }),
+      );
+      return map;
+    },
+    staleTime: 1000 * 60 * 30,
+  });
+
+  const enrich = (c: HazardClip): HazardClip => {
+    const live = clipVideos[c.slug];
+    if (!live?.videoUrl) return c;
+    return { ...c, videoUrl: live.videoUrl, posterUrl: live.posterUrl ?? c.posterUrl };
+  };
+
   const { data: attempts = [] } = useQuery({
     queryKey: ["hazard_attempts"],
     queryFn: async () => {
@@ -27,7 +58,7 @@ function HazardPage() {
   const avg = attempts.length ? (attempts.reduce((s, a) => s + a.score, 0) / attempts.length).toFixed(1) : "—";
   const best = attempts.reduce((m, a) => Math.max(m, a.score), 0);
 
-  if (active) return <PortalShell eyebrow="Hazard perception" title={active.title}><ClipPractice clip={active} onExit={() => setActive(null)} /></PortalShell>;
+  if (active) return <PortalShell eyebrow="Hazard perception" title={active.title}><ClipPractice clip={enrich(active)} onExit={() => setActive(null)} /></PortalShell>;
 
   return (
     <PortalShell eyebrow="Practice on real West London clips" title="Hazard perception">
@@ -49,11 +80,12 @@ function HazardPage() {
 
       <h2 className="mt-12 font-display text-2xl">Clip library</h2>
       <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
-        {hazardClips.map((c) => {
+        {hazardClips.map((raw) => {
+          const c = enrich(raw);
           const myAttempts = attempts.filter((a) => a.clip_slug === c.slug);
           const bestScore = myAttempts.reduce((m, a) => Math.max(m, a.score), 0);
           return (
-            <button key={c.slug} onClick={() => setActive(c)} className="group flex flex-col bg-card p-5 text-left transition-colors hover:bg-secondary">
+            <button key={c.slug} onClick={() => setActive(raw)} className="group flex flex-col bg-card p-5 text-left transition-colors hover:bg-secondary">
               <div className="aspect-video bg-primary text-primary-foreground">
                 <div className="flex h-full flex-col items-center justify-center gap-2">
                   <Play className="h-8 w-8 text-accent transition-transform group-hover:scale-110" />

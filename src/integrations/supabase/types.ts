@@ -131,6 +131,30 @@ export type Database = {
         }
         Relationships: []
       }
+      hazard_clip_videos: {
+        Row: {
+          clip_slug: string
+          poster_path: string | null
+          updated_at: string
+          updated_by: string | null
+          video_path: string
+        }
+        Insert: {
+          clip_slug: string
+          poster_path?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          video_path: string
+        }
+        Update: {
+          clip_slug?: string
+          poster_path?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          video_path?: string
+        }
+        Relationships: []
+      }
       hazard_perception_attempts: {
         Row: {
           clip_slug: string
