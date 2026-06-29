@@ -10,6 +10,9 @@ import { toast } from "sonner";
 import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    admin: search.admin === 1 || search.admin === "1" ? 1 : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Learner portal coming soon | GSM Driving School" },
@@ -24,6 +27,8 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { admin } = Route.useSearch();
+  const isAdmin = admin === 1;
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const tracked = useRef(false);
@@ -39,8 +44,9 @@ function AuthPage() {
     setSubmitting(true);
     if (password.trim() === "7777") {
       window.sessionStorage.setItem("portal_unlocked", "1");
-      toast.success("Access granted. Welcome to the learner portal.");
-      navigate({ to: "/dashboard" });
+      window.sessionStorage.setItem("admin_unlocked", "1");
+      toast.success(isAdmin ? "Admin access granted." : "Access granted. Welcome to the learner portal.");
+      navigate({ to: isAdmin ? "/admin" : "/dashboard" });
       return;
     }
     setSubmitting(false);
@@ -51,14 +57,18 @@ function AuthPage() {
     <div className="flex flex-1 items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md border-border bg-card text-center">
         <CardHeader>
-          <CardTitle className="font-display text-2xl">Learner portal</CardTitle>
+          <CardTitle className="font-display text-2xl">
+            {isAdmin ? "Admin login" : "Learner portal"}
+          </CardTitle>
           <CardDescription>
             <Badge variant="secondary" className="mt-2">Password protected</Badge>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Enter your access code to view lessons, theory practice, hazard perception, and payments.
+            {isAdmin
+              ? "Enter the admin access code to view site analytics, payments, and learner progress."
+              : "Enter your access code to view lessons, theory practice, hazard perception, and payments."}
           </p>
           <form onSubmit={handleSubmit} className="space-y-2 text-left">
             <label className="text-sm font-medium flex items-center gap-2">
