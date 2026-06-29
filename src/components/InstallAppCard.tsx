@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { Download, Smartphone, Share, Plus, Sparkles } from "lucide-react";
+import { Apple, Download, Play, Plus, Share, Smartphone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { triggerPwaInstallPrompt } from "@/components/PWAInstallTracker";
 
