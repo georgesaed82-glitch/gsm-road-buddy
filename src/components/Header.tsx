@@ -17,7 +17,7 @@ const navLinks = [
   { to: "/pricing", label: "Pricing" },
   { to: "/reviews", label: "Reviews" },
   { to: "/contact", label: "Contact" },
-  { to: "/auth", label: "Learner portal" },
+  { to: "/auth", label: "Learner portal", locked: true },
 ];
 
 function Monogram() {
@@ -71,10 +71,11 @@ export function Header() {
                 key={link.to}
                 to={link.to}
                 className={cn(
-                  "relative px-3 py-2 text-sm font-medium transition-colors",
+                  "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
+                {link.locked && <Lock className="h-3.5 w-3.5" aria-hidden="true" />}
                 {link.label}
                 {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
               </Link>
@@ -105,9 +106,6 @@ export function Header() {
               <span>gsmdrivingschool@outlook.com</span>
             </a>
           </div>
-          <Button size="sm" variant="outline" asChild className="hidden md:inline-flex">
-            <Link to="/auth">Learner portal</Link>
-          </Button>
           {isAuthed ? (
             <Button size="sm" variant="ghost" onClick={handleSignOut} className="hidden md:inline-flex">
               <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
@@ -145,20 +143,16 @@ export function Header() {
                       to={link.to}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        "border-b border-border/60 py-3 font-display text-lg transition-colors",
+                        "flex items-center gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors",
                         pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
                       )}
                     >
+                      {link.locked && <Lock className="h-4 w-4" aria-hidden="true" />}
                       {link.label}
                     </Link>
                   ))}
                 </nav>
                 <div className="flex flex-col gap-3 pt-2">
-                  <Button asChild className="w-full" variant="outline">
-                    <Link to="/auth" onClick={() => setOpen(false)}>
-                      Learner portal
-                    </Link>
-                  </Button>
                   {isAuthed ? (
                     <Button className="w-full" variant="ghost" onClick={handleSignOut}>
                       <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
