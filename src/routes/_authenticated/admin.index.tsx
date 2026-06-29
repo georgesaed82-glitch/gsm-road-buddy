@@ -576,6 +576,7 @@ function ChartCard({
   delta,
   series,
   onExport,
+  exporting,
 }: {
   title: string;
   subtitle: string;
@@ -583,6 +584,7 @@ function ChartCard({
   delta?: { pct: number; direction: "up" | "down" | "flat" };
   series: { date: string; count: number }[];
   onExport?: () => void;
+  exporting?: boolean;
 }) {
   const fmtDate = (d: string) => {
     const dt = new Date(d);
@@ -620,10 +622,10 @@ function ChartCard({
       {onExport && (
         <button
           onClick={onExport}
-          disabled={!series.length}
+          disabled={!series.length || exporting}
           className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
         >
-          <Download className="h-3 w-3" /> Export CSV
+          <Download className="h-3 w-3" /> {exporting ? "Exporting…" : "Export CSV"}
         </button>
       )}
       <div className="mt-4 h-44 w-full">
