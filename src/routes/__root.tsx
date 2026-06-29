@@ -15,6 +15,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { AIChatWidget } from "../components/AIChatWidget";
 import { PageViewTracker } from "../components/PageViewTracker";
+import { registerServiceWorker } from "../lib/register-sw";
 
 
 function NotFoundComponent() {
@@ -238,6 +239,10 @@ function RootComponent() {
 
     document.addEventListener("click", handleExternalClick, { capture: true });
     return () => document.removeEventListener("click", handleExternalClick, { capture: true });
+  }, []);
+
+  useEffect(() => {
+    registerServiceWorker();
   }, []);
 
   return (
