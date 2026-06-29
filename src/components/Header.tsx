@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Menu, Mail, Lock, LogOut, ChevronDown, ChevronUp, BookOpen, Eye, GraduationCap, LayoutDashboard } from "lucide-react";
+import { Menu, Mail, Lock, LogOut, ChevronDown, ChevronUp, BookOpen, Eye, GraduationCap, LayoutDashboard, Download } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ const navLinks = [
   { to: "/pricing", label: "Pricing" },
   { to: "/reviews", label: "Reviews" },
   { to: "/contact", label: "Contact" },
+  { to: "/#download-app", label: "Download app", icon: Download },
 ];
 
 const portalLinks = [
