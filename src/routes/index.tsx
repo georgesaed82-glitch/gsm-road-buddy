@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowUpRight, Star, ArrowRight, ExternalLink, Instagram, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
+import { InstallAppCard } from "@/components/InstallAppCard";
 import { reviews as allReviews } from "@/data/reviews";
 import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
@@ -416,6 +417,8 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <InstallAppCard />
 
       {/* CTA */}
       <section className="border-t border-border bg-accent text-accent-foreground">
