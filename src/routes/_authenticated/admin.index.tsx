@@ -33,6 +33,7 @@ import {
   AlertTriangle,
   Bell,
   X,
+  Download,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -301,6 +302,13 @@ function AdminOverviewPage() {
           delta={delta(data?.studentsCurrent, data?.studentsPrevious)}
           subtitle={rangeLabel}
           series={data?.registrationsSeries ?? []}
+          onExport={() =>
+            downloadCsv(
+              `learner-registrations-${range}d.csv`,
+              ["date", "count"],
+              (data?.registrationsSeries ?? []).map((r) => [r.date, String(r.count)]),
+            )
+          }
         />
         <ChartCard
           title="Theory Users Overview"
@@ -308,6 +316,13 @@ function AdminOverviewPage() {
           delta={delta(data?.theoryLearnersCurrent, data?.theoryLearnersPrevious)}
           subtitle={rangeLabel}
           series={data?.theorySeries ?? []}
+          onExport={() =>
+            downloadCsv(
+              `theory-users-${range}d.csv`,
+              ["date", "count"],
+              (data?.theorySeries ?? []).map((r) => [r.date, String(r.count)]),
+            )
+          }
         />
       </section>
 
@@ -316,9 +331,24 @@ function AdminOverviewPage() {
         <div className="lg:col-span-3 border border-border bg-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <h3 className="font-display text-lg">Recent Activity</h3>
-            <Link to="/admin/contact-clicks" className="text-sm font-medium text-primary hover:underline">
-              View all
-            </Link>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() =>
+                  downloadCsv(
+                    `recent-activity-${range}d.csv`,
+                    ["timestamp", "type", "label", "detail"],
+                    (data?.recentActivity ?? []).map((a) => [a.at, a.type, a.label, a.sub]),
+                  )
+                }
+                disabled={!data?.recentActivity?.length}
+                className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
+              >
+                <Download className="h-3.5 w-3.5" /> CSV
+              </button>
+              <Link to="/admin/contact-clicks" className="text-sm font-medium text-primary hover:underline">
+                View all
+              </Link>
+            </div>
           </div>
           <ul className="divide-y divide-border">
             {(data?.recentActivity ?? []).map((a, i) => (
@@ -422,6 +452,23 @@ function delta(current?: number, previous?: number): { pct: number; direction: "
 }
 
 type AdminAlert = { id: string; severity: "warning" | "critical"; title: string; detail: string };
+
+function downloadCsv(filename: string, headers: string[], rows: string[][]) {
+  const esc = (v: string) => {
+    const s = v ?? "";
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const csv = [headers, ...rows].map((r) => r.map(esc).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 function computeAlerts(data: any, hasError: boolean): AdminAlert[] {
   const out: AdminAlert[] = [];
@@ -533,12 +580,14 @@ function ChartCard({
   total,
   delta,
   series,
+  onExport,
 }: {
   title: string;
   subtitle: string;
   total: number;
   delta?: { pct: number; direction: "up" | "down" | "flat" };
   series: { date: string; count: number }[];
+  onExport?: () => void;
 }) {
   const fmtDate = (d: string) => {
     const dt = new Date(d);
@@ -573,6 +622,15 @@ function ChartCard({
           {subtitle}
         </span>
       </div>
+      {onExport && (
+        <button
+          onClick={onExport}
+          disabled={!series.length}
+          className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
+        >
+          <Download className="h-3 w-3" /> Export CSV
+        </button>
+      )}
       <div className="mt-4 h-44 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={series} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
