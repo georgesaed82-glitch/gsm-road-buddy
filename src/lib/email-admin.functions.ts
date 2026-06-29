@@ -29,7 +29,7 @@ export const sendTestEmail = createServerFn({ method: "POST" })
       from: "GSM Driving School <notify@notify.gsmdrivingschool.com>",
       sender_domain: "notify.gsmdrivingschool.com",
       subject: "Test email from GSM Driving School",
-      html: `<div style="font-family:Inter,Arial,sans-serif;padding:24px;color:#1a1a1a">
+      html: `<div style="font-family:Arial,Helvetica,sans-serif;padding:24px;color:#1a1a1a">
         <h2 style="margin:0 0 12px">It works! ✅</h2>
         <p>This is a test email sent from <strong>notify.gsmdrivingschool.com</strong> to confirm your email infrastructure is delivering correctly.</p>
         <p>If you received this in your inbox, deliverability is good.</p>
