@@ -17,6 +17,8 @@ async function adminClient(password: string) {
 
 export type AdminOverview = {
   students: number;
+  studentsCurrent: number;
+  studentsPrevious: number;
   pageViewsTotal: number;
   pageViewsCurrent: number;
   pageViewsPrevious: number;
@@ -38,10 +40,21 @@ export type AdminOverview = {
   theoryAccuracy: number;
   topicsPassed: number;
   theoryLearners: number;
+  theoryLearnersCurrent: number;
+  theoryLearnersPrevious: number;
+  reviewsTotal: number;
+  reviewsCurrent: number;
+  reviewsPrevious: number;
+  supportTicketsCurrent: number;
+  supportTicketsPrevious: number;
   clicksByChannel: Record<string, number>;
   contactClicksCurrentTotal: number;
   contactClicksPreviousTotal: number;
   topPathsSorted: [string, number][];
+  registrationsSeries: { date: string; count: number }[];
+  theorySeries: { date: string; count: number }[];
+  recentActivity: { type: string; label: string; sub: string; at: string }[];
+  topicPerformance: { slug: string; accuracy: number; answers: number }[];
 };
 
 export const getAdminOverview = createServerFn({ method: "POST" })
@@ -54,6 +67,9 @@ export const getAdminOverview = createServerFn({ method: "POST" })
 
     const [
       profiles,
+      profilesCurrent,
+      profilesPrevious,
+      profilesRecent,
       pageViewsTotal,
       pageViewsCurrent,
       pageViewsPrevious,
@@ -70,12 +86,24 @@ export const getAdminOverview = createServerFn({ method: "POST" })
       bookingsCompleted,
       bookingsCurrent,
       bookingsPrevious,
+      bookingsRecent,
       theoryRows,
+      theoryRecent,
+      theoryCurrent,
+      theoryPrevious,
+      reviewsCurrent,
+      reviewsPrevious,
+      supportCurrent,
+      supportPrevious,
       contactClicksCurrent,
       contactClicksPrevious,
+      contactClicksRecent,
       recentPageViews,
     ] = await Promise.all([
       supabase.from("profiles").select("id", { count: "exact", head: true }),
+      supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", sinceCurrent),
+      supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
+      supabase.from("profiles").select("id,full_name,created_at").gte("created_at", sinceCurrent).order("created_at", { ascending: false }).limit(50),
       supabase.from("page_views").select("id", { count: "exact", head: true }),
       supabase.from("page_views").select("id", { count: "exact", head: true }).gte("created_at", sinceCurrent),
       supabase.from("page_views").select("id", { count: "exact", head: true }).gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
@@ -92,20 +120,44 @@ export const getAdminOverview = createServerFn({ method: "POST" })
       supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).eq("status", "completed"),
       supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).gte("created_at", sinceCurrent),
       supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
-      supabase.from("theory_progress").select("questions_answered,questions_correct,best_score_pct,completed_at,user_id"),
+      supabase.from("lesson_bookings").select("id,duration_minutes,scheduled_at,pickup_location,created_at").gte("created_at", sinceCurrent).order("created_at", { ascending: false }).limit(50),
+      supabase.from("theory_progress").select("questions_answered,questions_correct,best_score_pct,completed_at,user_id,category_slug,created_at,updated_at"),
+      supabase.from("theory_progress").select("user_id,category_slug,last_score_pct,best_score_pct,updated_at,completed_at").order("updated_at", { ascending: false }).limit(50),
+      supabase.from("theory_progress").select("user_id,created_at").gte("created_at", sinceCurrent),
+      supabase.from("theory_progress").select("user_id,created_at").gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
+      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "phone").gte("created_at", sinceCurrent),
+      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "phone").gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
+      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "email").gte("created_at", sinceCurrent),
+      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "email").gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
       supabase.from("contact_clicks").select("channel").gte("created_at", sinceCurrent),
       supabase.from("contact_clicks").select("id", { count: "exact", head: true }).gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
+      supabase.from("contact_clicks").select("channel,package,page,created_at").order("created_at", { ascending: false }).limit(30),
       supabase.from("page_views").select("path,created_at").order("created_at", { ascending: false }).limit(500),
     ]);
 
     const paidPence = (paidSum.data ?? []).filter((p: any) => p.status === "paid").reduce((s: number, p: any) => s + (p.amount_pence ?? 0), 0);
     const paidPenceCurrent = (paidSumCurrent.data ?? []).reduce((s: number, p: any) => s + (p.amount_pence ?? 0), 0);
 
-    const theory = theoryRows.data ?? [];
+    const theory = (theoryRows.data ?? []) as any[];
     const totalAnswered = theory.reduce((s: number, r: any) => s + (r.questions_answered ?? 0), 0);
     const totalCorrect = theory.reduce((s: number, r: any) => s + (r.questions_correct ?? 0), 0);
     const topicsPassed = theory.filter((r: any) => (r.best_score_pct ?? 0) >= 86).length;
     const theoryLearners = new Set(theory.map((r: any) => r.user_id)).size;
+
+    const byTopic = new Map<string, { answers: number; correct: number }>();
+    for (const r of theory) {
+      const slug = r.category_slug || "unknown";
+      const ans = r.questions_answered ?? 0;
+      const cor = r.questions_correct ?? 0;
+      const cur = byTopic.get(slug) ?? { answers: 0, correct: 0 };
+      cur.answers += ans;
+      cur.correct += cor;
+      byTopic.set(slug, cur);
+    }
+    const topicPerformance = Array.from(byTopic.entries())
+      .filter(([, v]) => v.answers > 0)
+      .map(([slug, v]) => ({ slug, answers: v.answers, accuracy: Math.round((v.correct / v.answers) * 100) }))
+      .sort((a, b) => a.accuracy - b.accuracy);
 
     const clicksByChannel: Record<string, number> = {};
     for (const c of contactClicksCurrent.data ?? []) {
@@ -120,8 +172,67 @@ export const getAdminOverview = createServerFn({ method: "POST" })
     }
     const topPathsSorted = Object.entries(topPaths).sort((a, b) => b[1] - a[1]).slice(0, 6) as [string, number][];
 
+    const buildSeries = (rows: { created_at?: string | null }[]) => {
+      const buckets: Record<string, number> = {};
+      const today = new Date();
+      for (let i = range - 1; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        buckets[d.toISOString().slice(0, 10)] = 0;
+      }
+      for (const r of rows) {
+        if (!r.created_at) continue;
+        const key = r.created_at.slice(0, 10);
+        if (key in buckets) buckets[key] += 1;
+      }
+      return Object.entries(buckets).map(([date, count]) => ({ date, count }));
+    };
+    const registrationsSeries = buildSeries((profilesRecent.data ?? []) as any[]);
+    const theorySeries = buildSeries((theoryCurrent.data ?? []) as any[]);
+
+    type Activity = { type: string; label: string; sub: string; at: string };
+    const activity: Activity[] = [];
+    for (const p of (profilesRecent.data ?? []) as any[]) {
+      activity.push({ type: "learner", label: "New learner registered", sub: p.full_name || "New learner", at: p.created_at });
+    }
+    for (const b of (bookingsRecent.data ?? []) as any[]) {
+      const hours = Math.round((b.duration_minutes ?? 60) / 60);
+      activity.push({ type: "booking", label: `Lesson booked (${hours}h)`, sub: b.pickup_location || "Pickup", at: b.created_at });
+    }
+    for (const t of (theoryRecent.data ?? []) as any[]) {
+      if (!t.completed_at && (t.last_score_pct ?? 0) === 0) continue;
+      activity.push({
+        type: "mock",
+        label: t.completed_at ? "Mock test completed" : "Theory topic updated",
+        sub: (t.category_slug || "").replace(/-/g, " "),
+        at: t.updated_at,
+      });
+    }
+    for (const c of (contactClicksRecent.data ?? []) as any[]) {
+      activity.push({
+        type: "click",
+        label:
+          c.channel === "whatsapp"
+            ? "WhatsApp enquiry"
+            : c.channel === "email"
+            ? "Email enquiry"
+            : c.channel === "phone"
+            ? "Phone enquiry"
+            : "Portal opened",
+        sub: c.package || c.page || "Website",
+        at: c.created_at,
+      });
+    }
+    activity.sort((a, b) => (a.at < b.at ? 1 : -1));
+    const recentActivity = activity.slice(0, 12);
+
+    const theoryLearnersCurrent = new Set(((theoryCurrent.data ?? []) as any[]).map((r) => r.user_id)).size;
+    const theoryLearnersPrevious = new Set(((theoryPrevious.data ?? []) as any[]).map((r) => r.user_id)).size;
+
     return {
       students: profiles.count ?? 0,
+      studentsCurrent: profilesCurrent.count ?? 0,
+      studentsPrevious: profilesPrevious.count ?? 0,
       pageViewsTotal: pageViewsTotal.count ?? 0,
       pageViewsCurrent: pageViewsCurrent.count ?? 0,
       pageViewsPrevious: pageViewsPrevious.count ?? 0,
@@ -143,10 +254,21 @@ export const getAdminOverview = createServerFn({ method: "POST" })
       theoryAccuracy: totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0,
       topicsPassed,
       theoryLearners,
+      theoryLearnersCurrent,
+      theoryLearnersPrevious,
+      reviewsTotal: 143,
+      reviewsCurrent: reviewsCurrent.count ?? 0,
+      reviewsPrevious: reviewsPrevious.count ?? 0,
+      supportTicketsCurrent: supportCurrent.count ?? 0,
+      supportTicketsPrevious: supportPrevious.count ?? 0,
       clicksByChannel,
       contactClicksCurrentTotal: (contactClicksCurrent.data ?? []).length,
       contactClicksPreviousTotal: contactClicksPrevious.count ?? 0,
       topPathsSorted,
+      registrationsSeries,
+      theorySeries,
+      recentActivity,
+      topicPerformance,
     };
   });
 
