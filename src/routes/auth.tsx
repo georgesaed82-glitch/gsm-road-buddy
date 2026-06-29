@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { trackContactClick } from "@/lib/trackContactClick";
+import { useServerFn } from "@tanstack/react-start";
+import { verifyPortalAccess } from "@/lib/portal-access.functions";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -32,6 +34,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const tracked = useRef(false);
+  const verify = useServerFn(verifyPortalAccess);
 
   useEffect(() => {
     if (tracked.current) return;
@@ -39,20 +42,34 @@ function AuthPage() {
     trackContactClick("portal_view", "learner-portal");
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     const pw = password.trim();
-    if (pw === "7777") {
+    try {
+      const res = await verify({ data: { password: pw, mode: isAdmin ? "admin" : "learner" } });
+      if (!res.ok) {
+        toast.error("Incorrect or expired code. Email George to request access.");
+        setSubmitting(false);
+        return;
+      }
       window.sessionStorage.setItem("portal_unlocked", "1");
-      window.sessionStorage.setItem("admin_unlocked", "1");
-      window.sessionStorage.setItem("admin_password", pw);
-      toast.success(isAdmin ? "Admin access granted." : "Access granted. Welcome to the learner portal.");
+      if (isAdmin) {
+        window.sessionStorage.setItem("admin_unlocked", "1");
+        window.sessionStorage.setItem("admin_password", pw);
+      }
+      toast.success(
+        isAdmin
+          ? "Admin access granted."
+          : res.subscription?.expires_at
+          ? `Access granted until ${new Date(res.subscription.expires_at).toLocaleDateString()}.`
+          : "Access granted. Welcome to the learner portal.",
+      );
       navigate({ to: isAdmin ? "/admin" : "/dashboard" });
-      return;
+    } catch {
+      toast.error("Could not verify code. Please try again.");
+      setSubmitting(false);
     }
-    setSubmitting(false);
-    toast.error("Incorrect password. Email George to request access.");
   };
 
   return (

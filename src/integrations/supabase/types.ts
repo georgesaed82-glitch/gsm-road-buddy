@@ -323,6 +323,42 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_access_codes: {
+        Row: {
+          code: string
+          created_at: string
+          email: string | null
+          expires_at: string | null
+          id: string
+          kind: string
+          label: string | null
+          revoked: boolean
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          kind: string
+          label?: string | null
+          revoked?: boolean
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          kind?: string
+          label?: string | null
+          revoked?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       portal_launch_subscribers: {
         Row: {
           created_at: string
