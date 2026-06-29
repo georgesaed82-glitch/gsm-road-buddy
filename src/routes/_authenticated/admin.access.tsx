@@ -538,20 +538,14 @@ function CodeRow({
             <td className="py-2 pr-3 font-mono">{row.code}</td>
             <td className="py-2 pr-3">{row.email}</td>
             <td className="py-2 pr-3">
-              {row.expires_at ? new Date(row.expires_at).toLocaleDateString() : "—"}
+              <ExpiryCell row={row} />
             </td>
           </>
         )}
         <td className="py-2 pr-3 tabular-nums">{row.use_count}</td>
         <td className="py-2 pr-3 text-muted-foreground">{lastUsed}</td>
         <td className="py-2 pr-3">
-          <Badge
-            variant={
-              row.status === "active" ? "default" : row.status === "expired" ? "secondary" : "outline"
-            }
-          >
-            {row.status}
-          </Badge>
+          <StatusPill row={row} />
         </td>
         {!masterView && (
           <td className="py-2 pr-3">
