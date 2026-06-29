@@ -186,19 +186,24 @@ export function Header() {
                   </div>
                 </Link>
                 <nav className="flex flex-col">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.to}
-                      to={link.to}
-                      onClick={() => setOpen(false)}
-                      className={cn(
-                        "flex items-center gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors",
-                        pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {navLinks.map((link) => {
+                    const Icon = link.icon;
+                    const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
+                    return (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          "flex items-center gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors",
+                          active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        {Icon && <Icon className="h-4 w-4" aria-hidden="true" />}
+                        {link.label}
+                      </Link>
+                    );
+                  })}
 
                   <Collapsible open={portalOpen} onOpenChange={setPortalOpen}>
                     <CollapsibleTrigger asChild>
