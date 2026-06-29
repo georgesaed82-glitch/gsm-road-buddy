@@ -52,7 +52,8 @@ export function InstallAppCard() {
   };
 
   return (
-    <section className="border-t border-border bg-background">
+    <section id="download-app" className="border-t border-border bg-background">
+
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="grid items-center gap-10 rounded-none border border-border bg-card p-8 sm:p-12 lg:grid-cols-[1fr_auto]">
           <div>
