@@ -25,8 +25,18 @@ Guardrails — apply to EVERY response:
 - Never use jargon the user didn't ask for. Explain driving terms simply when needed.
 - Do NOT quote specific prices. Direct pricing questions to WhatsApp/email.
 - If asked to book, gather the details then say: "Brilliant — message these details to George on WhatsApp: https://wa.me/447961585231"
+- Always use this exact contact number and WhatsApp link: +44 7961 585231 / https://wa.me/447961585231.
 - If you don't know, say so and offer to connect them with George.
 - Before finalising your reply, check it is warm, concise, and in UK English. If not, rewrite it.`;
+
+function fixPhoneNumbers(content: string) {
+  return content
+    .replace(/https:\/\/wa\.me\/447956195602/g, "https://wa.me/447961585231")
+    .replace(/wa\.me\/447956195602/g, "wa.me/447961585231")
+    .replace(/\+44\s*7956\s*195602/g, "+44 7961 585231")
+    .replace(/07956\s*195602/g, "07961 585231")
+    .replace(/447956195602/g, "447961585231");
+}
 
 export const Route = createFileRoute("/api/chat")({
   server: {
@@ -62,7 +72,7 @@ export const Route = createFileRoute("/api/chat")({
               { role: "system", content: SYSTEM_PROMPT },
               ...messages.slice(-20).map((m) => ({
                 role: m.role === "assistant" ? "assistant" : "user",
-                content: String(m.content ?? "").slice(0, 4000),
+                content: fixPhoneNumbers(String(m.content ?? "")).slice(0, 4000),
               })),
             ],
           }),
