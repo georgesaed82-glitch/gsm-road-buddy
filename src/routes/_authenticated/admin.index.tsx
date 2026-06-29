@@ -304,9 +304,10 @@ function AdminOverviewPage() {
           series={data?.registrationsSeries ?? []}
           onExport={() =>
             downloadCsv(
-              `learner-registrations-${range}d.csv`,
+              `learner-registrations.csv`,
               ["date", "count"],
               (data?.registrationsSeries ?? []).map((r) => [r.date, String(r.count)]),
+              range,
             )
           }
         />
@@ -318,9 +319,10 @@ function AdminOverviewPage() {
           series={data?.theorySeries ?? []}
           onExport={() =>
             downloadCsv(
-              `theory-users-${range}d.csv`,
+              `theory-users.csv`,
               ["date", "count"],
               (data?.theorySeries ?? []).map((r) => [r.date, String(r.count)]),
+              range,
             )
           }
         />
@@ -335,9 +337,10 @@ function AdminOverviewPage() {
               <button
                 onClick={() =>
                   downloadCsv(
-                    `recent-activity-${range}d.csv`,
+                    `recent-activity.csv`,
                     ["timestamp", "type", "label", "detail"],
                     (data?.recentActivity ?? []).map((a) => [a.at, a.type, a.label, a.sub]),
+                    range,
                   )
                 }
                 disabled={!data?.recentActivity?.length}
