@@ -1,0 +1,192 @@
+import { useEffect, useRef, useState } from "react";
+import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+
+type Msg = { role: "user" | "assistant"; content: string };
+
+const SUGGESTIONS = [
+  "What areas do you cover?",
+  "Manual or automatic?",
+  "Ask me a theory question",
+  "Help me book a lesson",
+];
+
+const GREETING: Msg = {
+  role: "assistant",
+  content:
+    "Hi! I'm George's AI assistant 👋 I can answer questions about lessons, run a theory practice quiz, or help you book. What can I help with?",
+};
+
+export function AIChatWidget() {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<Msg[]>([GREETING]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, loading]);
+
+  async function send(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+    const next: Msg[] = [...messages, { role: "user", content: trimmed }];
+    setMessages(next);
+    setInput("");
+    setLoading(true);
+
+    const ac = new AbortController();
+    abortRef.current = ac;
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: next }),
+        signal: ac.signal,
+      });
+
+      if (!res.ok || !res.body) {
+        const errText = await res.text().catch(() => "Sorry, something went wrong.");
+        setMessages((m) => [...m, { role: "assistant", content: errText || "Sorry, I had trouble responding. Please WhatsApp George on +44 7956 195602." }]);
+        return;
+      }
+
+      setMessages((m) => [...m, { role: "assistant", content: "" }]);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+        for (const line of lines) {
+          const trimmedLine = line.trim();
+          if (!trimmedLine || !trimmedLine.startsWith("data:")) continue;
+          const data = trimmedLine.slice(5).trim();
+          if (data === "[DONE]") continue;
+          try {
+            const json = JSON.parse(data);
+            const delta = json.choices?.[0]?.delta?.content;
+            if (delta) {
+              setMessages((m) => {
+                const copy = [...m];
+                copy[copy.length - 1] = { role: "assistant", content: copy[copy.length - 1].content + delta };
+                return copy;
+              });
+            }
+          } catch {
+            // skip non-JSON lines
+          }
+        }
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") {
+        setMessages((m) => [...m, { role: "assistant", content: "Connection issue. Please try again or WhatsApp George on +44 7956 195602." }]);
+      }
+    } finally {
+      setLoading(false);
+      abortRef.current = null;
+    }
+  }
+
+  return (
+    <>
+      {/* Floating button */}
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Open AI assistant"
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-primary-foreground shadow-xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
+        >
+          <MessageCircle className="h-5 w-5" />
+          <span className="hidden text-sm font-medium sm:inline">Ask GSM</span>
+        </button>
+      )}
+
+      {/* Chat panel */}
+      {open && (
+        <div className="fixed inset-x-3 bottom-3 z-50 flex max-h-[80vh] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[380px]">
+          <div className="flex items-center justify-between border-b border-border bg-primary px-4 py-3 text-primary-foreground">
+            <div>
+              <p className="text-sm font-semibold">GSM Assistant</p>
+              <p className="text-xs opacity-80">Replies in seconds · powered by AI</p>
+            </div>
+            <button onClick={() => setOpen(false)} aria-label="Close chat" className="rounded-md p-1 hover:bg-white/10">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-4">
+            {messages.map((m, i) => (
+              <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
+                <div
+                  className={
+                    m.role === "user"
+                      ? "max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-sm text-primary-foreground"
+                      : "max-w-[90%] whitespace-pre-wrap text-sm leading-relaxed text-foreground"
+                  }
+                >
+                  {m.content || (loading && i === messages.length - 1 ? "…" : "")}
+                </div>
+              </div>
+            ))}
+            {loading && messages[messages.length - 1]?.role === "user" && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> thinking…
+              </div>
+            )}
+          </div>
+
+          {messages.length <= 1 && (
+            <div className="flex flex-wrap gap-1.5 px-3 pb-2">
+              {SUGGESTIONS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => send(s)}
+                  className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-foreground transition-colors hover:bg-accent"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              send(input);
+            }}
+            className="flex items-end gap-2 border-t border-border bg-background px-3 py-3"
+          >
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  send(input);
+                }
+              }}
+              rows={1}
+              placeholder="Ask about lessons, theory, booking…"
+              className="max-h-32 flex-1 resize-none rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            />
+            <button
+              type="submit"
+              disabled={loading || !input.trim()}
+              aria-label="Send"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground disabled:opacity-50"
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </form>
+        </div>
+      )}
+    </>
+  );
+}
