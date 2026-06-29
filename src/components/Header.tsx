@@ -91,7 +91,8 @@ export function Header() {
 
         <nav className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => {
-            const active = pathname === link.to;
+            const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
+            const Icon = link.icon;
             return (
               <Link
                 key={link.to}
@@ -101,6 +102,7 @@ export function Header() {
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
+                {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
                 {link.label}
                 {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
               </Link>
