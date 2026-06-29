@@ -421,6 +421,50 @@ function delta(current?: number, previous?: number): { pct: number; direction: "
   return { pct: Math.abs(pct), direction: pct > 0 ? "up" : pct < 0 ? "down" : "flat" };
 }
 
+type AdminAlert = { id: string; severity: "warning" | "critical"; title: string; detail: string };
+
+function computeAlerts(data: any, hasError: boolean): AdminAlert[] {
+  const out: AdminAlert[] = [];
+  if (hasError) {
+    out.push({
+      id: "system-fetch",
+      severity: "critical",
+      title: "Backend unreachable",
+      detail: "Live admin stats failed to load. Check the database and server function logs.",
+    });
+  }
+  if (data) {
+    const cur = data.contactClicksCurrentTotal ?? 0;
+    const prev = data.contactClicksPreviousTotal ?? 0;
+    if (cur >= 5 && cur >= prev * 2 && prev >= 0) {
+      const mult = prev === 0 ? cur : Math.round((cur / prev) * 10) / 10;
+      out.push({
+        id: "enquiry-spike",
+        severity: "warning",
+        title: "Enquiry spike detected",
+        detail: `${cur} enquiries this period vs ${prev} previously (${prev === 0 ? "new activity" : `${mult}× higher`}). Make sure WhatsApp and email are being answered quickly.`,
+      });
+    }
+    if ((data.pageViewsCurrent ?? 0) === 0 && (data.pageViewsTotal ?? 0) > 0) {
+      out.push({
+        id: "no-traffic",
+        severity: "critical",
+        title: "No page views in this range",
+        detail: "Tracking may be broken or the site is offline. Verify gsmdrivingschool.com is loading.",
+      });
+    }
+    if ((data.bookingsUpcoming ?? 0) === 0 && (data.bookingsTotal ?? 0) > 0) {
+      out.push({
+        id: "no-upcoming",
+        severity: "warning",
+        title: "No upcoming lessons scheduled",
+        detail: "The calendar is empty going forward — consider reaching out to recent enquiries.",
+      });
+    }
+  }
+  return out;
+}
+
 function BigStat({
   icon: Icon,
   label,
