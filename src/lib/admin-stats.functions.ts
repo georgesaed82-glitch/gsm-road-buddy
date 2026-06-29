@@ -293,6 +293,62 @@ export const getContactClicks = createServerFn({ method: "POST" })
 
 export type AdminAlertSubscriber = { id: string; email: string; created_at: string };
 
+export type PwaEventRow = {
+  id: string;
+  event: string;
+  platform: string | null;
+  user_agent: string | null;
+  session_id: string | null;
+  created_at: string;
+};
+
+export type PwaFunnel = {
+  rows: PwaEventRow[];
+  totals: Record<string, number>;
+  uniqueSessions: Record<string, number>;
+  byPlatform: Record<string, Record<string, number>>;
+  promptToInstallRate: number;
+  installsPerStandalone: number;
+};
+
+export const getPwaEvents = createServerFn({ method: "POST" })
+  .inputValidator((d: { password: string }) => d)
+  .handler(async ({ data }): Promise<PwaFunnel> => {
+    const supabase = await adminClient(data.password);
+    const { data: rows, error } = await supabase
+      .from("pwa_events")
+      .select("id,event,platform,user_agent,session_id,created_at")
+      .order("created_at", { ascending: false })
+      .limit(2000);
+    if (error) throw new Response(error.message, { status: 500 });
+    const list = (rows ?? []) as PwaEventRow[];
+
+    const totals: Record<string, number> = {};
+    const sessionsByEvent: Record<string, Set<string>> = {};
+    const byPlatform: Record<string, Record<string, number>> = {};
+    for (const r of list) {
+      totals[r.event] = (totals[r.event] ?? 0) + 1;
+      const sid = r.session_id ?? r.id;
+      (sessionsByEvent[r.event] ??= new Set()).add(sid);
+      const plat = r.platform ?? "other";
+      (byPlatform[plat] ??= {})[r.event] = (byPlatform[plat]?.[r.event] ?? 0) + 1;
+    }
+    const uniqueSessions: Record<string, number> = {};
+    for (const k of Object.keys(sessionsByEvent)) uniqueSessions[k] = sessionsByEvent[k].size;
+
+    const promptAvail = uniqueSessions["prompt_available"] ?? 0;
+    const installs = uniqueSessions["installed"] ?? 0;
+    const standalone = uniqueSessions["displayed_standalone"] ?? 0;
+    return {
+      rows: list.slice(0, 200),
+      totals,
+      uniqueSessions,
+      byPlatform,
+      promptToInstallRate: promptAvail === 0 ? 0 : installs / promptAvail,
+      installsPerStandalone: standalone === 0 ? 0 : installs / standalone,
+    };
+  });
+
 export const listAdminAlertSubscribers = createServerFn({ method: "POST" })
   .inputValidator((d: { password: string }) => d)
   .handler(async ({ data }): Promise<AdminAlertSubscriber[]> => {

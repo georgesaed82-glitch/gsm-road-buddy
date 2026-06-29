@@ -30,6 +30,7 @@ import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_authenticated/admin.pwa-installs'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
 import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
 import { Route as AuthenticatedAdminDiagnosticsRouteImport } from './routes/_authenticated/admin.diagnostics'
@@ -143,6 +144,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminPwaInstallsRoute =
+  AuthenticatedAdminPwaInstallsRouteImport.update({
+    id: '/pwa-installs',
+    path: '/pwa-installs',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminHazardVideosRoute =
   AuthenticatedAdminHazardVideosRouteImport.update({
     id: '/hazard-videos',
@@ -211,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
+  '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -239,6 +247,7 @@ export interface FileRoutesByTo {
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
+  '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -270,6 +279,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
+  '/_authenticated/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -301,6 +311,7 @@ export interface FileRouteTypes {
     | '/admin/diagnostics'
     | '/admin/email'
     | '/admin/hazard-videos'
+    | '/admin/pwa-installs'
     | '/admin/'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
@@ -329,6 +340,7 @@ export interface FileRouteTypes {
     | '/admin/diagnostics'
     | '/admin/email'
     | '/admin/hazard-videos'
+    | '/admin/pwa-installs'
     | '/admin'
     | '/lovable/email/queue/process'
   id:
@@ -359,6 +371,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/diagnostics'
     | '/_authenticated/admin/email'
     | '/_authenticated/admin/hazard-videos'
+    | '/_authenticated/admin/pwa-installs'
     | '/_authenticated/admin/'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
@@ -529,6 +542,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/pwa-installs': {
+      id: '/_authenticated/admin/pwa-installs'
+      path: '/pwa-installs'
+      fullPath: '/admin/pwa-installs'
+      preLoaderRoute: typeof AuthenticatedAdminPwaInstallsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/hazard-videos': {
       id: '/_authenticated/admin/hazard-videos'
       path: '/hazard-videos'
@@ -588,6 +608,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminDiagnosticsRoute: typeof AuthenticatedAdminDiagnosticsRoute
   AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
+  AuthenticatedAdminPwaInstallsRoute: typeof AuthenticatedAdminPwaInstallsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -598,6 +619,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminDiagnosticsRoute: AuthenticatedAdminDiagnosticsRoute,
   AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
+  AuthenticatedAdminPwaInstallsRoute: AuthenticatedAdminPwaInstallsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
