@@ -72,11 +72,6 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
           user_agent: ua?.slice(0, 300) ?? null,
           ip_hash,
         });
-        await supabase
-          .from("portal_access_codes")
-          .update({ use_count: ((null as unknown) as number) ?? undefined } as any)
-          .eq("id", codeId);
-        // increment via RPC-less update: fetch + set
         const { data: row } = await supabase
           .from("portal_access_codes")
           .select("use_count")
