@@ -263,7 +263,7 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
 
   const next = () => {
     if (idx + 1 >= pool.length) {
-      saveAttempt.mutate({ answered: score.answered, correct: score.correct });
+      saveAttempt.mutate({ answered: pool.length, correct: score.correct });
       setFinished(true);
     } else {
       setChosen(null);
