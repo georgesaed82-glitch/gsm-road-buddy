@@ -302,6 +302,13 @@ function AdminOverviewPage() {
           delta={delta(data?.studentsCurrent, data?.studentsPrevious)}
           subtitle={rangeLabel}
           series={data?.registrationsSeries ?? []}
+          onExport={() =>
+            downloadCsv(
+              `learner-registrations-${range}d.csv`,
+              ["date", "count"],
+              (data?.registrationsSeries ?? []).map((r) => [r.date, String(r.count)]),
+            )
+          }
         />
         <ChartCard
           title="Theory Users Overview"
@@ -309,6 +316,13 @@ function AdminOverviewPage() {
           delta={delta(data?.theoryLearnersCurrent, data?.theoryLearnersPrevious)}
           subtitle={rangeLabel}
           series={data?.theorySeries ?? []}
+          onExport={() =>
+            downloadCsv(
+              `theory-users-${range}d.csv`,
+              ["date", "count"],
+              (data?.theorySeries ?? []).map((r) => [r.date, String(r.count)]),
+            )
+          }
         />
       </section>
 
@@ -317,9 +331,24 @@ function AdminOverviewPage() {
         <div className="lg:col-span-3 border border-border bg-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <h3 className="font-display text-lg">Recent Activity</h3>
-            <Link to="/admin/contact-clicks" className="text-sm font-medium text-primary hover:underline">
-              View all
-            </Link>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() =>
+                  downloadCsv(
+                    `recent-activity-${range}d.csv`,
+                    ["timestamp", "type", "label", "detail"],
+                    (data?.recentActivity ?? []).map((a) => [a.at, a.type, a.label, a.sub]),
+                  )
+                }
+                disabled={!data?.recentActivity?.length}
+                className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
+              >
+                <Download className="h-3.5 w-3.5" /> CSV
+              </button>
+              <Link to="/admin/contact-clicks" className="text-sm font-medium text-primary hover:underline">
+                View all
+              </Link>
+            </div>
           </div>
           <ul className="divide-y divide-border">
             {(data?.recentActivity ?? []).map((a, i) => (
