@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -113,6 +113,32 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
   const [missed, setMissed] = useState<number[]>([]);
   const [retakeMode, setRetakeMode] = useState(false);
 
+  // DVSA pace: 57 minutes for 50 questions = 68.4s per question.
+  const SECONDS_PER_Q = Math.round((57 * 60) / 50);
+  const totalSeconds = pool.length * SECONDS_PER_Q;
+  const [secondsLeft, setSecondsLeft] = useState(totalSeconds);
+  const timeUpRef = useRef(false);
+
+  useEffect(() => {
+    if (finished) return;
+    if (secondsLeft <= 0) return;
+    const t = setInterval(() => setSecondsLeft((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(t);
+  }, [finished, secondsLeft]);
+
+  useEffect(() => {
+    if (secondsLeft === 0 && !finished && !timeUpRef.current) {
+      timeUpRef.current = true;
+      saveAttempt.mutate({ answered: score.answered, correct: score.correct });
+      setFinished(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [secondsLeft, finished]);
+
+  const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+  const ss = String(secondsLeft % 60).padStart(2, "0");
+  const lowTime = secondsLeft <= 30;
+
   const save = useMutation({
     mutationFn: async (delta: { answered: number; correct: number }) => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -188,11 +214,15 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
       setPoolIndices(fullPool.map((_, i) => i));
       setIdx(0); setChosen(null); setScore({ answered: 0, correct: 0 });
       setMissed([]); setRetakeMode(false); setFinished(false);
+      setSecondsLeft(fullPool.length * SECONDS_PER_Q);
+      timeUpRef.current = false;
     };
     const retakeMissed = () => {
       setPoolIndices(missed);
       setIdx(0); setChosen(null); setScore({ answered: 0, correct: 0 });
       setMissed([]); setRetakeMode(true); setFinished(false);
+      setSecondsLeft(missed.length * SECONDS_PER_Q);
+      timeUpRef.current = false;
     };
     return (
       <div className="mx-auto max-w-xl border border-border bg-card p-8 text-center">
@@ -314,7 +344,17 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
       </div>
 
       <aside className="border border-border bg-card p-5">
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">This session</div>
+        <div className="flex items-center justify-between">
+          <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">This session</div>
+        </div>
+        <div className={`mt-3 flex items-center gap-2 border p-3 ${lowTime ? "border-destructive bg-destructive/10" : "border-border bg-secondary/30"}`}>
+          <Clock className={`h-4 w-4 ${lowTime ? "text-destructive" : "text-accent"}`} />
+          <div className="flex-1">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Time remaining</div>
+            <div className={`font-display text-2xl tabular-nums ${lowTime ? "text-destructive" : "text-foreground"}`}>{mm}:{ss}</div>
+          </div>
+        </div>
+        <p className="mt-2 text-[11px] text-muted-foreground">DVSA pace · {SECONDS_PER_Q}s per question.</p>
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div>
             <div className="text-xs text-muted-foreground">Answered</div>
