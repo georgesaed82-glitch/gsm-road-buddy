@@ -1,12 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { trackContactClick } from "@/lib/trackContactClick";
 
@@ -24,9 +23,9 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
   const tracked = useRef(false);
 
   useEffect(() => {
@@ -35,29 +34,17 @@ function AuthPage() {
     trackContactClick("portal_view", "learner-portal");
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = email.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      toast.error("Please enter a valid email address.");
-      return;
-    }
     setSubmitting(true);
-    const { error } = await supabase
-      .from("portal_launch_subscribers")
-      .insert({ email: trimmed });
-    setSubmitting(false);
-    if (error) {
-      if (error.code === "23505") {
-        setDone(true);
-        toast.success("You're already on the list — we'll be in touch!");
-        return;
-      }
-      toast.error("Something went wrong. Please try again.");
+    if (password.trim() === "7777") {
+      window.sessionStorage.setItem("portal_unlocked", "1");
+      toast.success("Access granted. Welcome to the learner portal.");
+      navigate({ to: "/dashboard" });
       return;
     }
-    setDone(true);
-    toast.success("Thanks! We'll email you when the portal goes live.");
+    setSubmitting(false);
+    toast.error("Incorrect password. Email George to request access.");
   };
 
   return (
@@ -66,44 +53,48 @@ function AuthPage() {
         <CardHeader>
           <CardTitle className="font-display text-2xl">Learner portal</CardTitle>
           <CardDescription>
-            <Badge variant="secondary" className="mt-2">Coming soon</Badge>
+            <Badge variant="secondary" className="mt-2">Password protected</Badge>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            We're building a place for you to book lessons, track your progress, and manage payments online.
+            Enter your access code to view lessons, theory practice, hazard perception, and payments.
           </p>
-          {done ? (
-            <div className="rounded-md border border-border bg-muted/40 p-4 text-sm flex items-center justify-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-primary" />
-              You're on the list. We'll email you at launch.
+          <form onSubmit={handleSubmit} className="space-y-2 text-left">
+            <label className="text-sm font-medium flex items-center gap-2">
+              <Lock className="h-4 w-4" /> Access code
+            </label>
+            <div className="flex gap-2">
+              <Input
+                type="password"
+                required
+                inputMode="numeric"
+                autoComplete="off"
+                placeholder="Enter code"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={submitting}
+              />
+              <Button type="submit" disabled={submitting}>
+                {submitting ? "..." : "Enter"}
+              </Button>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-2 text-left">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <Mail className="h-4 w-4" /> Get notified when it's live
-              </label>
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  required
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={submitting}
-                />
-                <Button type="submit" disabled={submitting}>
-                  {submitting ? "..." : "Notify me"}
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                One email at launch. No spam, unsubscribe anytime.
-              </p>
-            </form>
-          )}
-          <p className="text-sm text-muted-foreground">
-            In the meantime, call, WhatsApp, or email us to book lessons.
-          </p>
+          </form>
+          <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left">
+            <div className="flex items-center gap-2 font-medium">
+              <Mail className="h-4 w-4 text-primary" /> Don't have access?
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Email George at{" "}
+              <a
+                href="mailto:gsmdrivingschool@outlook.com?subject=Learner%20portal%20access"
+                className="font-medium text-primary underline"
+              >
+                gsmdrivingschool@outlook.com
+              </a>{" "}
+              to request full access to the learner portal.
+            </p>
+          </div>
           <Button asChild variant="outline" className="w-full">
             <Link to="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
