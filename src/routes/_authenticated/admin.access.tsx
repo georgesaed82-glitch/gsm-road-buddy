@@ -16,10 +16,11 @@ import {
   createSubscriptionCode,
   revokeAccessCode,
   deleteAccessCode,
+  exportAccessUsesCsv,
   type AccessCodeRow,
 } from "@/lib/portal-access.functions";
 import { getAdminPassword, setAdminPassword as cacheAdminPassword } from "@/lib/admin-gate";
-import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight } from "lucide-react";
+import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight, Download } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/access")({
   component: AdminAccessPage,
@@ -147,6 +148,7 @@ function AdminAccessPage() {
   const qc = useQueryClient();
   const fetchList = useServerFn(listAccessCodes);
   const fetchUses = useServerFn(listAccessUses);
+  const exportUses = useServerFn(exportAccessUsesCsv);
   const setMaster = useServerFn(setMasterPassword);
   const createSub = useServerFn(createSubscriptionCode);
   const revoke = useServerFn(revokeAccessCode);
@@ -251,6 +253,7 @@ function AdminAccessPage() {
                 rows={subs}
                 password={password}
                 fetchUses={fetchUses}
+                exportUses={exportUses}
                 onRevoke={(id) => revokeMut.mutate(id)}
                 onDelete={(id) => deleteMut.mutate(id)}
               />
@@ -269,6 +272,7 @@ function AdminAccessPage() {
                 rows={[...admins, ...learners]}
                 password={password}
                 fetchUses={fetchUses}
+                exportUses={exportUses}
                 masterView
               />
             </CardContent>
