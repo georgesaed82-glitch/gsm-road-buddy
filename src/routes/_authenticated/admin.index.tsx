@@ -304,9 +304,10 @@ function AdminOverviewPage() {
           series={data?.registrationsSeries ?? []}
           onExport={() =>
             downloadCsv(
-              `learner-registrations-${range}d.csv`,
+              `learner-registrations.csv`,
               ["date", "count"],
               (data?.registrationsSeries ?? []).map((r) => [r.date, String(r.count)]),
+              range,
             )
           }
         />
@@ -318,9 +319,10 @@ function AdminOverviewPage() {
           series={data?.theorySeries ?? []}
           onExport={() =>
             downloadCsv(
-              `theory-users-${range}d.csv`,
+              `theory-users.csv`,
               ["date", "count"],
               (data?.theorySeries ?? []).map((r) => [r.date, String(r.count)]),
+              range,
             )
           }
         />
@@ -335,9 +337,10 @@ function AdminOverviewPage() {
               <button
                 onClick={() =>
                   downloadCsv(
-                    `recent-activity-${range}d.csv`,
+                    `recent-activity.csv`,
                     ["timestamp", "type", "label", "detail"],
                     (data?.recentActivity ?? []).map((a) => [a.at, a.type, a.label, a.sub]),
+                    range,
                   )
                 }
                 disabled={!data?.recentActivity?.length}
@@ -453,12 +456,40 @@ function delta(current?: number, previous?: number): { pct: number; direction: "
 
 type AdminAlert = { id: string; severity: "warning" | "critical"; title: string; detail: string };
 
-function downloadCsv(filename: string, headers: string[], rows: string[][]) {
+function downloadCsv(
+  baseName: string,
+  headers: string[],
+  rows: string[][],
+  rangeDays?: number,
+) {
   const esc = (v: string) => {
     const s = v ?? "";
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
-  const csv = [headers, ...rows].map((r) => r.map(esc).join(",")).join("\n");
+  let from = "";
+  let to = "";
+  let filename = baseName;
+  const preface: string[][] = [];
+  if (rangeDays && Number.isFinite(rangeDays)) {
+    const toDate = new Date();
+    const fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - (rangeDays - 1));
+    const fmt = (d: Date) => d.toISOString().slice(0, 10);
+    from = fmt(fromDate);
+    to = fmt(toDate);
+    // Inject date range into filename: foo.csv -> foo_2026-06-01_to_2026-06-29.csv
+    const dot = baseName.lastIndexOf(".");
+    filename =
+      dot > 0
+        ? `${baseName.slice(0, dot)}_${from}_to_${to}${baseName.slice(dot)}`
+        : `${baseName}_${from}_to_${to}`;
+    preface.push(["Range", from, to]);
+    preface.push([`Exported ${new Date().toISOString()}`]);
+    preface.push([]);
+  }
+  const csv = [...preface, headers, ...rows]
+    .map((r) => r.map(esc).join(","))
+    .join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
