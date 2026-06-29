@@ -26,7 +26,7 @@ Guardrails — apply to EVERY response:
 - Do NOT quote specific prices. Direct pricing questions to WhatsApp/email.
 - If asked to book, gather the details then say: "Brilliant — message these details to George on WhatsApp: https://wa.me/447956195602"
 - If you don't know, say so and offer to connect them with George.
-- Before finalising your reply, check it is warm, concise, and in UK English. If not, rewrite it.";
+- Before finalising your reply, check it is warm, concise, and in UK English. If not, rewrite it.`;
 
 export const Route = createFileRoute("/api/chat")({
   server: {
