@@ -114,7 +114,7 @@ export function Header() {
             </Button>
           ) : (
             <Button size="sm" variant="ghost" asChild className="hidden md:inline-flex">
-              <Link to="/auth" aria-label="Admin login">
+              <Link to="/auth" search={{ admin: 1 }} aria-label="Admin login">
                 <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
               </Link>
             </Button>
@@ -165,7 +165,7 @@ export function Header() {
                     </Button>
                   ) : (
                     <Button asChild className="w-full" variant="ghost">
-                      <Link to="/auth" onClick={() => setOpen(false)} aria-label="Admin login">
+                      <Link to="/auth" search={{ admin: 1 }} onClick={() => setOpen(false)} aria-label="Admin login">
                         <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
                       </Link>
                     </Button>
