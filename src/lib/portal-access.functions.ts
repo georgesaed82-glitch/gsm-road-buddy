@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 
 const BOOTSTRAP_CODE = "7777";
 
@@ -40,21 +41,82 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: boolean; subscription?: { email: string | null; expires_at: string | null } | null }> => {
     const password = (data.password || "").trim();
     if (!password) return { ok: false };
+    let req: Request | undefined;
+    try {
+      req = getRequest();
+    } catch {
+      req = undefined;
+    }
+    const logUsage = async (codeId: string, mode: "learner" | "admin") => {
+      try {
+        const supabase = await admin();
+        const ua = req?.headers.get("user-agent") ?? null;
+        const ipRaw =
+          req?.headers.get("cf-connecting-ip") ||
+          req?.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+          null;
+        let ip_hash: string | null = null;
+        if (ipRaw) {
+          const buf = await crypto.subtle.digest(
+            "SHA-256",
+            new TextEncoder().encode(ipRaw),
+          );
+          ip_hash = Array.from(new Uint8Array(buf))
+            .slice(0, 8)
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
+        }
+        await supabase.from("portal_access_uses").insert({
+          code_id: codeId,
+          mode,
+          user_agent: ua?.slice(0, 300) ?? null,
+          ip_hash,
+        });
+        const { data: row } = await supabase
+          .from("portal_access_codes")
+          .select("use_count")
+          .eq("id", codeId)
+          .maybeSingle();
+        await supabase
+          .from("portal_access_codes")
+          .update({
+            use_count: (row?.use_count ?? 0) + 1,
+            last_used_at: new Date().toISOString(),
+          })
+          .eq("id", codeId);
+      } catch {
+        /* best-effort logging */
+      }
+    };
+
     if (data.mode === "admin") {
-      return { ok: await verifyAdminPasswordServer(password) };
+      const ok = await verifyAdminPasswordServer(password);
+      if (ok) {
+        const supabase = await admin();
+        const { data: row } = await supabase
+          .from("portal_access_codes")
+          .select("id")
+          .eq("kind", "admin")
+          .eq("code", password)
+          .eq("revoked", false)
+          .maybeSingle();
+        if (row?.id) await logUsage(row.id, "admin");
+      }
+      return { ok };
     }
     const supabase = await admin();
     const nowIso = new Date().toISOString();
     // Learner master code
     const { data: row } = await supabase
       .from("portal_access_codes")
-      .select("kind,email,expires_at")
+      .select("id,kind,email,expires_at")
       .eq("code", password)
       .eq("revoked", false)
       .in("kind", ["learner", "subscription"])
       .maybeSingle();
     if (row) {
       if (row.expires_at && row.expires_at <= nowIso) return { ok: false };
+      await logUsage(row.id, "learner");
       return {
         ok: true,
         subscription: row.kind === "subscription" ? { email: row.email, expires_at: row.expires_at } : null,
@@ -78,6 +140,8 @@ export type AccessCodeRow = {
   expires_at: string | null;
   revoked: boolean;
   created_at: string;
+  use_count: number;
+  last_used_at: string | null;
   status: "active" | "expired" | "revoked";
 };
 
@@ -87,7 +151,7 @@ export const listAccessCodes = createServerFn({ method: "POST" })
     const supabase = await requireAdmin(data.password);
     const { data: rows, error } = await supabase
       .from("portal_access_codes")
-      .select("id,code,kind,email,label,expires_at,revoked,created_at")
+      .select("id,code,kind,email,label,expires_at,revoked,created_at,use_count,last_used_at")
       .order("created_at", { ascending: false });
     if (error) throw new Response(error.message, { status: 500 });
     const now = Date.now();
@@ -99,6 +163,28 @@ export const listAccessCodes = createServerFn({ method: "POST" })
         ? "expired"
         : "active",
     })) as AccessCodeRow[];
+  });
+
+export type AccessUse = {
+  id: string;
+  used_at: string;
+  mode: "learner" | "admin";
+  user_agent: string | null;
+};
+
+export const listAccessUses = createServerFn({ method: "POST" })
+  .inputValidator((d: { password: string; codeId: string; limit?: number }) => d)
+  .handler(async ({ data }): Promise<AccessUse[]> => {
+    const supabase = await requireAdmin(data.password);
+    const limit = Math.min(500, Math.max(1, data.limit ?? 100));
+    const { data: rows, error } = await supabase
+      .from("portal_access_uses")
+      .select("id,used_at,mode,user_agent")
+      .eq("code_id", data.codeId)
+      .order("used_at", { ascending: false })
+      .limit(limit);
+    if (error) throw new Response(error.message, { status: 500 });
+    return (rows ?? []) as AccessUse[];
   });
 
 function validateCode(code: string) {

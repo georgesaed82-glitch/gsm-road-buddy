@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import {
   listAccessCodes,
+  listAccessUses,
   setMasterPassword,
   createSubscriptionCode,
   revokeAccessCode,
@@ -18,7 +19,7 @@ import {
   type AccessCodeRow,
 } from "@/lib/portal-access.functions";
 import { getAdminPassword, setAdminPassword as cacheAdminPassword } from "@/lib/admin-gate";
-import { Copy, Trash2, Ban, Mail } from "lucide-react";
+import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/access")({
   component: AdminAccessPage,
@@ -28,6 +29,7 @@ function AdminAccessPage() {
   const password = getAdminPassword();
   const qc = useQueryClient();
   const fetchList = useServerFn(listAccessCodes);
+  const fetchUses = useServerFn(listAccessUses);
   const setMaster = useServerFn(setMasterPassword);
   const createSub = useServerFn(createSubscriptionCode);
   const revoke = useServerFn(revokeAccessCode);
@@ -105,53 +107,53 @@ function AdminAccessPage() {
           <CardHeader>
             <CardTitle>Issue a subscription code</CardTitle>
             <CardDescription>
-              Generate a time-limited code (e.g. 30 days) tied to a learner's email. They use it on the learner
-              portal login page. After it expires, access automatically stops.
+              Generate a time-limited code (e.g. 30 days) tied to a learner's email. They use it on the
+              learner portal login page. After it expires, access automatically stops.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <IssueForm
-              loading={issueSub.isPending}
-              onSubmit={(v) => issueSub.mutate(v)}
-            />
+            <IssueForm loading={issueSub.isPending} onSubmit={(v) => issueSub.mutate(v)} />
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Active subscription codes</CardTitle>
-            <CardDescription>{subs.length} total</CardDescription>
+            <CardTitle>Subscription codes</CardTitle>
+            <CardDescription>
+              {subs.length} total · {subs.reduce((n, r) => n + (r.use_count || 0), 0)} total logins
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {subs.length === 0 ? (
               <p className="text-sm text-muted-foreground">No subscription codes yet.</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="text-left text-xs uppercase text-muted-foreground">
-                    <tr>
-                      <th className="py-2 pr-3">Code</th>
-                      <th className="py-2 pr-3">Email</th>
-                      <th className="py-2 pr-3">Expires</th>
-                      <th className="py-2 pr-3">Status</th>
-                      <th className="py-2 pr-3 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {subs.map((r) => (
-                      <CodeRow
-                        key={r.id}
-                        row={r}
-                        onRevoke={() => revokeMut.mutate(r.id)}
-                        onDelete={() => deleteMut.mutate(r.id)}
-                      />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <CodesTable
+                rows={subs}
+                password={password}
+                fetchUses={fetchUses}
+                onRevoke={(id) => revokeMut.mutate(id)}
+                onDelete={(id) => deleteMut.mutate(id)}
+              />
             )}
           </CardContent>
         </Card>
+
+        {(admins.length > 0 || learners.length > 0) && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Master password usage</CardTitle>
+              <CardDescription>Login history for admin and learner master codes.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CodesTable
+                rows={[...admins, ...learners]}
+                password={password}
+                fetchUses={fetchUses}
+                masterView
+              />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </AdminShell>
   );
@@ -297,15 +299,89 @@ function IssueForm({
   );
 }
 
-function CodeRow({
-  row,
+type FetchUsesFn = (args: {
+  data: { password: string; codeId: string; limit?: number };
+}) => Promise<Array<{ id: string; used_at: string; mode: string; user_agent: string | null }>>;
+
+function CodesTable({
+  rows,
+  password,
+  fetchUses,
   onRevoke,
   onDelete,
+  masterView,
+}: {
+  rows: AccessCodeRow[];
+  password: string;
+  fetchUses: FetchUsesFn;
+  onRevoke?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  masterView?: boolean;
+}) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead className="text-left text-xs uppercase text-muted-foreground">
+          <tr>
+            <th className="py-2 pr-2 w-6"></th>
+            {masterView ? (
+              <>
+                <th className="py-2 pr-3">Kind</th>
+                <th className="py-2 pr-3">Code</th>
+              </>
+            ) : (
+              <>
+                <th className="py-2 pr-3">Code</th>
+                <th className="py-2 pr-3">Email</th>
+                <th className="py-2 pr-3">Expires</th>
+              </>
+            )}
+            <th className="py-2 pr-3">Uses</th>
+            <th className="py-2 pr-3">Last used</th>
+            <th className="py-2 pr-3">Status</th>
+            {!masterView && <th className="py-2 pr-3 text-right">Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <CodeRow
+              key={r.id}
+              row={r}
+              password={password}
+              fetchUses={fetchUses}
+              onRevoke={onRevoke ? () => onRevoke(r.id) : undefined}
+              onDelete={onDelete ? () => onDelete(r.id) : undefined}
+              masterView={masterView}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function CodeRow({
+  row,
+  password,
+  fetchUses,
+  onRevoke,
+  onDelete,
+  masterView,
 }: {
   row: AccessCodeRow;
-  onRevoke: () => void;
-  onDelete: () => void;
+  password: string;
+  fetchUses: FetchUsesFn;
+  onRevoke?: () => void;
+  onDelete?: () => void;
+  masterView?: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+  const uses = useQuery({
+    queryKey: ["access-uses", row.id],
+    queryFn: () => fetchUses({ data: { password, codeId: row.id, limit: 100 } }),
+    enabled: open && !!password,
+  });
+
   const mailto =
     row.email &&
     `mailto:${row.email}?subject=${encodeURIComponent(
@@ -315,51 +391,112 @@ function CodeRow({
         (row.expires_at ? `Valid until: ${new Date(row.expires_at).toLocaleString()}\n` : "") +
         `\nLog in at https://gsmdrivingschool.com/auth\n\n— George School of Motoring`,
     )}`;
+
+  const lastUsed = row.last_used_at ? new Date(row.last_used_at).toLocaleString() : "—";
+  const colSpan = masterView ? 6 : 8;
+
   return (
-    <tr className="border-t border-border align-middle">
-      <td className="py-2 pr-3 font-mono">{row.code}</td>
-      <td className="py-2 pr-3">{row.email}</td>
-      <td className="py-2 pr-3">
-        {row.expires_at ? new Date(row.expires_at).toLocaleDateString() : "—"}
-      </td>
-      <td className="py-2 pr-3">
-        <Badge
-          variant={
-            row.status === "active" ? "default" : row.status === "expired" ? "secondary" : "outline"
-          }
-        >
-          {row.status}
-        </Badge>
-      </td>
-      <td className="py-2 pr-3">
-        <div className="flex justify-end gap-1">
-          {mailto && (
-            <Button asChild variant="ghost" size="sm" title="Email code to learner">
-              <a href={mailto}>
-                <Mail className="h-3.5 w-3.5" />
-              </a>
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              navigator.clipboard.writeText(row.code);
-              toast.success("Copied");
-            }}
+    <>
+      <tr className="border-t border-border align-middle">
+        <td className="py-2 pr-2">
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            className="text-muted-foreground hover:text-foreground"
+            title={open ? "Hide history" : "Show login history"}
           >
-            <Copy className="h-3.5 w-3.5" />
-          </Button>
-          {row.status === "active" && (
-            <Button variant="ghost" size="sm" onClick={onRevoke} title="Revoke">
-              <Ban className="h-3.5 w-3.5" />
-            </Button>
-          )}
-          <Button variant="ghost" size="sm" onClick={onDelete} title="Delete">
-            <Trash2 className="h-3.5 w-3.5 text-destructive" />
-          </Button>
-        </div>
-      </td>
-    </tr>
+            {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          </button>
+        </td>
+        {masterView ? (
+          <>
+            <td className="py-2 pr-3 capitalize">{row.kind}</td>
+            <td className="py-2 pr-3 font-mono">{row.code}</td>
+          </>
+        ) : (
+          <>
+            <td className="py-2 pr-3 font-mono">{row.code}</td>
+            <td className="py-2 pr-3">{row.email}</td>
+            <td className="py-2 pr-3">
+              {row.expires_at ? new Date(row.expires_at).toLocaleDateString() : "—"}
+            </td>
+          </>
+        )}
+        <td className="py-2 pr-3 tabular-nums">{row.use_count}</td>
+        <td className="py-2 pr-3 text-muted-foreground">{lastUsed}</td>
+        <td className="py-2 pr-3">
+          <Badge
+            variant={
+              row.status === "active" ? "default" : row.status === "expired" ? "secondary" : "outline"
+            }
+          >
+            {row.status}
+          </Badge>
+        </td>
+        {!masterView && (
+          <td className="py-2 pr-3">
+            <div className="flex justify-end gap-1">
+              {mailto && (
+                <Button asChild variant="ghost" size="sm" title="Email code to learner">
+                  <a href={mailto}>
+                    <Mail className="h-3.5 w-3.5" />
+                  </a>
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  navigator.clipboard.writeText(row.code);
+                  toast.success("Copied");
+                }}
+              >
+                <Copy className="h-3.5 w-3.5" />
+              </Button>
+              {row.status === "active" && onRevoke && (
+                <Button variant="ghost" size="sm" onClick={onRevoke} title="Revoke">
+                  <Ban className="h-3.5 w-3.5" />
+                </Button>
+              )}
+              {onDelete && (
+                <Button variant="ghost" size="sm" onClick={onDelete} title="Delete">
+                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                </Button>
+              )}
+            </div>
+          </td>
+        )}
+      </tr>
+      {open && (
+        <tr className="border-t border-border bg-muted/30">
+          <td colSpan={colSpan} className="px-3 py-3">
+            <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+              <History className="h-3.5 w-3.5" /> Login history
+            </div>
+            {uses.isLoading ? (
+              <p className="mt-2 text-sm text-muted-foreground">Loading…</p>
+            ) : uses.data && uses.data.length > 0 ? (
+              <ul className="mt-2 space-y-1 text-sm">
+                {uses.data.map((u) => (
+                  <li key={u.id} className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span className="font-mono tabular-nums">
+                      {new Date(u.used_at).toLocaleString()}
+                    </span>
+                    <Badge variant="outline" className="capitalize">{u.mode}</Badge>
+                    {u.user_agent && (
+                      <span className="text-xs text-muted-foreground truncate max-w-[420px]">
+                        {u.user_agent}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-sm text-muted-foreground">No logins recorded yet.</p>
+            )}
+          </td>
+        </tr>
+      )}
+    </>
   );
 }
