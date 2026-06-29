@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Menu, Mail, Lock, LogOut, ChevronDown, ChevronUp, BookOpen, Eye, GraduationCap, LayoutDashboard } from "lucide-react";
+import { Menu, Mail, Lock, LogOut, ChevronDown, ChevronUp, BookOpen, Eye, GraduationCap, LayoutDashboard, Download } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ const navLinks = [
   { to: "/pricing", label: "Pricing" },
   { to: "/reviews", label: "Reviews" },
   { to: "/contact", label: "Contact" },
+  { to: "/#download-app", label: "Download app", icon: Download },
 ];
 
 const portalLinks = [
@@ -90,7 +91,8 @@ export function Header() {
 
         <nav className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => {
-            const active = pathname === link.to;
+            const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
+            const Icon = link.icon;
             return (
               <Link
                 key={link.to}
@@ -100,6 +102,7 @@ export function Header() {
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
+                {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
                 {link.label}
                 {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
               </Link>
@@ -183,19 +186,24 @@ export function Header() {
                   </div>
                 </Link>
                 <nav className="flex flex-col">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.to}
-                      to={link.to}
-                      onClick={() => setOpen(false)}
-                      className={cn(
-                        "flex items-center gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors",
-                        pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {navLinks.map((link) => {
+                    const Icon = link.icon;
+                    const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
+                    return (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          "flex items-center gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors",
+                          active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        {Icon && <Icon className="h-4 w-4" aria-hidden="true" />}
+                        {link.label}
+                      </Link>
+                    );
+                  })}
 
                   <Collapsible open={portalOpen} onOpenChange={setPortalOpen}>
                     <CollapsibleTrigger asChild>
