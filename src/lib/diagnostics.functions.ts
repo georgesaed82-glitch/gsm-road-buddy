@@ -89,8 +89,16 @@ export const runDiagnostics = createServerFn({ method: "POST" })
     // Tables
     for (const table of TABLES) {
       try {
+        const client = supabaseAdmin as unknown as {
+          from: (t: string) => {
+            select: (
+              cols: string,
+              opts: { count: "exact"; head: true },
+            ) => Promise<{ count: number | null; error: { message: string } | null }>;
+          };
+        };
         const { value, ms } = await timed(() =>
-          supabaseAdmin.from(table).select("*", { count: "exact", head: true }),
+          client.from(table).select("*", { count: "exact", head: true }),
         );
         if (value.error) {
           results.push({
