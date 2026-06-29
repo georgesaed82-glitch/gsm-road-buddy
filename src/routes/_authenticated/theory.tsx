@@ -88,6 +88,7 @@ function TheoryPage() {
 
 function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }) {
   const queryClient = useQueryClient();
+  const category = theoryCategories.find((c) => c.slug === slug);
   const questions = sampleTheoryQuestions.filter((q) => q.category === slug);
   const pool = questions.length > 0 ? questions : sampleTheoryQuestions;
   const [idx, setIdx] = useState(0);
@@ -136,6 +137,18 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
       <div className="border border-border bg-card p-6 sm:p-8">
+        {category && category.keyPoints.length > 0 && (
+          <div className="mb-6 border border-border bg-secondary/40 p-4">
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              <Lightbulb className="h-3.5 w-3.5 text-accent" /> Key points to remember
+            </div>
+            <ul className="mt-2 space-y-1.5 text-sm text-foreground">
+              {category.keyPoints.map((kp) => (
+                <li key={kp} className="flex gap-2"><span className="text-accent">·</span><span>{kp}</span></li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div className="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground">
           <span>Question {idx + 1}</span>
           <button onClick={onExit} className="hover:text-foreground">Back to categories →</button>
@@ -210,5 +223,61 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
       <div className={`text-[11px] uppercase tracking-[0.18em] ${accent ? "opacity-80" : "text-muted-foreground"}`}>{label}</div>
       <div className="mt-3 font-display text-3xl">{value}</div>
     </div>
+  );
+}
+
+function StudyPack() {
+  const facts = [
+    { icon: Target, label: "Pass mark", value: "43 / 50 (86%)" },
+    { icon: Clock, label: "Time allowed", value: "57 minutes" },
+    { icon: Eye2, label: "Hazard clips", value: "14 clips · 75 mark" },
+    { icon: ShieldCheck, label: "Certificate valid", value: "2 years" },
+  ];
+  return (
+    <section className="mt-10 border border-border bg-card">
+      <header className="flex items-center gap-3 border-b border-border bg-secondary/40 px-6 py-4">
+        <FileText className="h-5 w-5 text-accent" />
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">GSM Information pack</div>
+          <h2 className="font-display text-xl text-foreground">Preparing for your theory test</h2>
+        </div>
+      </header>
+      <div className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
+        {facts.map((f) => (
+          <div key={f.label} className="bg-card p-4">
+            <f.icon className="h-4 w-4 text-accent" />
+            <div className="mt-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{f.label}</div>
+            <div className="mt-1 text-sm font-medium text-foreground">{f.value}</div>
+          </div>
+        ))}
+      </div>
+      <div className="grid gap-6 p-6 lg:grid-cols-2">
+        <div>
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <Lightbulb className="h-4 w-4 text-accent" /> How the test works
+          </div>
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <li>· <span className="text-foreground">Part 1:</span> 50 multiple-choice questions across the 14 topics. You need 43 to pass.</li>
+            <li>· <span className="text-foreground">Part 2:</span> 14 hazard-perception clips. One has 2 hazards, the rest have 1. Up to 5 points per hazard.</li>
+            <li>· You must pass both parts in the same sitting. Hazard pass mark is 44/75.</li>
+            <li>· Bring your provisional licence. No phones in the test room.</li>
+          </ul>
+        </div>
+        <div>
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <Sparkles className="h-4 w-4 text-accent" /> George's 2-week study plan
+          </div>
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <li>· <span className="text-foreground">Days 1–4:</span> Read the key points for 3–4 categories per day.</li>
+            <li>· <span className="text-foreground">Days 5–9:</span> 50-question mock sessions. Review every wrong answer.</li>
+            <li>· <span className="text-foreground">Days 10–12:</span> Hazard clips daily — aim for 4/5 on each.</li>
+            <li>· <span className="text-foreground">Days 13–14:</span> Two full mocks. Book the test when you score 47+ twice.</li>
+          </ul>
+        </div>
+      </div>
+      <div className="border-t border-border bg-secondary/30 px-6 py-4 text-xs text-muted-foreground">
+        Stuck on a topic? WhatsApp George on 07961 585231 — happy to walk you through it before your next lesson.
+      </div>
+    </section>
   );
 }
