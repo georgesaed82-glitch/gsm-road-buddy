@@ -101,27 +101,27 @@ export function AIChatWidget() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Open AI assistant"
-          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-primary-foreground shadow-xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
+          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground shadow-xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
         >
-          <MessageCircle className="h-5 w-5" />
+          <MessageCircle className="h-6 w-6 sm:h-5 sm:w-5" />
           <span className="hidden text-sm font-medium sm:inline">Ask GSM</span>
         </button>
       )}
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed inset-x-3 bottom-3 z-50 flex max-h-[80vh] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[380px]">
+        <div className="fixed inset-x-3 bottom-3 top-3 z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-auto sm:max-h-[80vh] sm:w-[380px]">
           <div className="flex items-center justify-between border-b border-border bg-primary px-4 py-3 text-primary-foreground">
             <div>
               <p className="text-sm font-semibold">GSM Assistant</p>
               <p className="text-xs opacity-80">Replies in seconds · powered by AI</p>
             </div>
-            <button onClick={() => setOpen(false)} aria-label="Close chat" className="rounded-md p-1 hover:bg-white/10">
+            <button onClick={() => setOpen(false)} aria-label="Close chat" className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/10">
               <X className="h-5 w-5" />
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-4">
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
                 <div
@@ -143,12 +143,12 @@ export function AIChatWidget() {
           </div>
 
           {messages.length <= 1 && (
-            <div className="flex flex-wrap gap-1.5 px-3 pb-2">
+            <div className="flex flex-wrap gap-2 px-4 pb-3">
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-foreground transition-colors hover:bg-accent"
+                  className="rounded-full border border-border bg-muted px-3.5 py-2 text-sm text-foreground transition-colors hover:bg-accent active:scale-95"
                 >
                   {s}
                 </button>
@@ -161,7 +161,7 @@ export function AIChatWidget() {
               e.preventDefault();
               send(input);
             }}
-            className="flex items-end gap-2 border-t border-border bg-background px-3 py-3"
+            className="flex items-end gap-2 border-t border-border bg-background px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3"
           >
             <textarea
               value={input}
@@ -174,15 +174,15 @@ export function AIChatWidget() {
               }}
               rows={1}
               placeholder="Ask about lessons, theory, booking…"
-              className="max-h-32 flex-1 resize-none rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              className="max-h-32 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-3 text-base outline-none focus:border-primary sm:text-sm"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
               aria-label="Send"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground disabled:opacity-50"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-5 w-5 sm:h-4 sm:w-4" />
             </button>
           </form>
         </div>
