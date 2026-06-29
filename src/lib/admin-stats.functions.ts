@@ -292,3 +292,41 @@ export const getContactClicks = createServerFn({ method: "POST" })
     if (error) throw new Response(error.message, { status: 500 });
     return (rows ?? []) as ContactClickRow[];
   });
+
+export type AdminAlertSubscriber = { id: string; email: string; created_at: string };
+
+export const listAdminAlertSubscribers = createServerFn({ method: "POST" })
+  .inputValidator((d: { password: string }) => d)
+  .handler(async ({ data }): Promise<AdminAlertSubscriber[]> => {
+    const supabase = await adminClient(data.password);
+    const { data: rows, error } = await supabase
+      .from("admin_alert_subscribers")
+      .select("id,email,created_at")
+      .order("created_at", { ascending: false });
+    if (error) throw new Response(error.message, { status: 500 });
+    return (rows ?? []) as AdminAlertSubscriber[];
+  });
+
+export const subscribeAdminAlert = createServerFn({ method: "POST" })
+  .inputValidator((d: { password: string; email: string }) => d)
+  .handler(async ({ data }) => {
+    const supabase = await adminClient(data.password);
+    const email = data.email.trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      throw new Response("Invalid email", { status: 400 });
+    }
+    const { error } = await supabase
+      .from("admin_alert_subscribers")
+      .upsert({ email }, { onConflict: "email" });
+    if (error) throw new Response(error.message, { status: 500 });
+    return { ok: true };
+  });
+
+export const unsubscribeAdminAlert = createServerFn({ method: "POST" })
+  .inputValidator((d: { password: string; id: string }) => d)
+  .handler(async ({ data }) => {
+    const supabase = await adminClient(data.password);
+    const { error } = await supabase.from("admin_alert_subscribers").delete().eq("id", data.id);
+    if (error) throw new Response(error.message, { status: 500 });
+    return { ok: true };
+  });
