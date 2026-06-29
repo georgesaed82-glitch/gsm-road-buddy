@@ -480,6 +480,26 @@ function MockExam({ onExit }: { onExit: () => void }) {
     );
     const pct = pool.length ? Math.round((correctCount / pool.length) * 100) : 0;
     const passed = pct >= 86;
+    const byTopic = (() => {
+      const map = new Map<string, { total: number; correct: number; answered: number }>();
+      pool.forEach((qq, i) => {
+        const slug = qq.category;
+        const entry = map.get(slug) ?? { total: 0, correct: 0, answered: 0 };
+        entry.total += 1;
+        const a = answers[i];
+        if (a !== null) entry.answered += 1;
+        if (a !== null && a === qq.correctIndex) entry.correct += 1;
+        map.set(slug, entry);
+      });
+      return Array.from(map.entries())
+        .map(([slug, v]) => ({
+          slug,
+          title: theoryCategories.find((c) => c.slug === slug)?.title ?? slug,
+          ...v,
+          pct: v.total ? Math.round((v.correct / v.total) * 100) : 0,
+        }))
+        .sort((a, b) => a.pct - b.pct);
+    })();
     const restart = () => {
       const fresh = shuffle(sampleTheoryQuestions).slice(0, Math.min(MOCK_TOTAL, sampleTheoryQuestions.length));
       setPool(fresh);
@@ -500,6 +520,33 @@ function MockExam({ onExit }: { onExit: () => void }) {
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Button onClick={restart} className="rounded-none" size="sm">Take another mock →</Button>
           <Button onClick={onExit} variant="outline" className="rounded-none" size="sm">Back to theory</Button>
+        </div>
+        <div className="mt-8 border-t border-border pt-6">
+          <h3 className="font-display text-lg">Performance by topic</h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Weak topics rank first. Aim for 86%+ on every category.
+          </p>
+          <ul className="mt-4 space-y-3">
+            {byTopic.map((t) => {
+              const topicPassed = t.pct >= 86;
+              const noQs = t.total === 0;
+              return (
+                <li key={t.slug} className="border border-border p-3">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <div className="text-sm font-medium text-foreground">{t.title}</div>
+                    <div className={`font-display text-lg tabular-nums ${noQs ? "text-muted-foreground" : topicPassed ? "text-success" : "text-destructive"}`}>
+                      {noQs ? "—" : `${t.pct}%`}
+                    </div>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between text-[11px] text-muted-foreground">
+                    <span>{t.correct} / {t.total} correct{t.answered < t.total ? ` · ${t.total - t.answered} unanswered` : ""}</span>
+                    <span>{topicPassed ? "Pass" : noQs ? "" : "Below pass mark"}</span>
+                  </div>
+                  <Progress value={t.pct} className="mt-2 h-1" />
+                </li>
+              );
+            })}
+          </ul>
         </div>
         <div className="mt-8 border-t border-border pt-6">
           <h3 className="font-display text-lg">Review every question</h3>
