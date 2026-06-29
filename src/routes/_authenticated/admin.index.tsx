@@ -7,6 +7,8 @@ import {
   listAdminAlertSubscribers,
   subscribeAdminAlert,
   unsubscribeAdminAlert,
+  exportAdminCsv,
+  type AdminCsvDataset,
 } from "@/lib/admin-stats.functions";
 import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
@@ -69,7 +71,21 @@ function AdminOverviewPage() {
   const fetchSubs = useServerFn(listAdminAlertSubscribers);
   const subscribe = useServerFn(subscribeAdminAlert);
   const unsubscribe = useServerFn(unsubscribeAdminAlert);
+  const exportCsv = useServerFn(exportAdminCsv);
   const qc = useQueryClient();
+
+  const [exporting, setExporting] = useState<AdminCsvDataset | null>(null);
+  const downloadDataset = async (dataset: AdminCsvDataset) => {
+    try {
+      setExporting(dataset);
+      const res = await exportCsv({ data: { password: getAdminPassword(), dataset, rangeDays: range } });
+      triggerCsvDownload(res.filename, res.csv);
+    } catch (e) {
+      console.error("CSV export failed", e);
+    } finally {
+      setExporting(null);
+    }
+  };
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-overview-stats", range],
