@@ -187,6 +187,71 @@ export const listAccessUses = createServerFn({ method: "POST" })
     return (rows ?? []) as AccessUse[];
   });
 
+function csvEscape(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  const s = String(value);
+  if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+export const exportAccessUsesCsv = createServerFn({ method: "POST" })
+  .inputValidator((d: { password: string; codeId: string }) => d)
+  .handler(async ({ data }): Promise<{ filename: string; csv: string }> => {
+    const supabase = await requireAdmin(data.password);
+    const { data: codeRow, error: codeErr } = await supabase
+      .from("portal_access_codes")
+      .select("id,code,kind,email,label,expires_at,revoked,created_at,use_count,last_used_at")
+      .eq("id", data.codeId)
+      .maybeSingle();
+    if (codeErr) throw new Response(codeErr.message, { status: 500 });
+    if (!codeRow) throw new Response("Code not found", { status: 404 });
+
+    const { data: rows, error } = await supabase
+      .from("portal_access_uses")
+      .select("id,used_at,mode,user_agent,ip_hash")
+      .eq("code_id", data.codeId)
+      .order("used_at", { ascending: false })
+      .limit(5000);
+    if (error) throw new Response(error.message, { status: 500 });
+
+    const generatedAt = new Date().toISOString();
+    const meta = [
+      ["# Portal access login history"],
+      ["# Code", codeRow.code],
+      ["# Kind", codeRow.kind],
+      ["# Email", codeRow.email ?? ""],
+      ["# Label", codeRow.label ?? ""],
+      ["# Created", codeRow.created_at ?? ""],
+      ["# Expires", codeRow.expires_at ?? ""],
+      ["# Revoked", String(codeRow.revoked)],
+      ["# Total logins", String(codeRow.use_count ?? 0)],
+      ["# Last used", codeRow.last_used_at ?? ""],
+      ["# Exported at", generatedAt],
+      ["# Rows", String(rows?.length ?? 0)],
+    ];
+    const header = ["used_at_iso", "used_at_local", "mode", "user_agent", "ip_hash"];
+    const body = (rows ?? []).map((r: any) => [
+      r.used_at,
+      new Date(r.used_at).toLocaleString("en-GB", { timeZone: "Europe/London" }),
+      r.mode,
+      r.user_agent ?? "",
+      r.ip_hash ?? "",
+    ]);
+
+    const lines = [
+      ...meta.map((row) => row.map(csvEscape).join(",")),
+      "",
+      header.join(","),
+      ...body.map((row) => row.map(csvEscape).join(",")),
+    ];
+    const csv = lines.join("\n");
+
+    const safeCode = (codeRow.code || "code").replace(/[^a-zA-Z0-9_-]+/g, "_");
+    const datePart = generatedAt.slice(0, 10);
+    const filename = `access-logins_${safeCode}_${datePart}.csv`;
+    return { filename, csv };
+  });
+
 function validateCode(code: string) {
   const trimmed = (code || "").trim();
   if (trimmed.length < 4 || trimmed.length > 64) {
