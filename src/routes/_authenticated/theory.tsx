@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { theoryCategories, sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, BookOpen } from "lucide-react";
+import { CheckCircle2, XCircle, BookOpen, FileText, Lightbulb, Sparkles, Target, Clock, ShieldCheck, Eye as Eye2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/theory")({
   head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
@@ -45,11 +45,13 @@ function TheoryPage() {
         <Stat label="Categories started" value={`${progress.length} / ${theoryCategories.length}`} />
       </div>
 
-      <p className="mt-10 max-w-2xl text-base text-muted-foreground">
-        Pick a category and revise — your progress is saved automatically. Each category includes sample questions in the DVSA style with full explanations.
-      </p>
+      <StudyPack />
 
-      <div className="mt-8 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
+      <h2 className="mt-12 font-display text-2xl">All 14 DVSA categories</h2>
+      <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+        Pick a category to revise. Each one has key points to learn first, then DVSA-style questions with explanations. Your progress saves automatically.
+      </p>
+      <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
         {theoryCategories.map((c) => {
           const p = progress.find((x) => x.category_slug === c.slug);
           const answered = p?.questions_answered ?? 0;
