@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { AIChatWidget } from "../components/AIChatWidget";
+import { PageViewTracker } from "../components/PageViewTracker";
 
 
 function NotFoundComponent() {
@@ -225,6 +226,7 @@ function RootComponent() {
         </main>
         <Footer />
         <AIChatWidget />
+        <PageViewTracker />
       </div>
     </QueryClientProvider>
   );
