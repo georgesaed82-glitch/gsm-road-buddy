@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound } from "lucide-react";
+import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -11,6 +11,7 @@ const items = [
   { to: "/admin/access", label: "Access codes", icon: KeyRound },
   { to: "/admin/email", label: "Email settings", icon: Mail },
   { to: "/admin/hazard-videos", label: "Hazard videos", icon: Film },
+  { to: "/admin/diagnostics", label: "Diagnostics", icon: Activity },
 ] as const;
 
 export function AdminShell({ children, title, eyebrow }: { children: ReactNode; title: string; eyebrow?: string }) {
