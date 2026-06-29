@@ -219,6 +219,15 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
                   </span>
                   <span className="text-sm leading-relaxed">{opt}</span>
                 </button>
+                {answered && q.optionExplanations?.[i] && (
+                  <p className={`mt-2 pl-9 pr-2 text-xs leading-relaxed ${
+                    state === "correct" ? "text-success" :
+                    state === "wrong" ? "text-destructive" :
+                    "text-muted-foreground"
+                  }`}>
+                    {q.optionExplanations[i]}
+                  </p>
+                )}
               </li>
             );
           })}
