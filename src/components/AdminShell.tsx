@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
 const items = [
@@ -21,8 +20,10 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
     queryClient.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem("admin_unlocked");
+    }
+    navigate({ to: "/", replace: true });
   };
 
   return (
