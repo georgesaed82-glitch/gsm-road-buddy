@@ -49,7 +49,7 @@ export function AIChatWidget() {
 
       if (!res.ok || !res.body) {
         const errText = await res.text().catch(() => "Sorry, something went wrong.");
-        setMessages((m) => [...m, { role: "assistant", content: errText || "Sorry, I had trouble responding. Please WhatsApp George on +44 7956 195602." }]);
+        setMessages((m) => [...m, { role: "assistant", content: errText || "Sorry, I had trouble responding. Please WhatsApp George on +44 7961 585231." }]);
         return;
       }
 
@@ -86,7 +86,7 @@ export function AIChatWidget() {
       }
     } catch (e) {
       if ((e as Error).name !== "AbortError") {
-        setMessages((m) => [...m, { role: "assistant", content: "Connection issue. Please try again or WhatsApp George on +44 7956 195602." }]);
+        setMessages((m) => [...m, { role: "assistant", content: "Connection issue. Please try again or WhatsApp George on +44 7961 585231." }]);
       }
     } finally {
       setLoading(false);
