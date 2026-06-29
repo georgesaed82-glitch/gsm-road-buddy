@@ -453,6 +453,23 @@ function delta(current?: number, previous?: number): { pct: number; direction: "
 
 type AdminAlert = { id: string; severity: "warning" | "critical"; title: string; detail: string };
 
+function downloadCsv(filename: string, headers: string[], rows: string[][]) {
+  const esc = (v: string) => {
+    const s = v ?? "";
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const csv = [headers, ...rows].map((r) => r.map(esc).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function computeAlerts(data: any, hasError: boolean): AdminAlert[] {
   const out: AdminAlert[] = [];
   if (hasError) {
