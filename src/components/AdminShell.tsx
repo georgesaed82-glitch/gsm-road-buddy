@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail } from "lucide-react";
+import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ const items = [
   { to: "/admin/contact-clicks", label: "Contact clicks", icon: BarChart3 },
   { to: "/admin/admins", label: "Admin accounts", icon: ShieldCheck },
   { to: "/admin/email", label: "Email settings", icon: Mail },
+  { to: "/admin/hazard-videos", label: "Hazard videos", icon: Film },
 ] as const;
 
 export function AdminShell({ children, title, eyebrow }: { children: ReactNode; title: string; eyebrow?: string }) {
