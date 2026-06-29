@@ -427,10 +427,15 @@ type FetchUsesFn = (args: {
   data: { password: string; codeId: string; limit?: number };
 }) => Promise<Array<{ id: string; used_at: string; mode: string; user_agent: string | null }>>;
 
+type ExportUsesFn = (args: {
+  data: { password: string; codeId: string };
+}) => Promise<{ filename: string; csv: string }>;
+
 function CodesTable({
   rows,
   password,
   fetchUses,
+  exportUses,
   onRevoke,
   onDelete,
   masterView,
@@ -438,6 +443,7 @@ function CodesTable({
   rows: AccessCodeRow[];
   password: string;
   fetchUses: FetchUsesFn;
+  exportUses: ExportUsesFn;
   onRevoke?: (id: string) => void;
   onDelete?: (id: string) => void;
   masterView?: boolean;
@@ -473,6 +479,7 @@ function CodesTable({
               row={r}
               password={password}
               fetchUses={fetchUses}
+              exportUses={exportUses}
               onRevoke={onRevoke ? () => onRevoke(r.id) : undefined}
               onDelete={onDelete ? () => onDelete(r.id) : undefined}
               masterView={masterView}
@@ -488,6 +495,7 @@ function CodeRow({
   row,
   password,
   fetchUses,
+  exportUses,
   onRevoke,
   onDelete,
   masterView,
@@ -495,16 +503,40 @@ function CodeRow({
   row: AccessCodeRow;
   password: string;
   fetchUses: FetchUsesFn;
+  exportUses: ExportUsesFn;
   onRevoke?: () => void;
   onDelete?: () => void;
   masterView?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const uses = useQuery({
     queryKey: ["access-uses", row.id],
     queryFn: () => fetchUses({ data: { password, codeId: row.id, limit: 100 } }),
     enabled: open && !!password,
   });
+
+  const handleExport = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      const { filename, csv } = await exportUses({ data: { password, codeId: row.id } });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success("Login history exported");
+    } catch (e: any) {
+      toast.error(e?.message || "Could not export login history");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const mailto =
     row.email &&
@@ -564,6 +596,15 @@ function CodeRow({
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={handleExport}
+                disabled={exporting}
+                title="Export login history CSV"
+              >
+                <Download className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => {
                   navigator.clipboard.writeText(row.code);
                   toast.success("Copied");
@@ -588,8 +629,19 @@ function CodeRow({
       {open && (
         <tr className="border-t border-border bg-muted/30">
           <td colSpan={colSpan} className="px-3 py-3">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
-              <History className="h-3.5 w-3.5" /> Login history
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+                <History className="h-3.5 w-3.5" /> Login history
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExport}
+                disabled={exporting}
+              >
+                <Download className="mr-1.5 h-3.5 w-3.5" />
+                {exporting ? "Exporting…" : "Export CSV"}
+              </Button>
             </div>
             {uses.isLoading ? (
               <p className="mt-2 text-sm text-muted-foreground">Loading…</p>
