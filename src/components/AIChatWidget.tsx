@@ -144,7 +144,7 @@ export function AIChatWidget() {
                 <div
                   className={
                     m.role === "user"
-                      ? "max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-sm text-primary-foreground"
+                      ? "max-w-[85%] rounded-2xl rounded-br-sm bg-red-600 px-3 py-2 text-sm text-white"
                       : "max-w-[90%] whitespace-pre-wrap text-sm leading-relaxed text-foreground"
                   }
                 >
