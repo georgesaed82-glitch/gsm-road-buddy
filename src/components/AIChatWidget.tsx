@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -120,32 +121,43 @@ export function AIChatWidget() {
           aria-label="Open AI assistant"
           className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-red-600 text-white shadow-xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
         >
-          <MessageCircle className="h-6 w-6 sm:h-5 sm:w-5" />
+          <MessageCircle className="h-6 w-6 shrink-0 sm:h-5 sm:w-5" />
           <span className="hidden text-sm font-medium sm:inline">Ask GSM</span>
         </button>
       )}
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed inset-x-3 bottom-3 top-3 z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-auto sm:max-h-[80vh] sm:w-[380px]">
-          <div className="flex items-center justify-between border-b border-border bg-red-600 px-4 py-3 text-white">
-            <div>
-              <p className="text-sm font-semibold">GSM Assistant</p>
-              <p className="text-xs opacity-80">Replies in seconds · powered by AI</p>
+        <div className="fixed inset-x-2 bottom-2 top-2 z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-auto sm:max-h-[80vh] sm:w-[380px]">
+          {/* Header */}
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-red-600 px-3 py-3 text-white sm:px-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-white/30 bg-white shadow-sm">
+                <img src={gsmLogo.url} alt="GSM" className="h-full w-full object-cover" />
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold leading-tight">GSM Assistant</p>
+                <p className="truncate text-xs opacity-90">Replies in seconds · powered by AI</p>
+              </div>
             </div>
-            <button onClick={() => setOpen(false)} aria-label="Close chat" className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/10">
-              <X className="h-5 w-5" />
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close chat"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-white/10"
+            >
+              <X className="h-5 w-5 shrink-0" />
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+          {/* Messages */}
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3 sm:px-4 sm:py-4">
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
                 <div
                   className={
                     m.role === "user"
-                      ? "max-w-[85%] rounded-2xl rounded-br-sm bg-red-600 px-3 py-2 text-sm text-white"
-                      : "max-w-[90%] whitespace-pre-wrap text-sm leading-relaxed text-foreground"
+                      ? "max-w-[80%] rounded-2xl rounded-br-sm bg-red-600 px-3 py-2 text-sm text-white sm:max-w-[75%]"
+                      : "max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-sm leading-relaxed text-foreground sm:max-w-[80%]"
                   }
                 >
                   {m.content || (loading && i === messages.length - 1 ? "…" : "")}
@@ -154,18 +166,19 @@ export function AIChatWidget() {
             ))}
             {loading && messages[messages.length - 1]?.role === "user" && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> thinking…
+                <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> thinking…
               </div>
             )}
           </div>
 
+          {/* Suggestions */}
           {messages.length <= 1 && (
-            <div className="flex flex-wrap gap-2 px-4 pb-3">
+            <div className="flex flex-wrap gap-2 px-3 pb-3 sm:px-4">
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="rounded-full border border-border bg-muted px-3.5 py-2 text-sm text-foreground transition-colors hover:bg-accent active:scale-95"
+                  className="rounded-full border border-border bg-muted px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent active:scale-95"
                 >
                   {s}
                 </button>
@@ -173,6 +186,7 @@ export function AIChatWidget() {
             </div>
           )}
 
+          {/* Input */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -191,15 +205,15 @@ export function AIChatWidget() {
               }}
               rows={1}
               placeholder="Ask about lessons, theory, booking…"
-              className="max-h-32 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-3 text-base outline-none focus:border-red-600 sm:text-sm"
+              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl border border-border bg-background px-3 py-3 text-base leading-snug outline-none focus:border-red-600 sm:px-4 sm:text-sm"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
               aria-label="Send"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white transition-transform active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-red-600 text-white transition-transform active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
             >
-              <Send className="h-5 w-5 sm:h-4 sm:w-4" />
+              <Send className="h-5 w-5 shrink-0 sm:h-4 sm:w-4" />
             </button>
           </form>
         </div>
