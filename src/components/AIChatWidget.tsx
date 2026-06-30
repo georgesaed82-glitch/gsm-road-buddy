@@ -29,7 +29,8 @@ const GREETING: Msg = {
     "Hi! I'm George's AI assistant 👋 I can answer questions about lessons, run a theory practice quiz, or help you book. What can I help with?",
 };
 
-function getFocusableElements(container: HTMLElement) {
+function getFocusableElements(container: HTMLElement | null) {
+  if (!container) return [];
   return Array.from(
     container.querySelectorAll<HTMLElement>(
       'button, [href], input, textarea, select, details, [tabindex]:not([tabindex="-1"])'
