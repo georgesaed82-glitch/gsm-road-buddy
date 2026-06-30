@@ -128,7 +128,7 @@ export function AIChatWidget() {
       {/* Chat panel */}
       {open && (
         <div className="fixed inset-x-3 bottom-3 top-3 z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-auto sm:max-h-[80vh] sm:w-[380px]">
-          <div className="flex items-center justify-between border-b border-border bg-primary px-4 py-3 text-primary-foreground">
+          <div className="flex items-center justify-between border-b border-border bg-red-600 px-4 py-3 text-white">
             <div>
               <p className="text-sm font-semibold">GSM Assistant</p>
               <p className="text-xs opacity-80">Replies in seconds · powered by AI</p>
