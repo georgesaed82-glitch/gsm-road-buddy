@@ -277,7 +277,8 @@ export function AIChatWidget() {
               rows={1}
               placeholder="Ask about lessons, theory, booking…"
               aria-label="Type your message"
-              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl border border-border bg-background px-3 py-3 text-base leading-snug outline-none focus:border-red-600 focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-1 sm:px-4 sm:text-sm"
+              style={{ fontSize: "16px" }}
+              className="ai-chat-input max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl border border-border bg-background px-3 py-3 leading-snug outline-none focus:border-red-600 focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-1 sm:px-4"
             />
             <button
               type="submit"
