@@ -29,12 +29,23 @@ const GREETING: Msg = {
     "Hi! I'm George's AI assistant 👋 I can answer questions about lessons, run a theory practice quiz, or help you book. What can I help with?",
 };
 
+function getFocusableElements(container: HTMLElement | null) {
+  if (!container) return [];
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'button, [href], input, textarea, select, details, [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+}
+
 export function AIChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const floatingButtonRef = useRef<HTMLButtonElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -44,6 +55,51 @@ export function AIChatWidget() {
   useEffect(() => {
     setMessages((current) => current.map((message) => ({ ...message, content: fixPhoneNumbers(message.content) })));
   }, []);
+
+  // When the chat panel closes, return focus to the floating trigger button.
+  useEffect(() => {
+    if (!open) {
+      const id = requestAnimationFrame(() => floatingButtonRef.current?.focus());
+      return () => cancelAnimationFrame(id);
+    }
+  }, [open]);
+
+  // Focus the input when the chat opens and keep keyboard interactions inside the panel.
+  useEffect(() => {
+    if (!open) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const textarea = panel.querySelector<HTMLTextAreaElement>("textarea");
+    textarea?.focus();
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusable = getFocusableElements(panel);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    panel.addEventListener("keydown", handleKeyDown);
+    return () => panel.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -117,6 +173,7 @@ export function AIChatWidget() {
       {/* Floating button */}
       {!open && (
         <button
+          ref={floatingButtonRef}
           onClick={() => setOpen(true)}
           aria-label="Open AI assistant"
           className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-red-600 text-white shadow-xl transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 sm:bottom-6 sm:right-6 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
@@ -128,7 +185,12 @@ export function AIChatWidget() {
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed inset-x-2 bottom-2 top-2 z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-auto sm:max-h-[80vh] sm:w-[380px]">
+        <div
+          ref={panelRef}
+          role="dialog"
+          aria-label="GSM AI assistant chat"
+          className="fixed inset-x-2 bottom-2 top-2 z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-auto sm:max-h-[80vh] sm:w-[380px]"
+        >
           {/* Header */}
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-red-600 px-3 py-3 text-white sm:px-4">
             <div className="flex min-w-0 items-center gap-3">
@@ -150,14 +212,23 @@ export function AIChatWidget() {
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3 sm:px-4 sm:py-4">
+          <div
+            ref={scrollRef}
+            role="log"
+            aria-live="polite"
+            aria-label="Chat messages"
+            className="flex-1 space-y-3 overflow-y-auto px-3 py-3 sm:px-4 sm:py-4"
+          >
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
                 <div
+                  tabIndex={0}
+                  role="listitem"
+                  aria-label={`${m.role} message`}
                   className={
                     m.role === "user"
-                      ? "max-w-[80%] rounded-2xl rounded-br-sm bg-red-600 px-3 py-2 text-sm text-white sm:max-w-[75%]"
-                      : "max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-sm leading-relaxed text-foreground sm:max-w-[80%]"
+                      ? "max-w-[80%] rounded-2xl rounded-br-sm bg-red-600 px-3 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-1 sm:max-w-[75%]"
+                      : "max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-sm leading-relaxed text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 sm:max-w-[80%]"
                   }
                 >
                   {m.content || (loading && i === messages.length - 1 ? "…" : "")}
@@ -205,6 +276,7 @@ export function AIChatWidget() {
               }}
               rows={1}
               placeholder="Ask about lessons, theory, booking…"
+              aria-label="Type your message"
               className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl border border-border bg-background px-3 py-3 text-base leading-snug outline-none focus:border-red-600 focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-1 sm:px-4 sm:text-sm"
             />
             <button
