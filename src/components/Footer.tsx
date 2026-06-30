@@ -8,7 +8,6 @@ export function Footer() {
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-primary-foreground/30 font-display text-lg font-semibold">
             GSM
           </div>
-          <span className="font-display text-lg">GSM Driving School</span>
         </Link>
         <p className="text-center text-xs opacity-70">
           © 2005 George's School of Motoring. All rights reserved.
