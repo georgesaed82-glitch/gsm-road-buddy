@@ -119,7 +119,7 @@ export function AIChatWidget() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Open AI assistant"
-          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-red-600 text-white shadow-xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
+          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-red-600 text-white shadow-xl transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 sm:bottom-6 sm:right-6 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
         >
           <MessageCircle className="h-6 w-6 shrink-0 sm:h-5 sm:w-5" />
           <span className="hidden text-sm font-medium sm:inline">Ask GSM</span>
@@ -143,7 +143,7 @@ export function AIChatWidget() {
             <button
               onClick={() => setOpen(false)}
               aria-label="Close chat"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-white/10"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-1"
             >
               <X className="h-5 w-5 shrink-0" />
             </button>
@@ -178,7 +178,7 @@ export function AIChatWidget() {
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="rounded-full border border-border bg-muted px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent active:scale-95"
+                  className="rounded-full border border-border bg-muted px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-1"
                 >
                   {s}
                 </button>
@@ -205,13 +205,13 @@ export function AIChatWidget() {
               }}
               rows={1}
               placeholder="Ask about lessons, theory, booking…"
-              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl border border-border bg-background px-3 py-3 text-base leading-snug outline-none focus:border-red-600 sm:px-4 sm:text-sm"
+              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl border border-border bg-background px-3 py-3 text-base leading-snug outline-none focus:border-red-600 focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-1 sm:px-4 sm:text-sm"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
               aria-label="Send"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-red-600 text-white transition-transform active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-red-600 text-white transition-colors hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
             >
               <Send className="h-5 w-5 shrink-0 sm:h-4 sm:w-4" />
             </button>
