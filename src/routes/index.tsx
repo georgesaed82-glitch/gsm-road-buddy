@@ -106,14 +106,6 @@ const reasons = [
   },
 ];
 
-const featuredReviews = [
-  allReviews.find((r) => r.name === "Tabitha Hull"),
-  allReviews.find((r) => r.name === "Olivia Cunningham"),
-  allReviews.find((r) => r.name === "Tommy Yong"),
-  allReviews.find((r) => r.name === "Zack Lui"),
-  allReviews.find((r) => r.name === "Raniaa Salman"),
-  allReviews.find((r) => r.name === "Clemence Lellouche"),
-].filter((r): r is (typeof allReviews)[number] => Boolean(r));
 
 function Home() {
   return (
