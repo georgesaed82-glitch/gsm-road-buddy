@@ -149,4 +149,18 @@
     transform: translateZ(0);
     -webkit-text-size-adjust: 100%;
   }
+
+  /* When iOS scrolls a focused field into view, keep it clear of the
+     sticky site header so the keyboard never covers the active input. */
+  input,
+  textarea,
+  select {
+    scroll-margin-top: 6rem;
+    scroll-margin-bottom: 6rem;
+    font-size: max(16px, 1rem);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
 }
