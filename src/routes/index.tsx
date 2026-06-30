@@ -473,17 +473,17 @@ function BookingForm() {
   return (
     <section className="bg-muted py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="border border-border bg-background p-6 shadow-xl sm:p-12 lg:p-16">
+        <div className="border border-border bg-background p-5 shadow-xl sm:p-12 lg:p-16">
           <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            <div className="min-w-0 text-center lg:text-left">
+              <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground lg:justify-start">
                 <span className="h-px w-8 bg-accent" />
                 Book a driving lesson
               </div>
-              <h2 className="mt-4 font-display text-3xl font-medium leading-[1.1] text-foreground sm:text-5xl">
+              <h2 className="mt-4 text-balance font-display text-[1.6rem] font-medium leading-[1.1] text-foreground sm:text-4xl lg:text-5xl">
                 Get on the road <span className="italic text-accent">this week.</span>
               </h2>
-              <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+              <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
                 Tell us where you are, what you prefer, and when you are free. We will reply with availability and the best package for you.
               </p>
               <div className="mt-8 hidden lg:block">
