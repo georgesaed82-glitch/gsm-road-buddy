@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { Download, Smartphone, Share, Plus, Sparkles } from "lucide-react";
+import { Apple, Download, Play, Plus, Share, Smartphone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { triggerPwaInstallPrompt } from "@/components/PWAInstallTracker";
 
@@ -100,6 +100,28 @@ export function InstallAppCard() {
                 <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   Scan to install
                 </span>
+
+                <div className="mt-3 flex min-w-[9.5rem] flex-col items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    Coming soon
+                  </span>
+                  <Button
+                    disabled
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-center rounded-none opacity-60"
+                  >
+                    <Apple className="mr-2 h-4 w-4" /> App Store
+                  </Button>
+                  <Button
+                    disabled
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-center rounded-none opacity-60"
+                  >
+                    <Play className="mr-2 h-4 w-4" /> Google Play
+                  </Button>
+                </div>
               </div>
 
               <div className="flex flex-col gap-3 lg:items-end">
