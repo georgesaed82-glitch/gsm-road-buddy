@@ -191,13 +191,13 @@ export function AIChatWidget() {
               }}
               rows={1}
               placeholder="Ask about lessons, theory, booking…"
-              className="max-h-32 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-3 text-base outline-none focus:border-primary sm:text-sm"
+              className="max-h-32 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-3 text-base outline-none focus:border-red-600 sm:text-sm"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
               aria-label="Send"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white transition-transform active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
             >
               <Send className="h-5 w-5 sm:h-4 sm:w-4" />
             </button>
