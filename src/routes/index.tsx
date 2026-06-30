@@ -160,7 +160,7 @@ function Home() {
                 height={1200}
               />
             </div>
-            <div className="absolute -bottom-6 left-0 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 sm:-left-8">
+            <div className="absolute -bottom-6 left-0 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 lg:-left-8">
               <div className="text-[11px] uppercase tracking-[0.2em] opacity-70">About GSM</div>
               <p className="mt-3 text-sm leading-relaxed">
                 George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.
