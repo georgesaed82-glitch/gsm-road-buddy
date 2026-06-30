@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowUpRight, Star, ArrowRight, ExternalLink, Instagram, Phone } from "lucide-react";
+import { Star, ArrowRight, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
-import { reviews as allReviews } from "@/data/reviews";
+
 import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
@@ -106,14 +106,6 @@ const reasons = [
   },
 ];
 
-const featuredReviews = [
-  allReviews.find((r) => r.name === "Tabitha Hull"),
-  allReviews.find((r) => r.name === "Olivia Cunningham"),
-  allReviews.find((r) => r.name === "Tommy Yong"),
-  allReviews.find((r) => r.name === "Zack Lui"),
-  allReviews.find((r) => r.name === "Raniaa Salman"),
-  allReviews.find((r) => r.name === "Clemence Lellouche"),
-].filter((r): r is (typeof allReviews)[number] => Boolean(r));
 
 function Home() {
   return (
@@ -339,71 +331,6 @@ function Home() {
         </div>
       </section>
 
-      {/* REVIEWS */}
-      <section className="py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                <span className="h-px w-8 bg-accent" />
-                Reviews
-              </div>
-              <h2 className="mt-4 max-w-xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-                5.0 stars. <span className="italic text-accent">{allReviews.length}+ of them.</span>
-              </h2>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <a
-                href="https://maps.google.com/?cid=12315071950298926858"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:opacity-90"
-              >
-                <ExternalLink className="h-4 w-4" /> Open on Google
-              </a>
-              <a
-                href="https://www.instagram.com/gsm_driving_school_"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 border border-foreground px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground hover:text-background"
-              >
-                <Instagram className="h-4 w-4" /> Open Instagram
-              </a>
-              <Link to="/reviews" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent">
-                Read all {allReviews.length} <ArrowUpRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {featuredReviews.map((r) => (
-              <figure key={r.name} className="flex flex-col border border-border bg-card p-7">
-                <div className="flex text-accent">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-accent" />
-                  ))}
-                </div>
-                <blockquote className="mt-5 flex-1 font-display text-lg leading-snug text-foreground">
-                  "{r.quote}"
-                </blockquote>
-                <figcaption className="mt-6 border-t border-border pt-4">
-                  <div className="font-medium text-foreground">{r.name}</div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">{r.note}</div>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-
-          <div className="mt-10 flex justify-center sm:hidden">
-            <Link
-              to="/reviews"
-              className="inline-flex items-center gap-2 border border-foreground bg-foreground px-6 py-3 text-xs uppercase tracking-[0.22em] text-background"
-            >
-              Read all {allReviews.length} reviews <ArrowUpRight className="h-3 w-3" />
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* GALLERY */}
       <section className="bg-muted py-20 sm:py-28">

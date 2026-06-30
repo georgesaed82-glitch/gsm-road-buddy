@@ -156,8 +156,13 @@ function ContactPage() {
                       <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <div>
                         <p className="font-medium text-foreground">Office hours</p>
-                        <p>Mon–Fri: 8am–6pm</p>
-                        <p>Sat: 9am–2pm</p>
+                        <p>Mon: 7:00 – 20:00</p>
+                        <p>Tue: 7:00 – 21:00</p>
+                        <p>Wed: 7:00 – 21:00</p>
+                        <p>Thu: 7:00 – 20:30</p>
+                        <p>Fri: 7:00 – 20:00</p>
+                        <p>Sat: 7:00 – 18:00</p>
+                        <p>Sun: Closed</p>
                       </div>
                     </li>
                   </ul>
