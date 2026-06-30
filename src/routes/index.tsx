@@ -473,14 +473,14 @@ function BookingForm() {
   return (
     <section className="bg-muted py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="border border-border bg-background p-8 shadow-xl sm:p-12 lg:p-16">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr]">
-            <div>
+        <div className="border border-border bg-background p-6 shadow-xl sm:p-12 lg:p-16">
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+            <div className="min-w-0">
               <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                 <span className="h-px w-8 bg-accent" />
                 Book a driving lesson
               </div>
-              <h2 className="mt-4 font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl">
+              <h2 className="mt-4 font-display text-3xl font-medium leading-[1.1] text-foreground sm:text-5xl">
                 Get on the road <span className="italic text-accent">this week.</span>
               </h2>
               <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
@@ -494,7 +494,7 @@ function BookingForm() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
+            <form onSubmit={handleSubmit} className="grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <Label htmlFor="name">Full name</Label>
                 <Input id="name" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Your name" className="mt-1.5 rounded-none border-border bg-transparent" />
