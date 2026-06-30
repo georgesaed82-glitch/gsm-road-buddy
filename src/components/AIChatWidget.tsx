@@ -118,7 +118,7 @@ export function AIChatWidget() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Open AI assistant"
-          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground shadow-xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
+          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-red-600 text-white shadow-xl transition-transform hover:scale-105 sm:bottom-6 sm:right-6 sm:h-auto sm:w-auto sm:px-5 sm:py-3"
         >
           <MessageCircle className="h-6 w-6 sm:h-5 sm:w-5" />
           <span className="hidden text-sm font-medium sm:inline">Ask GSM</span>
@@ -128,7 +128,7 @@ export function AIChatWidget() {
       {/* Chat panel */}
       {open && (
         <div className="fixed inset-x-3 bottom-3 top-3 z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-auto sm:max-h-[80vh] sm:w-[380px]">
-          <div className="flex items-center justify-between border-b border-border bg-primary px-4 py-3 text-primary-foreground">
+          <div className="flex items-center justify-between border-b border-border bg-red-600 px-4 py-3 text-white">
             <div>
               <p className="text-sm font-semibold">GSM Assistant</p>
               <p className="text-xs opacity-80">Replies in seconds · powered by AI</p>
@@ -144,7 +144,7 @@ export function AIChatWidget() {
                 <div
                   className={
                     m.role === "user"
-                      ? "max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-sm text-primary-foreground"
+                      ? "max-w-[85%] rounded-2xl rounded-br-sm bg-red-600 px-3 py-2 text-sm text-white"
                       : "max-w-[90%] whitespace-pre-wrap text-sm leading-relaxed text-foreground"
                   }
                 >
@@ -191,13 +191,13 @@ export function AIChatWidget() {
               }}
               rows={1}
               placeholder="Ask about lessons, theory, booking…"
-              className="max-h-32 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-3 text-base outline-none focus:border-primary sm:text-sm"
+              className="max-h-32 flex-1 resize-none rounded-2xl border border-border bg-background px-4 py-3 text-base outline-none focus:border-red-600 sm:text-sm"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
               aria-label="Send"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white transition-transform active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
             >
               <Send className="h-5 w-5 sm:h-4 sm:w-4" />
             </button>
