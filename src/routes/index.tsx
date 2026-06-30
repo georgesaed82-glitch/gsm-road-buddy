@@ -8,7 +8,7 @@ import { Star, ArrowRight, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
-import { reviews as allReviews } from "@/data/reviews";
+
 import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
