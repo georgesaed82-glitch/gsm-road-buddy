@@ -57,7 +57,7 @@ function ContactPage() {
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Quick actions */}
             <Card className="border-border bg-card">
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-4 text-center sm:text-left">
                 <CardTitle className="font-display text-xl">Talk to us instantly</CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3">
