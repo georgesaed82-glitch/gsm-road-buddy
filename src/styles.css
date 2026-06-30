@@ -137,3 +137,16 @@
     text-wrap: balance;
   }
 }
+
+/* iOS Safari safeguards for the AI chat widget: prevent focus-zoom
+   (requires >=16px font-size) and prevent visualViewport keyboard
+   resize from shifting the page layout. */
+@supports (-webkit-touch-callout: none) {
+  .ai-chat-input,
+  .ai-chat-input:focus {
+    font-size: 16px !important;
+    line-height: 1.4;
+    transform: translateZ(0);
+    -webkit-text-size-adjust: 100%;
+  }
+}
