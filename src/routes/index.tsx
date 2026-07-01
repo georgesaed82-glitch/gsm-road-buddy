@@ -160,8 +160,28 @@ function Home() {
         </div>
       </section>
 
-      {/* DOWNLOAD APP */}
-      <InstallAppCard />
+      {/* WHY GSM */}
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            <span className="h-px w-8 bg-accent" />
+            Why GSM
+          </div>
+          <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl">
+            Over 20 years' experience,<br className="hidden sm:block" /> manual <span className="italic text-accent">and</span> automatic.
+          </h2>
+
+          <div className="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
+            {reasons.map((r) => (
+              <div key={r.n} className="bg-background p-8 lg:p-10">
+                <div className="font-display text-2xl font-medium text-accent">{r.n}</div>
+                <h3 className="mt-6 font-display text-2xl text-foreground">{r.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{r.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* POSTCODE STRIP */}
       <section className="border-y border-border bg-card">
@@ -198,25 +218,60 @@ function Home() {
         </div>
       </section>
 
-      {/* WHY GSM */}
-      <section className="py-20 sm:py-28">
+      {/* RECENT PASS */}
+      <section className="bg-muted py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:items-center">
+            <div className="overflow-hidden border border-border bg-background shadow-xl">
+              <img
+                src={studentPassImage.url}
+                alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
+                className="aspect-[4/5] w-full object-cover object-top"
+                width={1200}
+                height={1500}
+              />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                <span className="h-px w-8 bg-accent" />
+                Recent pass
+              </div>
+              <h2 className="mt-4 max-w-md font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
+                Another first-time pass. <span className="italic text-accent">Another confident driver.</span>
+              </h2>
+              <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+                This is what success looks like at GSM — real students, real test centres, real certificates. We teach the skills, you earn the freedom.
+              </p>
+              <a
+                href="https://maps.google.com/?cid=12315071950298926858"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 flex items-center gap-4 hover:opacity-80"
+              >
+                <div className="flex text-accent">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-accent" />
+                  ))}
+                </div>
+                <span className="text-sm text-muted-foreground">5.0 from 143 Google reviews</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* GALLERY */}
+      <section className="bg-muted py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             <span className="h-px w-8 bg-accent" />
-            Why GSM
+            From our students
           </div>
-          <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl">
-            Over 20 years' experience,<br className="hidden sm:block" /> manual <span className="italic text-accent">and</span> automatic.
+          <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
+            Pass certificates, smiles, <span className="italic text-accent">and the GSM car.</span>
           </h2>
-
-          <div className="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
-            {reasons.map((r) => (
-              <div key={r.n} className="bg-background p-8 lg:p-10">
-                <div className="font-display text-2xl font-medium text-accent">{r.n}</div>
-                <h3 className="mt-6 font-display text-2xl text-foreground">{r.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{r.body}</p>
-              </div>
-            ))}
+          <div className="mt-12">
+            <PhotoGallery photos={galleryPhotos} />
           </div>
         </div>
       </section>
@@ -264,47 +319,8 @@ function Home() {
         </div>
       </section>
 
-      {/* RECENT PASS */}
-      <section className="bg-muted py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:items-center">
-            <div className="overflow-hidden border border-border bg-background shadow-xl">
-              <img
-                src={studentPassImage.url}
-                alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
-                className="aspect-[4/5] w-full object-cover object-top"
-                width={1200}
-                height={1500}
-              />
-            </div>
-            <div>
-              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                <span className="h-px w-8 bg-accent" />
-                Recent pass
-              </div>
-              <h2 className="mt-4 max-w-md font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-                Another first-time pass. <span className="italic text-accent">Another confident driver.</span>
-              </h2>
-              <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-                This is what success looks like at GSM — real students, real test centres, real certificates. We teach the skills, you earn the freedom.
-              </p>
-              <a
-                href="https://maps.google.com/?cid=12315071950298926858"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 flex items-center gap-4 hover:opacity-80"
-              >
-                <div className="flex text-accent">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-accent" />
-                  ))}
-                </div>
-                <span className="text-sm text-muted-foreground">5.0 from 143 Google reviews</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* DOWNLOAD APP */}
+      <InstallAppCard />
 
       {/* PORTAL FEATURE */}
       <section className="bg-primary py-20 text-primary-foreground sm:py-28">
@@ -342,23 +358,6 @@ function Home() {
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
-      </section>
-
-
-      {/* GALLERY */}
-      <section className="bg-muted py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            <span className="h-px w-8 bg-accent" />
-            From our students
-          </div>
-          <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-            Pass certificates, smiles, <span className="italic text-accent">and the GSM car.</span>
-          </h2>
-          <div className="mt-12">
-            <PhotoGallery photos={galleryPhotos} />
           </div>
         </div>
       </section>
