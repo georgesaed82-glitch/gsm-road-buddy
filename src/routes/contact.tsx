@@ -119,12 +119,35 @@ function ContactPage() {
               <BookingForm />
             </div>
 
+            {/* Office hours */}
+            <Card className="border-border bg-card lg:col-span-2">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-center gap-2 sm:justify-start">
+                  <Clock className="h-5 w-5 text-primary" />
+                  <CardTitle className="font-display text-xl">Office hours</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {hours.map(({ day, time }) => (
+                    <div
+                      key={day}
+                      className="flex items-center justify-between rounded-md border border-border bg-secondary/40 px-4 py-3"
+                    >
+                      <span className="font-medium text-foreground">{day}</span>
+                      <span className="text-sm text-muted-foreground">{time}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Visit us */}
-            <Card className="border-border bg-card">
+            <Card className="border-border bg-card lg:col-span-2">
               <CardHeader className="pb-4 text-center sm:text-left">
                 <CardTitle className="font-display text-xl">Visit us</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-5">
+              <CardContent className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="flex items-start gap-3">
                   <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                   <div>
@@ -170,29 +193,6 @@ function ContactPage() {
                       07961 585231
                     </a>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Office hours */}
-            <Card className="border-border bg-card lg:col-span-2">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-center gap-2 sm:justify-start">
-                  <Clock className="h-5 w-5 text-primary" />
-                  <CardTitle className="font-display text-xl">Office hours</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {hours.map(({ day, time }) => (
-                    <div
-                      key={day}
-                      className="flex items-center justify-between rounded-md border border-border bg-secondary/40 px-4 py-3"
-                    >
-                      <span className="font-medium text-foreground">{day}</span>
-                      <span className="text-sm text-muted-foreground">{time}</span>
-                    </div>
-                  ))}
                 </div>
               </CardContent>
             </Card>
