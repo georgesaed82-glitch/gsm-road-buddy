@@ -77,7 +77,6 @@ function PaymentsPage() {
                   <th className="px-5 py-3 text-left font-medium">Date</th>
                   <th className="px-5 py-3 text-left font-medium">Package</th>
                   <th className="px-5 py-3 text-left font-medium">Hours</th>
-                  <th className="px-5 py-3 text-left font-medium">Amount</th>
                   <th className="px-5 py-3 text-left font-medium">Status</th>
                   <th className="px-5 py-3 text-left font-medium" />
                 </tr>
@@ -88,7 +87,6 @@ function PaymentsPage() {
                     <td className="px-5 py-4">{new Date(p.paid_at ?? p.created_at).toLocaleDateString("en-GB")}</td>
                     <td className="px-5 py-4 font-medium text-foreground">{p.package_name}</td>
                     <td className="px-5 py-4">{p.hours_purchased}</td>
-                    <td className="px-5 py-4">{gbp(p.amount_pence)}</td>
                     <td className="px-5 py-4">
                       <Badge variant={p.status === "paid" ? "default" : "outline"} className={p.status === "paid" ? "bg-success text-success-foreground" : ""}>
                         {p.status}
