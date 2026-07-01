@@ -14,10 +14,10 @@ export const Route = createFileRoute("/_authenticated/payments")({
 const gbp = (p: number) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(p / 100);
 
 const packages = [
-  { name: "Single lesson", hours: 1, price: 5500, blurb: "Pay-as-you-go for refreshers or top-ups." },
-  { name: "10-hour block", hours: 10, price: 52000, blurb: "Most popular. Save £30 vs single lessons." },
-  { name: "20-hour bundle", hours: 20, price: 99000, blurb: "Test-ready package. Save £110." },
-  { name: "Intensive course", hours: 30, price: 142500, blurb: "1–2 week crash course. Includes mock test." },
+  { name: "Single lesson", hours: 1, blurb: "Pay-as-you-go for refreshers or top-ups." },
+  { name: "10-hour block", hours: 10, blurb: "Most popular block for steady progress." },
+  { name: "20-hour bundle", hours: 20, blurb: "Test-ready package with structured goals." },
+  { name: "Intensive course", hours: 30, blurb: "1–2 week crash course. Includes mock test." },
 ];
 
 function PaymentsPage() {
