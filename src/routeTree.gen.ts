@@ -20,6 +20,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AreasIndexRouteImport } from './routes/areas.index'
+import { Route as DevSignVariantsRouteImport } from './routes/dev.sign-variants'
 import { Route as AreasAreaRouteImport } from './routes/areas.$area'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedTheoryRouteImport } from './routes/_authenticated/theory'
@@ -96,6 +97,11 @@ const IndexRoute = IndexRouteImport.update({
 const AreasIndexRoute = AreasIndexRouteImport.update({
   id: '/areas/',
   path: '/areas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevSignVariantsRoute = DevSignVariantsRouteImport.update({
+  id: '/dev/sign-variants',
+  path: '/dev/sign-variants',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AreasAreaRoute = AreasAreaRouteImport.update({
@@ -247,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
+  '/dev/sign-variants': typeof DevSignVariantsRoute
   '/areas/': typeof AreasIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByTo {
   '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
+  '/dev/sign-variants': typeof DevSignVariantsRoute
   '/areas': typeof AreasIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
@@ -318,6 +326,7 @@ export interface FileRoutesById {
   '/_authenticated/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
+  '/dev/sign-variants': typeof DevSignVariantsRoute
   '/areas/': typeof AreasIndexRoute
   '/_authenticated/admin/access': typeof AuthenticatedAdminAccessRoute
   '/_authenticated/admin/admins': typeof AuthenticatedAdminAdminsRoute
@@ -355,6 +364,7 @@ export interface FileRouteTypes {
     | '/theory'
     | '/api/chat'
     | '/areas/$area'
+    | '/dev/sign-variants'
     | '/areas/'
     | '/admin/access'
     | '/admin/admins'
@@ -389,6 +399,7 @@ export interface FileRouteTypes {
     | '/theory'
     | '/api/chat'
     | '/areas/$area'
+    | '/dev/sign-variants'
     | '/areas'
     | '/admin/access'
     | '/admin/admins'
@@ -425,6 +436,7 @@ export interface FileRouteTypes {
     | '/_authenticated/theory'
     | '/api/chat'
     | '/areas/$area'
+    | '/dev/sign-variants'
     | '/areas/'
     | '/_authenticated/admin/access'
     | '/_authenticated/admin/admins'
@@ -450,6 +462,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiChatRoute: typeof ApiChatRoute
   AreasAreaRoute: typeof AreasAreaRoute
+  DevSignVariantsRoute: typeof DevSignVariantsRoute
   AreasIndexRoute: typeof AreasIndexRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
@@ -531,6 +544,13 @@ declare module '@tanstack/react-router' {
       path: '/areas'
       fullPath: '/areas/'
       preLoaderRoute: typeof AreasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev/sign-variants': {
+      id: '/dev/sign-variants'
+      path: '/dev/sign-variants'
+      fullPath: '/dev/sign-variants'
+      preLoaderRoute: typeof DevSignVariantsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/areas/$area': {
@@ -768,9 +788,20 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiChatRoute: ApiChatRoute,
   AreasAreaRoute: AreasAreaRoute,
+  DevSignVariantsRoute: DevSignVariantsRoute,
   AreasIndexRoute: AreasIndexRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
