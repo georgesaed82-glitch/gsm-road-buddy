@@ -20,9 +20,27 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+      - name: Cache bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lockb', 'package.json') }}
+          restore-keys: |
+            bun-${{ runner.os }}-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: pip
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-${{ matrix.browser }}-
+            playwright-${{ runner.os }}-
       - name: Install dependencies
         run: bun install --frozen-lockfile
       - name: Install Playwright (Python)
