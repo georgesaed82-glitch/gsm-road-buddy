@@ -229,12 +229,12 @@ function MockRunner({ onRestart }: { onRestart: () => void }) {
             )}
           >
             <div className="font-medium">
-              {gotIt ? "Correct" : "Not quite"}
-              {!gotIt && (
-                <> — the right answer is <span className="underline">{q.options[q.correctIndex]}</span></>
-              )}
+              {gotIt ? "Correct" : "Not quite"} — the right answer is{" "}
+              <span className="underline">{q.options[q.correctIndex]}</span>
             </div>
-            <p className="mt-2 leading-relaxed">{q.explanation}</p>
+            <p className="mt-2 leading-relaxed">
+              <span className="font-semibold">Why:</span> {q.explanation}
+            </p>
           </div>
         )}
       </div>
