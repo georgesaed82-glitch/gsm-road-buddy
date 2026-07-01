@@ -166,8 +166,13 @@ function ContactPage() {
                     </a>
                   </div>
                 </div>
-              </CardContent>
+            </CardContent>
             </Card>
+
+            {/* Booking form */}
+            <div className="lg:col-span-2">
+              <BookingForm />
+            </div>
 
             {/* Office hours */}
             <Card className="border-border bg-card lg:col-span-2">
