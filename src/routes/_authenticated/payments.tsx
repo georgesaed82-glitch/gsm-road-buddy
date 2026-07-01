@@ -11,13 +11,13 @@ export const Route = createFileRoute("/_authenticated/payments")({
   component: PaymentsPage,
 });
 
-const gbp = (p: number) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(p / 100);
+
 
 const packages = [
-  { name: "Single lesson", hours: 1, price: 5500, blurb: "Pay-as-you-go for refreshers or top-ups." },
-  { name: "10-hour block", hours: 10, price: 52000, blurb: "Most popular. Save £30 vs single lessons." },
-  { name: "20-hour bundle", hours: 20, price: 99000, blurb: "Test-ready package. Save £110." },
-  { name: "Intensive course", hours: 30, price: 142500, blurb: "1–2 week crash course. Includes mock test." },
+  { name: "Single lesson", hours: 1, blurb: "Pay-as-you-go for refreshers or top-ups." },
+  { name: "10-hour block", hours: 10, blurb: "Most popular block for steady progress." },
+  { name: "20-hour bundle", hours: 20, blurb: "Test-ready package with structured goals." },
+  { name: "Intensive course", hours: 30, blurb: "1–2 week crash course. Includes mock test." },
 ];
 
 function PaymentsPage() {
@@ -39,27 +39,22 @@ function PaymentsPage() {
 
   const paid = payments.filter((p) => p.status === "paid");
   const hoursPurchased = paid.reduce((s, p) => s + Number(p.hours_purchased ?? 0), 0);
-  const spent = paid.reduce((s, p) => s + p.amount_pence, 0);
   const remaining = Math.max(0, hoursPurchased - completed);
 
   return (
     <PortalShell eyebrow="Billing" title="Payments & packages">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Stat label="Hours remaining" value={remaining.toFixed(1)} accent />
         <Stat label="Hours purchased" value={hoursPurchased.toFixed(1)} />
-        <Stat label="Lifetime spend" value={gbp(spent)} />
       </div>
 
       <section className="mt-12">
         <h2 className="font-display text-2xl">Top up</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Pick a package — payment is taken by card or bank transfer.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Pick a package — contact us to arrange payment by card or bank transfer.</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {packages.map((p) => (
             <div key={p.name} className="flex flex-col border border-border bg-card p-5">
               <div className="font-display text-lg text-foreground">{p.name}</div>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-display text-3xl text-primary">{gbp(p.price)}</span>
-              </div>
               <div className="text-xs text-muted-foreground">{p.hours} hour{p.hours > 1 ? "s" : ""}</div>
               <p className="mt-3 flex-1 text-sm text-muted-foreground">{p.blurb}</p>
               <Button asChild className="mt-5 rounded-none" size="sm">
@@ -82,7 +77,6 @@ function PaymentsPage() {
                   <th className="px-5 py-3 text-left font-medium">Date</th>
                   <th className="px-5 py-3 text-left font-medium">Package</th>
                   <th className="px-5 py-3 text-left font-medium">Hours</th>
-                  <th className="px-5 py-3 text-left font-medium">Amount</th>
                   <th className="px-5 py-3 text-left font-medium">Status</th>
                   <th className="px-5 py-3 text-left font-medium" />
                 </tr>
@@ -93,7 +87,6 @@ function PaymentsPage() {
                     <td className="px-5 py-4">{new Date(p.paid_at ?? p.created_at).toLocaleDateString("en-GB")}</td>
                     <td className="px-5 py-4 font-medium text-foreground">{p.package_name}</td>
                     <td className="px-5 py-4">{p.hours_purchased}</td>
-                    <td className="px-5 py-4">{gbp(p.amount_pence)}</td>
                     <td className="px-5 py-4">
                       <Badge variant={p.status === "paid" ? "default" : "outline"} className={p.status === "paid" ? "bg-success text-success-foreground" : ""}>
                         {p.status}
