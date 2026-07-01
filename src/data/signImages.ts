@@ -92,26 +92,14 @@ export const officialSignImages: Record<string, string> = {
   "c-puffin": url("UK traffic sign 544.1.svg"),
   "c-toucan": url("UK traffic sign 544.2.svg"),
   "c-pegasus": url("UK traffic sign 550.1.svg"),
-  // Pedestrian signal heads (red / green man)
-  "c-red-man": url("Pedestrian_traffic_lights_-_don't_walk.svg"),
-  "c-green-man": url("Pedestrian_traffic_lights_-_walk.svg"),
-
   // ── Traffic light states ───────────────────────────────
   "t-red": url("Traffic_lights_red.svg"),
   "t-red-amber": url("Traffic_lights_red-yellow.svg"),
   "t-amber": url("Traffic_lights_yellow.svg"),
   "t-green": url("Traffic_lights_green.svg"),
 
-  // ── Direction signs (colour-coded) ─────────────────────
-  "d-motorway": url("UK traffic sign 2903.1.svg"),
-  "d-primary": url("UK motorway sign - primary route example.svg"),
-  "d-local": url("UK traffic sign 2005.svg"),
-
   // ── Information (services) ─────────────────────────────
-  "i-fuel": url("UK traffic sign 2308.svg"),
   "i-phone": url("UK traffic sign 2306.svg"),
-  "i-food": url("UK traffic sign 2310.svg"),
-  "i-info": url("UK traffic sign 2309.svg"),
 };
 
 export function officialSignImageFor(id: string): string | undefined {
