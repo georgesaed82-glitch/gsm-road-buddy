@@ -204,7 +204,12 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
                 <Sparkles className="h-3.5 w-3.5 text-accent" />
                 {picked === q.correctIndex ? "Correct" : "Correct answer"}
               </div>
-              <div className="mt-2 font-medium">{current.name}</div>
+              {picked !== q.correctIndex && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  You picked: <span className="text-foreground">{q.options[picked]}</span>
+                </p>
+              )}
+              <div className="mt-2 font-medium">The right answer is: {current.name}</div>
               <p className="mt-1 text-muted-foreground">{current.meaning}</p>
               <Button size="sm" className="mt-4 rounded-none" onClick={next}>
                 {i + 1 === order.length ? "See results →" : "Next question →"}
