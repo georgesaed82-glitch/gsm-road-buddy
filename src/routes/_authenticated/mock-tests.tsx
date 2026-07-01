@@ -223,6 +223,8 @@ function MockRunner({ onRestart }: { onRestart: () => void }) {
 
         {isRevealed && (
           <div
+            aria-live="polite"
+            aria-atomic="true"
             className={cn(
               "mt-4 border p-4 text-sm",
               gotIt ? "border-emerald-600 bg-emerald-600/10" : "border-destructive bg-destructive/10",
