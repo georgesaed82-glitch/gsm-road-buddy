@@ -29,6 +29,7 @@ import { Route as AuthenticatedRoadSignsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedRoadMarkingsRouteImport } from './routes/_authenticated/road-markings'
 import { Route as AuthenticatedQuestionsRouteImport } from './routes/_authenticated/questions'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedPoliceSignalsRouteImport } from './routes/_authenticated/police-signals'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as AuthenticatedMockTestsRouteImport } from './routes/_authenticated/mock-tests'
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
@@ -146,6 +147,12 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPoliceSignalsRoute =
+  AuthenticatedPoliceSignalsRouteImport.update({
+    id: '/police-signals',
+    path: '/police-signals',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPaymentsRoute = AuthenticatedPaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
@@ -253,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/lessons': typeof AuthenticatedLessonsRoute
   '/mock-tests': typeof AuthenticatedMockTestsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
+  '/police-signals': typeof AuthenticatedPoliceSignalsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/questions': typeof AuthenticatedQuestionsRoute
   '/road-markings': typeof AuthenticatedRoadMarkingsRoute
@@ -289,6 +297,7 @@ export interface FileRoutesByTo {
   '/lessons': typeof AuthenticatedLessonsRoute
   '/mock-tests': typeof AuthenticatedMockTestsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
+  '/police-signals': typeof AuthenticatedPoliceSignalsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/questions': typeof AuthenticatedQuestionsRoute
   '/road-markings': typeof AuthenticatedRoadMarkingsRoute
@@ -328,6 +337,7 @@ export interface FileRoutesById {
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
   '/_authenticated/mock-tests': typeof AuthenticatedMockTestsRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
+  '/_authenticated/police-signals': typeof AuthenticatedPoliceSignalsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/questions': typeof AuthenticatedQuestionsRoute
   '/_authenticated/road-markings': typeof AuthenticatedRoadMarkingsRoute
@@ -367,6 +377,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/mock-tests'
     | '/payments'
+    | '/police-signals'
     | '/profile'
     | '/questions'
     | '/road-markings'
@@ -403,6 +414,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/mock-tests'
     | '/payments'
+    | '/police-signals'
     | '/profile'
     | '/questions'
     | '/road-markings'
@@ -441,6 +453,7 @@ export interface FileRouteTypes {
     | '/_authenticated/lessons'
     | '/_authenticated/mock-tests'
     | '/_authenticated/payments'
+    | '/_authenticated/police-signals'
     | '/_authenticated/profile'
     | '/_authenticated/questions'
     | '/_authenticated/road-markings'
@@ -622,6 +635,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/police-signals': {
+      id: '/_authenticated/police-signals'
+      path: '/police-signals'
+      fullPath: '/police-signals'
+      preLoaderRoute: typeof AuthenticatedPoliceSignalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/payments': {
       id: '/_authenticated/payments'
       path: '/payments'
@@ -770,6 +790,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
   AuthenticatedMockTestsRoute: typeof AuthenticatedMockTestsRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
+  AuthenticatedPoliceSignalsRoute: typeof AuthenticatedPoliceSignalsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedQuestionsRoute: typeof AuthenticatedQuestionsRoute
   AuthenticatedRoadMarkingsRoute: typeof AuthenticatedRoadMarkingsRoute
@@ -786,6 +807,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
   AuthenticatedMockTestsRoute: AuthenticatedMockTestsRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
+  AuthenticatedPoliceSignalsRoute: AuthenticatedPoliceSignalsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedQuestionsRoute: AuthenticatedQuestionsRoute,
   AuthenticatedRoadMarkingsRoute: AuthenticatedRoadMarkingsRoute,
