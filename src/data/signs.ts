@@ -36,6 +36,7 @@ export const signs: Sign[] = [
   { id: "w-double-bend", name: "Double bend", meaning: "A series of bends — first to the left (or right, per the sign).", category: "warning", variant: { kind: "warning", symbol: "double-bend" } },
   { id: "w-roundabout", name: "Roundabout ahead", meaning: "Give way to traffic on your right at the roundabout.", category: "warning", variant: { kind: "warning", symbol: "roundabout" } },
   { id: "w-crossroads", name: "Crossroads ahead", meaning: "Junction where roads meet from left and right.", category: "warning", variant: { kind: "warning", symbol: "crossroads" } },
+  { id: "w-staggered", name: "Staggered junction", meaning: "Two side roads join at slightly different points — first from the left, then from the right (or reversed on the sign).", category: "warning", variant: { kind: "warning", symbol: "staggered-junction" } },
   { id: "w-t-junction", name: "T-junction ahead", meaning: "The road you are on ends at a junction — you must give way.", category: "warning", variant: { kind: "warning", symbol: "t-junction" } },
   { id: "w-side-road", name: "Side road ahead", meaning: "A minor road joins from the side shown.", category: "warning", variant: { kind: "warning", symbol: "side-road" } },
   { id: "w-hump", name: "Hump bridge / speed hump", meaning: "Slow down — a hump or bridge is coming up.", category: "warning", variant: { kind: "warning", symbol: "hump" } },
@@ -116,11 +117,14 @@ export const signs: Sign[] = [
   { id: "t-amber", name: "Amber light on its own", meaning: "Stop — unless you have already crossed the line or stopping would cause a collision.", category: "signals", variant: { kind: "traffic-light", state: "amber" } },
 
   // ── Crossings ──────────────────────────────────────────
-  { id: "c-zebra", name: "Zebra crossing", meaning: "Black and white stripes with flashing yellow beacons. Give way to anyone waiting to cross.", category: "crossings", variant: { kind: "warning", symbol: "pedestrian-crossing", label: "ZEBRA" } },
-  { id: "c-pelican", name: "Pelican crossing", meaning: "Pedestrian-operated lights. Flashing amber = give way to pedestrians on the crossing.", category: "crossings", variant: { kind: "warning", symbol: "traffic-signals", label: "PELICAN" } },
-  { id: "c-puffin", name: "Puffin crossing", meaning: "Sensor-controlled lights. No flashing amber — stays red until pedestrians are clear.", category: "crossings", variant: { kind: "warning", symbol: "traffic-signals", label: "PUFFIN" } },
-  { id: "c-toucan", name: "Toucan crossing", meaning: "Shared crossing — pedestrians AND cyclists cross together.", category: "crossings", variant: { kind: "warning", symbol: "cyclists", label: "TOUCAN" } },
-  { id: "c-pegasus", name: "Pegasus (equestrian) crossing", meaning: "For horse riders — higher control button and wider crossing area.", category: "crossings", variant: { kind: "warning", symbol: "horse", label: "PEGASUS" } },
+  { id: "c-zebra", name: "Zebra crossing", meaning: "Black-and-white stripes with flashing yellow (Belisha) beacons on poles. Give way to anyone waiting to cross.", category: "crossings", variant: { kind: "zebra-crossing" } },
+  { id: "c-crossing-ahead", name: "Pedestrian crossing ahead (warning)", meaning: "The red-triangle warning for a pedestrian crossing ahead — figure walking over stripes.", category: "crossings", variant: { kind: "warning", symbol: "pedestrian-crossing" } },
+  { id: "c-red-man", name: "Red man — do not cross", meaning: "Pedestrian signal showing the red standing figure. Do not start to cross.", category: "crossings", variant: { kind: "signal-crossing", state: "red-man" } },
+  { id: "c-green-man", name: "Green man — cross now", meaning: "Pedestrian signal showing the green walking figure. Safe to cross, but keep watching for traffic.", category: "crossings", variant: { kind: "signal-crossing", state: "green-man" } },
+  { id: "c-pelican", name: "Pelican crossing", meaning: "Pedestrian-operated traffic lights. A flashing amber phase means give way to pedestrians still on the crossing.", category: "crossings", variant: { kind: "warning", symbol: "traffic-signals" } },
+  { id: "c-puffin", name: "Puffin crossing", meaning: "Sensor-controlled crossing. No flashing amber — stays red until the sensors detect that pedestrians are clear.", category: "crossings", variant: { kind: "warning", symbol: "pedestrians" } },
+  { id: "c-toucan", name: "Toucan crossing", meaning: "Shared crossing — pedestrians AND cyclists may cross together on green.", category: "crossings", variant: { kind: "warning", symbol: "cyclists" } },
+  { id: "c-pegasus", name: "Pegasus (equestrian) crossing", meaning: "For horse riders — higher control button and wider crossing area.", category: "crossings", variant: { kind: "warning", symbol: "horse" } },
 ];
 
 export function signsByCategory(cat: SignCategory) {
