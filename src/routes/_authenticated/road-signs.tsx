@@ -233,6 +233,19 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
       <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
         <SignpostBig className="h-3.5 w-3.5" /> Wrong answers always show the sign with the correct meaning.
       </div>
+
+      <p className="mt-2 text-[11px] text-muted-foreground">
+        Sign artwork © Crown copyright, from the UK Department for Transport, reused under the{" "}
+        <a
+          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+          className="underline"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open Government Licence v3.0
+        </a>
+        , via Wikimedia Commons.
+      </p>
     </div>
   );
 }
