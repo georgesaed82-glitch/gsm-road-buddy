@@ -17,6 +17,7 @@ Run with the dev server on http://localhost:8080:
     python3 tests/section-order/check.py
 """
 import asyncio
+import os
 import sys
 from playwright.async_api import async_playwright
 
@@ -71,8 +72,11 @@ def match_order(labels):
 
 async def main():
     failures = []
+    browser_name = os.environ.get("BROWSER", "chromium").lower()
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch(headless=True)
+        launcher = {"chromium": pw.chromium, "firefox": pw.firefox, "webkit": pw.webkit}[browser_name]
+        browser = await launcher.launch(headless=True)
+        print(f"Running section-order check on {browser_name}")
         for name, w, h in VIEWPORTS:
             ctx = await browser.new_context(viewport={"width": w, "height": h})
             page = await ctx.new_page()
