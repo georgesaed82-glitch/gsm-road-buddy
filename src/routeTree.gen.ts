@@ -26,6 +26,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedTheoryRouteImport } from './routes/_authenticated/theory'
 import { Route as AuthenticatedSignsRouteImport } from './routes/_authenticated/signs'
 import { Route as AuthenticatedRoadSignsRouteImport } from './routes/_authenticated/road-signs'
+import { Route as AuthenticatedRoadMarkingsRouteImport } from './routes/_authenticated/road-markings'
 import { Route as AuthenticatedQuestionsRouteImport } from './routes/_authenticated/questions'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
@@ -129,6 +130,12 @@ const AuthenticatedRoadSignsRoute = AuthenticatedRoadSignsRouteImport.update({
   path: '/road-signs',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRoadMarkingsRoute =
+  AuthenticatedRoadMarkingsRouteImport.update({
+    id: '/road-markings',
+    path: '/road-markings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedQuestionsRoute = AuthenticatedQuestionsRouteImport.update({
   id: '/questions',
   path: '/questions',
@@ -248,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/questions': typeof AuthenticatedQuestionsRoute
+  '/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
   '/theory': typeof AuthenticatedTheoryRoute
@@ -283,6 +291,7 @@ export interface FileRoutesByTo {
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/questions': typeof AuthenticatedQuestionsRoute
+  '/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
   '/theory': typeof AuthenticatedTheoryRoute
@@ -321,6 +330,7 @@ export interface FileRoutesById {
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/questions': typeof AuthenticatedQuestionsRoute
+  '/_authenticated/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/_authenticated/road-signs': typeof AuthenticatedRoadSignsRoute
   '/_authenticated/signs': typeof AuthenticatedSignsRoute
   '/_authenticated/theory': typeof AuthenticatedTheoryRoute
@@ -359,6 +369,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/profile'
     | '/questions'
+    | '/road-markings'
     | '/road-signs'
     | '/signs'
     | '/theory'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/profile'
     | '/questions'
+    | '/road-markings'
     | '/road-signs'
     | '/signs'
     | '/theory'
@@ -431,6 +443,7 @@ export interface FileRouteTypes {
     | '/_authenticated/payments'
     | '/_authenticated/profile'
     | '/_authenticated/questions'
+    | '/_authenticated/road-markings'
     | '/_authenticated/road-signs'
     | '/_authenticated/signs'
     | '/_authenticated/theory'
@@ -586,6 +599,13 @@ declare module '@tanstack/react-router' {
       path: '/road-signs'
       fullPath: '/road-signs'
       preLoaderRoute: typeof AuthenticatedRoadSignsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/road-markings': {
+      id: '/_authenticated/road-markings'
+      path: '/road-markings'
+      fullPath: '/road-markings'
+      preLoaderRoute: typeof AuthenticatedRoadMarkingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/questions': {
@@ -752,6 +772,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedQuestionsRoute: typeof AuthenticatedQuestionsRoute
+  AuthenticatedRoadMarkingsRoute: typeof AuthenticatedRoadMarkingsRoute
   AuthenticatedRoadSignsRoute: typeof AuthenticatedRoadSignsRoute
   AuthenticatedSignsRoute: typeof AuthenticatedSignsRoute
   AuthenticatedTheoryRoute: typeof AuthenticatedTheoryRoute
@@ -767,6 +788,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedQuestionsRoute: AuthenticatedQuestionsRoute,
+  AuthenticatedRoadMarkingsRoute: AuthenticatedRoadMarkingsRoute,
   AuthenticatedRoadSignsRoute: AuthenticatedRoadSignsRoute,
   AuthenticatedSignsRoute: AuthenticatedSignsRoute,
   AuthenticatedTheoryRoute: AuthenticatedTheoryRoute,
