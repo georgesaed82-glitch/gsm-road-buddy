@@ -100,8 +100,15 @@ export function HomeSignsQuiz() {
     }
   };
 
+  const ariaMessage = revealed
+    ? `${gotIt ? "Correct" : "Not quite"} — the sign means ${round.sign.name}. Why: ${round.sign.meaning}`
+    : "";
+
   return (
     <div className="border border-border bg-card p-5 sm:p-8">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {ariaMessage}
+      </div>
       <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
         <span>Sign {i + 1} of {QUIZ_LENGTH}</span>
         <span>Score {score}</span>
