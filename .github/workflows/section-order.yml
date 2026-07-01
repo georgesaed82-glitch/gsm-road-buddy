@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox]
+        browser: [chromium, firefox, webkit]
     name: section-order (${{ matrix.browser }})
     steps:
       - uses: actions/checkout@v4
