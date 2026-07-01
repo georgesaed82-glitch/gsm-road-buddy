@@ -37,7 +37,7 @@ const packages = [
       "Progress feedback",
       "Pay-as-you-go",
     ],
-    cta: "Get pricing",
+    cta: "Get details",
     popular: false,
   },
   {
@@ -50,7 +50,7 @@ const packages = [
       "Progress feedback",
       "Discount bundle rate",
     ],
-    cta: "Get pricing",
+    cta: "Get details",
     popular: true,
   },
   {
@@ -63,7 +63,7 @@ const packages = [
       "Progress feedback",
       "Discount bundle rate",
     ],
-    cta: "Get pricing",
+    cta: "Get details",
     popular: false,
   },
   {
@@ -76,7 +76,7 @@ const packages = [
       "Progress feedback",
       "Discount bundle rate",
     ],
-    cta: "Get pricing",
+    cta: "Get details",
     popular: false,
   },
   {
@@ -89,7 +89,7 @@ const packages = [
       "Progress feedback",
       "Discount bundle rate",
     ],
-    cta: "Get pricing",
+    cta: "Get details",
     popular: false,
   },
   {
@@ -102,7 +102,7 @@ const packages = [
       "Progress feedback",
       "Insurance discount potential",
     ],
-    cta: "Get pricing",
+    cta: "Get details",
     popular: false,
   },
 ];
