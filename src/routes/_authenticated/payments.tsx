@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/payments")({
   component: PaymentsPage,
 });
 
-const gbp = (p: number) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(p / 100);
+
 
 const packages = [
   { name: "Single lesson", hours: 1, blurb: "Pay-as-you-go for refreshers or top-ups." },
