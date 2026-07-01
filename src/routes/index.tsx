@@ -185,7 +185,7 @@ function Home() {
       {/* AREAS — local landing pages for SEO */}
       <section className="border-b border-border bg-background py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                 <span className="h-px w-8 bg-accent" />
@@ -198,21 +198,6 @@ function Home() {
             <Link to="/areas" className="text-sm font-medium text-primary hover:underline">
               See all areas →
             </Link>
-          </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {areaLinks.map((a) => (
-              <Link
-                key={a.slug}
-                to="/areas/$area"
-                params={{ area: a.slug }}
-                className="group rounded-lg border border-border bg-card px-5 py-4 transition-colors hover:bg-accent/5"
-              >
-                <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{a.postcode}</div>
-                <div className="mt-1 font-display text-lg text-foreground group-hover:text-primary">
-                  Driving lessons in {a.label}
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
