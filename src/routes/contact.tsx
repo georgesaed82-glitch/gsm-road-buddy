@@ -5,6 +5,7 @@ import { Mail, MapPin, Clock, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
+import { BookingForm } from "@/components/BookingForm";
 import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/contact")({
@@ -165,8 +166,13 @@ function ContactPage() {
                     </a>
                   </div>
                 </div>
-              </CardContent>
+            </CardContent>
             </Card>
+
+            {/* Booking form */}
+            <div className="lg:col-span-2">
+              <BookingForm />
+            </div>
 
             {/* Office hours */}
             <Card className="border-border bg-card lg:col-span-2">
