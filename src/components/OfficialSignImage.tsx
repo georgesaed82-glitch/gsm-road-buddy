@@ -4,9 +4,37 @@ import { officialSignImageFor } from "@/data/signImages";
 import type { Sign } from "@/data/signs";
 
 /**
+ * Shared sizing tokens so every page renders signs consistently.
+ *
+ * - `thumb`    — dense list rows / inline chips
+ * - `card`     — gallery / grid cards
+ * - `feedback` — quiz correct-answer callouts
+ * - `detail`   — quiz prompt / large presentation
+ * - `hero`     — top-of-page hero
+ */
+export type SignImageVariant = "thumb" | "card" | "feedback" | "detail" | "hero";
+
+export const SIGN_IMAGE_SIZES: Record<SignImageVariant, number> = {
+  thumb: 64,
+  card: 112,
+  feedback: 128,
+  detail: 176,
+  hero: 220,
+};
+
+type OfficialSignImageProps = {
+  sign: Sign;
+  /** Preferred: pick a shared visual token so pages stay consistent. */
+  variant?: SignImageVariant;
+  /** Escape hatch — overrides `variant`. Prefer `variant` in new code. */
+  size?: number;
+};
+
+/**
  * Renders a road-sign asset that is crisp at any size on mobile and desktop.
  *
- * - `size` is treated as the intrinsic/desktop target size, not a hard pixel lock.
+ * - The resolved size (from `variant` or `size`) is the intrinsic/desktop target,
+ *   not a hard pixel lock.
  *   On narrow containers the sign scales down (max-width: 100%) so it never
  *   overflows the card / grid cell.
  * - Aspect ratio is locked to 1:1 so scaling never distorts the artwork.
@@ -14,12 +42,13 @@ import type { Sign } from "@/data/signs";
  *   SignVisual pictograms), so scaling is resolution-independent and stays
  *   crisp on high-DPR mobile screens.
  */
-export function OfficialSignImage({ sign, size = 160 }: { sign: Sign; size?: number }) {
+export function OfficialSignImage({ sign, variant = "detail", size }: OfficialSignImageProps) {
+  const resolvedSize = size ?? SIGN_IMAGE_SIZES[variant];
   const src = officialSignImageFor(sign.id);
   const [errored, setErrored] = useState(false);
 
   const wrapperStyle: React.CSSProperties = {
-    width: size,
+    width: resolvedSize,
     maxWidth: "100%",
     aspectRatio: "1 / 1",
   };
@@ -27,7 +56,7 @@ export function OfficialSignImage({ sign, size = 160 }: { sign: Sign; size?: num
   if (!src || errored) {
     return (
       <div style={wrapperStyle} className="inline-flex items-center justify-center">
-        <SignVisual variant={sign.variant} size={size} />
+        <SignVisual variant={sign.variant} size={resolvedSize} />
       </div>
     );
   }
@@ -37,8 +66,8 @@ export function OfficialSignImage({ sign, size = 160 }: { sign: Sign; size?: num
       <img
         src={src}
         alt={sign.name}
-        width={size}
-        height={size}
+        width={resolvedSize}
+        height={resolvedSize}
         loading="lazy"
         decoding="async"
         onError={() => setErrored(true)}
