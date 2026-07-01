@@ -6,7 +6,7 @@
  *   - road surface uses --card / --muted
  *   - foreground text/paint uses currentColor
  */
-import type { ReactElement } from "react";
+import type { ReactNode } from "react";
 
 const ROAD = "#3f3f46"; // slate/tarmac
 const PAINT = "#f8fafc"; // matte white
@@ -14,7 +14,7 @@ const YELLOW = "#facc15";
 const RED = "#dc2626";
 const KERB = "#9ca3af";
 
-function Frame({ children }: { children: ReactElement | ReactElement[] }) {
+function Frame({ children }: { children: ReactNode }) {
   return (
     <svg
       viewBox="0 0 200 200"
@@ -171,7 +171,7 @@ export function YellowBoxJunction() {
 
 // ── KERB LINES ────────────────────────────────────────
 
-function KerbBase({ children }: { children: ReactElement | ReactElement[] }) {
+function KerbBase({ children }: { children: ReactNode }) {
   return (
     <Frame>
       <rect x="0" y="0" width="200" height="40" fill={KERB} />
