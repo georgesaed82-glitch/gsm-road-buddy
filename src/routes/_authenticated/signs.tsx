@@ -114,7 +114,7 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
             <section key={g}>
               <h3 className="font-display text-2xl">{meta.title}</h3>
               <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{meta.blurb}</p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div data-testid={`signs-learn-grid-${g}`} className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((s) => (
                   <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
                     <div className="flex h-[110px] w-[110px] shrink-0 items-center justify-center">
