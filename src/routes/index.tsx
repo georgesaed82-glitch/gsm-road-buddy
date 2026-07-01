@@ -8,6 +8,8 @@ import { Star, ArrowRight, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
+import { HomeSignsQuiz } from "@/components/HomeSignsQuiz";
+import { HomeHazardQuiz } from "@/components/HomeHazardQuiz";
 
 import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
@@ -248,6 +250,42 @@ function Home() {
 
       {/* BOOK A DRIVING LESSON */}
       <BookingForm />
+
+      {/* FREE QUIZZES */}
+      <section className="border-t border-border bg-background py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            <span className="h-px w-8 bg-accent" />
+            Free theory practice
+          </div>
+          <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl">
+            Test yourself — <span className="italic text-accent">right here.</span>
+          </h2>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            Two mini quizzes, straight from the theory syllabus. Get it wrong and we explain why — that's how you actually learn.
+          </p>
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            <div>
+              <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                Road signs
+              </div>
+              <HomeSignsQuiz />
+            </div>
+            <div>
+              <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                Hazard perception & anticipation
+              </div>
+              <HomeHazardQuiz />
+            </div>
+          </div>
+
+          <div className="mt-8 text-sm text-muted-foreground">
+            Want the full 14-category theory set, road markings, police signals, hazard clips and 50-question mock tests? They're all in the{" "}
+            <Link to="/dashboard" className="font-medium text-primary underline underline-offset-4">learner portal</Link>.
+          </div>
+        </div>
+      </section>
 
       {/* RECENT PASS */}
       <section className="bg-muted py-20 sm:py-28">
