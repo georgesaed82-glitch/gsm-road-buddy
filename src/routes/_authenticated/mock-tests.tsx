@@ -4,7 +4,7 @@ import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, Clock, Trophy } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Trophy, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TEST_LENGTH = 50;
@@ -26,51 +26,16 @@ function shuffle<T>(a: T[]): T[] {
 }
 
 function MockPage() {
-  const [running, setRunning] = useState(false);
-
-  if (running) return <MockRunner onExit={() => setRunning(false)} />;
-
-  return (
-    <PortalShell eyebrow="Exam simulation" title="50-question mock test">
-      <p className="max-w-2xl text-sm text-muted-foreground">
-        A full-length DVSA-style mock: {TEST_LENGTH} questions across all 14 categories,
-        {" "}{TEST_MINUTES}-minute timer, {PASS_MARK}/{TEST_LENGTH} to pass (86%). You'll see your
-        breakdown by topic at the end.
-      </p>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <Stat label="Questions" value={String(TEST_LENGTH)} />
-        <Stat label="Time limit" value={`${TEST_MINUTES} min`} />
-        <Stat label="Pass mark" value={`${PASS_MARK} / ${TEST_LENGTH}`} accent />
-      </div>
-
-      <div className="mt-8 border border-border bg-card p-6">
-        <h3 className="font-display text-xl">How it works</h3>
-        <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-          <li>• Answer at your own pace — you can skip and revisit questions.</li>
-          <li>• The timer runs to zero automatically ends the test.</li>
-          <li>• At the end you'll see every wrong answer with the correct explanation.</li>
-        </ul>
-        <Button className="mt-6 rounded-none" size="lg" onClick={() => setRunning(true)}>
-          Start mock test →
-        </Button>
-      </div>
-    </PortalShell>
-  );
+  // Straight into the 50-question mock. Restart via the "Retake" button on results.
+  const [runId, setRunId] = useState(0);
+  return <MockRunner key={runId} onRestart={() => setRunId((n) => n + 1)} />;
 }
 
-function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div className={cn("border border-border p-5", accent ? "bg-primary text-primary-foreground" : "bg-card")}>
-      <div className={cn("text-[11px] uppercase tracking-[0.18em]", accent ? "opacity-80" : "text-muted-foreground")}>{label}</div>
-      <div className="mt-2 font-display text-3xl">{value}</div>
-    </div>
-  );
-}
-
-function MockRunner({ onExit }: { onExit: () => void }) {
+function MockRunner({ onRestart }: { onRestart: () => void }) {
   const [order] = useState<TheoryQuestion[]>(() => shuffle(sampleTheoryQuestions).slice(0, TEST_LENGTH));
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  // Whether the reveal (correct answer + explanation) is showing for the current question.
+  const [revealed, setRevealed] = useState<Record<number, boolean>>({});
   const [i, setI] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(TEST_MINUTES * 60);
   const [done, setDone] = useState(false);
@@ -101,6 +66,45 @@ function MockRunner({ onExit }: { onExit: () => void }) {
       byCategory.set(q.category, c);
     });
 
+    const wrong = order
+      .map((q, idx) => ({ q, idx, picked: answers[idx] }))
+      .filter(({ q, picked }) => picked === undefined || picked !== q.correctIndex);
+
+    const downloadReview = () => {
+      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const lines: string[] = [];
+      lines.push(`GSM Driving School — Mock Test Review`);
+      lines.push(`Date: ${new Date().toLocaleString()}`);
+      lines.push(`Score: ${correctCount} / ${TEST_LENGTH} (${Math.round((correctCount / TEST_LENGTH) * 100)}%)`);
+      lines.push(`Pass mark: ${PASS_MARK} / ${TEST_LENGTH} — ${pass ? "PASS" : "FAIL"}`);
+      lines.push("");
+      lines.push(`Wrong / unanswered questions (${wrong.length}):`);
+      lines.push("=".repeat(60));
+      wrong.forEach(({ q, idx, picked }, n) => {
+        lines.push("");
+        lines.push(`${n + 1}. [${q.category}] Question ${idx + 1}`);
+        lines.push(`Q: ${q.question}`);
+        q.options.forEach((opt, oi) => {
+          const marks: string[] = [];
+          if (oi === q.correctIndex) marks.push("✓ correct");
+          if (picked === oi) marks.push("← your answer");
+          lines.push(`   ${String.fromCharCode(65 + oi)}. ${opt}${marks.length ? "   (" + marks.join(", ") + ")" : ""}`);
+        });
+        if (picked === undefined) lines.push(`Your answer: (unanswered)`);
+        lines.push(`Correct answer: ${q.options[q.correctIndex]}`);
+        lines.push(`Why: ${q.explanation}`);
+      });
+      const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `gsm-mock-review-${stamp}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    };
+
     return (
       <PortalShell eyebrow="Result" title={pass ? "You passed" : "Not quite yet"}>
         <div className={cn(
@@ -112,6 +116,13 @@ function MockRunner({ onExit }: { onExit: () => void }) {
             <div className="font-display text-3xl">{correctCount} / {TEST_LENGTH}</div>
             <div className="text-sm text-muted-foreground">Pass mark {PASS_MARK} · {Math.round((correctCount / TEST_LENGTH) * 100)}%</div>
           </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button className="rounded-none" onClick={downloadReview} disabled={wrong.length === 0}>
+            <Download className="mr-2 h-4 w-4" /> Save wrong answers ({wrong.length})
+          </Button>
+          <Button variant="outline" className="rounded-none" onClick={onRestart}>Retake mock</Button>
         </div>
 
         <h3 className="mt-8 font-display text-xl">By category</h3>
@@ -147,8 +158,11 @@ function MockRunner({ onExit }: { onExit: () => void }) {
           })}
         </div>
 
-        <div className="mt-6 flex gap-2">
-          <Button variant="outline" className="rounded-none" onClick={onExit}>Back</Button>
+        <div className="mt-6 flex flex-wrap gap-2">
+          <Button className="rounded-none" onClick={downloadReview} disabled={wrong.length === 0}>
+            <Download className="mr-2 h-4 w-4" /> Save wrong answers
+          </Button>
+          <Button variant="outline" className="rounded-none" onClick={onRestart}>Retake mock</Button>
         </div>
       </PortalShell>
     );
@@ -157,6 +171,9 @@ function MockRunner({ onExit }: { onExit: () => void }) {
   const q = order[i];
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
   const ss = String(secondsLeft % 60).padStart(2, "0");
+  const isRevealed = !!revealed[i];
+  const picked = answers[i];
+  const gotIt = picked !== undefined && picked === q.correctIndex;
 
   return (
     <PortalShell eyebrow="Mock test in progress" title={`Question ${i + 1} of ${TEST_LENGTH}`}>
@@ -171,31 +188,65 @@ function MockRunner({ onExit }: { onExit: () => void }) {
         <h2 className="mt-2 font-display text-xl">{q.question}</h2>
         <div className="mt-4 grid gap-2">
           {q.options.map((opt, idx) => {
-            const picked = answers[i] === idx;
+            const isPicked = picked === idx;
+            const isCorrect = idx === q.correctIndex;
+            let cls = "border-border bg-background hover:bg-secondary";
+            if (isRevealed) {
+              if (isCorrect) cls = "border-emerald-600 bg-emerald-600/10";
+              else if (isPicked) cls = "border-destructive bg-destructive/10";
+              else cls = "border-border bg-background opacity-70";
+            } else if (isPicked) {
+              cls = "border-primary bg-primary/10";
+            }
             return (
               <button
                 key={idx}
-                onClick={() => setAnswers({ ...answers, [i]: idx })}
+                disabled={isRevealed}
+                onClick={() => {
+                  setAnswers({ ...answers, [i]: idx });
+                  setRevealed({ ...revealed, [i]: true });
+                }}
                 className={cn(
-                  "border px-4 py-3 text-left text-sm transition-colors",
-                  picked ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-secondary",
+                  "border px-4 py-3 text-left text-sm transition-colors disabled:cursor-default",
+                  cls,
                 )}
               >
-                {opt}
+                <span className="flex items-start gap-2">
+                  <span>{opt}</span>
+                  {isRevealed && isCorrect && <CheckCircle2 className="ml-auto h-4 w-4 shrink-0 text-emerald-600" />}
+                  {isRevealed && isPicked && !isCorrect && <XCircle className="ml-auto h-4 w-4 shrink-0 text-destructive" />}
+                </span>
               </button>
             );
           })}
         </div>
+
+        {isRevealed && (
+          <div
+            className={cn(
+              "mt-4 border p-4 text-sm",
+              gotIt ? "border-emerald-600 bg-emerald-600/10" : "border-destructive bg-destructive/10",
+            )}
+          >
+            <div className="font-medium">
+              {gotIt ? "Correct" : "Not quite"}
+              {!gotIt && (
+                <> — the right answer is <span className="underline">{q.options[q.correctIndex]}</span></>
+              )}
+            </div>
+            <p className="mt-2 leading-relaxed">{q.explanation}</p>
+          </div>
+        )}
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Button variant="outline" className="rounded-none" disabled={i === 0} onClick={() => setI(i - 1)}>← Previous</Button>
         {i < TEST_LENGTH - 1 ? (
-          <Button className="rounded-none" onClick={() => setI(i + 1)}>Next →</Button>
+          <Button className="rounded-none" disabled={!isRevealed} onClick={() => setI(i + 1)}>Next →</Button>
         ) : (
           <Button className="rounded-none" onClick={() => setDone(true)}>Finish test</Button>
         )}
-        <Button variant="ghost" className="ml-auto rounded-none" onClick={onExit}>Exit</Button>
+        <Button variant="ghost" className="ml-auto rounded-none" onClick={() => setDone(true)}>Finish now</Button>
       </div>
 
       <div className="mt-6 grid grid-cols-10 gap-1">
