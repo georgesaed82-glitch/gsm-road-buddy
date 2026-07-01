@@ -81,15 +81,6 @@ export const Route = createFileRoute("/")({
 
 const postcodes = ["W2", "W3", "W4", "SW6", "W8", "W10", "W11", "W12", "W14"];
 
-const areaLinks = [
-  { slug: "notting-hill", label: "Notting Hill", postcode: "W11" },
-  { slug: "kensington", label: "Kensington", postcode: "W8" },
-  { slug: "holland-park", label: "Holland Park", postcode: "W14" },
-  { slug: "bayswater", label: "Bayswater", postcode: "W2" },
-  { slug: "shepherds-bush", label: "Shepherd's Bush", postcode: "W12" },
-  { slug: "chiswick", label: "Chiswick", postcode: "W4" },
-  { slug: "fulham", label: "Fulham", postcode: "SW6" },
-];
 
 const reasons = [
   {
