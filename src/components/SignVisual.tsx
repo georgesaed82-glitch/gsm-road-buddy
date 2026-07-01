@@ -1,20 +1,4 @@
-import type { ReactNode } from "react";
-
-export type SignVariant =
-  | { kind: "warning"; symbol: SymbolKey; label?: string }
-  | { kind: "giveway" }
-  | { kind: "stop" }
-  | { kind: "prohibition"; symbol: SymbolKey; slash?: boolean; label?: string }
-  | { kind: "no-entry" }
-  | { kind: "speed-limit"; text: string }
-  | { kind: "national-speed" }
-  | { kind: "end-restriction"; symbol: SymbolKey; label?: string }
-  | { kind: "mandatory"; symbol: SymbolKey; label?: string }
-  | { kind: "info-blue"; symbol?: SymbolKey; label?: string }
-  | { kind: "info-green"; label: string }
-  | { kind: "info-white"; label: string }
-  | { kind: "motorway"; label: string }
-  | { kind: "traffic-light"; state: "red" | "amber" | "green" | "red-amber" };
+import type { ReactNode, CSSProperties } from "react";
 
 export type SymbolKey =
   | "exclaim"
@@ -23,6 +7,7 @@ export type SymbolKey =
   | "double-bend"
   | "roundabout"
   | "crossroads"
+  | "staggered-junction"
   | "t-junction"
   | "side-road"
   | "hump"
@@ -70,271 +55,680 @@ export type SymbolKey =
   | "phone"
   | "food";
 
-const stroke = "#000";
+export type SignVariant =
+  | { kind: "warning"; symbol: SymbolKey; label?: string }
+  | { kind: "giveway" }
+  | { kind: "stop" }
+  | { kind: "prohibition"; symbol: SymbolKey; slash?: boolean }
+  | { kind: "no-entry" }
+  | { kind: "speed-limit"; text: string }
+  | { kind: "national-speed" }
+  | { kind: "end-restriction"; symbol: SymbolKey }
+  | { kind: "mandatory"; symbol: SymbolKey; label?: string }
+  | { kind: "info-blue"; symbol?: SymbolKey; label?: string }
+  | { kind: "info-green"; label: string }
+  | { kind: "info-white"; label: string }
+  | { kind: "motorway"; label: string }
+  | { kind: "traffic-light"; state: "red" | "amber" | "green" | "red-amber" }
+  | { kind: "zebra-crossing" }
+  | { kind: "signal-crossing"; state: "red-man" | "green-man" };
 
-function Symbol({ k, color = "#000", size = 60 }: { k: SymbolKey; color?: string; size?: number }) {
+/**
+ * Highway-Code-style pictogram. Drawn as solid silhouettes so it matches the
+ * black-on-white look of DfT road signs (TSRGD). These are original SVGs, not
+ * derived from any copyrighted artwork.
+ */
+function Sym({ k, color = "#000", size = 60 }: { k: SymbolKey; color?: string; size?: number }) {
   const s = size;
-  const common = { width: s, height: s, viewBox: "0 0 100 100", fill: "none", stroke: color, strokeWidth: 6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const box = (children: ReactNode) => (
+    <svg width={s} height={s} viewBox="0 0 100 100" fill={color} stroke="none">
+      {children}
+    </svg>
+  );
   switch (k) {
     case "exclaim":
-      return (<svg {...common}><line x1="50" y1="18" x2="50" y2="62"/><circle cx="50" cy="80" r="4" fill={color} stroke="none"/></svg>);
+      return box(<>
+        <path d="M45 12 L55 12 L53 62 L47 62 Z" />
+        <circle cx="50" cy="78" r="6" />
+      </>);
+
     case "bend-right":
-      return (<svg {...common}><path d="M50 90 V60 Q50 40 65 35 Q80 30 80 15"/><path d="M72 22 L80 12 L88 22"/></svg>);
+      return box(
+        <path d="M40 94 L40 55 Q40 42 54 40 L68 38 L68 26 L94 42 L68 58 L68 48 L58 49 Q50 50 50 58 L50 94 Z" />
+      );
     case "bend-left":
-      return (<svg {...common}><path d="M50 90 V60 Q50 40 35 35 Q20 30 20 15"/><path d="M12 22 L20 12 L28 22"/></svg>);
+      return box(
+        <path d="M60 94 L60 55 Q60 42 46 40 L32 38 L32 26 L6 42 L32 58 L32 48 L42 49 Q50 50 50 58 L50 94 Z" />
+      );
     case "double-bend":
-      return (<svg {...common}><path d="M50 90 Q35 70 50 55 Q65 40 50 20"/><path d="M42 26 L50 15 L58 26"/></svg>);
+      return box(
+        <path d="M42 94 L42 66 Q42 58 54 56 Q64 54 64 46 L64 32 L74 32 L60 14 L46 32 L56 32 L56 44 Q56 48 48 49 Q34 52 34 66 L34 94 Z" />
+      );
+
     case "roundabout":
-      return (<svg {...common}><circle cx="50" cy="50" r="22"/><path d="M50 20 L50 10 M75 45 L85 40 M50 80 L50 90 M25 55 L15 60"/><path d="M40 15 L50 8 L60 15"/></svg>);
+      return box(<>
+        <path d="M50 6 A44 44 0 0 1 88 28 L78 34 A32 32 0 0 0 56 16 Z" />
+        <path d="M92 40 A44 44 0 0 1 78 84 L70 76 A32 32 0 0 0 82 44 Z" />
+        <path d="M68 92 A44 44 0 0 1 10 60 L22 58 A32 32 0 0 0 60 82 Z" />
+        <path d="M8 48 A44 44 0 0 1 44 6 L46 18 A32 32 0 0 0 18 48 Z" />
+        <path d="M83 22 L96 24 L88 38 Z" />
+        <path d="M76 78 L92 78 L82 90 Z" />
+        <path d="M20 86 L6 80 L20 68 Z" />
+        <path d="M18 22 L4 30 L14 42 Z" />
+      </>);
+    case "mini-roundabout":
+      return box(<>
+        <path d="M50 8 A40 40 0 0 1 84 30 L74 36 A28 28 0 0 0 56 20 Z" />
+        <path d="M86 44 A40 40 0 0 1 74 82 L64 74 A28 28 0 0 0 78 48 Z" />
+        <path d="M62 88 A40 40 0 0 1 14 58 L24 56 A28 28 0 0 0 58 78 Z" />
+        <circle cx="50" cy="50" r="10" />
+      </>);
+
     case "crossroads":
-      return (<svg {...common}><path d="M50 15 V85 M15 50 H85"/></svg>);
+      return box(<>
+        <rect x="45" y="10" width="10" height="80" />
+        <rect x="10" y="45" width="80" height="10" />
+      </>);
+    case "staggered-junction":
+      return box(<>
+        <rect x="45" y="10" width="10" height="80" />
+        <rect x="10" y="30" width="40" height="8" />
+        <rect x="50" y="62" width="40" height="8" />
+      </>);
     case "t-junction":
-      return (<svg {...common}><path d="M50 85 V50 M15 50 H85"/></svg>);
+      return box(<>
+        <rect x="45" y="45" width="10" height="45" />
+        <rect x="10" y="35" width="80" height="10" />
+      </>);
     case "side-road":
-      return (<svg {...common}><path d="M50 85 V15 M50 55 H85"/></svg>);
+      return box(<>
+        <rect x="45" y="10" width="10" height="80" />
+        <rect x="50" y="45" width="42" height="10" />
+      </>);
+
     case "hump":
-      return (<svg {...common}><path d="M15 70 Q35 70 40 45 Q50 15 60 45 Q65 70 85 70"/></svg>);
+      return box(<>
+        <path d="M8 76 L8 66 Q28 66 38 44 Q50 18 62 44 Q72 66 92 66 L92 76 Z" />
+      </>);
     case "slippery":
-      return (<svg {...common}><path d="M50 85 V60 Q50 45 30 40"/><path d="M20 25 Q30 30 40 25 M40 40 Q55 45 60 30"/></svg>);
+      return box(<>
+        <path d="M52 90 L44 90 L44 58 Q44 50 38 44 L24 32 L30 26 L44 38 Q52 46 54 58 Z" />
+        <path d="M20 22 Q28 28 36 24 L40 30 Q30 34 22 30 Z" />
+        <path d="M40 42 Q50 48 58 42 L62 48 Q52 54 42 50 Z" />
+      </>);
     case "uneven":
-      return (<svg {...common}><path d="M15 70 L35 45 L50 65 L65 40 L85 70"/></svg>);
+      return box(
+        <path d="M6 74 L26 42 L44 60 L60 36 L82 66 L92 66 L92 78 L6 78 Z" />
+      );
     case "steep-down":
-      return (<svg {...common}><path d="M20 30 L80 75 L20 75 Z" fill={color} stroke="none"/><text x="30" y="65" fontSize="18" fill="#fff" fontWeight="700">20%</text></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <path d="M6 78 L94 30 L94 78 Z" fill={color} />
+          <text x="42" y="72" fontSize="14" fontWeight="700" fill="#fff" fontFamily="Arial, sans-serif">20%</text>
+        </svg>
+      );
     case "steep-up":
-      return (<svg {...common}><path d="M80 30 L20 75 L80 75 Z" fill={color} stroke="none"/><text x="40" y="65" fontSize="18" fill="#fff" fontWeight="700">20%</text></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <path d="M6 78 L94 78 L6 30 Z" fill={color} />
+          <text x="28" y="72" fontSize="14" fontWeight="700" fill="#fff" fontFamily="Arial, sans-serif">20%</text>
+        </svg>
+      );
     case "road-narrows":
-      return (<svg {...common}><path d="M25 85 L40 25 M75 85 L60 25"/></svg>);
+      return box(<>
+        <path d="M16 90 L34 18 L40 18 L26 90 Z" />
+        <path d="M84 90 L66 18 L60 18 L74 90 Z" />
+      </>);
     case "two-way":
-      return (<svg {...common}><path d="M35 20 V80 M65 20 V80"/><path d="M28 30 L35 15 L42 30 M58 70 L65 85 L72 70"/></svg>);
+      return box(<>
+        <path d="M32 90 L32 30 L22 30 L38 10 L54 30 L44 30 L44 90 Z" />
+        <path d="M56 10 L56 70 L46 70 L62 90 L78 70 L68 70 L68 10 Z" />
+      </>);
+
     case "school-children":
-      return (<svg {...common}><circle cx="35" cy="25" r="7"/><path d="M35 32 V55 L28 80 M35 55 L42 80 M28 45 L20 55 M42 45 L50 55"/><circle cx="65" cy="30" r="6"/><path d="M65 36 V60 L60 80 M65 60 L70 80"/></svg>);
+      return box(<>
+        <circle cx="34" cy="18" r="8" />
+        <path d="M24 28 L44 28 L48 56 L42 58 L46 88 L38 88 L34 66 L30 88 L22 88 L26 58 L20 56 Z" />
+        <circle cx="64" cy="28" r="7" />
+        <path d="M56 37 L72 37 L74 60 L69 61 L72 86 L64 86 L61 66 L58 86 L52 86 L54 60 L50 60 Z" />
+        <path d="M46 44 L58 46 L58 42 L46 40 Z" />
+      </>);
+
     case "pedestrians":
     case "pedestrian-solo":
-      return (<svg {...common}><circle cx="50" cy="22" r="7"/><path d="M50 29 V55 L42 82 M50 55 L58 82 M40 40 L32 52 M60 40 L68 52"/></svg>);
+      return box(<>
+        <circle cx="52" cy="14" r="9" />
+        <path d="M40 26 L62 24 L68 50 L60 54 L66 82 L66 94 L58 94 L54 68 L48 94 L38 94 L46 62 L36 50 L32 32 Z" />
+      </>);
+
     case "pedestrian-crossing":
-      return (<svg {...common}><circle cx="42" cy="20" r="6"/><path d="M42 26 V50 L35 75 M42 50 L49 75 M33 38 L25 50 M52 38 L60 50"/><path d="M20 88 H85 M20 82 H85 M20 76 H85" strokeWidth="3"/></svg>);
+      return box(<>
+        <circle cx="42" cy="10" r="6" />
+        <path d="M32 20 L50 18 L54 42 L48 44 L54 66 L46 66 L42 54 L38 66 L30 66 L36 50 L28 42 L26 26 Z" />
+        <rect x="10" y="76" width="80" height="4" />
+        <rect x="10" y="83" width="80" height="4" />
+        <rect x="10" y="90" width="80" height="4" />
+      </>);
+
     case "cyclists":
     case "bike":
-      return (<svg {...common}><circle cx="25" cy="70" r="12"/><circle cx="75" cy="70" r="12"/><path d="M25 70 L45 40 L65 70 M45 40 L55 40 M55 40 L75 70"/><circle cx="55" cy="30" r="5"/></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100" fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="24" cy="70" r="14" />
+          <circle cx="76" cy="70" r="14" />
+          <path d="M24 70 L50 42 L76 70 M50 42 L60 30 M40 32 L60 32 M76 70 L60 32" />
+        </svg>
+      );
+
     case "horse":
-      return (<svg {...common}><path d="M20 75 Q20 55 40 55 L60 55 Q80 55 80 40 Q80 30 70 30 L60 30 L55 20 L50 30 Q45 30 45 40 L45 55" fill={color} stroke="none"/><circle cx="65" cy="38" r="2" fill="#fff"/></svg>);
+      return box(<>
+        <path d="M16 84 L16 60 Q16 50 30 50 L58 50 Q72 50 72 40 L72 30 Q72 24 66 24 L62 24 L58 12 L52 24 L46 24 Q40 24 40 32 L40 50 L28 50 Q16 50 16 60 L16 84 L24 84 L24 62 L30 62 L30 84 L38 84 L38 62 L52 62 L52 84 L60 84 L60 62 L64 62 L64 84 Z" />
+        <path d="M74 28 L86 20 L80 34 Z" />
+      </>);
     case "wild-animals":
-      return (<svg {...common}><path d="M20 80 L30 55 Q30 40 45 40 L60 40 Q75 40 75 25 L80 15 L70 25 L60 25 Q45 25 40 35 L30 55 Z" fill={color} stroke="none"/><path d="M75 20 L80 10 M70 22 L72 12"/></svg>);
+      return box(<>
+        <path d="M10 84 L24 56 Q24 44 40 44 L58 44 Q70 44 72 30 L76 10 L82 10 L78 30 Q76 56 58 56 L48 56 L36 84 Z" />
+        <path d="M70 20 L74 4 L78 22 Z" />
+        <path d="M76 22 L82 6 L82 24 Z" />
+      </>);
     case "cattle":
-      return (<svg {...common}><path d="M25 75 Q25 55 45 55 L65 55 Q80 55 80 45 L80 35 Q75 30 68 32 L60 25 L55 32 Q45 32 42 42 L42 55" fill={color} stroke="none"/></svg>);
+      return box(<>
+        <path d="M12 82 L12 60 Q12 50 26 50 L60 50 Q74 50 74 42 L74 32 Q74 26 68 26 L64 24 L60 14 Q56 24 50 26 Q42 26 42 34 L42 50 L26 50 Q12 50 12 60 L12 82 L20 82 L20 62 L26 62 L26 82 L36 82 L36 62 L48 62 L48 82 L56 82 L56 62 L60 62 L60 82 Z" />
+        <path d="M58 14 L50 4 M62 14 L70 4" stroke={color} strokeWidth="4" fill="none" strokeLinecap="round" />
+      </>);
     case "elderly":
-      return (<svg {...common}><circle cx="35" cy="25" r="6"/><path d="M35 31 V60 L28 82 M35 60 L42 82 M32 45 L25 55"/><circle cx="65" cy="28" r="6"/><path d="M65 34 V60 L58 82 M65 60 L72 82"/><path d="M22 60 L18 82" strokeWidth="4"/></svg>);
+      return box(<>
+        <circle cx="34" cy="18" r="7" />
+        <path d="M28 26 L42 24 L46 42 Q40 46 38 54 L44 86 L38 86 L34 64 L32 86 L24 86 L26 56 Z" />
+        <path d="M26 54 L20 90 L16 90 L22 50 Z" />
+        <circle cx="66" cy="22" r="6" />
+        <path d="M58 30 L72 30 L74 58 L69 58 L72 86 L64 86 L62 64 L60 86 L54 86 L56 58 L52 58 Z" />
+      </>);
+
     case "roadworks":
-      return (<svg {...common}><circle cx="50" cy="25" r="6"/><path d="M50 31 V55 L40 82 M50 55 L60 82 M35 50 L30 40 L45 45 M65 40 L75 50 L60 55"/></svg>);
+      return box(<>
+        <circle cx="46" cy="14" r="7" />
+        <path d="M36 24 L54 22 L60 46 L52 50 L58 78 L52 78 L48 60 L42 78 L36 78 L40 54 L32 40 Z" />
+        <path d="M56 42 L86 68 L82 74 L52 48 Z" />
+        <path d="M82 62 L94 74 L86 82 L74 70 Z" />
+      </>);
+
     case "traffic-signals":
-      return (<svg {...common}><rect x="35" y="15" width="30" height="70" rx="4" fill={color} stroke="none"/><circle cx="50" cy="30" r="7" fill="#ef4444"/><circle cx="50" cy="50" r="7" fill="#f59e0b"/><circle cx="50" cy="70" r="7" fill="#22c55e"/></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <rect x="36" y="6" width="28" height="82" rx="3" fill={color} />
+          <rect x="46" y="88" width="8" height="8" fill={color} />
+          <circle cx="50" cy="22" r="9" fill="#ef4444" />
+          <circle cx="50" cy="47" r="9" fill="#f59e0b" />
+          <circle cx="50" cy="72" r="9" fill="#22c55e" />
+        </svg>
+      );
+
     case "level-crossing":
-      return (<svg {...common}><path d="M20 45 L50 25 L80 45 M25 55 L75 55"/><text x="35" y="80" fontSize="18" fontWeight="700" fill={color} stroke="none">✕</text></svg>);
+      return box(<>
+        <path d="M6 74 L94 74 L94 64 L74 64 L74 40 L58 40 L52 24 L28 24 L28 64 L6 64 Z" />
+        <rect x="16" y="18" width="10" height="10" />
+        <circle cx="22" cy="84" r="7" />
+        <circle cx="46" cy="84" r="7" />
+        <circle cx="72" cy="84" r="7" />
+      </>);
     case "low-bridge":
-      return (<svg {...common}><path d="M15 30 H85 M25 30 V80 M75 30 V80"/><text x="30" y="65" fontSize="16" fontWeight="700" fill={color} stroke="none">14'-6"</text></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <rect x="8" y="18" width="84" height="14" fill={color} />
+          <rect x="16" y="32" width="10" height="62" fill={color} />
+          <rect x="74" y="32" width="10" height="62" fill={color} />
+          <path d="M32 50 L40 40 M60 50 L68 40" stroke={color} strokeWidth="3" fill="none" strokeLinecap="round" />
+          <text x="32" y="66" fontSize="12" fontWeight="800" fontFamily="Arial, sans-serif" fill={color}>14'-6"</text>
+        </svg>
+      );
     case "tunnel":
-      return (<svg {...common}><path d="M15 80 Q15 25 50 25 Q85 25 85 80"/><path d="M15 80 H85"/></svg>);
+      return box(
+        <path d="M8 90 L8 50 Q8 12 50 12 Q92 12 92 50 L92 90 L80 90 L80 50 Q80 24 50 24 Q20 24 20 50 L20 90 Z" />
+      );
     case "quayside":
-      return (<svg {...common}><path d="M15 45 L50 25 L85 45 L85 70 L15 70 Z" fill={color} stroke="none"/><path d="M15 78 Q30 72 45 78 T85 78" fill="none" stroke="#fff" strokeWidth="4"/></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <g transform="rotate(15 50 50)" fill={color}>
+            <path d="M10 50 L20 32 Q22 26 30 26 L64 26 Q72 26 74 32 L82 50 L82 60 L74 60 L74 66 L64 66 L64 60 L28 60 L28 66 L18 66 L18 60 L10 60 Z" />
+          </g>
+          <path d="M4 78 Q18 72 32 78 T60 78 T88 78 T100 78" fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" />
+          <path d="M4 90 Q18 84 32 90 T60 90 T88 90 T100 90" fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" />
+        </svg>
+      );
     case "falling-rocks":
-      return (<svg {...common}><path d="M20 15 L80 85 M80 15 L20 85" opacity="0.3"/><circle cx="35" cy="40" r="8" fill={color} stroke="none"/><circle cx="55" cy="60" r="10" fill={color} stroke="none"/><circle cx="70" cy="35" r="6" fill={color} stroke="none"/></svg>);
+      return box(<>
+        <path d="M8 10 L8 90 L34 90 L46 72 L34 60 L46 44 L28 30 L38 20 L28 10 Z" />
+        <path d="M58 44 L70 40 L74 52 L64 58 Z" />
+        <path d="M68 62 L82 60 L82 74 L66 76 Z" />
+        <circle cx="76" cy="86" r="6" />
+      </>);
+
     case "arrow-up":
-      return (<svg {...common}><path d="M50 85 V20 M30 40 L50 15 L70 40"/></svg>);
+      return box(<path d="M40 92 L40 42 L22 42 L50 8 L78 42 L60 42 L60 92 Z" />);
     case "arrow-left":
-      return (<svg {...common}><path d="M85 50 H20 M40 30 L15 50 L40 70"/></svg>);
+      return box(<path d="M92 40 L42 40 L42 22 L8 50 L42 78 L42 60 L92 60 Z" />);
     case "arrow-right":
-      return (<svg {...common}><path d="M15 50 H80 M60 30 L85 50 L60 70"/></svg>);
+      return box(<path d="M8 40 L58 40 L58 22 L92 50 L58 78 L58 60 L8 60 Z" />);
     case "turn-left":
-      return (<svg {...common}><path d="M65 85 V45 Q65 30 50 30 H20 M32 20 L15 30 L32 40"/></svg>);
+      return box(<path d="M56 94 L56 46 L34 46 L34 60 L14 40 L34 20 L34 34 L68 34 L68 94 Z" />);
     case "turn-right":
-      return (<svg {...common}><path d="M35 85 V45 Q35 30 50 30 H80 M68 20 L85 30 L68 40"/></svg>);
+      return box(<path d="M44 94 L44 46 L66 46 L66 60 L86 40 L66 20 L66 34 L32 34 L32 94 Z" />);
     case "keep-left":
-      return (<svg {...common}><path d="M50 15 Q35 50 25 85 M15 75 L25 85 L35 75"/></svg>);
+      return box(<path d="M62 10 Q34 44 20 88 L34 92 L38 78 L48 82 L38 60 L28 60 Q40 34 68 20 Z" />);
     case "keep-right":
-      return (<svg {...common}><path d="M50 15 Q65 50 75 85 M65 75 L75 85 L85 75"/></svg>);
-    case "mini-roundabout":
-      return (<svg {...common}><circle cx="50" cy="50" r="30"/><path d="M40 30 L50 20 L60 30 M75 40 L85 50 L75 60 M60 70 L50 80 L40 70 M25 60 L15 50 L25 40"/></svg>);
+      return box(<path d="M38 10 Q66 44 80 88 L66 92 L62 78 L52 82 L62 60 L72 60 Q60 34 32 20 Z" />);
+
     case "bus":
-      return (<svg {...common}><rect x="20" y="25" width="60" height="45" rx="4" fill={color} stroke="none"/><rect x="26" y="32" width="20" height="15" fill="#fff"/><rect x="54" y="32" width="20" height="15" fill="#fff"/><circle cx="32" cy="75" r="6" fill={color} stroke="none"/><circle cx="68" cy="75" r="6" fill={color} stroke="none"/></svg>);
+      return box(<>
+        <rect x="12" y="20" width="76" height="52" rx="5" />
+        <rect x="18" y="28" width="26" height="18" fill="#fff" />
+        <rect x="56" y="28" width="26" height="18" fill="#fff" />
+        <rect x="18" y="52" width="64" height="6" fill="#fff" />
+        <circle cx="28" cy="80" r="8" />
+        <circle cx="72" cy="80" r="8" />
+      </>);
     case "car":
-      return (<svg {...common}><path d="M15 65 L25 45 H75 L85 65 V72 H15 Z" fill={color} stroke="none"/><circle cx="30" cy="72" r="6" fill="#fff"/><circle cx="70" cy="72" r="6" fill="#fff"/></svg>);
+      return box(<>
+        <path d="M8 66 L20 42 Q22 34 32 34 L68 34 Q78 34 80 42 L92 66 L92 80 L82 80 L82 86 L70 86 L70 80 L30 80 L30 86 L18 86 L18 80 L8 80 Z" />
+        <path d="M26 44 L36 44 L32 58 L18 58 Z" fill="#fff" />
+        <path d="M74 44 L64 44 L68 58 L82 58 Z" fill="#fff" />
+        <path d="M38 44 L62 44 L60 58 L40 58 Z" fill="#fff" />
+      </>);
     case "truck":
-      return (<svg {...common}><rect x="10" y="35" width="55" height="30" fill={color} stroke="none"/><path d="M65 45 H85 V65 H65 Z" fill={color} stroke="none"/><circle cx="25" cy="72" r="6" fill="#fff"/><circle cx="75" cy="72" r="6" fill="#fff"/></svg>);
+      return box(<>
+        <rect x="4" y="26" width="58" height="46" />
+        <path d="M62 40 L82 40 L94 56 L94 72 L62 72 Z" />
+        <rect x="66" y="46" width="22" height="14" fill="#fff" />
+        <circle cx="22" cy="82" r="8" />
+        <circle cx="42" cy="82" r="8" />
+        <circle cx="78" cy="82" r="8" />
+      </>);
     case "motorbike":
-      return (<svg {...common}><circle cx="25" cy="70" r="10"/><circle cx="75" cy="70" r="10"/><path d="M25 70 L50 45 L75 70 M45 45 L60 45"/></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100" fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="22" cy="72" r="12" />
+          <circle cx="78" cy="72" r="12" />
+          <path d="M22 72 L48 44 L68 50 L78 72 M40 44 L60 44 M54 44 L60 32" />
+        </svg>
+      );
+
     case "u-turn":
-      return (<svg {...common}><path d="M30 85 V45 Q30 25 50 25 Q70 25 70 45 V60 M55 55 L70 65 L85 55"/></svg>);
+      return box(
+        <path d="M22 94 L22 42 Q22 18 50 18 Q78 18 78 42 L78 62 L88 62 L72 82 L56 62 L66 62 L66 42 Q66 30 50 30 Q34 30 34 42 L34 94 Z" />
+      );
     case "overtake":
-      return (<svg {...common}><rect x="20" y="20" width="18" height="60" fill={color} stroke="none"/><rect x="62" y="30" width="18" height="60" fill="#dc2626" stroke="none"/></svg>);
+      return box(<>
+        <rect x="16" y="14" width="24" height="70" />
+        <rect x="60" y="26" width="24" height="70" fill="#dc2626" />
+      </>);
+
     case "parking":
-      return (<svg {...common}><text x="50%" y="70%" textAnchor="middle" fontSize="70" fontWeight="900" fill="#fff" stroke="none">P</text></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <text x="50" y="82" textAnchor="middle" fontSize="90" fontWeight="900" fill="#fff" fontFamily="Arial, sans-serif">P</text>
+        </svg>
+      );
     case "hospital":
-      return (<svg {...common}><text x="50%" y="70%" textAnchor="middle" fontSize="70" fontWeight="900" fill="#fff" stroke="none">H</text></svg>);
-    case "petrol":
-      return (<svg {...common}><path d="M25 80 V25 H60 V80 Z M60 40 H70 Q75 40 75 45 V65 Q75 70 70 70" fill="none"/><path d="M32 32 H53 V50 H32 Z" fill="#fff" stroke="none"/></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <text x="50" y="82" textAnchor="middle" fontSize="90" fontWeight="900" fill="#fff" fontFamily="Arial, sans-serif">H</text>
+        </svg>
+      );
     case "info-i":
-      return (<svg {...common}><text x="50%" y="72%" textAnchor="middle" fontSize="70" fontWeight="900" fill="#fff" stroke="none">i</text></svg>);
+      return (
+        <svg width={s} height={s} viewBox="0 0 100 100">
+          <text x="50" y="82" textAnchor="middle" fontSize="90" fontWeight="900" fill="#fff" fontFamily="Arial, sans-serif" fontStyle="italic">i</text>
+        </svg>
+      );
+    case "petrol":
+      return box(<>
+        <rect x="18" y="14" width="38" height="72" />
+        <rect x="24" y="22" width="26" height="22" fill="#fff" />
+        <path d="M56 30 L66 30 L66 60 Q66 68 74 68 Q82 68 82 60 L82 44 L78 44 L78 38 L86 38 L86 62 Q86 76 74 76 Q62 76 62 62 L62 38 L56 38 Z" />
+      </>);
     case "phone":
-      return (<svg {...common}><path d="M25 30 Q25 20 35 20 L45 25 L40 40 Q50 60 65 65 L80 60 Q88 68 82 78 Q70 88 45 75 Q22 55 25 30 Z" fill={color} stroke="none"/></svg>);
+      return box(
+        <path d="M18 26 Q18 12 32 12 L48 18 L40 40 Q52 62 68 68 L84 56 Q94 68 84 84 Q66 94 40 74 Q16 52 18 26 Z" />
+      );
     case "food":
-      return (<svg {...common}><path d="M30 20 V60 M35 20 V45 Q35 55 30 55 M25 20 V45 Q25 55 30 55 M30 55 V80"/><path d="M70 20 Q60 30 60 45 Q60 55 70 55 V80"/></svg>);
+      return box(<>
+        <path d="M22 10 L28 10 L28 40 L32 40 L32 10 L38 10 L38 40 L42 40 L42 10 L48 10 L48 46 Q48 54 40 54 L40 90 L30 90 L30 54 Q22 54 22 46 Z" />
+        <path d="M72 10 Q56 20 56 44 Q56 54 68 54 L68 90 L76 90 L76 10 Z" />
+      </>);
+
     default:
       return null;
   }
 }
 
-function ShapeShell({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={"relative flex items-center justify-center " + (className ?? "")}>{children}</div>;
+function Shell({ children, style }: { children: ReactNode; style?: CSSProperties }) {
+  return (
+    <div className="relative flex items-center justify-center" style={style}>
+      {children}
+    </div>
+  );
 }
 
 export function SignVisual({ variant, size = 160 }: { variant: SignVariant; size?: number }) {
   const px = size;
   switch (variant.kind) {
     case "warning": {
-      const inner = px * 0.42;
+      const inner = px * 0.5;
       return (
-        <ShapeShell>
-          <svg width={px} height={px * 0.92} viewBox="0 0 100 92">
-            <polygon points="50,4 96,88 4,88" fill="#dc2626"/>
-            <polygon points="50,14 88,82 12,82" fill="#fff"/>
-          </svg>
-          <div className="pointer-events-none absolute inset-0 flex items-end justify-center pb-[15%]">
-            <div style={{ width: inner, height: inner }} className="flex items-center justify-center">
-              <Symbol k={variant.symbol} color="#000" size={inner} />
+        <div className="relative inline-flex flex-col items-center">
+          <div className="relative" style={{ width: px, height: px * 0.92 }}>
+            <svg width={px} height={px * 0.92} viewBox="0 0 100 92">
+              <polygon points="50,3 97,89 3,89" fill="#dc2626" />
+              <polygon points="50,14 88,82 12,82" fill="#fff" />
+            </svg>
+            <div className="pointer-events-none absolute inset-0 flex items-end justify-center pb-[13%]">
+              <div style={{ width: inner, height: inner }} className="flex items-center justify-center">
+                <Sym k={variant.symbol} color="#000" size={inner} />
+              </div>
             </div>
           </div>
           {variant.label && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-1 text-center text-[10px] font-bold">{variant.label}</div>
+            <div className="mt-1 text-[10px] font-bold tracking-widest text-foreground">{variant.label}</div>
           )}
-        </ShapeShell>
+        </div>
       );
     }
     case "giveway":
       return (
-        <ShapeShell>
+        <Shell>
           <svg width={px} height={px * 0.92} viewBox="0 0 100 92">
-            <polygon points="4,4 96,4 50,88" fill="#dc2626"/>
-            <polygon points="14,12 86,12 50,78" fill="#fff"/>
+            <polygon points="3,3 97,3 50,89" fill="#dc2626" />
+            <polygon points="14,12 86,12 50,78" fill="#fff" />
           </svg>
-          <div className="pointer-events-none absolute inset-x-0 top-[18%] text-center font-black italic" style={{ fontSize: px * 0.16 }}>Give<br/>way</div>
-        </ShapeShell>
+          <div
+            className="pointer-events-none absolute inset-x-0 top-[20%] text-center font-black uppercase leading-[1] text-black"
+            style={{ fontSize: px * 0.14, fontFamily: "Arial, sans-serif" }}
+          >
+            Give<br />way
+          </div>
+        </Shell>
       );
     case "stop":
       return (
-        <ShapeShell>
+        <Shell>
           <svg width={px} height={px} viewBox="0 0 100 100">
-            <polygon points="30,5 70,5 95,30 95,70 70,95 30,95 5,70 5,30" fill="#dc2626" stroke="#fff" strokeWidth="4"/>
+            <polygon
+              points="30,4 70,4 96,30 96,70 70,96 30,96 4,70 4,30"
+              fill="#dc2626"
+              stroke="#fff"
+              strokeWidth="3"
+            />
           </svg>
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center font-black text-white" style={{ fontSize: px * 0.28 }}>STOP</div>
-        </ShapeShell>
+          <div
+            className="pointer-events-none absolute inset-0 flex items-center justify-center font-black text-white"
+            style={{ fontSize: px * 0.28, fontFamily: "Arial, sans-serif", letterSpacing: "0.05em" }}
+          >
+            STOP
+          </div>
+        </Shell>
       );
     case "prohibition": {
-      const inner = px * 0.5;
+      const inner = px * 0.55;
       return (
-        <ShapeShell>
+        <Shell>
           <svg width={px} height={px} viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="#dc2626"/>
-            <circle cx="50" cy="50" r="36" fill="#fff"/>
+            <circle cx="50" cy="50" r="46" fill="#dc2626" />
+            <circle cx="50" cy="50" r="37" fill="#fff" />
           </svg>
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div style={{ width: inner, height: inner }}><Symbol k={variant.symbol} color="#000" size={inner}/></div>
+            <div style={{ width: inner, height: inner }}>
+              <Sym k={variant.symbol} color="#000" size={inner} />
+            </div>
           </div>
           {variant.slash && (
-            <svg className="pointer-events-none absolute inset-0" width={px} height={px} viewBox="0 0 100 100"><line x1="18" y1="82" x2="82" y2="18" stroke="#dc2626" strokeWidth="8" strokeLinecap="round"/></svg>
+            <svg
+              className="pointer-events-none absolute inset-0"
+              width={px}
+              height={px}
+              viewBox="0 0 100 100"
+            >
+              <line
+                x1="18"
+                y1="82"
+                x2="82"
+                y2="18"
+                stroke="#dc2626"
+                strokeWidth="9"
+                strokeLinecap="round"
+              />
+            </svg>
           )}
-        </ShapeShell>
+        </Shell>
       );
     }
     case "no-entry":
       return (
-        <ShapeShell>
+        <Shell>
           <svg width={px} height={px} viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="#dc2626"/>
-            <rect x="18" y="44" width="64" height="12" fill="#fff"/>
+            <circle cx="50" cy="50" r="46" fill="#dc2626" />
+            <rect x="16" y="44" width="68" height="12" fill="#fff" />
           </svg>
-        </ShapeShell>
+        </Shell>
       );
     case "speed-limit":
       return (
-        <ShapeShell>
+        <Shell>
           <svg width={px} height={px} viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="#dc2626"/>
-            <circle cx="50" cy="50" r="36" fill="#fff"/>
+            <circle cx="50" cy="50" r="46" fill="#dc2626" />
+            <circle cx="50" cy="50" r="37" fill="#fff" />
           </svg>
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center font-black" style={{ fontSize: px * 0.36 }}>{variant.text}</div>
-        </ShapeShell>
+          <div
+            className="pointer-events-none absolute inset-0 flex items-center justify-center font-black text-black"
+            style={{ fontSize: px * 0.38, fontFamily: "Arial, sans-serif", letterSpacing: "-0.03em" }}
+          >
+            {variant.text}
+          </div>
+        </Shell>
       );
     case "national-speed":
       return (
-        <ShapeShell>
+        <Shell>
           <svg width={px} height={px} viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="#fff" stroke="#000" strokeWidth="4"/>
-            <line x1="20" y1="80" x2="80" y2="20" stroke="#000" strokeWidth="8" strokeLinecap="round"/>
+            <circle cx="50" cy="50" r="46" fill="#fff" stroke="#000" strokeWidth="4" />
+            <line x1="20" y1="80" x2="80" y2="20" stroke="#000" strokeWidth="9" strokeLinecap="round" />
           </svg>
-        </ShapeShell>
+        </Shell>
       );
     case "end-restriction": {
-      const inner = px * 0.5;
+      const inner = px * 0.55;
       return (
-        <ShapeShell>
+        <Shell>
           <svg width={px} height={px} viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="#fff" stroke="#000" strokeWidth="4"/>
-            <line x1="20" y1="80" x2="80" y2="20" stroke="#000" strokeWidth="6" strokeLinecap="round" opacity="0.85"/>
+            <circle cx="50" cy="50" r="46" fill="#fff" stroke="#000" strokeWidth="4" />
           </svg>
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-70">
-            <div style={{ width: inner, height: inner }}><Symbol k={variant.symbol} color="#000" size={inner}/></div>
+            <div style={{ width: inner, height: inner }}>
+              <Sym k={variant.symbol} color="#000" size={inner} />
+            </div>
           </div>
-        </ShapeShell>
+          <svg
+            className="pointer-events-none absolute inset-0"
+            width={px}
+            height={px}
+            viewBox="0 0 100 100"
+          >
+            <line x1="20" y1="80" x2="80" y2="20" stroke="#000" strokeWidth="7" strokeLinecap="round" />
+          </svg>
+        </Shell>
       );
     }
     case "mandatory": {
-      const inner = px * 0.6;
+      const inner = px * 0.62;
       return (
-        <ShapeShell>
+        <Shell>
           <svg width={px} height={px} viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="#1d4ed8"/>
+            <circle cx="50" cy="50" r="46" fill="#1849a9" />
           </svg>
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div style={{ width: inner, height: inner }}><Symbol k={variant.symbol} color="#fff" size={inner}/></div>
+            <div style={{ width: inner, height: inner }}>
+              <Sym k={variant.symbol} color="#fff" size={inner} />
+            </div>
           </div>
-          {variant.label && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-[10px] font-bold text-white">{variant.label}</div>
-          )}
-        </ShapeShell>
+        </Shell>
       );
     }
     case "info-blue":
       return (
-        <div className="flex items-center justify-center bg-[#1d4ed8] p-3 text-white" style={{ width: px, height: px }}>
-          {variant.symbol && <div style={{ width: px * 0.55, height: px * 0.55 }}><Symbol k={variant.symbol} color="#fff" size={px * 0.55}/></div>}
-          {variant.label && !variant.symbol && <div className="text-center font-bold" style={{ fontSize: px * 0.18 }}>{variant.label}</div>}
+        <div
+          className="flex items-center justify-center bg-[#1849a9] p-2 text-white"
+          style={{ width: px, height: px }}
+        >
+          {variant.symbol && (
+            <div style={{ width: px * 0.7, height: px * 0.7 }}>
+              <Sym k={variant.symbol} color="#fff" size={px * 0.7} />
+            </div>
+          )}
+          {variant.label && !variant.symbol && (
+            <div className="text-center font-bold" style={{ fontSize: px * 0.16, fontFamily: "Arial, sans-serif" }}>
+              {variant.label}
+            </div>
+          )}
         </div>
       );
     case "info-green":
       return (
-        <div className="flex items-center justify-center bg-[#0e7c3a] p-3 text-white border-2 border-white" style={{ width: px * 1.4, height: px * 0.8 }}>
-          <div className="text-center font-bold" style={{ fontSize: px * 0.14 }}>{variant.label}</div>
+        <div
+          className="flex items-center justify-center border-2 border-white bg-[#0e7c3a] px-3 text-white shadow-md"
+          style={{ width: px * 1.4, height: px * 0.75, fontFamily: "Arial, sans-serif" }}
+        >
+          <div className="text-center font-bold" style={{ fontSize: px * 0.15 }}>{variant.label}</div>
         </div>
       );
     case "info-white":
       return (
-        <div className="flex items-center justify-center bg-white p-3 text-black border-4 border-black" style={{ width: px * 1.4, height: px * 0.8 }}>
-          <div className="text-center font-bold" style={{ fontSize: px * 0.14 }}>{variant.label}</div>
+        <div
+          className="flex items-center justify-center border-4 border-black bg-white px-3 text-black"
+          style={{ width: px * 1.4, height: px * 0.75, fontFamily: "Arial, sans-serif" }}
+        >
+          <div className="text-center font-bold" style={{ fontSize: px * 0.15 }}>{variant.label}</div>
         </div>
       );
     case "motorway":
       return (
-        <div className="flex items-center justify-center bg-[#0033a0] p-3 text-white border-2 border-white" style={{ width: px * 1.4, height: px * 0.8 }}>
-          <div className="text-center font-bold" style={{ fontSize: px * 0.14 }}>{variant.label}</div>
+        <div
+          className="flex items-center justify-center border-2 border-white bg-[#0033a0] px-3 text-white shadow-md"
+          style={{ width: px * 1.4, height: px * 0.75, fontFamily: "Arial, sans-serif" }}
+        >
+          <div className="text-center font-bold" style={{ fontSize: px * 0.15 }}>{variant.label}</div>
         </div>
       );
     case "traffic-light": {
-      const on = (c: string) => variant.state === c || (variant.state === "red-amber" && (c === "red" || c === "amber"));
+      const on = (c: string) =>
+        variant.state === c || (variant.state === "red-amber" && (c === "red" || c === "amber"));
       return (
-        <div className="flex flex-col items-center justify-center gap-2 rounded-md bg-[#111] p-3" style={{ width: px * 0.55, height: px }}>
-          <div className="rounded-full" style={{ width: px * 0.28, height: px * 0.28, background: on("red") ? "#ef4444" : "#3f1a1a", boxShadow: on("red") ? "0 0 20px #ef4444" : "none" }}/>
-          <div className="rounded-full" style={{ width: px * 0.28, height: px * 0.28, background: on("amber") ? "#f59e0b" : "#3f2e10", boxShadow: on("amber") ? "0 0 20px #f59e0b" : "none" }}/>
-          <div className="rounded-full" style={{ width: px * 0.28, height: px * 0.28, background: on("green") ? "#22c55e" : "#123a1a", boxShadow: on("green") ? "0 0 20px #22c55e" : "none" }}/>
+        <div
+          className="flex flex-col items-center justify-center gap-2 rounded-md bg-[#111] p-3"
+          style={{ width: px * 0.55, height: px }}
+        >
+          <div
+            className="rounded-full"
+            style={{
+              width: px * 0.3,
+              height: px * 0.3,
+              background: on("red") ? "#ef4444" : "#3a1414",
+              boxShadow: on("red") ? "0 0 22px #ef4444" : "none",
+            }}
+          />
+          <div
+            className="rounded-full"
+            style={{
+              width: px * 0.3,
+              height: px * 0.3,
+              background: on("amber") ? "#f59e0b" : "#3a2a10",
+              boxShadow: on("amber") ? "0 0 22px #f59e0b" : "none",
+            }}
+          />
+          <div
+            className="rounded-full"
+            style={{
+              width: px * 0.3,
+              height: px * 0.3,
+              background: on("green") ? "#22c55e" : "#123a1a",
+              boxShadow: on("green") ? "0 0 22px #22c55e" : "none",
+            }}
+          />
+        </div>
+      );
+    }
+    case "zebra-crossing": {
+      const w = px * 1.3;
+      const h = px * 0.95;
+      const stripes = 7;
+      const stripeH = 100 / (stripes * 2 - 1);
+      return (
+        <div className="relative" style={{ width: w, height: h }}>
+          {/* Road */}
+          <div className="absolute inset-y-3 left-[18%] right-[18%] overflow-hidden bg-[#2a2a2a]">
+            {Array.from({ length: stripes }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute left-0 right-0 bg-white"
+                style={{ top: `${i * stripeH * 2}%`, height: `${stripeH}%` }}
+              />
+            ))}
+          </div>
+          {/* Belisha beacons */}
+          {[
+            { side: "left" as const, left: "3%" },
+            { side: "right" as const, right: "3%" },
+          ].map((p, i) => (
+            <div
+              key={i}
+              className="absolute top-0 bottom-0 flex flex-col items-center"
+              style={p.side === "left" ? { left: p.left } : { right: p.right }}
+            >
+              <div
+                className="rounded-full"
+                style={{
+                  width: px * 0.2,
+                  height: px * 0.2,
+                  background: "#f5a623",
+                  boxShadow: "0 0 14px #f5a623",
+                }}
+              />
+              <div className="flex-1 overflow-hidden" style={{ width: px * 0.07 }}>
+                <div className="h-1/4 bg-white" />
+                <div className="h-1/4 bg-black" />
+                <div className="h-1/4 bg-white" />
+                <div className="h-1/4 bg-black" />
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    case "signal-crossing": {
+      const isGreen = variant.state === "green-man";
+      const bg = isGreen ? "#22c55e" : "#ef4444";
+      return (
+        <div
+          className="flex items-center justify-center rounded-md bg-[#111] p-3"
+          style={{ width: px * 0.7, height: px }}
+        >
+          <div
+            className="flex items-center justify-center"
+            style={{ width: "100%", height: "100%", background: "#050505" }}
+          >
+            <svg width={px * 0.5} height={px * 0.8} viewBox="0 0 100 150" fill={bg}>
+              {isGreen ? (
+                <g>
+                  <circle cx="55" cy="18" r="12" />
+                  <path d="M40 34 L68 32 L76 68 L66 72 L74 116 L74 140 L60 140 L54 100 L44 140 L32 140 L44 92 L34 72 L26 50 Z" />
+                </g>
+              ) : (
+                <g>
+                  <circle cx="50" cy="22" r="12" />
+                  <path d="M32 40 L68 40 L76 100 L60 100 L58 140 L42 140 L40 100 L24 100 Z" />
+                </g>
+              )}
+            </svg>
+          </div>
         </div>
       );
     }
