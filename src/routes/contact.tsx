@@ -56,47 +56,42 @@ function ContactPage() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 lg:grid-cols-2">
-            {/* Booking form */}
-            <div className="lg:col-span-2">
-              <BookingForm />
-            </div>
-
             {/* Quick actions */}
-            <Card className="border-border bg-card">
-              <CardHeader className="pb-4 text-center sm:text-left">
-                <CardTitle className="font-display text-xl">Talk to us instantly</CardTitle>
+            <Card className="border-border bg-card lg:col-span-2">
+              <CardHeader className="pb-4 text-center">
+                <CardTitle className="font-display text-2xl">Talk to us instantly</CardTitle>
               </CardHeader>
-              <CardContent className="grid gap-3">
-                <Button asChild size="lg" className="h-12 w-full justify-center gap-2 rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">
+              <CardContent className="grid gap-3 sm:grid-cols-2">
+                <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">
                   <a
                     href="https://wa.me/447961585231"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")}
                   >
-                    <WhatsAppIcon className="h-4 w-4" />
+                    <WhatsAppIcon className="h-5 w-5" />
                     WhatsApp 07961 585231
                   </a>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="h-12 w-full justify-center gap-2 rounded-none">
+                <Button asChild size="lg" variant="outline" className="h-14 w-full justify-center gap-2 rounded-none">
                   <a
                     href="tel:+447961585231"
                     onClick={() => trackContactClick("phone", "Contact page – instant CTA")}
                   >
-                    <Phone className="h-4 w-4" />
+                    <Phone className="h-5 w-5" />
                     Call 07961 585231
                   </a>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="h-12 w-full justify-center gap-2 rounded-none">
+                <Button asChild size="lg" variant="outline" className="h-14 w-full justify-center gap-2 rounded-none">
                   <a
                     href="mailto:gsmdrivingschool@outlook.com"
                     onClick={() => trackContactClick("email", "Contact page – instant CTA")}
                   >
-                    <Mail className="h-4 w-4" />
+                    <Mail className="h-5 w-5" />
                     gsmdrivingschool@outlook.com
                   </a>
                 </Button>
-                <Button asChild size="lg" className="h-12 w-full justify-center gap-2 rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] text-white hover:opacity-90">
+                <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] text-white hover:opacity-90">
                   <a
                     href="https://www.instagram.com/gsm_driving_school_"
                     target="_blank"
@@ -106,7 +101,7 @@ function ContactPage() {
                     Follow us on Instagram
                   </a>
                 </Button>
-                <Button asChild size="lg" className="h-12 w-full justify-center gap-2 rounded-none bg-[#1877F2] text-white hover:bg-[#166fe5]">
+                <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#1877F2] text-white hover:bg-[#166fe5] sm:col-span-2">
                   <a
                     href="https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr"
                     target="_blank"
@@ -118,6 +113,11 @@ function ContactPage() {
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Booking form */}
+            <div className="lg:col-span-2">
+              <BookingForm />
+            </div>
 
             {/* Visit us */}
             <Card className="border-border bg-card">
