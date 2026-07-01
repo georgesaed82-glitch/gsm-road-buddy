@@ -56,6 +56,66 @@ function ContactPage() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 lg:grid-cols-2">
+            {/* Booking form */}
+            <div className="lg:col-span-2">
+              <BookingForm />
+            </div>
+
+            {/* Visit us */}
+            <Card className="border-border bg-card">
+              <CardHeader className="pb-4 text-center sm:text-left">
+                <CardTitle className="font-display text-xl">Visit us</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                  <div>
+                    <p className="font-medium text-foreground">Address</p>
+                    <p className="text-sm text-muted-foreground">
+                      71 Sandbourne House, Dartmouth Close, London W11 1DS
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                  <div>
+                    <p className="font-medium text-foreground">Areas covered</p>
+                    <p className="text-sm text-muted-foreground">
+                      Notting Hill Gate · Holland Park · High Street Kensington · Bayswater
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                  <div>
+                    <p className="font-medium text-foreground">Email</p>
+                    <a
+                      href="mailto:gsmdrivingschool@outlook.com"
+                      onClick={() => trackContactClick("email", "Contact page – details")}
+                      className="text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      gsmdrivingschool@outlook.com
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <WhatsAppIcon className="mt-0.5 h-5 w-5 shrink-0 text-[#25D366]" />
+                  <div>
+                    <p className="font-medium text-foreground">WhatsApp</p>
+                    <a
+                      href="https://wa.me/447961585231"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackContactClick("whatsapp", "Contact page – details")}
+                      className="text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      07961 585231
+                    </a>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Quick actions */}
             <Card className="border-border bg-card">
               <CardHeader className="pb-4 text-center sm:text-left">
@@ -113,66 +173,6 @@ function ContactPage() {
                 </Button>
               </CardContent>
             </Card>
-
-            {/* Visit us */}
-            <Card className="border-border bg-card">
-              <CardHeader className="pb-4 text-center sm:text-left">
-                <CardTitle className="font-display text-xl">Visit us</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">Address</p>
-                    <p className="text-sm text-muted-foreground">
-                      71 Sandbourne House, Dartmouth Close, London W11 1DS
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">Areas covered</p>
-                    <p className="text-sm text-muted-foreground">
-                      Notting Hill Gate · Holland Park · High Street Kensington · Bayswater
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">Email</p>
-                    <a
-                      href="mailto:gsmdrivingschool@outlook.com"
-                      onClick={() => trackContactClick("email", "Contact page – details")}
-                      className="text-sm text-muted-foreground hover:text-foreground"
-                    >
-                      gsmdrivingschool@outlook.com
-                    </a>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <WhatsAppIcon className="mt-0.5 h-5 w-5 shrink-0 text-[#25D366]" />
-                  <div>
-                    <p className="font-medium text-foreground">WhatsApp</p>
-                    <a
-                      href="https://wa.me/447961585231"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackContactClick("whatsapp", "Contact page – details")}
-                      className="text-sm text-muted-foreground hover:text-foreground"
-                    >
-                      07961 585231
-                    </a>
-                  </div>
-                </div>
-            </CardContent>
-            </Card>
-
-            {/* Booking form */}
-            <div className="lg:col-span-2">
-              <BookingForm />
-            </div>
 
             {/* Office hours */}
             <Card className="border-border bg-card lg:col-span-2">
