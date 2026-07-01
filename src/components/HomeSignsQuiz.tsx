@@ -12,14 +12,14 @@ const POOL_IDS = [
   "w-narrows", "w-school", "w-cyclists", "w-horse", "w-roadworks",
   "w-signals", "w-level", "w-lowbridge", "w-hump", "w-pedestrians",
   // Prohibitory
-  "p-no-entry", "p-no-motor", "p-no-right", "p-no-left", "p-no-uturn",
-  "p-no-overtake", "p-no-stopping", "p-no-waiting",
+  "p-no-entry", "p-no-vehicles", "p-no-right", "p-no-left", "p-no-uturn",
+  "p-no-overtake", "p-no-hgv", "p-no-bikes", "p-giveway", "p-stop",
   // Mandatory
-  "m-turn-left", "m-turn-right", "m-ahead-only", "m-keep-left", "m-mini-roundabout",
+  "m-turn-left", "m-turn-right", "m-ahead", "m-keep-left", "m-mini-r",
   // Speed
   "s-20", "s-30", "s-40", "s-50", "s-national",
   // Info / direction / signals / crossings
-  "i-parking", "i-hospital", "d-primary", "sig-red", "sig-green",
+  "i-parking", "i-hospital", "d-primary", "t-red", "t-green",
   "c-zebra", "c-pelican",
 ];
 
