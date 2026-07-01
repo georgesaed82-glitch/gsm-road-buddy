@@ -1,9 +1,5 @@
-import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Star, ArrowRight, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
