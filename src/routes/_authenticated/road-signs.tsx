@@ -205,12 +205,23 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
                 {picked === q.correctIndex ? "Correct" : "Correct answer"}
               </div>
               {picked !== q.correctIndex && (
-                <p className="mt-2 text-xs text-muted-foreground">
-                  You picked: <span className="text-foreground">{q.options[picked]}</span>
-                </p>
+                <div className="mt-3 flex gap-4 border border-destructive/40 bg-background p-3">
+                  <div className="shrink-0"><SignVisual variant={current.variant} size={96} /></div>
+                  <div className="min-w-0">
+                    <p className="text-xs text-muted-foreground">
+                      You picked: <span className="text-foreground">{q.options[picked]}</span>
+                    </p>
+                    <div className="mt-1 font-medium">The right answer is: {current.name}</div>
+                    <p className="mt-1 text-xs text-muted-foreground">{current.meaning}</p>
+                  </div>
+                </div>
               )}
-              <div className="mt-2 font-medium">The right answer is: {current.name}</div>
-              <p className="mt-1 text-muted-foreground">{current.meaning}</p>
+              {picked === q.correctIndex && (
+                <>
+                  <div className="mt-2 font-medium">{current.name}</div>
+                  <p className="mt-1 text-muted-foreground">{current.meaning}</p>
+                </>
+              )}
               <Button size="sm" className="mt-4 rounded-none" onClick={next}>
                 {i + 1 === order.length ? "See results →" : "Next question →"}
               </Button>
