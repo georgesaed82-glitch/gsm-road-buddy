@@ -52,14 +52,11 @@ function PaymentsPage() {
 
       <section className="mt-12">
         <h2 className="font-display text-2xl">Top up</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Pick a package — payment is taken by card or bank transfer.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Pick a package — contact us to arrange payment by card or bank transfer.</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {packages.map((p) => (
             <div key={p.name} className="flex flex-col border border-border bg-card p-5">
               <div className="font-display text-lg text-foreground">{p.name}</div>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-display text-3xl text-primary">{gbp(p.price)}</span>
-              </div>
               <div className="text-xs text-muted-foreground">{p.hours} hour{p.hours > 1 ? "s" : ""}</div>
               <p className="mt-3 flex-1 text-sm text-muted-foreground">{p.blurb}</p>
               <Button asChild className="mt-5 rounded-none" size="sm">
