@@ -4,7 +4,7 @@ import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { SignVisual } from "@/components/SignVisual";
+import { OfficialSignImage } from "@/components/OfficialSignImage";
 import { signs, signCategories, signsByCategory, buildSignOptions, type Sign, type SignCategory } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 
@@ -118,7 +118,7 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
                 {items.map((s) => (
                   <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
                     <div className="flex h-[110px] w-[110px] shrink-0 items-center justify-center">
-                      <SignVisual variant={s.variant} size={100} />
+                      <OfficialSignImage sign={s} size={100} />
                     </div>
                     <div className="min-w-0">
                       <div className="font-display text-base leading-tight">{s.name}</div>
@@ -164,7 +164,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {missed.map((s) => (
                 <div key={s.id} className="flex gap-3 border border-border p-3">
-                  <SignVisual variant={s.variant} size={64} />
+                  <OfficialSignImage sign={s} size={64} />
                   <div className="min-w-0">
                     <div className="text-sm font-medium">{s.name}</div>
                     <p className="mt-1 text-xs text-muted-foreground">{s.meaning}</p>
@@ -224,7 +224,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
 
         <div className="mt-6 flex flex-col items-center gap-4">
           <div className="flex h-[200px] items-center justify-center">
-            <SignVisual variant={current.variant} size={180} />
+            <OfficialSignImage sign={current} size={180} />
           </div>
           <h2 className="text-center font-display text-2xl leading-snug">What does this sign mean?</h2>
         </div>
@@ -271,7 +271,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
               {correct ? "Correct" : "Not quite — here's the sign explained"}
             </div>
             <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row">
-              <div className="shrink-0"><SignVisual variant={current.variant} size={130} /></div>
+              <div className="shrink-0"><OfficialSignImage sign={current} size={130} /></div>
               <div>
                 <div className="font-display text-lg">{current.name}</div>
                 <p className="mt-1 text-sm text-muted-foreground">{current.meaning}</p>
