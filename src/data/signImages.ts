@@ -83,6 +83,23 @@ export const officialSignImages: Record<string, string> = {
   // ── Information (blue rectangle) ───────────────────────
   "i-parking": url("UK traffic sign 801.svg"),
   "i-hospital": url("UK traffic sign 827.2–V1.svg"),
+
+  // ── Pedestrian crossings ───────────────────────────────
+  // Warning-triangle style plates used to depict each crossing type.
+  "c-zebra": url("UK traffic sign 544.1.svg"),
+  "c-crossing-ahead": url("UK traffic sign 544.1.svg"),
+  "c-pelican": url("UK traffic sign 544.1.svg"),
+  "c-puffin": url("UK traffic sign 544.1.svg"),
+  "c-toucan": url("UK traffic sign 544.2.svg"),
+  "c-pegasus": url("UK traffic sign 550.1.svg"),
+  // ── Traffic light states ───────────────────────────────
+  "t-red": url("Traffic_lights_red.svg"),
+  "t-red-amber": url("Traffic_lights_red-yellow.svg"),
+  "t-amber": url("Traffic_lights_yellow.svg"),
+  "t-green": url("Traffic_lights_green.svg"),
+
+  // ── Information (services) ─────────────────────────────
+  "i-phone": url("UK traffic sign 2306.svg"),
 };
 
 export function officialSignImageFor(id: string): string | undefined {
