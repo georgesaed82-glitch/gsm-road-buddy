@@ -90,7 +90,7 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
 
 function LearnGrid({ pool }: { pool: Sign[] }) {
   return (
-    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div data-testid="road-signs-learn-grid" className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {pool.map((s) => (
         <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
           <div className="shrink-0"><OfficialSignImage sign={s} variant="card" /></div>
