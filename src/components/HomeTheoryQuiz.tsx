@@ -69,8 +69,15 @@ export function HomeTheoryQuiz() {
     }
   };
 
+  const ariaMessage = revealed
+    ? `${gotIt ? "Correct" : "Not quite"} — the answer is ${q.options[q.correctIndex]}. Why: ${q.explanation}`
+    : "";
+
   return (
     <div className="border border-border bg-card p-5 sm:p-8">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {ariaMessage}
+      </div>
       <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
         <span className="inline-flex items-center gap-2"><BookOpen className="h-3 w-3" /> Question {i + 1} of {QUIZ_LENGTH}</span>
         <span>Score {score}</span>
@@ -111,8 +118,6 @@ export function HomeTheoryQuiz() {
 
       {revealed && (
         <div
-          aria-live="polite"
-          aria-atomic="true"
           className={cn(
             "mt-6 border p-4 text-sm sm:p-5",
             gotIt ? "border-emerald-600 bg-emerald-600/10" : "border-destructive bg-destructive/10",
