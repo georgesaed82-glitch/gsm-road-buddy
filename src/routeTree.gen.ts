@@ -24,9 +24,13 @@ import { Route as AreasAreaRouteImport } from './routes/areas.$area'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedTheoryRouteImport } from './routes/_authenticated/theory'
 import { Route as AuthenticatedSignsRouteImport } from './routes/_authenticated/signs'
+import { Route as AuthenticatedRoadSignsRouteImport } from './routes/_authenticated/road-signs'
+import { Route as AuthenticatedQuestionsRouteImport } from './routes/_authenticated/questions'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
+import { Route as AuthenticatedMockTestsRouteImport } from './routes/_authenticated/mock-tests'
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
+import { Route as AuthenticatedHighwayCodeRouteImport } from './routes/_authenticated/highway-code'
 import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_authenticated/hazard-perception'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -114,6 +118,16 @@ const AuthenticatedSignsRoute = AuthenticatedSignsRouteImport.update({
   path: '/signs',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRoadSignsRoute = AuthenticatedRoadSignsRouteImport.update({
+  id: '/road-signs',
+  path: '/road-signs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedQuestionsRoute = AuthenticatedQuestionsRouteImport.update({
+  id: '/questions',
+  path: '/questions',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -124,11 +138,22 @@ const AuthenticatedPaymentsRoute = AuthenticatedPaymentsRouteImport.update({
   path: '/payments',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMockTestsRoute = AuthenticatedMockTestsRouteImport.update({
+  id: '/mock-tests',
+  path: '/mock-tests',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLessonsRoute = AuthenticatedLessonsRouteImport.update({
   id: '/lessons',
   path: '/lessons',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedHighwayCodeRoute =
+  AuthenticatedHighwayCodeRouteImport.update({
+    id: '/highway-code',
+    path: '/highway-code',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedHazardPerceptionRoute =
   AuthenticatedHazardPerceptionRouteImport.update({
     id: '/hazard-perception',
@@ -211,9 +236,13 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
+  '/mock-tests': typeof AuthenticatedMockTestsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/questions': typeof AuthenticatedQuestionsRoute
+  '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
   '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
@@ -241,9 +270,13 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
+  '/mock-tests': typeof AuthenticatedMockTestsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/questions': typeof AuthenticatedQuestionsRoute
+  '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
   '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
@@ -274,9 +307,13 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/_authenticated/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
+  '/_authenticated/mock-tests': typeof AuthenticatedMockTestsRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/questions': typeof AuthenticatedQuestionsRoute
+  '/_authenticated/road-signs': typeof AuthenticatedRoadSignsRoute
   '/_authenticated/signs': typeof AuthenticatedSignsRoute
   '/_authenticated/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
@@ -307,9 +344,13 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/hazard-perception'
+    | '/highway-code'
     | '/lessons'
+    | '/mock-tests'
     | '/payments'
     | '/profile'
+    | '/questions'
+    | '/road-signs'
     | '/signs'
     | '/theory'
     | '/api/chat'
@@ -337,9 +378,13 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/dashboard'
     | '/hazard-perception'
+    | '/highway-code'
     | '/lessons'
+    | '/mock-tests'
     | '/payments'
     | '/profile'
+    | '/questions'
+    | '/road-signs'
     | '/signs'
     | '/theory'
     | '/api/chat'
@@ -369,9 +414,13 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/hazard-perception'
+    | '/_authenticated/highway-code'
     | '/_authenticated/lessons'
+    | '/_authenticated/mock-tests'
     | '/_authenticated/payments'
     | '/_authenticated/profile'
+    | '/_authenticated/questions'
+    | '/_authenticated/road-signs'
     | '/_authenticated/signs'
     | '/_authenticated/theory'
     | '/api/chat'
@@ -512,6 +561,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSignsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/road-signs': {
+      id: '/_authenticated/road-signs'
+      path: '/road-signs'
+      fullPath: '/road-signs'
+      preLoaderRoute: typeof AuthenticatedRoadSignsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/questions': {
+      id: '/_authenticated/questions'
+      path: '/questions'
+      fullPath: '/questions'
+      preLoaderRoute: typeof AuthenticatedQuestionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
       path: '/profile'
@@ -526,11 +589,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPaymentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/mock-tests': {
+      id: '/_authenticated/mock-tests'
+      path: '/mock-tests'
+      fullPath: '/mock-tests'
+      preLoaderRoute: typeof AuthenticatedMockTestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/lessons': {
       id: '/_authenticated/lessons'
       path: '/lessons'
       fullPath: '/lessons'
       preLoaderRoute: typeof AuthenticatedLessonsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/highway-code': {
+      id: '/_authenticated/highway-code'
+      path: '/highway-code'
+      fullPath: '/highway-code'
+      preLoaderRoute: typeof AuthenticatedHighwayCodeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/hazard-perception': {
@@ -649,9 +726,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
+  AuthenticatedHighwayCodeRoute: typeof AuthenticatedHighwayCodeRoute
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
+  AuthenticatedMockTestsRoute: typeof AuthenticatedMockTestsRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedQuestionsRoute: typeof AuthenticatedQuestionsRoute
+  AuthenticatedRoadSignsRoute: typeof AuthenticatedRoadSignsRoute
   AuthenticatedSignsRoute: typeof AuthenticatedSignsRoute
   AuthenticatedTheoryRoute: typeof AuthenticatedTheoryRoute
 }
@@ -660,9 +741,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
+  AuthenticatedHighwayCodeRoute: AuthenticatedHighwayCodeRoute,
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
+  AuthenticatedMockTestsRoute: AuthenticatedMockTestsRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedQuestionsRoute: AuthenticatedQuestionsRoute,
+  AuthenticatedRoadSignsRoute: AuthenticatedRoadSignsRoute,
   AuthenticatedSignsRoute: AuthenticatedSignsRoute,
   AuthenticatedTheoryRoute: AuthenticatedTheoryRoute,
 }
@@ -689,13 +774,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

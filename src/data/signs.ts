@@ -131,6 +131,40 @@ export function signsByCategory(cat: SignCategory) {
   return signs.filter((s) => s.category === cat);
 }
 
+// ── Grouping for the /road-signs learner page ──────────────────
+export type SignGroup =
+  | "warning"
+  | "regulatory"
+  | "mandatory"
+  | "motorway"
+  | "parking"
+  | "temporary"
+  | "information";
+
+export const signGroups: { slug: SignGroup; title: string; blurb: string }[] = [
+  { slug: "warning", title: "Warning signs", blurb: "Red triangles — hazards ahead." },
+  { slug: "regulatory", title: "Regulatory signs", blurb: "Red circles, speed limits, stop and give way — orders you must obey." },
+  { slug: "mandatory", title: "Mandatory signs", blurb: "Blue circles — what you must do." },
+  { slug: "motorway", title: "Motorway signs", blurb: "Blue background — motorway direction and rules." },
+  { slug: "parking", title: "Parking signs", blurb: "Where you may and may not park." },
+  { slug: "temporary", title: "Temporary signs", blurb: "Roadworks and temporary controls." },
+  { slug: "information", title: "Information signs", blurb: "Services, crossings, signals and direction signs." },
+];
+
+export function signGroupOf(s: Sign): SignGroup {
+  if (s.id === "i-parking") return "parking";
+  if (s.id === "w-roadworks") return "temporary";
+  if (s.id === "d-motorway") return "motorway";
+  if (s.category === "warning") return "warning";
+  if (s.category === "prohibitory" || s.category === "speed") return "regulatory";
+  if (s.category === "mandatory") return "mandatory";
+  return "information";
+}
+
+export function signsByGroup(g: SignGroup): Sign[] {
+  return signs.filter((s) => signGroupOf(s) === g);
+}
+
 export function buildSignOptions(sign: Sign, pool: Sign[] = signs): { options: string[]; correctIndex: number } {
   const distractPool = pool.filter((s) => s.id !== sign.id && s.category === sign.category);
   const global = pool.filter((s) => s.id !== sign.id);
