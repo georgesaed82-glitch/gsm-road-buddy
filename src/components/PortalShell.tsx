@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,8 +10,10 @@ const items = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/lessons", label: "Lessons & progress", icon: CalendarCheck },
   { to: "/payments", label: "Payments", icon: CreditCard },
-  { to: "/theory", label: "Theory portal", icon: BookOpen },
-  { to: "/signs", label: "Road signs quiz", icon: SignpostBig },
+  { to: "/highway-code", label: "Highway Code", icon: BookOpen },
+  { to: "/road-signs", label: "Road signs", icon: SignpostBig },
+  { to: "/questions", label: "Questions", icon: HelpCircle },
+  { to: "/mock-tests", label: "Mock tests", icon: ClipboardCheck },
   { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
   { to: "/profile", label: "Profile", icon: UserCircle2 },
 ];

@@ -30,6 +30,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as AuthenticatedMockTestsRouteImport } from './routes/_authenticated/mock-tests'
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
+import { Route as AuthenticatedHighwayCodeRouteImport } from './routes/_authenticated/highway-code'
 import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_authenticated/hazard-perception'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -147,6 +148,12 @@ const AuthenticatedLessonsRoute = AuthenticatedLessonsRouteImport.update({
   path: '/lessons',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedHighwayCodeRoute =
+  AuthenticatedHighwayCodeRouteImport.update({
+    id: '/highway-code',
+    path: '/highway-code',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedHazardPerceptionRoute =
   AuthenticatedHazardPerceptionRouteImport.update({
     id: '/hazard-perception',
@@ -229,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
   '/mock-tests': typeof AuthenticatedMockTestsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
@@ -262,6 +270,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
   '/mock-tests': typeof AuthenticatedMockTestsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
@@ -298,6 +307,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
+  '/_authenticated/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
   '/_authenticated/mock-tests': typeof AuthenticatedMockTestsRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
@@ -334,6 +344,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/hazard-perception'
+    | '/highway-code'
     | '/lessons'
     | '/mock-tests'
     | '/payments'
@@ -367,6 +378,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/dashboard'
     | '/hazard-perception'
+    | '/highway-code'
     | '/lessons'
     | '/mock-tests'
     | '/payments'
@@ -402,6 +414,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/hazard-perception'
+    | '/_authenticated/highway-code'
     | '/_authenticated/lessons'
     | '/_authenticated/mock-tests'
     | '/_authenticated/payments'
@@ -590,6 +603,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLessonsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/highway-code': {
+      id: '/_authenticated/highway-code'
+      path: '/highway-code'
+      fullPath: '/highway-code'
+      preLoaderRoute: typeof AuthenticatedHighwayCodeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/hazard-perception': {
       id: '/_authenticated/hazard-perception'
       path: '/hazard-perception'
@@ -706,6 +726,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
+  AuthenticatedHighwayCodeRoute: typeof AuthenticatedHighwayCodeRoute
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
   AuthenticatedMockTestsRoute: typeof AuthenticatedMockTestsRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
@@ -720,6 +741,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
+  AuthenticatedHighwayCodeRoute: AuthenticatedHighwayCodeRoute,
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
   AuthenticatedMockTestsRoute: AuthenticatedMockTestsRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
