@@ -23,6 +23,7 @@ import { Route as AreasIndexRouteImport } from './routes/areas.index'
 import { Route as AreasAreaRouteImport } from './routes/areas.$area'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedTheoryRouteImport } from './routes/_authenticated/theory'
+import { Route as AuthenticatedSignsRouteImport } from './routes/_authenticated/signs'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
@@ -106,6 +107,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
 const AuthenticatedTheoryRoute = AuthenticatedTheoryRouteImport.update({
   id: '/theory',
   path: '/theory',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSignsRoute = AuthenticatedSignsRouteImport.update({
+  id: '/signs',
+  path: '/signs',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -208,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/lessons': typeof AuthenticatedLessonsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/signs': typeof AuthenticatedSignsRoute
   '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/lessons': typeof AuthenticatedLessonsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/signs': typeof AuthenticatedSignsRoute
   '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
@@ -269,6 +277,7 @@ export interface FileRoutesById {
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/signs': typeof AuthenticatedSignsRoute
   '/_authenticated/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/payments'
     | '/profile'
+    | '/signs'
     | '/theory'
     | '/api/chat'
     | '/areas/$area'
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/payments'
     | '/profile'
+    | '/signs'
     | '/theory'
     | '/api/chat'
     | '/areas/$area'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/_authenticated/lessons'
     | '/_authenticated/payments'
     | '/_authenticated/profile'
+    | '/_authenticated/signs'
     | '/_authenticated/theory'
     | '/api/chat'
     | '/areas/$area'
@@ -491,6 +503,13 @@ declare module '@tanstack/react-router' {
       path: '/theory'
       fullPath: '/theory'
       preLoaderRoute: typeof AuthenticatedTheoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/signs': {
+      id: '/_authenticated/signs'
+      path: '/signs'
+      fullPath: '/signs'
+      preLoaderRoute: typeof AuthenticatedSignsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -633,6 +652,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedSignsRoute: typeof AuthenticatedSignsRoute
   AuthenticatedTheoryRoute: typeof AuthenticatedTheoryRoute
 }
 
@@ -643,6 +663,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedSignsRoute: AuthenticatedSignsRoute,
   AuthenticatedTheoryRoute: AuthenticatedTheoryRoute,
 }
 
