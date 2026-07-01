@@ -24,6 +24,7 @@ import { Route as AreasAreaRouteImport } from './routes/areas.$area'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedTheoryRouteImport } from './routes/_authenticated/theory'
 import { Route as AuthenticatedSignsRouteImport } from './routes/_authenticated/signs'
+import { Route as AuthenticatedRoadSignsRouteImport } from './routes/_authenticated/road-signs'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
@@ -112,6 +113,11 @@ const AuthenticatedTheoryRoute = AuthenticatedTheoryRouteImport.update({
 const AuthenticatedSignsRoute = AuthenticatedSignsRouteImport.update({
   id: '/signs',
   path: '/signs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRoadSignsRoute = AuthenticatedRoadSignsRouteImport.update({
+  id: '/road-signs',
+  path: '/road-signs',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/lessons': typeof AuthenticatedLessonsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
   '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/lessons': typeof AuthenticatedLessonsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
   '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
@@ -277,6 +285,7 @@ export interface FileRoutesById {
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/road-signs': typeof AuthenticatedRoadSignsRoute
   '/_authenticated/signs': typeof AuthenticatedSignsRoute
   '/_authenticated/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
@@ -310,6 +319,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/payments'
     | '/profile'
+    | '/road-signs'
     | '/signs'
     | '/theory'
     | '/api/chat'
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/payments'
     | '/profile'
+    | '/road-signs'
     | '/signs'
     | '/theory'
     | '/api/chat'
@@ -372,6 +383,7 @@ export interface FileRouteTypes {
     | '/_authenticated/lessons'
     | '/_authenticated/payments'
     | '/_authenticated/profile'
+    | '/_authenticated/road-signs'
     | '/_authenticated/signs'
     | '/_authenticated/theory'
     | '/api/chat'
@@ -510,6 +522,13 @@ declare module '@tanstack/react-router' {
       path: '/signs'
       fullPath: '/signs'
       preLoaderRoute: typeof AuthenticatedSignsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/road-signs': {
+      id: '/_authenticated/road-signs'
+      path: '/road-signs'
+      fullPath: '/road-signs'
+      preLoaderRoute: typeof AuthenticatedRoadSignsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -652,6 +671,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedRoadSignsRoute: typeof AuthenticatedRoadSignsRoute
   AuthenticatedSignsRoute: typeof AuthenticatedSignsRoute
   AuthenticatedTheoryRoute: typeof AuthenticatedTheoryRoute
 }
@@ -663,6 +683,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedRoadSignsRoute: AuthenticatedRoadSignsRoute,
   AuthenticatedSignsRoute: AuthenticatedSignsRoute,
   AuthenticatedTheoryRoute: AuthenticatedTheoryRoute,
 }
