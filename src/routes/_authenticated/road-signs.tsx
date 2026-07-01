@@ -93,7 +93,7 @@ function LearnGrid({ pool }: { pool: Sign[] }) {
     <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {pool.map((s) => (
         <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
-          <div className="shrink-0"><OfficialSignImage sign={s} size={96} /></div>
+          <div className="shrink-0"><OfficialSignImage sign={s} variant="card" /></div>
           <div className="min-w-0">
             <div className="font-display text-base text-foreground">{s.name}</div>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{s.meaning}</p>
@@ -171,7 +171,7 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
       <Progress value={((i + (picked !== null ? 1 : 0)) / order.length) * 100} />
 
       <div className="mt-6 grid gap-6 border border-border bg-card p-6 sm:grid-cols-[auto_1fr]">
-        <div className="flex items-start justify-center"><OfficialSignImage sign={current} size={160} /></div>
+        <div className="flex items-start justify-center"><OfficialSignImage sign={current} variant="detail" /></div>
         <div>
           <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">What does this sign mean?</div>
           <div className="mt-4 grid gap-2">
@@ -206,7 +206,7 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
               </div>
               {picked !== q.correctIndex && (
                 <div className="mt-3 flex gap-4 border border-destructive/40 bg-background p-3">
-                  <div className="shrink-0"><OfficialSignImage sign={current} size={96} /></div>
+                  <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" /></div>
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">
                       You picked: <span className="text-foreground">{q.options[picked]}</span>
