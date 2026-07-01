@@ -10,6 +10,7 @@ import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
 import { HomeSignsQuiz } from "@/components/HomeSignsQuiz";
 import { HomeHazardQuiz } from "@/components/HomeHazardQuiz";
+import { HomeTheoryQuiz } from "@/components/HomeTheoryQuiz";
 
 import { trackContactClick } from "@/lib/trackContactClick";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
@@ -262,17 +263,23 @@ function Home() {
             Test yourself — <span className="italic text-accent">right here.</span>
           </h2>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Two mini quizzes, straight from the theory syllabus. Get it wrong and we explain why — that's how you actually learn.
+            This is a taster of the GSM Learner Portal. Every question in the full portal is explained the same way — <span className="italic">answer, then a plain-English "why"</span> — so you actually understand the road, not just memorise it. That's how our students pass quicker.
           </p>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             <div>
               <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                Road signs
+                Road signs · 10 questions
               </div>
               <HomeSignsQuiz />
             </div>
             <div>
+              <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                Theory questions · 10 questions
+              </div>
+              <HomeTheoryQuiz />
+            </div>
+            <div className="lg:col-span-2">
               <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                 Hazard perception & anticipation
               </div>
@@ -281,8 +288,9 @@ function Home() {
           </div>
 
           <div className="mt-8 text-sm text-muted-foreground">
-            Want the full 14-category theory set, road markings, police signals, hazard clips and 50-question mock tests? They're all in the{" "}
-            <Link to="/dashboard" className="font-medium text-primary underline underline-offset-4">learner portal</Link>.
+            Just a taster. The full{" "}
+            <Link to="/dashboard" className="font-medium text-primary underline underline-offset-4">GSM Learner Portal</Link>{" "}
+            gives you all 14 theory categories, every UK road sign, road markings, police signals, hazard perception clips and full 50-question mock tests — each with the same "why" explanation so you learn faster and pass sooner.
           </div>
         </div>
       </section>

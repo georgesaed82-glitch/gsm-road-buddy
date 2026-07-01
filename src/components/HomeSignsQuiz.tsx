@@ -23,7 +23,7 @@ const POOL_IDS = [
   "c-zebra", "c-pelican",
 ];
 
-const QUIZ_LENGTH = 8;
+const QUIZ_LENGTH = 10;
 
 function pickPool(): Sign[] {
   const byId = new Map(signs.map((s) => [s.id, s]));
