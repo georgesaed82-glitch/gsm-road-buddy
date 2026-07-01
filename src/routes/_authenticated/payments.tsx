@@ -39,15 +39,13 @@ function PaymentsPage() {
 
   const paid = payments.filter((p) => p.status === "paid");
   const hoursPurchased = paid.reduce((s, p) => s + Number(p.hours_purchased ?? 0), 0);
-  const spent = paid.reduce((s, p) => s + p.amount_pence, 0);
   const remaining = Math.max(0, hoursPurchased - completed);
 
   return (
     <PortalShell eyebrow="Billing" title="Payments & packages">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Stat label="Hours remaining" value={remaining.toFixed(1)} accent />
         <Stat label="Hours purchased" value={hoursPurchased.toFixed(1)} />
-        <Stat label="Lifetime spend" value={gbp(spent)} />
       </div>
 
       <section className="mt-12">
