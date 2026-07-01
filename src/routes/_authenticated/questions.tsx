@@ -142,8 +142,17 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
               <Sparkles className="h-3.5 w-3.5 text-accent" />
               {picked === q.correctIndex ? "Correct" : "Correct answer"}
             </div>
+            {picked !== q.correctIndex && (
+              <p className="mt-2 font-medium text-foreground">
+                The right answer is: {q.options[q.correctIndex]}
+              </p>
+            )}
             <p className="mt-2 text-muted-foreground">{q.explanation}</p>
-            <p className="mt-2 text-xs text-muted-foreground">{q.optionExplanations[picked]}</p>
+            {picked !== q.correctIndex && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Why your answer is wrong: {q.optionExplanations[picked]}
+              </p>
+            )}
             <Button size="sm" className="mt-4 rounded-none" onClick={() => { setI(i + 1); setPicked(null); }}>
               {i + 1 === order.length ? "See results →" : "Next question →"}
             </Button>
