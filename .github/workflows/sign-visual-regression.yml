@@ -1,0 +1,65 @@
+name: Sign Visual Regression
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  visual-regression:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Playwright
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright pillow
+          python -m playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Start dev server
+        run: |
+          bun run dev &
+          echo $! > /tmp/dev.pid
+          for i in {1..60}; do
+            curl -sf http://localhost:8080 >/dev/null && break
+            sleep 2
+          done
+
+      - name: Restore baseline
+        run: |
+          mkdir -p tests/visual/signvariants
+          cp -r tests/visual/signvariants/baseline scripts/signvariants-baseline 2>/dev/null || true
+
+      - name: Run sign variant visual regression
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python tests/visual/signvariants/test.py
+
+      - name: Upload diffs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sign-variants-diff-${{ matrix.browser }}
+          path: |
+            tests/visual/signvariants/current
+            tests/visual/signvariants/diff
+
+      - name: Stop dev server
+        if: always()
+        run: kill $(cat /tmp/dev.pid) || true
