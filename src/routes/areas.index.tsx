@@ -19,32 +19,32 @@ export const Route = createFileRoute("/areas/")({
 function AreasIndex() {
   return (
     <div className="flex flex-col">
-      <section className="bg-secondary/40 py-16">
-        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">Areas we cover</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+      <section className="bg-secondary/40 py-10 sm:py-12">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Areas we cover</h1>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
             DVSA-approved driving lessons across West London. Pick your area for postcode-specific lesson info, routes and FAQs.
           </p>
         </div>
       </section>
-      <section className="py-14">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="py-8 sm:py-10">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-3">
             {areas.map((a) => (
               <Link
                 key={a.slug}
                 to="/areas/$area"
                 params={{ area: a.slug }}
-                className="group rounded-lg border border-border bg-card p-6 transition-colors hover:bg-accent/5"
+                className="group flex aspect-square flex-col justify-between rounded-lg border border-border bg-card p-3 transition-colors hover:bg-accent/5"
               >
-                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
                   <MapPin className="h-3 w-3" />
                   {a.postcode}
                 </div>
-                <h2 className="mt-3 font-display text-2xl font-semibold group-hover:text-primary">
-                  Driving Lessons in {a.area}
+                <h2 className="font-display text-base font-semibold leading-tight group-hover:text-primary sm:text-lg">
+                  {a.area}
                 </h2>
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{a.intro}</p>
+                <span className="text-[11px] text-muted-foreground">Driving lessons →</span>
               </Link>
             ))}
           </div>
