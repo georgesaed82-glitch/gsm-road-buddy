@@ -1,23 +1,62 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, Phone } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Check, Download, Mail, Phone } from "lucide-react";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/_authenticated/payments")({
-  head: () => ({ meta: [{ title: "Payments · GSM" }] }),
+  head: () => ({ meta: [{ title: "Payments & Packages · GSM Learner Portal" }] }),
   component: PaymentsPage,
 });
 
-
-
 const packages = [
-  { name: "Single lesson", hours: 1, blurb: "Pay-as-you-go for refreshers or top-ups." },
-  { name: "10-hour block", hours: 10, blurb: "Most popular block for steady progress." },
-  { name: "20-hour bundle", hours: 20, blurb: "Test-ready package with structured goals." },
-  { name: "Intensive course", hours: 30, blurb: "1–2 week crash course. Includes mock test." },
+  {
+    name: "Single lessons",
+    duration: "2 hours",
+    description: "Perfect for an assessment, refresher, or booking as you go.",
+    features: ["2 hours 1-to-1 tuition", "Flexible location", "Progress feedback", "Pay-as-you-go"],
+    popular: false,
+  },
+  {
+    name: "Twelve-hour packages",
+    duration: "12 hours",
+    description: "A structured block of lessons to build real confidence.",
+    features: ["12 hours 1-to-1 tuition", "Flexible location", "Progress feedback", "Structured goals"],
+    popular: true,
+  },
+  {
+    name: "Intensive packages",
+    duration: "Intensive",
+    description: "Fast-track learning for learners who want to pass quickly.",
+    features: ["Concentrated 1-to-1 tuition", "Flexible location", "Progress feedback", "Mock test included"],
+    popular: false,
+  },
+  {
+    name: "Weekend packages",
+    duration: "Weekend",
+    description: "Saturday and Sunday sessions that fit around work or study.",
+    features: ["Weekend 1-to-1 tuition", "Flexible location", "Progress feedback", "Flexible booking"],
+    popular: false,
+  },
+  {
+    name: "Refresher packages",
+    duration: "Refresher",
+    description: "Rebuild confidence after a break or returning to driving.",
+    features: ["Tailored 1-to-1 tuition", "Flexible location", "Progress feedback", "Confidence building"],
+    popular: false,
+  },
+  {
+    name: "Pass Plus",
+    duration: "Pass Plus",
+    description: "Advanced modules for motorway, night and all-weather driving.",
+    features: ["Pass Plus 1-to-1 tuition", "Flexible location", "Progress feedback", "Insurance discount potential"],
+    popular: false,
+  },
 ];
 
 function PaymentsPage() {
@@ -50,18 +89,82 @@ function PaymentsPage() {
 
       <section className="mt-12">
         <h2 className="font-display text-2xl">Top up</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Pick a package — contact us to arrange payment by card or bank transfer.</p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {packages.map((p) => (
-            <div key={p.name} className="flex flex-col border border-border bg-card p-5">
-              <div className="font-display text-lg text-foreground">{p.name}</div>
-              <div className="text-xs text-muted-foreground">{p.hours} hour{p.hours > 1 ? "s" : ""}</div>
-              <p className="mt-3 flex-1 text-sm text-muted-foreground">{p.blurb}</p>
-              <Button asChild className="mt-5 rounded-none" size="sm">
-                <a href="tel:+447961585231"><Phone className="mr-2 h-3.5 w-3.5" />Book over phone</a>
-              </Button>
-            </div>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Choose a package and contact us to arrange payment by card or bank transfer.
+        </p>
+        <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {packages.map((pkg) => (
+            <Card
+              key={pkg.name}
+              className={`relative border-border bg-card ${pkg.popular ? "ring-2 ring-primary" : ""}`}
+            >
+              {pkg.popular && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                  Most popular
+                </div>
+              )}
+              <CardHeader className="pb-4">
+                <h3 className="font-display text-xl font-semibold">{pkg.name}</h3>
+                <p className="text-sm text-muted-foreground">{pkg.description}</p>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="text-4xl font-bold text-foreground">{pkg.duration}</span>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <ul className="space-y-3">
+                  {pkg.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Check className="h-4 w-4 shrink-0 text-success" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 flex flex-col gap-2">
+                  <Button asChild variant={pkg.popular ? "default" : "outline"} className="w-full gap-2">
+                    <a
+                      href="https://wa.me/447961585231"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackContactClick("whatsapp", pkg.name)}
+                    >
+                      <WhatsAppIcon className="h-4 w-4" />
+                      WhatsApp us
+                    </a>
+                  </Button>
+                  <Button asChild variant="ghost" className="w-full gap-2 text-muted-foreground hover:text-primary">
+                    <a
+                      href="mailto:gsmdrivingschool@outlook.com"
+                      onClick={() => trackContactClick("email", pkg.name)}
+                    >
+                      <Mail className="h-4 w-4" />
+                      Email us
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           ))}
+        </div>
+
+        <div className="mt-10 rounded-lg border border-border bg-card p-8 text-center sm:p-10">
+          <h3 className="font-display text-2xl font-semibold text-foreground">Need details?</h3>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+            Every learner is different. Call or email us for a personalised quote based on your experience and goals.
+          </p>
+          <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Button asChild variant="outline" className="h-11 gap-2">
+              <a href="tel:+447961585231" onClick={() => trackContactClick("phone", "Payments CTA")}>
+                <Phone className="h-4 w-4" />
+                Call us
+              </a>
+            </Button>
+            <Button asChild className="h-11 gap-2">
+              <Link to="/contact" onClick={() => trackContactClick("email", "Payments CTA")}>
+                <Mail className="h-4 w-4" />
+                Email us
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
