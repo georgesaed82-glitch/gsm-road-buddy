@@ -6,6 +6,7 @@ import { BookOpen, Bookmark, BookmarkCheck, Check, CheckCircle2 } from "lucide-r
 import { HighwayCodeEssentials } from "@/components/HighwayCodeEssentials";
 import { useTopicProgress } from "@/hooks/useTopicProgress";
 import { cn } from "@/lib/utils";
+import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/highway-code")({
   head: () => ({ meta: [{ title: "Highway Code · GSM" }] }),
@@ -33,6 +34,13 @@ function HighwayCodePage() {
         The essentials from all 14 DVSA topics, distilled into the things you
         actually need to remember. Skim before a lesson, revise before a test.
       </p>
+
+      <OfflineDownloadButton
+        className="mt-6"
+        sectionKey="highway-code"
+        label="Highway Code essentials"
+        urls={["/highway-code", "/road-signs", "/road-markings", "/police-signals"]}
+      />
 
       <div className="mt-8">
         <HighwayCodeEssentials />

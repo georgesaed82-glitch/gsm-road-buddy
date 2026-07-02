@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/PortalShell";
 import { policeSignals, signalGroups } from "@/data/policeSignals";
+import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/police-signals")({
   head: () => ({
@@ -18,6 +19,13 @@ function PoliceSignalsPage() {
       <p className="max-w-2xl text-muted-foreground">
         You must obey signals given by police officers, traffic officers, Highways Agency officers, DVSA examiners and school-crossing patrols. You also need to know the three arm signals you can give from your own vehicle. All of these come up in the theory test and in real life.
       </p>
+
+      <OfflineDownloadButton
+        className="mt-6"
+        sectionKey="police-signals"
+        label="arm signals guide"
+        urls={["/police-signals"]}
+      />
 
       <div className="mt-10 space-y-14">
         {signalGroups.map((group) => {
