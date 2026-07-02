@@ -15,6 +15,7 @@ import {
 } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/road-signs")({
   head: () => ({ meta: [{ title: "Road signs · GSM" }] }),
@@ -36,6 +37,13 @@ function RoadSignsPage() {
         Every UK road sign, grouped by type. Choose a category, learn the shapes
         and colours, then flip to quiz mode to test yourself.
       </p>
+
+      <OfflineDownloadButton
+        className="mt-6"
+        sectionKey="road-signs"
+        label="road signs library"
+        urls={["/road-signs", "/signs", "/road-markings", "/police-signals"]}
+      />
 
       <div className="mt-6 flex flex-wrap gap-2">
         <CategoryChip active={group === "all"} onClick={() => setGroup("all")}>
