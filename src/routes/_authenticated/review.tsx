@@ -3,13 +3,17 @@ import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles } from "lucide-react";
+import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   getMistakeIds,
   removeMistake,
   clearMistakes,
   subscribeMistakes,
+  recordRetry,
+  getRetryStats,
+  subscribeRetryStats,
+  resetRetryStats,
 } from "@/lib/mistakes";
 
 export const Route = createFileRoute("/_authenticated/review")({
@@ -37,8 +41,16 @@ function useMistakes(): TheoryQuestion[] {
   }, [tick]);
 }
 
+function useRetryStats() {
+  const [tick, setTick] = useState(0);
+  useEffect(() => subscribeRetryStats(() => setTick((n) => n + 1)), []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => getRetryStats(), [tick]);
+}
+
 function ReviewPage() {
   const mistakes = useMistakes();
+  const stats = useRetryStats();
   const [mode, setMode] = useState<"list" | "retry">("list");
 
   if (mode === "retry" && mistakes.length > 0) {
@@ -55,9 +67,16 @@ function ReviewPage() {
       title={mistakes.length ? `${mistakes.length} to review` : "You're all caught up"}
     >
       {mistakes.length === 0 ? (
-        <EmptyState />
+        <>
+          <ProgressStats stats={stats} bankSize={0} />
+          <div className="mt-6">
+            <EmptyState />
+          </div>
+        </>
       ) : (
         <>
+          <ProgressStats stats={stats} bankSize={mistakes.length} />
+          <div className="mt-6" />
           <div className="border border-border bg-card p-6 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div>
@@ -141,6 +160,131 @@ function EmptyState() {
   );
 }
 
+type Stats = ReturnType<typeof getRetryStats>;
+
+function ProgressStats({ stats, bankSize }: { stats: Stats; bankSize: number }) {
+  const accuracyPct = Math.round(stats.accuracy * 100);
+  const maxDay = Math.max(1, ...stats.days.map((d) => d.total));
+  const hasHistory = stats.total > 0;
+
+  return (
+    <div className="border border-border bg-card p-6 sm:p-8">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            Your progress
+          </div>
+          <h2 className="mt-2 font-display text-2xl">Review stats</h2>
+        </div>
+        {hasHistory && (
+          <button
+            onClick={() => {
+              if (window.confirm("Reset your retry stats? This won't touch your mistakes bank."))
+                resetRetryStats();
+            }}
+            className="self-start text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground sm:self-auto"
+          >
+            Reset stats
+          </button>
+        )}
+      </div>
+
+      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <StatTile
+          icon={<Target className="h-4 w-4" />}
+          label="In your bank"
+          value={String(bankSize)}
+          hint={bankSize === 0 ? "All caught up" : "questions to retry"}
+        />
+        <StatTile
+          icon={<Flame className="h-4 w-4" />}
+          label="Current streak"
+          value={String(stats.currentStreak)}
+          hint={`best ${stats.bestStreak}`}
+        />
+        <StatTile
+          icon={<CheckCircle2 className="h-4 w-4" />}
+          label="Accuracy"
+          value={hasHistory ? `${accuracyPct}%` : "—"}
+          hint={hasHistory ? `${stats.correct}/${stats.total} attempts` : "no attempts yet"}
+        />
+        <StatTile
+          icon={<TrendingUp className="h-4 w-4" />}
+          label="Attempts"
+          value={String(stats.total)}
+          hint="last 500 kept"
+        />
+      </div>
+
+      <div className="mt-6">
+        <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          <span>Accuracy · last 7 days</span>
+          <span>{hasHistory ? "correct / total per day" : "start a retry to see trend"}</span>
+        </div>
+        <div className="flex items-end gap-1.5 sm:gap-2" aria-hidden="true">
+          {stats.days.map((d, idx) => {
+            const heightPct = d.total ? Math.max(6, (d.total / maxDay) * 100) : 4;
+            const acc = Math.round(d.accuracy * 100);
+            return (
+              <div key={idx} className="flex flex-1 flex-col items-center gap-1">
+                <div className="relative flex h-20 w-full items-end overflow-hidden border border-border bg-background">
+                  <div
+                    className={cn(
+                      "w-full",
+                      d.total === 0
+                        ? "bg-muted"
+                        : acc >= 80
+                          ? "bg-emerald-600/70"
+                          : acc >= 50
+                            ? "bg-amber-500/70"
+                            : "bg-destructive/70",
+                    )}
+                    style={{ height: `${heightPct}%` }}
+                  />
+                </div>
+                <div className="text-[10px] text-muted-foreground">{d.label}</div>
+                <div className="text-[10px] font-medium">
+                  {d.total ? `${acc}%` : "—"}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <ul className="sr-only">
+          {stats.days.map((d, idx) => (
+            <li key={idx}>
+              {d.label}: {d.correct} correct of {d.total} attempts
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function StatTile({
+  icon,
+  label,
+  value,
+  hint,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  hint?: string;
+}) {
+  return (
+    <div className="border border-border bg-background p-3">
+      <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        {icon}
+        <span>{label}</span>
+      </div>
+      <div className="mt-1.5 font-display text-2xl leading-none">{value}</div>
+      {hint && <div className="mt-1 text-xs text-muted-foreground">{hint}</div>}
+    </div>
+  );
+}
+
 function shuffle<T>(a: T[]): T[] {
   const b = a.slice();
   for (let i = b.length - 1; i > 0; i--) {
@@ -178,8 +322,10 @@ function RetryRunner({ queue, onExit }: { queue: TheoryQuestion[]; onExit: () =>
         next.add(q.id);
         return next;
       });
+      recordRetry(true);
     } else {
       setTriedThisQuestion(true);
+      recordRetry(false);
     }
   };
 
