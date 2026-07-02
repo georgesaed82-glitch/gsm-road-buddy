@@ -208,40 +208,39 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
           )}
           <h1 className="mt-2 font-display text-4xl font-medium leading-tight text-foreground">{title}</h1>
         </header>
-        <div
-          role="note"
-          aria-label="Copyright notice"
-          className="mt-6 flex items-start gap-3 border border-accent/60 bg-accent/10 px-4 py-4 text-sm leading-relaxed text-foreground"
-        >
-          <Copyright className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
-          <div>
-            <p className="font-semibold text-foreground">
-              Important: copyright protected learning material — personal learning use only
-            </p>
-            <p className="mt-1">
-              <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
-              All images, videos, diagrams, notes, quizzes and audio on this learner portal
-              are the exclusive property of George School of Motoring (GSM Driving School)
-              and are protected by copyright.
-            </p>
-            <p className="mt-2">
-              You may view and study this material for your <strong>own personal learning only</strong>.
-              You may <strong>not</strong> download, screenshot, screen-record, copy, share,
-              republish, resell, upload to other websites or social media, distribute to other
-              learners, or reuse any part of it in any other course, training material, app,
-              video or publication.
-            </p>
-            <p className="mt-2 text-muted-foreground">
-              Any other use requires prior written permission from George School of Motoring
-              (GSM Driving School). Unauthorised use is a breach of copyright and will be
-              enforced.
-            </p>
+        {showCopyright && (
+          <div
+            role="note"
+            aria-label="Copyright notice"
+            className="mt-6 flex items-start gap-3 border border-accent/60 bg-accent/10 px-4 py-4 text-sm leading-relaxed text-foreground"
+          >
+            <Copyright className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+            <div>
+              <p className="font-semibold text-foreground">
+                Important: copyright protected learning material — personal learning use only
+              </p>
+              <p className="mt-1">
+                <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
+                All images, videos, diagrams, notes, quizzes and audio on this learner portal
+                are the exclusive property of George School of Motoring (GSM Driving School)
+                and are protected by copyright.
+              </p>
+              <p className="mt-2">
+                You may view and study this material for your <strong>own personal learning only</strong>.
+                You may <strong>not</strong> download, screenshot, screen-record, copy, share,
+                republish, resell, upload to other websites or social media, distribute to other
+                learners, or reuse any part of it in any other course, training material, app,
+                video or publication.
+              </p>
+              <p className="mt-2 text-muted-foreground">
+                Any other use requires prior written permission from George School of Motoring
+                (GSM Driving School). Unauthorised use is a breach of copyright and will be
+                enforced.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="portal-watermark-wrap pt-8">{children}</div>
-        <p className="mt-10 border-t border-border pt-4 text-center text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-          © George School of Motoring (GSM Driving School) — for learner use only
-        </p>
+        )}
+        <div className={showCopyright ? "portal-watermark-wrap pt-8" : "pt-8"}>{children}</div>
       </main>
     </div>
   );
