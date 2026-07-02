@@ -470,7 +470,10 @@ function HazardTutorial() {
   const [phase, setPhase] = useState<TutorialPhase>("idle");
   const [countdown, setCountdown] = useState(5);
   const [t, setT] = useState(0); // seconds since hazard started developing
-  const [clicks, setClicks] = useState<{ pct: number; time: number }[]>([]);
+  const [clicks, setClicks] = useState<
+    { pct: number; time: number; windowIndex: number; verdict: "perfect" | "early" | "late" | "miss" }[]
+  >([]);
+  const [toast, setToast] = useState<{ tone: "good" | "warn" | "bad"; text: string } | null>(null);
   const [tooEarly, setTooEarly] = useState(false);
   const [spam, setSpam] = useState(false);
   const rafRef = useRef<number | null>(null);
@@ -482,6 +485,13 @@ function HazardTutorial() {
     { label: "Click 2 — Developing", min: 1.8, max: 3.2 },
     { label: "Click 3 — Committed", min: 3.4, max: 4.8 },
   ];
+
+  const showToast = (tone: "good" | "warn" | "bad", text: string) => {
+    setToast({ tone, text });
+    window.setTimeout(() => {
+      setToast((cur) => (cur && cur.text === text ? null : cur));
+    }, 1400);
+  };
 
   // Countdown effect
   useEffect(() => {
@@ -525,6 +535,7 @@ function HazardTutorial() {
     setClicks([]);
     setTooEarly(false);
     setSpam(false);
+    setToast(null);
   };
 
   const start = () => {
@@ -536,37 +547,71 @@ function HazardTutorial() {
     if (phase === "countdown" || phase === "scan") {
       setTooEarly(true);
       setTimeout(() => setTooEarly(false), 900);
+      showToast("bad", "Too early — wait for the countdown to finish and the hazard to appear.");
       return;
     }
     if (phase !== "hazard") return;
     // spam detection: > 3 clicks within window
     if (clicks.length >= 3) {
       setSpam(true);
+      showToast("bad", "Rapid clicking flags the cheat detector — one click per moment only.");
       return;
     }
-    // register click
+    // register click — evaluate timing
     const pct = 20 + (t / HAZARD_DURATION) * 55; // matches pedestrian left%
-    setClicks((c) => [...c, { pct, time: t }]);
-  };
-
-  // Compute score
-  const score = (() => {
-    if (spam) return 0;
-    if (clicks.length === 0) return 0;
-    let s = 0;
-    const used = new Set<number>();
-    for (const c of clicks) {
-      for (let i = 0; i < WINDOWS.length; i++) {
-        if (used.has(i)) continue;
-        if (c.time >= WINDOWS[i].min && c.time <= WINDOWS[i].max) {
-          s += i === 0 ? 3 : i === 1 ? 1 : 1; // 3 + 1 + 1 = 5
-          used.add(i);
-          break;
-        }
+    const nextIdx = clicks.length; // 0,1,2 — the click number they're on
+    const target = WINDOWS[nextIdx];
+    let verdict: "perfect" | "early" | "late" | "miss" = "miss";
+    let windowIndex = -1;
+    if (t >= target.min && t <= target.max) {
+      verdict = "perfect";
+      windowIndex = nextIdx;
+      const label = ["spotted it", "caught it developing", "timed the pass"][nextIdx];
+      showToast("good", `Click ${nextIdx + 1} — perfect timing. You ${label}.`);
+    } else if (t < target.min) {
+      verdict = "early";
+      windowIndex = nextIdx;
+      const gap = (target.min - t).toFixed(1);
+      showToast(
+        "warn",
+        `Click ${nextIdx + 1} landed ${gap}s early — wait until the hazard actually develops before clicking.`,
+      );
+    } else {
+      // late — check whether it slipped into the next window
+      const nextTarget = WINDOWS[nextIdx + 1];
+      if (nextTarget && t >= nextTarget.min && t <= nextTarget.max) {
+        verdict = "late";
+        windowIndex = nextIdx + 1;
+        showToast(
+          "warn",
+          `You skipped click ${nextIdx + 1} — you're now on click ${nextIdx + 2}. Click sooner next time.`,
+        );
+      } else {
+        verdict = "miss";
+        showToast(
+          "bad",
+          `Missed the window. The hazard was already developing — click the moment you spot movement.`,
+        );
       }
     }
-    return Math.min(5, s);
-  })();
+    setClicks((c) => [...c, { pct, time: t, windowIndex, verdict }]);
+  };
+
+  // Compute score based on which windows were successfully hit
+  const hitWindows = new Set(clicks.filter((c) => c.verdict !== "miss").map((c) => c.windowIndex));
+  const score = spam
+    ? 0
+    : Math.min(5, [3, 1, 1].reduce((sum, pts, i) => sum + (hitWindows.has(i) ? pts : 0), 0));
+
+  // Build improvement tips
+  const tips: string[] = [];
+  if (spam) tips.push("Only click on the actual hazard moments — never spam. The examiner's system detects rhythmic or rapid clicks and zeros the clip.");
+  if (clicks.length === 0) tips.push("You didn't click at all. Watch for the pedestrian stepping toward the road — click the second you spot them.");
+  if (clicks.some((c) => c.verdict === "early")) tips.push("Early clicks: wait until the hazard is actually developing — a person on the pavement standing still isn't developing yet. The moment they move toward the road, click.");
+  if (clicks.some((c) => c.verdict === "miss")) tips.push("Missed clicks: keep your eyes stretched down the road, not just centre-screen. Scan left/right for anything about to make you slow, stop, or swerve.");
+  if (!hitWindows.has(0) && !spam) tips.push("You missed the earliest window — that's worth 3 points. Click the instant you first spot the hazard, even if it hasn't fully developed.");
+  if (score > 0 && score < 5) tips.push("For a full 5/5, follow the 1-2-3 rule: click when you spot it, click when it develops, click just before you pass it.");
+  if (score === 5) tips.push("Textbook timing — three spaced clicks across the developing hazard.");
 
   const pedProgress = phase === "hazard" ? Math.min(1, t / HAZARD_DURATION) : phase === "done" ? 1 : 0;
   const currentWindow = WINDOWS.findIndex((w) => t >= w.min && t <= w.max);
@@ -678,6 +723,19 @@ function HazardTutorial() {
                 Too early — wait for the hazard
               </div>
             )}
+            {toast && phase === "hazard" && (
+              <div
+                className={`absolute inset-x-4 top-4 animate-in fade-in slide-in-from-top-2 duration-200 rounded px-3 py-2 text-center text-xs font-semibold uppercase tracking-wider shadow-lg ${
+                  toast.tone === "good"
+                    ? "bg-accent text-accent-foreground"
+                    : toast.tone === "warn"
+                      ? "bg-yellow-500 text-black"
+                      : "bg-destructive text-destructive-foreground"
+                }`}
+              >
+                {toast.text}
+              </div>
+            )}
             {spam && (
               <div className="absolute inset-x-4 top-4 animate-in fade-in duration-200 rounded bg-destructive px-3 py-2 text-center text-xs font-semibold uppercase tracking-wider text-destructive-foreground">
                 Too many clicks — DVSA cheat detector triggered · 0/5
@@ -706,6 +764,58 @@ function HazardTutorial() {
           <p className="mt-3 text-xs text-muted-foreground">
             Tap or click <span className="text-foreground">anywhere on the scene</span> once the pedestrian appears — once when you spot them, once as they develop, and once just before they leave. Rapid-clicking will fail you.
           </p>
+
+          {phase === "done" && (
+            <div className="mt-4 border border-border bg-card p-5">
+              <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Why you scored {score}/5</div>
+              <ul className="mt-3 space-y-2">
+                {WINDOWS.map((w, i) => {
+                  const hit = clicks.find((c) => c.windowIndex === i);
+                  const good = hit && hit.verdict !== "miss";
+                  const pts = [3, 1, 1][i];
+                  return (
+                    <li key={i} className="flex items-start gap-3 text-sm">
+                      <span
+                        className={`mt-0.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded-full text-[11px] font-bold ${
+                          good ? "bg-accent text-accent-foreground" : "bg-destructive/20 text-destructive"
+                        }`}
+                      >
+                        {good ? "✓" : "×"}
+                      </span>
+                      <div>
+                        <div className="font-medium text-foreground">
+                          {w.label} · {good ? `+${pts}` : "0"} pts
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {good
+                            ? `Clicked at ${hit!.time.toFixed(1)}s — inside the ${w.min.toFixed(1)}–${w.max.toFixed(1)}s window.`
+                            : hit
+                              ? hit.verdict === "early"
+                                ? `Clicked at ${hit.time.toFixed(1)}s — ${(w.min - hit.time).toFixed(1)}s too early.`
+                                : `Clicked at ${hit.time.toFixed(1)}s — outside the window.`
+                              : "You didn't click during this window — 0 points."}
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {tips.length > 0 && (
+                <div className="mt-4 border-t border-border pt-4">
+                  <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">How to improve</div>
+                  <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+                    {tips.map((tip, i) => (
+                      <li key={i} className="flex gap-2">
+                        <span className="text-accent">→</span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Live stats panel */}
