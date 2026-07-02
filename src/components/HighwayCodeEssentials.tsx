@@ -1129,11 +1129,15 @@ function HierarchyOfRoadUsers() {
             <HierarchyPyramid />
           </ZoomPan>
           <p className="sr-only">
-            Pyramid, top to bottom: Pedestrians, Cyclists, Horse riders,
-            Motorcyclists, Cars and taxis, Vans and minibuses, HGVs and large
-            vehicles. The most vulnerable users are at the top with the highest
-            priority. Road users who can cause the greatest harm carry the
-            greatest responsibility to reduce the danger they pose to others.
+            Hierarchy of Road Users pyramid from Rule H1. Read from top to
+            bottom, the pyramid shows: 1. Pedestrians — children, older and
+            disabled people have the highest priority. 2. Cyclists — including
+            e-cycles. 3. Horse riders and horse-drawn vehicles. 4. Motorcyclists
+            — mopeds and motorbikes. 5. Cars and taxis — private vehicles. 6.
+            Vans and minibuses — light goods vehicles. 7. HGVs and large
+            vehicles — these road users can cause the greatest harm and so have
+            the greatest responsibility to reduce danger. The hierarchy does not
+            remove the need for all road users to behave responsibly.
           </p>
         </div>
 
