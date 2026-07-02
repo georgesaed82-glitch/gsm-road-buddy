@@ -880,6 +880,8 @@ export function HighwayCodeEssentials() {
       <StoppingDistances />
       <TrafficLights />
       <ZebraCrossing />
+      <YellowBoxJunction />
+      <NearsideOffsideJunction />
     </div>
   );
 }
