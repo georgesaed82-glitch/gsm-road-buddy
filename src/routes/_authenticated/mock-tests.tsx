@@ -133,11 +133,13 @@ function MockRunner({ onRestart }: { onRestart: () => void }) {
           <Button className="rounded-none" onClick={downloadReview} disabled={wrong.length === 0}>
             <Download className="mr-2 h-4 w-4" /> Save wrong answers ({wrong.length})
           </Button>
-          <Button asChild variant="secondary" className="rounded-none" disabled={wrong.length === 0}>
-            <Link to="/review">
-              <RotateCcw className="mr-2 h-4 w-4" /> Review mistakes
-            </Link>
-          </Button>
+          {wrong.length > 0 && (
+            <Button asChild variant="secondary" className="rounded-none">
+              <Link to="/review">
+                <RotateCcw className="mr-2 h-4 w-4" /> Review mistakes
+              </Link>
+            </Button>
+          )}
           <Button variant="outline" className="rounded-none" onClick={onRestart}>Retake mock</Button>
         </div>
 
