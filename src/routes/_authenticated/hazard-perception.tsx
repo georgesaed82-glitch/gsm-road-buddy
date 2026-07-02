@@ -142,6 +142,8 @@ function HazardPage() {
         <Stat label="Personal best" value={`${best} / 5`} />
       </div>
 
+      <HapticsSettingsPanel />
+
       <div className="mt-8 border-l-4 border-accent bg-card p-5">
         <h2 className="font-display text-xl">How it works</h2>
         <p className="mt-2 text-sm text-muted-foreground">
