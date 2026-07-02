@@ -698,14 +698,152 @@ function HazardTutorial() {
         <div>
           <div
             onClick={handleClick}
-            className={`relative aspect-video w-full overflow-hidden border border-border bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900 select-none ${phase === "hazard" ? "cursor-crosshair" : ""}`}
+            className={`relative aspect-video w-full overflow-hidden border border-border bg-gradient-to-b from-sky-300 via-sky-200 to-amber-100 select-none ${phase === "hazard" ? "cursor-crosshair" : ""}`}
           >
-            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-slate-800">
-              <div className="absolute left-1/2 top-1/2 h-1 w-full -translate-x-1/2 -translate-y-1/2 bg-[repeating-linear-gradient(to_right,#facc15_0_20px,transparent_20px_40px)] opacity-80" />
-              <div className="absolute inset-x-0 top-0 h-[3px] bg-slate-500" />
-              <div className="absolute inset-x-0 bottom-0 h-[3px] bg-slate-500" />
-            </div>
-            <div className="absolute left-3 top-3 text-[10px] uppercase tracking-[0.22em] text-white/60">Built-up area · 30 mph</div>
+            {/* Driver's POV — SVG-based perspective scene */}
+            <svg viewBox="0 0 1000 562" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
+              <defs>
+                <linearGradient id="skyGrad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="#7dd3fc" />
+                  <stop offset="60%" stopColor="#bae6fd" />
+                  <stop offset="100%" stopColor="#fde68a" />
+                </linearGradient>
+                <linearGradient id="roadGrad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="#4b5563" />
+                  <stop offset="100%" stopColor="#1f2937" />
+                </linearGradient>
+                <linearGradient id="bonnetGrad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="#0f172a" />
+                  <stop offset="70%" stopColor="#020617" />
+                  <stop offset="100%" stopColor="#000000" />
+                </linearGradient>
+                <radialGradient id="sun" cx="0.75" cy="0.15" r="0.25">
+                  <stop offset="0%" stopColor="#fef3c7" stopOpacity="0.9" />
+                  <stop offset="100%" stopColor="#fef3c7" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+
+              {/* Sky */}
+              <rect x="0" y="0" width="1000" height="320" fill="url(#skyGrad)" />
+              <rect x="0" y="0" width="1000" height="320" fill="url(#sun)" />
+
+              {/* Distant hills / haze */}
+              <path d="M0 300 Q 200 260 400 285 T 800 275 T 1000 290 L 1000 320 L 0 320 Z" fill="#94a3b8" opacity="0.55" />
+
+              {/* Buildings row (left side, terraced houses) */}
+              <g opacity="0.95">
+                {[0, 90, 180, 270].map((x, i) => (
+                  <g key={`bl${i}`} transform={`translate(${x} 0)`}>
+                    <rect x="0" y="200" width="90" height="100" fill={i % 2 === 0 ? "#b45309" : "#c2410c"} />
+                    <polygon points="0,200 45,170 90,200" fill="#78350f" />
+                    <rect x="15" y="220" width="18" height="22" fill="#1e293b" />
+                    <rect x="55" y="220" width="18" height="22" fill="#1e293b" />
+                    <rect x="35" y="260" width="20" height="40" fill="#0f172a" />
+                  </g>
+                ))}
+              </g>
+              {/* Buildings row (right side) */}
+              <g opacity="0.95">
+                {[640, 730, 820, 910].map((x, i) => (
+                  <g key={`br${i}`} transform={`translate(${x} 0)`}>
+                    <rect x="0" y="205" width="85" height="95" fill={i % 2 === 0 ? "#a16207" : "#b45309"} />
+                    <polygon points="0,205 42,178 85,205" fill="#78350f" />
+                    <rect x="14" y="222" width="16" height="20" fill="#1e293b" />
+                    <rect x="50" y="222" width="16" height="20" fill="#1e293b" />
+                    <rect x="32" y="255" width="20" height="45" fill="#0f172a" />
+                  </g>
+                ))}
+              </g>
+
+              {/* Pavement / kerb slabs */}
+              <polygon points="0,320 380,320 300,470 0,470" fill="#94a3b8" />
+              <polygon points="620,320 1000,320 1000,470 700,470" fill="#94a3b8" />
+              {/* Kerb edge lines */}
+              <line x1="380" y1="320" x2="300" y2="470" stroke="#475569" strokeWidth="2" />
+              <line x1="620" y1="320" x2="700" y2="470" stroke="#475569" strokeWidth="2" />
+
+              {/* Road (perspective trapezoid to vanishing point) */}
+              <polygon points="380,320 620,320 900,562 100,562" fill="url(#roadGrad)" />
+
+              {/* Centre dashed line, perspective — a few dashes receding to the horizon */}
+              {[
+                { y1: 340, y2: 360, w1: 4, w2: 6 },
+                { y1: 380, y2: 410, w1: 7, w2: 10 },
+                { y1: 435, y2: 475, w1: 12, w2: 18 },
+                { y1: 500, y2: 555, w1: 22, w2: 32 },
+              ].map((d, i) => (
+                <polygon
+                  key={i}
+                  points={`${500 - d.w1 / 2},${d.y1} ${500 + d.w1 / 2},${d.y1} ${500 + d.w2 / 2},${d.y2} ${500 - d.w2 / 2},${d.y2}`}
+                  fill="#fde047"
+                />
+              ))}
+
+              {/* Road edge lines */}
+              <line x1="380" y1="320" x2="100" y2="562" stroke="#e5e7eb" strokeWidth="3" opacity="0.85" />
+              <line x1="620" y1="320" x2="900" y2="562" stroke="#e5e7eb" strokeWidth="3" opacity="0.85" />
+
+              {/* Parked cars on the LEFT kerb — occlude the ball's origin */}
+              <g transform="translate(120 355)">
+                {/* red hatchback */}
+                <rect x="0" y="20" width="120" height="34" rx="6" fill="#b91c1c" />
+                <path d="M15 20 Q 30 0 60 0 L 95 0 Q 108 4 112 20 Z" fill="#7f1d1d" />
+                <rect x="18" y="8" width="35" height="14" fill="#0ea5e9" opacity="0.6" />
+                <rect x="60" y="8" width="35" height="14" fill="#0ea5e9" opacity="0.6" />
+                <circle cx="25" cy="56" r="9" fill="#0f172a" />
+                <circle cx="95" cy="56" r="9" fill="#0f172a" />
+              </g>
+              <g transform="translate(50 400)">
+                {/* white van (further back visually? actually larger + closer) */}
+                <rect x="0" y="10" width="150" height="52" rx="4" fill="#f1f5f9" />
+                <rect x="8" y="18" width="30" height="20" fill="#0ea5e9" opacity="0.6" />
+                <rect x="120" y="18" width="22" height="16" fill="#0ea5e9" opacity="0.6" />
+                <circle cx="30" cy="66" r="10" fill="#0f172a" />
+                <circle cx="125" cy="66" r="10" fill="#0f172a" />
+              </g>
+
+              {/* Ball emerging from behind the parked cars */}
+              {(phase === "hazard" || phase === "done") && t >= ballAppearT && (
+                <g transform={`translate(${ballX * 10} ${455 - ballBounceOffset})`}>
+                  <ellipse cx="0" cy="14" rx="14" ry="4" fill="#000" opacity="0.35" />
+                  <circle cx="0" cy="0" r="12" fill="#ef4444" />
+                  <path d="M-12 0 A 12 12 0 0 1 12 0" fill="none" stroke="#fff" strokeWidth="2" />
+                  <circle cx="0" cy="0" r="4" fill="#fff" />
+                </g>
+              )}
+
+              {/* Child chasing the ball */}
+              {(phase === "hazard" || phase === "done") && t >= childAppearT && (
+                <g transform={`translate(${childX * 10} 430)`}>
+                  {/* shadow */}
+                  <ellipse cx="0" cy="45" rx="12" ry="3" fill="#000" opacity="0.35" />
+                  {/* legs (running) */}
+                  <line x1="0" y1="30" x2={-6 + childRun} y2="44" stroke="#1e3a8a" strokeWidth="4" strokeLinecap="round" />
+                  <line x1="0" y1="30" x2={6 - childRun} y2="44" stroke="#1e3a8a" strokeWidth="4" strokeLinecap="round" />
+                  {/* body / t-shirt */}
+                  <rect x="-8" y="10" width="16" height="22" rx="3" fill="#22c55e" />
+                  {/* arms (swinging) */}
+                  <line x1="-8" y1="14" x2={-14 - childRun} y2="26" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" />
+                  <line x1="8" y1="14" x2={14 + childRun} y2="26" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" />
+                  {/* head */}
+                  <circle cx="0" cy="4" r="7" fill="#fcd34d" />
+                  {/* hair */}
+                  <path d="M-7 2 Q 0 -5 7 2 L 5 -1 L 0 -3 L -5 -1 Z" fill="#78350f" />
+                </g>
+              )}
+
+              {/* Driver's bonnet (foreground) */}
+              <path d="M 0 562 L 0 510 Q 500 460 1000 510 L 1000 562 Z" fill="url(#bonnetGrad)" />
+              {/* windscreen wiper hint */}
+              <path d="M 260 505 Q 380 480 500 490" fill="none" stroke="#334155" strokeWidth="3" opacity="0.6" />
+              {/* bonnet reflection */}
+              <path d="M 100 520 Q 500 495 900 520" fill="none" stroke="#475569" strokeWidth="1.5" opacity="0.7" />
+              {/* wing mirrors */}
+              <rect x="60" y="500" width="30" height="12" rx="3" fill="#0f172a" />
+              <rect x="910" y="500" width="30" height="12" rx="3" fill="#0f172a" />
+            </svg>
+
+            <div className="absolute left-3 top-3 text-[10px] uppercase tracking-[0.22em] text-slate-800/70">Residential · 30 mph</div>
 
             {phase === "idle" && (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white/90">
