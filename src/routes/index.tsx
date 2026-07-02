@@ -383,7 +383,7 @@ function Home() {
       <section className="border-t border-border bg-accent text-accent-foreground">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <h2 className="max-w-xl font-display text-4xl font-medium leading-[1.05]">
-            Ready to start? Call George.
+            Ready to start? Get in Touch.
           </h2>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" className="h-14 rounded-none bg-[#25D366] px-8 text-white hover:bg-[#1ebe57]">
@@ -408,26 +408,7 @@ function Home() {
                 Call 07961 585231
               </a>
             </Button>
-          </div>
-        </div>
-
-        {/* DOWNLOAD APP — under Get in Touch, different format/colour */}
-        <div className="border-t border-accent-foreground/20 bg-primary text-primary-foreground">
-          <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-12 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-            <div>
-              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/60">
-                <span className="h-px w-6 bg-accent" />
-                Download the App
-              </div>
-              <h3 className="mt-3 max-w-xl font-display text-2xl font-medium leading-[1.1] sm:text-3xl">
-                Install the GSM app on your phone for one-tap lessons, theory &amp; hazard practice.
-              </h3>
-            </div>
-            <Button
-              asChild
-              size="lg"
-              className="h-14 rounded-none bg-accent px-8 text-sm uppercase tracking-[0.18em] text-accent-foreground hover:bg-accent/90"
-            >
+            <Button asChild size="lg" variant="outline" className="h-14 rounded-none border-accent-foreground/30 bg-transparent px-8 text-accent-foreground hover:bg-accent-foreground hover:text-accent">
               <Link to="/#download-app" className="inline-flex items-center gap-3">
                 <Download className="h-5 w-5" />
                 Download the App
@@ -436,6 +417,7 @@ function Home() {
           </div>
         </div>
       </section>
+
 
     </div>
   );
