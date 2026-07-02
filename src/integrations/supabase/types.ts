@@ -484,6 +484,33 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_rating_history: {
+        Row: {
+          changed_at: string
+          id: string
+          previous_rating: number | null
+          rating: number
+          skill_key: string
+          user_id: string
+        }
+        Insert: {
+          changed_at?: string
+          id?: string
+          previous_rating?: number | null
+          rating: number
+          skill_key: string
+          user_id: string
+        }
+        Update: {
+          changed_at?: string
+          id?: string
+          previous_rating?: number | null
+          rating?: number
+          skill_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       skill_ratings: {
         Row: {
           created_at: string
