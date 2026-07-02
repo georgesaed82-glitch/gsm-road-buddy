@@ -261,6 +261,7 @@ function LessonsPage() {
                       );
                     })}
                   </div>
+                  <SkillRatingTimeline entries={historyBySkill.get(m.key) ?? []} />
                 </li>
               );
             })}
