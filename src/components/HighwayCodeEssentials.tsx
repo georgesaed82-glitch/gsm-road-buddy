@@ -2063,13 +2063,6 @@ function YellowBoxJunctionSvg() {
       </g>
       <polygon points="600,142 618,150 600,158" fill="#facc15" />
 
-      {/* Straight arrow — blue coming from 12 heading straight to 6, in its own
-          left lane (x≈300). */}
-      <g fill="none" stroke="#93c5fd" strokeWidth="3" strokeDasharray="8 5" opacity="0.95">
-        <line x1="300" y1="70" x2="300" y2="345" />
-      </g>
-      <polygon points="292,345 300,362 308,345" fill="#93c5fd" />
-
       {/* Legend / labels */}
       <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="700">
         <rect x="14" y="14" width="230" height="48" fill="#ffffff" opacity="0.94" rx="3" />
