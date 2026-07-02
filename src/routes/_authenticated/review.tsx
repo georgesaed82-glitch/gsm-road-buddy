@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp, Layers } from "lucide-react";
+import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp, Layers, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   getMistakeIds,
@@ -52,6 +52,7 @@ function ReviewPage() {
   const mistakes = useMistakes();
   const stats = useRetryStats();
   const [mode, setMode] = useState<"list" | "retry">("list");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Count how many questions in the current mistakes bank fall under each
   // category. Used to enrich the accuracy breakdown.
@@ -61,10 +62,25 @@ function ReviewPage() {
     return m;
   }, [mistakes]);
 
-  if (mode === "retry" && mistakes.length > 0) {
+  // Filter the visible mistakes list by the drilled-down category (if any).
+  // Falling back to the full bank keeps "Retry all" behaviour intact.
+  const filteredMistakes = useMemo(
+    () => (selectedCategory ? mistakes.filter((q) => q.category === selectedCategory) : mistakes),
+    [mistakes, selectedCategory],
+  );
+
+  // If the selected category empties out (user cleared all its questions),
+  // drop the filter automatically so the UI doesn't get stuck on empty.
+  useEffect(() => {
+    if (selectedCategory && !bankByCategory.has(selectedCategory)) {
+      setSelectedCategory(null);
+    }
+  }, [selectedCategory, bankByCategory]);
+
+  if (mode === "retry" && filteredMistakes.length > 0) {
     return (
       <PortalShell eyebrow="Review mistakes" title="Retry the ones you missed">
-        <RetryRunner queue={mistakes} onExit={() => setMode("list")} />
+        <RetryRunner queue={filteredMistakes} onExit={() => setMode("list")} />
       </PortalShell>
     );
   }
@@ -76,14 +92,26 @@ function ReviewPage() {
     >
       {mistakes.length === 0 ? (
         <>
-          <ProgressStats stats={stats} bankSize={0} bankByCategory={bankByCategory} />
+          <ProgressStats
+            stats={stats}
+            bankSize={0}
+            bankByCategory={bankByCategory}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
           <div className="mt-6">
             <EmptyState />
           </div>
         </>
       ) : (
         <>
-          <ProgressStats stats={stats} bankSize={mistakes.length} bankByCategory={bankByCategory} />
+          <ProgressStats
+            stats={stats}
+            bankSize={mistakes.length}
+            bankByCategory={bankByCategory}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
           <div className="mt-6" />
           <div className="border border-border bg-card p-6 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -91,16 +119,34 @@ function ReviewPage() {
                 <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                   Targeted practice
                 </div>
-                <h2 className="mt-2 font-display text-2xl">Retry your mistakes</h2>
+                <h2 className="mt-2 font-display text-2xl">
+                  {selectedCategory
+                    ? `Retry ${formatCategoryLabel(selectedCategory)}`
+                    : "Retry your mistakes"}
+                </h2>
                 <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-                  Every wrong answer from mock tests and category practice lands here. Get one
-                  right and it drops off the list automatically.
+                  {selectedCategory
+                    ? `${filteredMistakes.length} question${filteredMistakes.length === 1 ? "" : "s"} in this category. Retry only these, or clear the filter to see everything.`
+                    : "Every wrong answer from mock tests and category practice lands here. Get one right and it drops off the list automatically."}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button size="lg" className="rounded-none" onClick={() => setMode("retry")}>
-                  <RotateCcw className="mr-2 h-4 w-4" /> Retry all ({mistakes.length})
+                  <RotateCcw className="mr-2 h-4 w-4" />
+                  {selectedCategory
+                    ? `Retry these (${filteredMistakes.length})`
+                    : `Retry all (${mistakes.length})`}
                 </Button>
+                {selectedCategory && (
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="rounded-none"
+                    onClick={() => setSelectedCategory(null)}
+                  >
+                    <X className="mr-2 h-4 w-4" /> Clear filter
+                  </Button>
+                )}
                 <Button
                   size="lg"
                   variant="outline"
@@ -115,35 +161,117 @@ function ReviewPage() {
             </div>
           </div>
 
-          <h3 className="mt-10 font-display text-xl">What's in your bank</h3>
-          <div className="mt-3 space-y-2">
-            {mistakes.map((q, n) => (
-              <div
-                key={q.id}
-                className="flex items-start justify-between gap-3 border border-border bg-card p-4 text-sm"
+          <div className="mt-10 flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="font-display text-xl">
+              {selectedCategory
+                ? `${formatCategoryLabel(selectedCategory)} · ${filteredMistakes.length}`
+                : "What's in your bank"}
+            </h3>
+            {selectedCategory && (
+              <button
+                onClick={() => setSelectedCategory(null)}
+                className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
               >
-                <div className="min-w-0">
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    {n + 1}. {q.category.replaceAll("-", " ")}
-                  </div>
-                  <div className="mt-1 font-medium">{q.question}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">
-                    Correct: {q.options[q.correctIndex]}
-                  </div>
-                </div>
-                <button
-                  onClick={() => removeMistake(q.id)}
-                  className="shrink-0 text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                  aria-label={`Remove question ${n + 1} from mistakes`}
-                >
-                  Remove
-                </button>
-              </div>
+                Show all categories
+              </button>
+            )}
+          </div>
+          <div className="mt-3 space-y-2">
+            {filteredMistakes.map((q, n) => (
+              <MistakeCard key={q.id} q={q} index={n} expanded={!!selectedCategory} />
             ))}
           </div>
         </>
       )}
     </PortalShell>
+  );
+}
+
+function MistakeCard({
+  q,
+  index,
+  expanded,
+}: {
+  q: TheoryQuestion;
+  index: number;
+  expanded: boolean;
+}) {
+  // When the user has drilled into a specific category we default to the
+  // expanded view (question, all answer options, and explanation) so they can
+  // study the exact incorrect items without opening each one.
+  const [open, setOpen] = useState(expanded);
+  useEffect(() => {
+    setOpen(expanded);
+  }, [expanded]);
+
+  return (
+    <div className="border border-border bg-card text-sm">
+      <div className="flex items-start justify-between gap-3 p-4">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="min-w-0 flex-1 text-left"
+          aria-expanded={open}
+        >
+          <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            {index + 1}. {q.category.replaceAll("-", " ")}
+          </div>
+          <div className="mt-1 font-medium">{q.question}</div>
+          {!open && (
+            <div className="mt-1 text-xs text-muted-foreground">
+              Correct: {q.options[q.correctIndex]}
+            </div>
+          )}
+        </button>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+          >
+            {open ? "Hide" : "Details"}
+          </button>
+          <button
+            onClick={() => removeMistake(q.id)}
+            className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+            aria-label={`Remove question ${index + 1} from mistakes`}
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+      {open && (
+        <div className="border-t border-border bg-background p-4">
+          <ul className="grid gap-1.5">
+            {q.options.map((opt, i) => {
+              const isCorrect = i === q.correctIndex;
+              return (
+                <li
+                  key={i}
+                  className={cn(
+                    "flex items-start gap-2 border px-3 py-2 text-sm",
+                    isCorrect
+                      ? "border-emerald-600 bg-emerald-600/10"
+                      : "border-border bg-background text-muted-foreground",
+                  )}
+                >
+                  {isCorrect ? (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  ) : (
+                    <span
+                      className="mt-0.5 inline-block h-4 w-4 shrink-0 border border-border"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span>{opt}</span>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-3 border-l-2 border-accent bg-card p-3 text-sm leading-relaxed">
+            <span className="font-semibold">Why:</span> {q.explanation}
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -174,10 +302,14 @@ function ProgressStats({
   stats,
   bankSize,
   bankByCategory,
+  selectedCategory,
+  onSelectCategory,
 }: {
   stats: Stats;
   bankSize: number;
   bankByCategory: Map<string, number>;
+  selectedCategory: string | null;
+  onSelectCategory: (cat: string | null) => void;
 }) {
   const accuracyPct = Math.round(stats.accuracy * 100);
   const maxDay = Math.max(1, ...stats.days.map((d) => d.total));
@@ -275,7 +407,12 @@ function ProgressStats({
         </ul>
       </div>
 
-      <CategoryBreakdown byCategory={stats.byCategory} bankByCategory={bankByCategory} />
+      <CategoryBreakdown
+        byCategory={stats.byCategory}
+        bankByCategory={bankByCategory}
+        selectedCategory={selectedCategory}
+        onSelectCategory={onSelectCategory}
+      />
     </div>
   );
 }
@@ -291,9 +428,13 @@ function formatCategoryLabel(slug: string) {
 function CategoryBreakdown({
   byCategory,
   bankByCategory,
+  selectedCategory,
+  onSelectCategory,
 }: {
   byCategory: Stats["byCategory"];
   bankByCategory: Map<string, number>;
+  selectedCategory: string | null;
+  onSelectCategory: (cat: string | null) => void;
 }) {
   // Merge categories from retry history AND the current bank so a category
   // you haven't retried yet still shows up with "0 attempts".
@@ -332,7 +473,7 @@ function CategoryBreakdown({
           <Layers className="h-3.5 w-3.5" />
           Accuracy by category
         </span>
-        <span>correct / attempts · left in bank</span>
+        <span>{selectedCategory ? "tap a row to switch · again to clear" : "tap a row to drill in"}</span>
       </div>
       <ul className="divide-y divide-border border border-border bg-background">
         {rows.map((r) => {
@@ -345,9 +486,23 @@ function CategoryBreakdown({
                 : pct >= 50
                   ? "bg-amber-500/70"
                   : "bg-destructive/70";
+          const isSelected = selectedCategory === r.category;
+          const disabled = r.bank === 0;
           return (
-            <li key={r.category} className="grid grid-cols-[1fr_auto] items-center gap-3 px-3 py-2.5">
-              <div className="min-w-0">
+            <li key={r.category}>
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => onSelectCategory(isSelected ? null : r.category)}
+                aria-pressed={isSelected}
+                className={cn(
+                  "grid w-full grid-cols-[1fr_auto_auto] items-center gap-3 px-3 py-2.5 text-left transition-colors",
+                  isSelected && "bg-accent/10",
+                  !disabled && "hover:bg-secondary/60",
+                  disabled && "cursor-default opacity-60",
+                )}
+              >
+                <div className="min-w-0">
                 <div className="truncate text-sm font-medium">
                   {formatCategoryLabel(r.category)}
                 </div>
@@ -364,15 +519,24 @@ function CategoryBreakdown({
                     : `${pct}% accuracy · ${r.correct}/${r.total} attempts`}
                   {r.bank > 0 && ` · ${r.bank} in bank`}
                 </div>
-              </div>
-              <div className="text-right">
+                </div>
+                <div className="text-right">
                 <div className="font-display text-lg leading-none">
                   {r.total === 0 ? "—" : `${pct}%`}
                 </div>
                 <div className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
                   {r.bank > 0 ? `${r.bank} to go` : "cleared"}
                 </div>
-              </div>
+                </div>
+                <ChevronRight
+                  className={cn(
+                    "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+                    isSelected && "rotate-90 text-foreground",
+                    disabled && "opacity-0",
+                  )}
+                  aria-hidden="true"
+                />
+              </button>
             </li>
           );
         })}
