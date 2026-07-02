@@ -942,7 +942,7 @@ function HazardTutorial() {
           </div>
 
           <p className="mt-3 text-xs text-muted-foreground">
-            Tap or click <span className="text-foreground">anywhere on the scene</span> once the pedestrian appears — once when you spot them, once as they develop, and once just before they leave. Rapid-clicking will fail you.
+            You're driving through a residential 30. Watch the parked cars on the left. A <span className="text-foreground">ball</span> will bounce out, followed by a <span className="text-foreground">child</span> chasing it. Click once when you first spot the ball, once as the child appears, and once just before they cross. Rapid-clicking will fail you.
           </p>
 
           {phase === "done" && (
