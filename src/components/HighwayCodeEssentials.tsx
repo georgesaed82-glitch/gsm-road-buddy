@@ -2189,17 +2189,29 @@ function NearsideOffsideJunction() {
       subtitle="Two vehicles turning right at the same signalised crossroads. Rules 176–181."
     >
       <div className="space-y-4">
-        <ZoomPan aspect="640/380" label="Aerial view of a nearside-to-nearside right turn. A red car from the bottom and a blue oncoming car from the top both turn right, crossing in front of each other so their passenger sides meet in the middle of the junction.">
-          <NearsideTurnSvg />
-        </ZoomPan>
-        <ZoomPan aspect="640/380" label="Aerial view of an offside-to-offside right turn. A red car from the bottom and a blue oncoming car from the top both turn right, swinging wide behind each other so their driver sides pass on the outside.">
-          <OffsideTurnSvg />
-        </ZoomPan>
+        <figure
+          role="group"
+          aria-labelledby="nearside-heading"
+          aria-describedby="nearside-explainer"
+        >
+          <ZoomPan aspect="640/380" label="Aerial view of a nearside-to-nearside right turn. A red car from the bottom and a blue oncoming car from the top both turn right, crossing in front of each other so their passenger sides meet in the middle of the junction.">
+            <NearsideTurnSvg />
+          </ZoomPan>
+        </figure>
+        <figure
+          role="group"
+          aria-labelledby="offside-heading"
+          aria-describedby="offside-explainer"
+        >
+          <ZoomPan aspect="640/380" label="Aerial view of an offside-to-offside right turn. A red car from the bottom and a blue oncoming car from the top both turn right, swinging wide behind each other so their driver sides pass on the outside.">
+            <OffsideTurnSvg />
+          </ZoomPan>
+        </figure>
       </div>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
-        <div className="border border-border p-4">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">Nearside</div>
+      <div className="mt-5 grid gap-4 md:grid-cols-2" aria-live="polite">
+        <div className="border border-border p-4" id="nearside-explainer">
+          <div id="nearside-heading" className="text-[11px] font-semibold uppercase tracking-wider text-accent">Nearside</div>
           <p className="mt-2 text-sm">
             <strong>Nearside = driver's side to driver's side.</strong> Both cars pass with their driver's sides closer together — you turn in front of each other, following the painted turn-arrow if one is there.
           </p>
@@ -2207,8 +2219,8 @@ function NearsideOffsideJunction() {
             This is usually the method road markings guide you into. Sightlines across the junction are easier because you can see past the other car directly.
           </p>
         </div>
-        <div className="border border-border p-4">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">Offside</div>
+        <div className="border border-border p-4" id="offside-explainer">
+          <div id="offside-heading" className="text-[11px] font-semibold uppercase tracking-wider text-accent">Offside</div>
           <p className="mt-2 text-sm">
             <strong>Offside = passenger side to passenger side.</strong> Both cars swing wide behind each other — driver sides pass on the outside, passenger sides face each other in the middle of the junction.
           </p>
