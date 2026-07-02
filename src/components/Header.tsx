@@ -144,9 +144,13 @@ export function Header() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[11rem]">
-              {portalLinks.map((link) => (
-                <PortalMenuItem key={link.to} {...link} />
-              ))}
+              {portalLinks.map((link) => {
+                const active =
+                  link.to.startsWith("/#")
+                    ? pathname === "/"
+                    : pathname === link.to || pathname.startsWith(link.to + "/");
+                return <PortalMenuItem key={link.to} {...link} active={active} />;
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>
