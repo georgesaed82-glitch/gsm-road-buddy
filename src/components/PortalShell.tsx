@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown, Copyright } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -208,7 +208,24 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
           )}
           <h1 className="mt-2 font-display text-4xl font-medium leading-tight text-foreground">{title}</h1>
         </header>
-        <div className="pt-8">{children}</div>
+        <div
+          role="note"
+          aria-label="Copyright notice"
+          className="mt-6 flex items-start gap-3 border border-accent/40 bg-accent/5 px-4 py-3 text-xs leading-relaxed text-foreground"
+        >
+          <Copyright className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+          <p>
+            <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
+            All images, videos, diagrams and notes on the learner portal are the copyright of
+            George School of Motoring (GSM Driving School). They are provided for personal
+            learning use only and must not be copied, redistributed, republished or used in any
+            other training material without written permission.
+          </p>
+        </div>
+        <div className="portal-watermark-wrap pt-8">{children}</div>
+        <p className="mt-10 border-t border-border pt-4 text-center text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+          © George School of Motoring (GSM Driving School) — for learner use only
+        </p>
       </main>
     </div>
   );
