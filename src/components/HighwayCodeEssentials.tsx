@@ -2077,7 +2077,7 @@ function YellowBoxJunction() {
       title="Yellow box junction — turning right"
       subtitle="Rule 174. Do not enter unless your exit is clear — one exception: turning right, blocked only by oncoming traffic."
     >
-      <ZoomPan aspect="640/380" label="Yellow box junction diagram — pinch or scroll to zoom">
+      <ZoomPan aspect="640/380" label="Aerial view of a yellow box junction. A red car has entered the hatched yellow box, signalling right, and is waiting inside because a blue oncoming vehicle is blocking the exit road. A dashed yellow line shows the intended path to the right.">
         <YellowBoxJunctionSvg />
       </ZoomPan>
 
@@ -2189,10 +2189,10 @@ function NearsideOffsideJunction() {
       subtitle="Two vehicles turning right at the same signalised crossroads. Rules 176–181."
     >
       <div className="space-y-4">
-        <ZoomPan aspect="640/380" label="Nearside-to-nearside — cars cross in front of each other">
+        <ZoomPan aspect="640/380" label="Aerial view of a nearside-to-nearside right turn. A red car from the bottom and a blue oncoming car from the top both turn right, crossing in front of each other so their passenger sides meet in the middle of the junction.">
           <NearsideTurnSvg />
         </ZoomPan>
-        <ZoomPan aspect="640/380" label="Offside-to-offside — cars swing behind each other">
+        <ZoomPan aspect="640/380" label="Aerial view of an offside-to-offside right turn. A red car from the bottom and a blue oncoming car from the top both turn right, swinging wide behind each other so their driver sides pass on the outside.">
           <OffsideTurnSvg />
         </ZoomPan>
       </div>
