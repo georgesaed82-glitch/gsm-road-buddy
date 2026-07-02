@@ -764,29 +764,25 @@ function TrafficLights() {
         </div>
 
         {/* Row 2: red+amber and solid amber, each with signal + full explanation */}
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="flex items-start gap-4 border border-border bg-secondary/40 p-3">
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <div className="flex items-center gap-4">
             <Signal label="RED + AMBER" red amber />
-            <div className="text-sm leading-relaxed">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Red + Amber together</div>
-              <strong>Red and amber also means STOP.</strong> Do <strong>not</strong>
-              go until the <strong>green</strong> shows. Stay behind the white
-              line, keep the brake on and be ready to move off smoothly when
-              green appears.
-            </div>
+            <p className="text-sm text-muted-foreground">
+              <strong>Red and amber also means STOP.</strong> Do <strong>not</strong> go until the <strong>green</strong> shows. Stay behind the white line, keep the brake on and be ready to move off smoothly when green appears.
+            </p>
           </div>
 
-          <div className="flex items-start gap-4 border border-border bg-secondary/40 p-3">
+          <div className="flex items-start gap-4">
             <Signal label="SOLID AMBER" amber />
-            <div className="text-sm leading-relaxed">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solid Amber</div>
-              <strong>Solid amber means STOP.</strong> Do <strong>not</strong> go
-              past the amber light <em>unless</em>:
-              <ul className="mt-1 list-disc pl-5">
-                <li>you have <strong>already crossed the white line</strong> when the amber shows, or</li>
-                <li><strong>stopping might cause an accident</strong> — for example, the vehicle behind you is too close and would run into you if you braked hard.</li>
+            <div className="max-w-prose text-sm text-muted-foreground">
+              <p>
+                <strong>Solid amber means STOP.</strong> Do <strong>not</strong> go past the amber light unless one of these applies:
+              </p>
+              <ul className="mt-2 list-disc pl-5">
+                <li>You have <strong>already crossed the white line</strong> when the amber shows.</li>
+                <li><strong>Stopping might cause an accident</strong> — e.g. the vehicle behind is too close and would run into you if you braked hard.</li>
               </ul>
-              In every other case, stop and wait for green.
+              <p className="mt-2">In every other case, stop and wait for green.</p>
             </div>
           </div>
         </div>
