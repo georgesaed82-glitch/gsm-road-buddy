@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { hazardClips, type HazardClip } from "@/data/hazardClips";
-import { Eye, Play, RotateCw } from "lucide-react";
+import { Eye, Play, RotateCw, Flag } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/hazard-perception")({
   head: () => ({ meta: [{ title: "Hazard perception · GSM" }] }),
@@ -77,6 +77,8 @@ function HazardPage() {
           New clips are being filmed around Notting Hill, Holland Park and Kensington — they'll appear here as soon as they're uploaded.
         </p>
       </div>
+
+      <HazardExplainer />
 
       <h2 className="mt-12 font-display text-2xl">Clip library</h2>
       <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
