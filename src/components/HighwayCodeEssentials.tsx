@@ -745,10 +745,30 @@ function TrafficLights() {
       <div>
         <div className="text-sm font-semibold">Signal sequence (rule 175)</div>
         <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Signal label="STOP — wait behind the line" red />
-          <Signal label="STOP — red + amber, get ready" red amber />
-          <Signal label="GO — if the way is clear" green />
-          <Signal label="STOP — unless you cannot safely" amber />
+          <Signal label="RED — STOP. Wait behind the white line" red />
+          <Signal label="RED + AMBER — STOP. Do NOT go until green shows" red amber />
+          <Signal label="GREEN — GO, if the way is clear" green />
+          <Signal label="SOLID AMBER — STOP" amber />
+        </div>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Red + Amber together</div>
+            <strong>Red and amber also means STOP.</strong> Do <strong>not</strong>
+            go until the <strong>green</strong> shows. Stay behind the white
+            line, keep the handbrake / footbrake on and be ready to move off
+            smoothly when green appears.
+          </div>
+          <div className="border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solid Amber</div>
+            <strong>Solid amber means STOP.</strong> Do <strong>not</strong> go
+            past the amber light <em>unless</em>:
+            <ul className="mt-1 list-disc pl-5">
+              <li>you have <strong>already crossed the white line</strong> when the amber shows, or</li>
+              <li><strong>stopping might cause an accident</strong> — for example, the vehicle behind you is too close and would run into you if you braked hard.</li>
+            </ul>
+            In every other case, stop and wait for green.
+          </div>
         </div>
       </div>
 
