@@ -486,6 +486,18 @@ function HazardTutorial() {
     { label: "Click 3 — Committed", min: 3.4, max: 4.8 },
   ];
 
+  // DVSA-style scoring strip: 9 segments across the hazard window.
+  // The score value at each timeline moment. Reads: 0 0 5 4 3 2 1 0 0
+  const SCORE_SEGMENTS = [0, 0, 5, 4, 3, 2, 1, 0, 0] as const;
+  const scoreAt = (time: number) => {
+    if (time < 0 || time > HAZARD_DURATION) return 0;
+    const idx = Math.min(
+      SCORE_SEGMENTS.length - 1,
+      Math.floor((time / HAZARD_DURATION) * SCORE_SEGMENTS.length),
+    );
+    return SCORE_SEGMENTS[idx];
+  };
+
   const showToast = (tone: "good" | "warn" | "bad", text: string) => {
     setToast({ tone, text });
     // Subtle mobile haptics: distinct patterns per tone. Silently no-ops on unsupported devices.
@@ -625,6 +637,17 @@ function HazardTutorial() {
 
   const pedProgress = phase === "hazard" ? Math.min(1, t / HAZARD_DURATION) : phase === "done" ? 1 : 0;
   const currentWindow = WINDOWS.findIndex((w) => t >= w.min && t <= w.max);
+
+  // Realistic scene animation values
+  const ballAppearT = 0.6;
+  const ballProgress = t < ballAppearT ? 0 : Math.min(1, (t - ballAppearT) / (HAZARD_DURATION - ballAppearT));
+  const ballX = 24 + ballProgress * 42; // % across screen (behind parked cars → mid-road)
+  const ballBounceOffset = t > ballAppearT ? Math.abs(Math.sin((t - ballAppearT) * 6)) * 14 : 0;
+
+  const childAppearT = 1.5;
+  const childProgress = t < childAppearT ? 0 : Math.min(1, (t - childAppearT) / (HAZARD_DURATION - childAppearT));
+  const childX = 20 + childProgress * 46; // % across screen
+  const childRun = childProgress > 0 ? Math.sin((t - childAppearT) * 14) : 0;
 
   return (
     <section className="mt-12">
