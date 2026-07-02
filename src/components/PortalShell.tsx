@@ -222,8 +222,9 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
               <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
               All images, videos, diagrams and notes on the learner portal are owned by
               George School of Motoring (GSM Driving School). They are provided for personal
-              learning use only and may not be copied, redistributed, republished or used in any
-              other training material without written permission.
+              learning use only and may not be copied, redistributed, republished, used for any
+              other purpose apart from learning, or used in any other training material without
+              written permission.
             </p>
           </div>
         </div>
