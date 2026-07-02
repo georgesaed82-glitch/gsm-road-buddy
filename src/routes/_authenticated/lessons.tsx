@@ -69,7 +69,7 @@ function LessonsPage() {
     previous_rating: number | null;
     changed_at: string;
   };
-  const { data: history = [] } = useQuery({
+  const { data: ratingHistory = [] } = useQuery({
     queryKey: ["skill-rating-history"],
     queryFn: async () => {
       const { data } = await supabase
@@ -82,7 +82,7 @@ function LessonsPage() {
     staleTime: 15_000,
   });
   const historyBySkill = new Map<string, HistoryEntry[]>();
-  for (const h of history) {
+  for (const h of ratingHistory) {
     const list = historyBySkill.get(h.skill_key);
     if (list) list.push(h);
     else historyBySkill.set(h.skill_key, [h]);
