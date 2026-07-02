@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/PortalShell";
 import { theoryCategories } from "@/data/theory";
 import { BookOpen } from "lucide-react";
+import { HighwayCodeEssentials } from "@/components/HighwayCodeEssentials";
 
 export const Route = createFileRoute("/_authenticated/highway-code")({
   head: () => ({ meta: [{ title: "Highway Code · GSM" }] }),
@@ -16,7 +17,16 @@ function HighwayCodePage() {
         actually need to remember. Skim before a lesson, revise before a test.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mt-8">
+        <HighwayCodeEssentials />
+      </div>
+
+      <div className="mt-10 border-t border-border pt-8">
+        <div className="text-[11px] uppercase tracking-[0.2em] text-accent">The 14 DVSA topics</div>
+        <h2 className="mt-1 font-display text-2xl">All topics — key points</h2>
+      </div>
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {theoryCategories.map((c) => (
           <div key={c.slug} className="border border-border bg-card p-6">
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
