@@ -225,6 +225,65 @@ function TrafficPage() {
         </CardContent>
       </Card>
 
+      <div className="mb-8 grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <h2 className="font-display text-lg">Where visitors came from</h2>
+          </CardHeader>
+          <CardContent>
+            {(data?.bySource ?? []).length === 0 ? (
+              <p className="text-sm text-muted-foreground">No data yet.</p>
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {(data?.bySource ?? []).map((s) => {
+                  const pct = total ? Math.round((s.views / total) * 100) : 0;
+                  return (
+                    <li key={s.source} className="flex items-center gap-3">
+                      <span className="w-28 shrink-0 text-muted-foreground">{s.source}</span>
+                      <div className="h-2 flex-1 rounded-full bg-secondary">
+                        <div className="h-2 rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                      </div>
+                      <span className="w-20 text-right tabular-nums">{s.views} ({pct}%)</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+            <p className="mt-3 text-xs text-muted-foreground">"Direct" = typed URL, home-screen app, or hidden referrer. "Internal" = navigated between pages on this site.</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <h2 className="font-display text-lg">Top referring sites</h2>
+          </CardHeader>
+          <CardContent>
+            {(data?.topReferrers ?? []).length === 0 ? (
+              <p className="text-sm text-muted-foreground">No external referrers recorded yet.</p>
+            ) : (
+              <table className="w-full text-sm">
+                <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="py-2">Referrer</th>
+                    <th className="py-2">Source</th>
+                    <th className="py-2 text-right">Views</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(data?.topReferrers ?? []).map((r) => (
+                    <tr key={r.referrer} className="border-t border-border">
+                      <td className="py-2 font-medium">{r.referrer}</td>
+                      <td className="py-2 text-muted-foreground">{r.source}</td>
+                      <td className="py-2 text-right tabular-nums">{r.views}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
       {selectedPath && <SectionDrilldown path={selectedPath} label={labelForPath(selectedPath)} rangeDays={rangeDays} data={section} loading={sectionLoading} onClose={() => setSelectedPath(null)} />}
 
       <Card>
@@ -379,6 +438,55 @@ function SectionDrilldown({
                           <td className="py-2 capitalize">{p.platform.replace(/-/g, " ")}</td>
                           <td className="py-2 text-right tabular-nums">{p.views}</td>
                           <td className="py-2 text-right tabular-nums">{p.sessions}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              <div>
+                <h3 className="mb-2 text-sm font-semibold">Entry sources</h3>
+                {(data?.bySource ?? []).length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No data.</p>
+                ) : (
+                  <ul className="space-y-2 text-sm">
+                    {(data?.bySource ?? []).map((s) => {
+                      const pct = total ? Math.round((s.views / total) * 100) : 0;
+                      return (
+                        <li key={s.source} className="flex items-center gap-3">
+                          <span className="w-28 shrink-0 text-muted-foreground">{s.source}</span>
+                          <div className="h-2 flex-1 rounded-full bg-secondary">
+                            <div className="h-2 rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                          </div>
+                          <span className="w-20 text-right tabular-nums">{s.views} ({pct}%)</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+              <div>
+                <h3 className="mb-2 text-sm font-semibold">Top referrers</h3>
+                {(data?.topReferrers ?? []).length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No external referrers for this section.</p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
+                      <tr>
+                        <th className="py-2">Referrer</th>
+                        <th className="py-2">Source</th>
+                        <th className="py-2 text-right">Views</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(data?.topReferrers ?? []).map((r) => (
+                        <tr key={r.referrer} className="border-t border-border">
+                          <td className="py-2 font-medium">{r.referrer}</td>
+                          <td className="py-2 text-muted-foreground">{r.source}</td>
+                          <td className="py-2 text-right tabular-nums">{r.views}</td>
                         </tr>
                       ))}
                     </tbody>
