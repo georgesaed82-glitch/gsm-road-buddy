@@ -2222,21 +2222,21 @@ function NearsideOffsideJunction() {
 
       <div className="mt-5 grid gap-4 md:grid-cols-2" aria-live="polite">
         <div className="border border-border p-4" id="nearside-explainer">
-          <div id="nearside-heading" className="text-[11px] font-semibold uppercase tracking-wider text-accent">Nearside</div>
+          <div id="nearside-heading" className="text-[11px] font-semibold uppercase tracking-wider text-accent">Nearside to nearside (left-to-left)</div>
           <p className="mt-2 text-sm">
-            <strong>Nearside = driver's side to driver's side.</strong> Both cars pass with their driver's sides closer together — you turn in front of each other, following the painted turn-arrow if one is there.
+            <strong>Nearside = passenger side to passenger side.</strong> Both cars turn <strong>in front of</strong> each other, passing left-side to left-side. Rule 181 lists this as the second option.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            This is usually the method road markings guide you into. Sightlines across the junction are easier because you can see past the other car directly.
+            Tighter, quicker turn — but the other car briefly blocks your view of oncoming traffic while you're crossing, so creep and look before committing.
           </p>
         </div>
         <div className="border border-border p-4" id="offside-explainer">
-          <div id="offside-heading" className="text-[11px] font-semibold uppercase tracking-wider text-accent">Offside</div>
+          <div id="offside-heading" className="text-[11px] font-semibold uppercase tracking-wider text-accent">Offside to offside (right-to-right)</div>
           <p className="mt-2 text-sm">
-            <strong>Offside = passenger side to passenger side.</strong> Both cars swing wide behind each other — driver sides pass on the outside, passenger sides face each other in the middle of the junction.
+            <strong>Offside = driver's side to driver's side.</strong> Keep the other vehicle on your right and turn <strong>behind</strong> it. Rule 181 calls this <em>generally the safer method</em> because you have a clear view of oncoming traffic as you complete the turn.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            The traditional British method. It gives a wider swept path but the other car briefly blocks your view of oncoming — creep and look.
+            Wider swept path. Use this by default unless road markings or the layout of the junction force the nearside method.
           </p>
         </div>
       </div>
