@@ -841,10 +841,352 @@ export function HighwayCodeEssentials() {
   return (
     <div className="grid gap-6">
       <RoadStuds />
+      <HierarchyOfRoadUsers />
       <StoppingDistances />
       <TrafficLights />
       <ZebraCrossing />
     </div>
+  );
+}
+
+// ── Hierarchy of Road Users (Rules H1–H3, 2022) ────────────────────
+// Pyramid of responsibility + a worked "give way to pedestrians at a
+// junction" scene showing a driver turning from a major road into a
+// minor road with a pedestrian crossing (or waiting to cross).
+function HierarchyPyramid() {
+  // Rows from top (most vulnerable, highest priority) to bottom.
+  const rows = [
+    {
+      label: "Pedestrians",
+      sub: "Children, older & disabled people first",
+      fill: "#0f766e",
+      text: "#ffffff",
+    },
+    {
+      label: "Cyclists",
+      sub: "Including e-cycles",
+      fill: "#0d9488",
+      text: "#ffffff",
+    },
+    {
+      label: "Horse riders",
+      sub: "& horse-drawn vehicles",
+      fill: "#14b8a6",
+      text: "#0b1f1c",
+    },
+    {
+      label: "Motorcyclists",
+      sub: "Mopeds & motorbikes",
+      fill: "#f59e0b",
+      text: "#1a1300",
+    },
+    {
+      label: "Cars / Taxis",
+      sub: "Private vehicles",
+      fill: "#ea7317",
+      text: "#ffffff",
+    },
+    {
+      label: "Vans / Minibuses",
+      sub: "Light goods vehicles",
+      fill: "#c2410c",
+      text: "#ffffff",
+    },
+    {
+      label: "HGVs & Large vehicles",
+      sub: "Greatest responsibility to reduce danger",
+      fill: "#7c2d12",
+      text: "#ffffff",
+    },
+  ];
+
+  // Pyramid geometry
+  const W = 720;
+  const H = 520;
+  const apexX = W / 2;
+  const apexY = 40;
+  const baseY = H - 60;
+  const baseHalf = 320; // half-width of the base
+  const rowH = (baseY - apexY) / rows.length;
+
+  const xAt = (y: number) => {
+    // linear from apex (0) to base (baseHalf)
+    const t = (y - apexY) / (baseY - apexY);
+    return baseHalf * t;
+  };
+
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      role="img"
+      aria-label="Pyramid showing the Hierarchy of Road Users from Rule H1 of the Highway Code. Pedestrians are at the top with the highest priority; large vehicles are at the bottom with the greatest responsibility to reduce danger."
+      className="block h-auto w-full"
+    >
+      <defs>
+        <linearGradient id="pyr-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f8fafc" />
+          <stop offset="100%" stopColor="#e2e8f0" />
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width={W} height={H} fill="url(#pyr-sky)" />
+
+      {/* Rows */}
+      {rows.map((r, i) => {
+        const yTop = apexY + i * rowH;
+        const yBot = yTop + rowH;
+        const xTopL = apexX - xAt(yTop);
+        const xTopR = apexX + xAt(yTop);
+        const xBotL = apexX - xAt(yBot);
+        const xBotR = apexX + xAt(yBot);
+        const cy = yTop + rowH / 2;
+        return (
+          <g key={r.label}>
+            <polygon
+              points={`${xTopL},${yTop} ${xTopR},${yTop} ${xBotR},${yBot} ${xBotL},${yBot}`}
+              fill={r.fill}
+              stroke="#0b1f1c"
+              strokeWidth="1.2"
+            />
+            <text
+              x={apexX}
+              y={cy - 4}
+              textAnchor="middle"
+              fontFamily="Arial, sans-serif"
+              fontWeight={700}
+              fontSize={i < 2 ? 16 : 20}
+              fill={r.text}
+            >
+              {r.label}
+            </text>
+            <text
+              x={apexX}
+              y={cy + 16}
+              textAnchor="middle"
+              fontFamily="Arial, sans-serif"
+              fontSize={12}
+              fill={r.text}
+              opacity={0.9}
+            >
+              {r.sub}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Priority arrow (left) */}
+      <g fontFamily="Arial, sans-serif" fontSize="12" fill="#0b1f1c">
+        <line x1="30" y1={apexY + 10} x2="30" y2={baseY - 10} stroke="#0b1f1c" strokeWidth="1.5" />
+        <polygon points={`30,${apexY + 4} 26,${apexY + 14} 34,${apexY + 14}`} fill="#0b1f1c" />
+        <text x="42" y={apexY + 22} fontWeight={700}>Highest priority</text>
+        <text x="42" y={apexY + 38}>Most vulnerable</text>
+        <text x="42" y={baseY - 24} fontWeight={700}>Greatest responsibility</text>
+        <text x="42" y={baseY - 8}>to reduce danger</text>
+      </g>
+
+      {/* Rule tags (right) */}
+      <g fontFamily="Arial, sans-serif" fontSize="12" fill="#0b1f1c">
+        <text x={W - 20} y={apexY + 22} textAnchor="end" fontWeight={700}>Rule H1</text>
+        <text x={W - 20} y={apexY + 38} textAnchor="end">Hierarchy</text>
+        <text x={W - 20} y={apexY + 74} textAnchor="end" fontWeight={700}>Rule H2</text>
+        <text x={W - 20} y={apexY + 90} textAnchor="end">Priority for pedestrians</text>
+        <text x={W - 20} y={apexY + 126} textAnchor="end" fontWeight={700}>Rule H3</text>
+        <text x={W - 20} y={apexY + 142} textAnchor="end">Priority for cyclists</text>
+      </g>
+    </svg>
+  );
+}
+
+// Top-down junction: major road (horizontal) meeting a minor road (vertical
+// from bottom) with give-way triangle & broken line. A car turns left from
+// the major road into the minor road; a pedestrian is crossing the mouth of
+// the minor road. Illustrates Rule H2.
+function GiveWayJunctionSvg() {
+  const TARMAC = "#3a3a3d";
+  const TARMAC_DARK = "#2b2b2e";
+  const PAINT = "#f6f6f0";
+  const PAVEMENT = "#a9a4a0";
+  const PAVEMENT_DARK = "#8a857f";
+  const VERGE = "#4a7c3a";
+
+  return (
+    <svg
+      viewBox="0 0 720 480"
+      role="img"
+      aria-label="Top-down junction. A car turns from a major road into a minor road while a pedestrian crosses the mouth of the minor road. The car must give way under Rule H2."
+      className="block h-auto w-full"
+    >
+      {/* Grass */}
+      <rect x="0" y="0" width="720" height="480" fill={VERGE} />
+
+      {/* Major road (horizontal) */}
+      <rect x="0" y="120" width="720" height="180" fill={TARMAC} />
+      <rect x="0" y="120" width="720" height="6" fill={TARMAC_DARK} opacity="0.5" />
+      <rect x="0" y="294" width="720" height="6" fill={TARMAC_DARK} opacity="0.5" />
+
+      {/* Minor road (vertical, from bottom) */}
+      <rect x="300" y="300" width="140" height="180" fill={TARMAC} />
+
+      {/* Pavement corners */}
+      <path d="M0,300 L300,300 Q300,340 260,340 L0,340 Z" fill={PAVEMENT} />
+      <path d="M720,300 L440,300 Q440,340 480,340 L720,340 Z" fill={PAVEMENT} />
+      <rect x="0" y="340" width="260" height="8" fill={PAVEMENT_DARK} opacity="0.6" />
+      <rect x="480" y="340" width="240" height="8" fill={PAVEMENT_DARK} opacity="0.6" />
+
+      {/* Major-road centre line (broken) */}
+      {Array.from({ length: 14 }).map((_, i) => (
+        <rect key={i} x={20 + i * 52} y="207" width="30" height="6" fill={PAINT} />
+      ))}
+
+      {/* Minor-road centre line */}
+      {Array.from({ length: 5 }).map((_, i) => (
+        <rect key={i} x="367" y={330 + i * 30} width="6" height="16" fill={PAINT} />
+      ))}
+
+      {/* Give-way markings on the minor road (broken double line) */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <g key={i}>
+          <rect x={305 + i * 24} y="302" width="14" height="7" fill={PAINT} />
+          <rect x={305 + i * 24} y="313" width="14" height="7" fill={PAINT} />
+        </g>
+      ))}
+
+      {/* Give-way triangle on tarmac */}
+      <polygon points="360,330 345,352 375,352" fill="none" stroke={PAINT} strokeWidth="3" />
+
+      {/* Pedestrian crossing path (informal — no zebra, just showing route) */}
+      <g opacity="0.55">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <circle key={i} cx={310 + i * 24} cy="320" r="3" fill={PAINT} />
+        ))}
+      </g>
+
+      {/* Car turning left from major into minor road */}
+      <g transform="translate(470 210) rotate(35)">
+        <rect x="-32" y="-16" width="64" height="32" rx="6" fill="#dc2626" stroke="#0b1f1c" strokeWidth="1.5" />
+        <rect x="-18" y="-12" width="26" height="24" rx="3" fill="#111827" opacity="0.8" />
+        <rect x="14" y="-14" width="6" height="4" fill="#fde68a" />
+        <rect x="14" y="10" width="6" height="4" fill="#fde68a" />
+      </g>
+
+      {/* Pedestrian crossing the mouth of the minor road */}
+      <g transform="translate(370 322)">
+        <circle cx="0" cy="-14" r="6" fill="#fde68a" stroke="#0b1f1c" strokeWidth="1" />
+        <rect x="-5" y="-8" width="10" height="16" fill="#1d4ed8" />
+        <rect x="-5" y="8" width="4" height="10" fill="#0b1f1c" />
+        <rect x="1" y="8" width="4" height="10" fill="#0b1f1c" />
+      </g>
+      {/* Walking-direction arrow */}
+      <g stroke="#0b1f1c" strokeWidth="2" fill="none">
+        <line x1="370" y1="345" x2="370" y2="365" />
+        <polygon points="370,370 365,360 375,360" fill="#0b1f1c" />
+      </g>
+
+      {/* Labels */}
+      <g fontFamily="Arial, sans-serif" fontSize="13" fill="#0b1f1c">
+        <rect x="18" y="140" width="150" height="24" fill="#ffffff" opacity="0.9" />
+        <text x="26" y="157" fontWeight={700}>Major road</text>
+
+        <rect x="452" y="410" width="150" height="24" fill="#ffffff" opacity="0.9" />
+        <text x="460" y="427" fontWeight={700}>Minor road</text>
+
+        <rect x="410" y="308" width="150" height="22" fill="#ffffff" opacity="0.9" />
+        <text x="418" y="324">Give-way line</text>
+
+        <rect x="392" y="352" width="180" height="22" fill="#ffffff" opacity="0.9" />
+        <text x="400" y="368">Pedestrian crossing (Rule H2)</text>
+
+        <rect x="512" y="176" width="180" height="22" fill="#ffffff" opacity="0.9" />
+        <text x="520" y="192">Car turning into minor road</text>
+      </g>
+    </svg>
+  );
+}
+
+function HierarchyOfRoadUsers() {
+  return (
+    <Panel
+      title="Hierarchy of Road Users"
+      subtitle="Rules H1, H2 & H3 — introduced in the 2022 Highway Code update"
+    >
+      <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
+        <div>
+          <ZoomPan aspect="720/520" label="Hierarchy pyramid — pinch or scroll to zoom">
+            <HierarchyPyramid />
+          </ZoomPan>
+          <p className="sr-only">
+            Pyramid, top to bottom: Pedestrians, Cyclists, Horse riders,
+            Motorcyclists, Cars and taxis, Vans and minibuses, HGVs and large
+            vehicles. The most vulnerable users are at the top with the highest
+            priority. Road users who can cause the greatest harm carry the
+            greatest responsibility to reduce the danger they pose to others.
+          </p>
+        </div>
+
+        <div className="grid gap-3 text-sm leading-relaxed text-foreground">
+          <div className="border border-border bg-secondary/40 p-3">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rule H1 — The hierarchy</div>
+            Those who can do the greatest harm have the greatest responsibility
+            to reduce the danger or threat they pose to others. It does <em>not</em>
+            remove the need for every road user to behave responsibly.
+          </div>
+          <div className="border border-border bg-secondary/40 p-3">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rule H2 — Priority for pedestrians</div>
+            At a junction you <strong>should give way to pedestrians crossing or
+            waiting to cross</strong> a road into which or from which you are
+            turning. Also give way on zebra crossings and to pedestrians and
+            cyclists on parallel crossings.
+          </div>
+          <div className="border border-border bg-secondary/40 p-3">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rule H3 — Priority for cyclists</div>
+            Do not cut across cyclists, horse riders or horse-drawn vehicles
+            going ahead when turning into or out of a junction, or when
+            changing direction or lane — just as you would not turn across the
+            path of another motor vehicle.
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <h4 className="mb-1 text-base font-semibold text-foreground">Worked example — turning from a major road into a minor road</h4>
+        <p className="mb-3 text-sm text-muted-foreground">
+          You are driving on the <strong>major road</strong> and turning into a
+          <strong> minor road</strong> (the side road with the give-way line).
+          A pedestrian is crossing — or waiting to cross — the mouth of that
+          minor road.
+        </p>
+
+        <ZoomPan aspect="720/480" label="Junction give-way example — pinch or scroll to zoom">
+          <GiveWayJunctionSvg />
+        </ZoomPan>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="border border-border bg-emerald-50 p-3 text-sm dark:bg-emerald-950/30">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-emerald-800 dark:text-emerald-300">You should stop</div>
+            If a pedestrian is <strong>crossing</strong>, or is clearly
+            <strong> waiting to cross</strong>, and stopping is <strong>safe</strong>
+            (nothing close behind you, no risk of being rear-ended), you
+            <strong> must give way</strong> under Rule H2. Stop <em>before</em> the
+            give-way line, make eye contact, and let them finish crossing.
+          </div>
+          <div className="border border-border bg-amber-50 p-3 text-sm dark:bg-amber-950/30">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-300">You don't have to stop</div>
+            If stopping would <strong>cause an accident</strong> — for example a
+            vehicle is right behind you and braking hard would cause a
+            collision — and the pedestrian <strong>has not yet started</strong>
+            to cross, you are not obliged to stop. Safety of everyone comes
+            first; judgement, not blind rule-following.
+          </div>
+        </div>
+
+        <ol className="mt-4 list-decimal space-y-1 pl-5 text-sm text-foreground">
+          <li><strong>Mirrors — Signal — Position — Speed — Look (MSPSL)</strong> on approach.</li>
+          <li>Scan the pavement on both sides <em>before</em> you commit to the turn.</li>
+          <li>If a pedestrian is crossing or waiting, and it is safe, <strong>stop and give way</strong>.</li>
+          <li>If stopping would cause a rear-end collision and no one has started crossing, proceed with caution.</li>
+          <li>Never wave pedestrians across — let them decide. Other drivers may not see them.</li>
+        </ol>
+      </div>
+    </Panel>
   );
 }
 
