@@ -6,7 +6,49 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { hazardClips, type HazardClip } from "@/data/hazardClips";
-import { Eye, Play, RotateCw, Flag } from "lucide-react";
+import { Eye, Play, RotateCw, Flag, Settings2, Smartphone, Camera } from "lucide-react";
+
+type HapticsSettings = { enabled: boolean; intensity: "low" | "medium" | "high" };
+const HAPTICS_STORAGE_KEY = "gsm.haptics.settings";
+const DEFAULT_HAPTICS: HapticsSettings = { enabled: true, intensity: "medium" };
+
+function loadHaptics(): HapticsSettings {
+  if (typeof window === "undefined") return DEFAULT_HAPTICS;
+  try {
+    const raw = window.localStorage.getItem(HAPTICS_STORAGE_KEY);
+    if (!raw) return DEFAULT_HAPTICS;
+    const parsed = JSON.parse(raw) as Partial<HapticsSettings>;
+    return {
+      enabled: parsed.enabled ?? DEFAULT_HAPTICS.enabled,
+      intensity: (parsed.intensity as HapticsSettings["intensity"]) ?? DEFAULT_HAPTICS.intensity,
+    };
+  } catch {
+    return DEFAULT_HAPTICS;
+  }
+}
+
+function useHapticsSettings() {
+  const [settings, setSettings] = useState<HapticsSettings>(DEFAULT_HAPTICS);
+  useEffect(() => { setSettings(loadHaptics()); }, []);
+  const update = (next: HapticsSettings) => {
+    setSettings(next);
+    try { window.localStorage.setItem(HAPTICS_STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+  };
+  return [settings, update] as const;
+}
+
+function triggerHaptic(tone: "good" | "warn" | "bad", settings: HapticsSettings) {
+  if (!settings.enabled) return;
+  try {
+    if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") return;
+    const scale = settings.intensity === "low" ? 0.5 : settings.intensity === "high" ? 1.6 : 1;
+    const base =
+      tone === "good" ? [18]
+      : tone === "warn" ? [12, 60, 12]
+      : [50, 40, 50];
+    navigator.vibrate(base.map((n, i) => (i % 2 === 0 ? Math.round(n * scale) : n)));
+  } catch { /* ignore */ }
+}
 
 export const Route = createFileRoute("/_authenticated/hazard-perception")({
   head: () => ({ meta: [{ title: "Hazard perception · GSM" }] }),
