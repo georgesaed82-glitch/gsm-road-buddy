@@ -776,13 +776,12 @@ function TrafficLights() {
             <Signal label="SOLID AMBER" amber />
             <div className="max-w-prose text-sm text-muted-foreground">
               <p>
-                <strong>Solid amber means STOP.</strong> Do <strong>not</strong> go past the amber light unless one of these applies:
+                <strong>Solid amber means <span className="text-red-600">STOP</span>.</strong> Do <strong>not</strong> go past the amber light unless one of these applies:
               </p>
               <ul className="mt-2 list-disc pl-5">
                 <li>You have <strong>already crossed the white line</strong> when the amber shows.</li>
                 <li><strong>Stopping might cause an accident</strong> — e.g. the vehicle behind is too close and would run into you if you braked hard.</li>
               </ul>
-              <p className="mt-2">In every other case, stop and wait for green.</p>
             </div>
           </div>
         </div>
