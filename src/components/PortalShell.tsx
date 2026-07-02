@@ -143,50 +143,18 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={() => setHazardOpen((v) => !v)}
-              aria-expanded={hazardOpen}
-              aria-controls="portal-hazard-group"
+            <Link
+              to={hazardItem.to}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
                 hazardActive
-                  ? "text-foreground"
+                  ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground",
               )}
             >
-              <Eye className="h-4 w-4" />
-              <span className="flex-1 text-left">Hazard perception</span>
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 transition-transform",
-                  hazardOpen ? "rotate-180" : "rotate-0",
-                )}
-              />
-            </button>
-            {hazardOpen && (
-              <div id="portal-hazard-group" className="flex flex-col gap-0.5 pl-3 border-l border-border ml-4">
-                {hazardItems.map((item) => {
-                  const active = pathname === item.to;
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
-                        active
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-                      )}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
+              <hazardItem.icon className="h-4 w-4" />
+              {hazardItem.label}
+            </Link>
 
             {bottomItems.map((item) => {
               const active = pathname === item.to;
