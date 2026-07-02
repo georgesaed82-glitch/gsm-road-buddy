@@ -107,11 +107,10 @@ function HazardPage() {
       {/* 1 · Interactive tutorial at the very top */}
       <HazardTutorial />
 
-      {/* 2 · Supporting explainer + haptics settings */}
+      {/* 2 · Supporting explainer */}
       <div className="mt-12">
         <HazardExplainer />
       </div>
-      <HapticsSettingsPanel />
 
       {/* 3 · Coming-soon banner + stats immediately before the clip library */}
       <div className="mt-12 overflow-hidden border-2 border-accent bg-gradient-to-r from-primary via-primary to-primary/80 p-6 text-primary-foreground shadow-lg">
