@@ -1,15 +1,20 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
-const items = [
+type Item = { to: string; label: string; icon: typeof LayoutDashboard };
+
+const topItems: Item[] = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/lessons", label: "Lessons & progress", icon: CalendarCheck },
   { to: "/payments", label: "Payments", icon: CreditCard },
+];
+
+const theoryItems: Item[] = [
   { to: "/highway-code", label: "Highway Code", icon: BookOpen },
   { to: "/road-signs", label: "Road signs", icon: SignpostBig },
   { to: "/road-markings", label: "Road markings", icon: Milestone },
@@ -18,6 +23,9 @@ const items = [
   { to: "/mock-tests", label: "Mock tests", icon: ClipboardCheck },
   { to: "/review", label: "Review mistakes", icon: RotateCcw },
   { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
+];
+
+const bottomItems: Item[] = [
   { to: "/profile", label: "Profile", icon: UserCircle2 },
 ];
 
@@ -26,6 +34,10 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { isAdmin } = useIsAdmin();
+
+  const theoryPaths = theoryItems.map((i) => i.to);
+  const theoryActive = theoryPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const [theoryOpen, setTheoryOpen] = useState(theoryActive);
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
@@ -43,7 +55,72 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
             <div className="mt-1 font-display text-lg text-foreground">Your dashboard</div>
           </div>
           <nav className="mt-2 flex flex-col gap-0.5">
-            {items.map((item) => {
+            {topItems.map((item) => {
+              const active = pathname === item.to;
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={() => setTheoryOpen((v) => !v)}
+              aria-expanded={theoryOpen}
+              aria-controls="portal-theory-group"
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
+                theoryActive
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+              )}
+            >
+              <GraduationCap className="h-4 w-4" />
+              <span className="flex-1 text-left">Theory</span>
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  theoryOpen ? "rotate-180" : "rotate-0",
+                )}
+              />
+            </button>
+            {theoryOpen && (
+              <div id="portal-theory-group" className="flex flex-col gap-0.5 pl-3 border-l border-border ml-4">
+                {theoryItems.map((item) => {
+                  const active = pathname === item.to;
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
+                        active
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+
+            {bottomItems.map((item) => {
               const active = pathname === item.to;
               const Icon = item.icon;
               return (
