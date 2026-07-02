@@ -458,6 +458,16 @@ function MockExam({ onExit }: { onExit: () => void }) {
     if (secondsLeft === 0 && !finished) setFinished(true);
   }, [secondsLeft, finished]);
 
+  // On finish, sync the mistakes bank: add wrong / unanswered, remove correct.
+  useEffect(() => {
+    if (!finished) return;
+    pool.forEach((qq, i) => {
+      const a = answers[i];
+      if (a !== null && a === qq.correctIndex) removeMistake(qq.id);
+      else addMistake(qq.id);
+    });
+  }, [finished, pool, answers]);
+
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
   const ss = String(secondsLeft % 60).padStart(2, "0");
   const lowTime = secondsLeft <= 60;
