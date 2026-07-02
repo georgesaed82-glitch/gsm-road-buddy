@@ -18,6 +18,25 @@ function getSessionId(): string {
   }
 }
 
+function detectPlatform(): string {
+  try {
+    const nav = navigator as Navigator & { standalone?: boolean };
+    const standalone =
+      (typeof window.matchMedia === "function" &&
+        window.matchMedia("(display-mode: standalone)").matches) ||
+      nav.standalone === true;
+    const ua = navigator.userAgent || "";
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isAndroid = /Android/i.test(ua);
+    const isMobile = isIOS || isAndroid || /Mobile/i.test(ua);
+    const surface = standalone ? "app" : "browser";
+    const device = isIOS ? "ios" : isAndroid ? "android" : isMobile ? "mobile" : "desktop";
+    return `${surface}-${device}`;
+  } catch {
+    return "unknown";
+  }
+}
+
 export function PageViewTracker() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -32,6 +51,7 @@ export function PageViewTracker() {
       referrer: document.referrer ? document.referrer.slice(0, 500) : null,
       user_agent: navigator.userAgent ? navigator.userAgent.slice(0, 500) : null,
       session_id: getSessionId().slice(0, 80),
+      platform: detectPlatform().slice(0, 40),
     };
     void supabase.from("page_views").insert(payload);
   }, [pathname]);
