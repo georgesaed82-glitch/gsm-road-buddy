@@ -1061,7 +1061,7 @@ function GiveWayJunctionSvg() {
     <svg
       viewBox="0 0 720 520"
       role="img"
-      aria-label="Top-down junction. A red car approaches from the left in the left-hand lane of the major road, indicates left, and turns left into the minor road on the driver's left. A pedestrian is crossing the mouth of the minor road from left to right, so the car must give way under Rule H2."
+      aria-label="Top-down junction. A red car approaches from the left in the left-hand lane of the major road, indicates left, and turns left into the minor road on the driver's left. A pedestrian is standing on the pavement waiting to cross the mouth of the minor road, so the car must give way under Rule H2."
       className="block h-auto w-full"
     >
       <defs>
@@ -1111,18 +1111,18 @@ function GiveWayJunctionSvg() {
       ))}
 
       {/* Give-way markings across the mouth of the minor road.
-          LEFT half — DOUBLE broken line.
-          RIGHT half — SINGLE broken line. */}
-      {/* Left half: double broken line */}
+          Major → minor: the side the car enters (LEFT half) is a SINGLE
+          broken line, the opposing side (RIGHT half) is a DOUBLE broken line. */}
+      {/* Left half: single broken line (car's side) */}
       {Array.from({ length: 4 }).map((_, i) => (
-        <g key={`gw-l-${i}`}>
-          <rect x={296 + i * 17} y="228" width="10" height="6" fill={PAINT} />
-          <rect x={296 + i * 17} y="238" width="10" height="6" fill={PAINT} />
-        </g>
+        <rect key={`gw-l-${i}`} x={296 + i * 17} y="232" width="10" height="7" fill={PAINT} />
       ))}
-      {/* Right half: single broken line */}
+      {/* Right half: double broken line */}
       {Array.from({ length: 4 }).map((_, i) => (
-        <rect key={`gw-r-${i}`} x={364 + i * 17} y="232" width="10" height="7" fill={PAINT} />
+        <g key={`gw-r-${i}`}>
+          <rect x={364 + i * 17} y="228" width="10" height="6" fill={PAINT} />
+          <rect x={364 + i * 17} y="238" width="10" height="6" fill={PAINT} />
+        </g>
       ))}
       {/* Thin divider between the two halves for clarity */}
       <line x1="360" y1="226" x2="360" y2="248" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="1" />
@@ -1165,29 +1165,22 @@ function GiveWayJunctionSvg() {
         <rect x="14" y="15" width="10" height="4" fill="#111" />
       </g>
 
-      {/* Pedestrian crossing the mouth of the minor road LEFT → RIGHT.
-          Body drawn from above (top-down view) and rotated 90° so shoulders
-          face the direction of travel. */}
-      <g transform="translate(320 216)">
+      {/* Pedestrian standing on the pavement (grass-side kerb) WAITING to
+          cross the mouth of the minor road. Body drawn top-down, facing
+          the road so shoulders align with the kerb. */}
+      <g transform="translate(268 196)">
         {/* subtle shadow */}
-        <ellipse cx="0" cy="8" rx="12" ry="3" fill="#000" opacity="0.28" />
-        <g transform="rotate(90)">
-          {/* head */}
-          <circle cx="0" cy="0" r="6.5" fill="#f4c9a0" stroke="#0b1f1c" strokeWidth="1" />
-          {/* torso — jacket */}
-          <path d="M-7.5,6 L7.5,6 L9.5,24 L-9.5,24 Z" fill="#1d4ed8" stroke="#0b1f1c" strokeWidth="0.8" />
-          {/* arms — mid-swing */}
-          <rect x="-11" y="7" width="3" height="13" fill="#1d4ed8" transform="rotate(-14 -9.5 13.5)" />
-          <rect x="8" y="7" width="3" height="13" fill="#1d4ed8" transform="rotate(14 9.5 13.5)" />
-          {/* legs — mid-step */}
-          <rect x="-6" y="24" width="4" height="13" fill="#0b1f1c" transform="rotate(-6 -4 30.5)" />
-          <rect x="2" y="24" width="4" height="14" fill="#0b1f1c" transform="rotate(8 4 31)" />
-        </g>
-        {/* Walking direction: LEFT → RIGHT arrow */}
-        <g stroke="#ffffff" strokeWidth="3" fill="none" opacity="0.95">
-          <line x1="18" y1="-22" x2="86" y2="-22" />
-          <polygon points="94,-22 82,-30 82,-14" fill="#ffffff" stroke="none" />
-        </g>
+        <ellipse cx="0" cy="10" rx="12" ry="3" fill="#000" opacity="0.3" />
+        {/* head */}
+        <circle cx="0" cy="0" r="6.5" fill="#f4c9a0" stroke="#0b1f1c" strokeWidth="1" />
+        {/* torso — jacket */}
+        <path d="M-7.5,6 L7.5,6 L9.5,24 L-9.5,24 Z" fill="#1d4ed8" stroke="#0b1f1c" strokeWidth="0.8" />
+        {/* arms — resting at sides */}
+        <rect x="-10" y="7" width="3" height="14" fill="#1d4ed8" />
+        <rect x="7" y="7" width="3" height="14" fill="#1d4ed8" />
+        {/* legs — standing still, feet together */}
+        <rect x="-4" y="24" width="3.5" height="14" fill="#0b1f1c" />
+        <rect x="0.5" y="24" width="3.5" height="14" fill="#0b1f1c" />
       </g>
 
       {/* Car approach arrow — showing it came FROM THE LEFT */}
@@ -1211,10 +1204,10 @@ function GiveWayJunctionSvg() {
         <text x="446" y="58" fontWeight={700}>Minor road</text>
 
         <rect x="440" y="222" width="260" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="448" y="238">Give-way: double left · single right</text>
+        <text x="448" y="238">Give-way: single left · double right</text>
 
-        <rect x="440" y="172" width="230" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="448" y="188">Pedestrian crossing L → R (Rule H2)</text>
+        <rect x="180" y="168" width="220" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="188" y="184">Pedestrian waiting to cross (Rule H2)</text>
 
         <rect x="126" y="326" width="235" height="22" fill="#ffffff" opacity="0.92" />
         <text x="134" y="342">Red car indicating and turning left</text>
