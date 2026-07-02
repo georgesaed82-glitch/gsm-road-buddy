@@ -19,8 +19,9 @@ import {
   exportAccessUsesCsv,
   type AccessCodeRow,
 } from "@/lib/portal-access.functions";
+import { sendOutlookMail } from "@/lib/outlook-mail.functions";
 import { getAdminPassword, setAdminPassword as cacheAdminPassword } from "@/lib/admin-gate";
-import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight, Download } from "lucide-react";
+import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight, Download, Send } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/access")({
   component: AdminAccessPage,
