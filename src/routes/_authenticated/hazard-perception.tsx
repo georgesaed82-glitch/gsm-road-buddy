@@ -488,6 +488,16 @@ function HazardTutorial() {
 
   const showToast = (tone: "good" | "warn" | "bad", text: string) => {
     setToast({ tone, text });
+    // Subtle mobile haptics: distinct patterns per tone. Silently no-ops on unsupported devices.
+    try {
+      if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+        const pattern =
+          tone === "good" ? [18] : tone === "warn" ? [12, 60, 12] : [50, 40, 50];
+        navigator.vibrate(pattern);
+      }
+    } catch {
+      // ignore — some browsers throw if user hasn't interacted yet
+    }
     window.setTimeout(() => {
       setToast((cur) => (cur && cur.text === text ? null : cur));
     }, 1400);
