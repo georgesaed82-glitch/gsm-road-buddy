@@ -37,6 +37,36 @@ const skillMilestones = [
   { key: "mock_test", name: "Mock test routes", target: 18 },
 ];
 
+const LOCAL_RATINGS_KEY = "gsm.skillRatings.v1";
+
+function loadLocalRatings(): { skill_key: string; rating: number }[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(LOCAL_RATINGS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return [];
+    return Object.entries(parsed as Record<string, number>).map(([skill_key, rating]) => ({
+      skill_key,
+      rating: Math.max(0, Math.min(10, Math.round(Number(rating) || 0))),
+    }));
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalRating(key: string, rating: number) {
+  if (typeof window === "undefined") return;
+  try {
+    const raw = window.localStorage.getItem(LOCAL_RATINGS_KEY);
+    const obj = raw ? (JSON.parse(raw) as Record<string, number>) : {};
+    obj[key] = rating;
+    window.localStorage.setItem(LOCAL_RATINGS_KEY, JSON.stringify(obj));
+  } catch {
+    /* ignore quota / private mode */
+  }
+}
+
 function LessonsPage() {
   const qc = useQueryClient();
   type Rating = { skill_key: string; rating: number };
@@ -64,8 +94,15 @@ function LessonsPage() {
   const { data: ratings = [] } = useQuery({
     queryKey: ["skill-ratings"],
     queryFn: async () => {
+      const local = loadLocalRatings();
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return local;
       const { data } = await supabase.from("skill_ratings").select("skill_key, rating");
-      return (data ?? []) as Rating[];
+      const server = (data ?? []) as Rating[];
+      // Merge: server wins if present, otherwise fall back to whatever the device saved locally.
+      const map = new Map(local.map((r) => [r.skill_key, r.rating]));
+      for (const r of server) map.set(r.skill_key, r.rating);
+      return Array.from(map, ([skill_key, rating]) => ({ skill_key, rating }));
     },
     staleTime: 30_000,
   });
@@ -112,9 +149,15 @@ function LessonsPage() {
     const clean = Math.max(0, Math.min(10, Math.round(rating)));
     inFlight.current.set(key, clean);
     setSaveState("saving");
+    // Always save on-device first so the score persists even without an account.
+    saveLocalRating(key, clean);
     const { data: auth } = await supabase.auth.getUser();
     const uid = auth.user?.id;
-    if (!uid) throw new Error("Not signed in");
+    if (!uid) {
+      // Not signed in (access-code learner) — the local save above is our record of truth.
+      if (inFlight.current.get(key) === clean) inFlight.current.delete(key);
+      return;
+    }
     const { error } = await supabase
       .from("skill_ratings")
       .upsert(
