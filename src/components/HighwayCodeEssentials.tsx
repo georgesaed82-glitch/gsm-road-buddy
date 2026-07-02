@@ -595,7 +595,8 @@ const DualCarriagewayStudsSvg = forwardRef<SVGSVGElement>((_props, ref) => {
       </text>
     </svg>
   );
-}
+});
+DualCarriagewayStudsSvg.displayName = "DualCarriagewayStudsSvg";
 
 // ── Stopping distances (rule 126) ────────────────────────────
 function StoppingDistances() {
