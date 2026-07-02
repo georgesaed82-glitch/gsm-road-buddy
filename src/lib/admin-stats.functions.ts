@@ -829,6 +829,8 @@ export const getTrafficStats = createServerFn({ method: "POST" })
       byPlatform,
       topPaths,
       topPathsByPlatform,
+      bySource,
+      topReferrers,
       series,
     };
   });
