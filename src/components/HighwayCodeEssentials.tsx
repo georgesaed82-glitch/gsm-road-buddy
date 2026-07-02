@@ -904,11 +904,11 @@ function HierarchyPyramid() {
 
   // Pyramid geometry
   const W = 720;
-  const H = 520;
+  const H = 640;
   const apexX = W / 2;
-  const apexY = 40;
-  const baseY = H - 60;
-  const baseHalf = 320; // half-width of the base
+  const apexY = 96; // extra clearance so overlay chrome doesn't cover the top row
+  const baseY = H - 72;
+  const baseHalf = 330; // half-width of the base
   const rowH = (baseY - apexY) / rows.length;
 
   const xAt = (y: number) => {
@@ -1025,93 +1025,136 @@ function GiveWayJunctionSvg() {
 
   return (
     <svg
-      viewBox="0 0 720 480"
+      viewBox="0 0 720 520"
       role="img"
-      aria-label="Top-down junction. A car turns from a major road into a minor road while a pedestrian crosses the mouth of the minor road. The car must give way under Rule H2."
+      aria-label="Top-down junction. A red car travelling along the major road turns left into a minor road while a pedestrian crosses the mouth of the minor road from the top pavement to the bottom. The car must give way under Rule H2."
       className="block h-auto w-full"
     >
+      <defs>
+        <linearGradient id="gw-grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#5a8f42" />
+          <stop offset="100%" stopColor="#3f6a2b" />
+        </linearGradient>
+        <linearGradient id="gw-tarmac" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#454549" />
+          <stop offset="100%" stopColor="#2f2f32" />
+        </linearGradient>
+      </defs>
+
       {/* Grass */}
-      <rect x="0" y="0" width="720" height="480" fill={VERGE} />
+      <rect x="0" y="0" width="720" height="520" fill="url(#gw-grass)" />
 
-      {/* Major road (horizontal) */}
-      <rect x="0" y="120" width="720" height="180" fill={TARMAC} />
-      <rect x="0" y="120" width="720" height="6" fill={TARMAC_DARK} opacity="0.5" />
-      <rect x="0" y="294" width="720" height="6" fill={TARMAC_DARK} opacity="0.5" />
+      {/* Major road (horizontal, top half) */}
+      <rect x="0" y="80" width="720" height="180" fill="url(#gw-tarmac)" />
+      <rect x="0" y="80" width="720" height="4" fill="#000" opacity="0.35" />
+      <rect x="0" y="256" width="720" height="4" fill="#000" opacity="0.35" />
 
-      {/* Minor road (vertical, from bottom) */}
-      <rect x="300" y="300" width="140" height="180" fill={TARMAC} />
+      {/* Minor road (vertical, extends downward from major road) */}
+      <rect x="290" y="260" width="140" height="260" fill="url(#gw-tarmac)" />
+      <rect x="286" y="260" width="4" height="260" fill="#000" opacity="0.3" />
+      <rect x="430" y="260" width="4" height="260" fill="#000" opacity="0.3" />
 
-      {/* Pavement corners */}
-      <path d="M0,300 L300,300 Q300,340 260,340 L0,340 Z" fill={PAVEMENT} />
-      <path d="M720,300 L440,300 Q440,340 480,340 L720,340 Z" fill={PAVEMENT} />
-      <rect x="0" y="340" width="260" height="8" fill={PAVEMENT_DARK} opacity="0.6" />
-      <rect x="480" y="340" width="240" height="8" fill={PAVEMENT_DARK} opacity="0.6" />
+      {/* Pavement corners between major road and minor road */}
+      <path d="M0,260 L290,260 Q290,300 250,300 L0,300 Z" fill={PAVEMENT} />
+      <path d="M720,260 L430,260 Q430,300 470,300 L720,300 Z" fill={PAVEMENT} />
+      <rect x="0" y="300" width="250" height="6" fill={PAVEMENT_DARK} opacity="0.55" />
+      <rect x="470" y="300" width="250" height="6" fill={PAVEMENT_DARK} opacity="0.55" />
+      {/* Kerb line highlighting inner curve */}
+      <path d="M290,260 Q290,300 250,300" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="1.5" />
+      <path d="M430,260 Q430,300 470,300" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="1.5" />
 
-      {/* Major-road centre line (broken) */}
+      {/* Major-road centre line (broken, UK white dashes) */}
       {Array.from({ length: 14 }).map((_, i) => (
-        <rect key={i} x={20 + i * 52} y="207" width="30" height="6" fill={PAINT} />
+        <rect key={i} x={20 + i * 52} y="167" width="30" height="5" fill={PAINT} />
       ))}
 
-      {/* Minor-road centre line */}
-      {Array.from({ length: 5 }).map((_, i) => (
-        <rect key={i} x="367" y={330 + i * 30} width="6" height="16" fill={PAINT} />
+      {/* Minor-road centre line (broken) */}
+      {Array.from({ length: 7 }).map((_, i) => (
+        <rect key={i} x="357" y={310 + i * 32} width="6" height="16" fill={PAINT} />
       ))}
 
-      {/* Give-way markings on the minor road (broken double line) */}
-      {Array.from({ length: 6 }).map((_, i) => (
+      {/* Give-way markings on the minor road — broken double line across mouth */}
+      {Array.from({ length: 8 }).map((_, i) => (
         <g key={i}>
-          <rect x={305 + i * 24} y="302" width="14" height="7" fill={PAINT} />
-          <rect x={305 + i * 24} y="313" width="14" height="7" fill={PAINT} />
+          <rect x={296 + i * 17} y="266" width="10" height="6" fill={PAINT} />
+          <rect x={296 + i * 17} y="276" width="10" height="6" fill={PAINT} />
         </g>
       ))}
 
-      {/* Give-way triangle on tarmac */}
-      <polygon points="360,330 345,352 375,352" fill="none" stroke={PAINT} strokeWidth="3" />
+      {/* Give-way triangle painted on tarmac (points toward driver approaching) */}
+      <polygon points="360,296 344,318 376,318" fill="none" stroke={PAINT} strokeWidth="3" />
 
-      {/* Pedestrian crossing path (informal — no zebra, just showing route) */}
-      <g opacity="0.55">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <circle key={i} cx={310 + i * 24} cy="320" r="3" fill={PAINT} />
-        ))}
+      {/* Red car mid-left-turn from major road into minor road.
+          It was travelling right along the major road and is arcing left/down. */}
+      <g transform="translate(345 240) rotate(65)">
+        {/* shadow */}
+        <rect x="-34" y="-14" width="68" height="34" rx="8" fill="#000" opacity="0.25" transform="translate(3 4)" />
+        {/* body */}
+        <rect x="-34" y="-16" width="68" height="32" rx="8" fill="#dc2626" stroke="#0b1f1c" strokeWidth="1.5" />
+        {/* roof */}
+        <rect x="-16" y="-13" width="30" height="26" rx="4" fill="#7f1d1d" />
+        {/* windscreen (front) */}
+        <rect x="12" y="-11" width="6" height="22" rx="1.5" fill="#0f172a" opacity="0.85" />
+        {/* rear window */}
+        <rect x="-18" y="-11" width="4" height="22" rx="1.5" fill="#0f172a" opacity="0.85" />
+        {/* headlights */}
+        <rect x="30" y="-13" width="4" height="5" fill="#fde68a" />
+        <rect x="30" y="8" width="4" height="5" fill="#fde68a" />
+        {/* left indicator (flashing amber) — car turning left */}
+        <circle cx="32" cy="12" r="2.6" fill="#f59e0b" />
+        {/* wheels */}
+        <rect x="-22" y="-19" width="10" height="4" fill="#111" />
+        <rect x="14" y="-19" width="10" height="4" fill="#111" />
+        <rect x="-22" y="15" width="10" height="4" fill="#111" />
+        <rect x="14" y="15" width="10" height="4" fill="#111" />
       </g>
 
-      {/* Car turning left from major into minor road */}
-      <g transform="translate(470 210) rotate(35)">
-        <rect x="-32" y="-16" width="64" height="32" rx="6" fill="#dc2626" stroke="#0b1f1c" strokeWidth="1.5" />
-        <rect x="-18" y="-12" width="26" height="24" rx="3" fill="#111827" opacity="0.8" />
-        <rect x="14" y="-14" width="6" height="4" fill="#fde68a" />
-        <rect x="14" y="10" width="6" height="4" fill="#fde68a" />
+      {/* Pedestrian on the north (top) pavement, about to step off the kerb to
+          cross the minor road from top to bottom. */}
+      <g>
+        {/* subtle shadow */}
+        <ellipse cx="378" cy="294" rx="10" ry="3" fill="#000" opacity="0.25" />
+        <g transform="translate(375 268)">
+          {/* head */}
+          <circle cx="0" cy="0" r="6" fill="#f4c9a0" stroke="#0b1f1c" strokeWidth="1" />
+          {/* torso — jacket */}
+          <path d="M-7,6 L7,6 L9,22 L-9,22 Z" fill="#1d4ed8" stroke="#0b1f1c" strokeWidth="0.8" />
+          {/* arms */}
+          <rect x="-10" y="7" width="3" height="12" fill="#1d4ed8" transform="rotate(-8 -8.5 13)" />
+          <rect x="7" y="7" width="3" height="12" fill="#1d4ed8" transform="rotate(8 8.5 13)" />
+          {/* legs — mid-step (one forward) */}
+          <rect x="-6" y="22" width="4" height="12" fill="#0b1f1c" />
+          <rect x="2" y="22" width="4" height="14" fill="#0b1f1c" transform="rotate(6 4 29)" />
+        </g>
+        {/* Walking direction: top → bottom arrow */}
+        <g stroke="#ffffff" strokeWidth="3" fill="none" opacity="0.95">
+          <line x1="405" y1="278" x2="405" y2="330" />
+          <polygon points="405,338 397,326 413,326" fill="#ffffff" stroke="none" />
+        </g>
       </g>
 
-      {/* Pedestrian crossing the mouth of the minor road */}
-      <g transform="translate(370 322)">
-        <circle cx="0" cy="-14" r="6" fill="#fde68a" stroke="#0b1f1c" strokeWidth="1" />
-        <rect x="-5" y="-8" width="10" height="16" fill="#1d4ed8" />
-        <rect x="-5" y="8" width="4" height="10" fill="#0b1f1c" />
-        <rect x="1" y="8" width="4" height="10" fill="#0b1f1c" />
-      </g>
-      {/* Walking-direction arrow */}
-      <g stroke="#0b1f1c" strokeWidth="2" fill="none">
-        <line x1="370" y1="345" x2="370" y2="365" />
-        <polygon points="370,370 365,360 375,360" fill="#0b1f1c" />
+      {/* STOP-if-safe marker for the car */}
+      <g>
+        <circle cx="300" cy="205" r="14" fill="#ef4444" stroke="#0b1f1c" strokeWidth="1.5" />
+        <text x="300" y="209" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="11" fontWeight={700} fill="#fff">STOP</text>
       </g>
 
       {/* Labels */}
       <g fontFamily="Arial, sans-serif" fontSize="13" fill="#0b1f1c">
-        <rect x="18" y="140" width="150" height="24" fill="#ffffff" opacity="0.9" />
-        <text x="26" y="157" fontWeight={700}>Major road</text>
+        <rect x="18" y="98" width="128" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="26" y="114" fontWeight={700}>Major road</text>
 
-        <rect x="452" y="410" width="150" height="24" fill="#ffffff" opacity="0.9" />
-        <text x="460" y="427" fontWeight={700}>Minor road</text>
+        <rect x="452" y="452" width="128" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="460" y="468" fontWeight={700}>Minor road</text>
 
-        <rect x="410" y="308" width="150" height="22" fill="#ffffff" opacity="0.9" />
-        <text x="418" y="324">Give-way line</text>
+        <rect x="440" y="266" width="150" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="448" y="282">Give-way line</text>
 
-        <rect x="392" y="352" width="180" height="22" fill="#ffffff" opacity="0.9" />
-        <text x="400" y="368">Pedestrian crossing (Rule H2)</text>
+        <rect x="440" y="300" width="200" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="448" y="316">Pedestrian crossing (Rule H2)</text>
 
-        <rect x="512" y="176" width="180" height="22" fill="#ffffff" opacity="0.9" />
-        <text x="520" y="192">Car turning into minor road</text>
+        <rect x="130" y="196" width="150" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="138" y="212">Car turning left</text>
       </g>
     </svg>
   );
@@ -1125,7 +1168,7 @@ function HierarchyOfRoadUsers() {
     >
       <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <ZoomPan aspect="720/520" label="Hierarchy pyramid — pinch or scroll to zoom">
+          <ZoomPan aspect="720/640" label="Hierarchy pyramid — pinch or scroll to zoom">
             <HierarchyPyramid />
           </ZoomPan>
           <p className="sr-only">
@@ -1174,7 +1217,7 @@ function HierarchyOfRoadUsers() {
           minor road.
         </p>
 
-        <ZoomPan aspect="720/480" label="Junction give-way example — pinch or scroll to zoom">
+        <ZoomPan aspect="720/520" label="Junction give-way example — pinch or scroll to zoom">
           <GiveWayJunctionSvg />
         </ZoomPan>
 
