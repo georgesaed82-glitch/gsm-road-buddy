@@ -2563,3 +2563,259 @@ function MoreRule181Scenarios() {
     </Panel>
   );
 }
+
+// ── Smart motorways ──────────────────────────────────────────────────
+// Top-down view of a 4-lane all-lane-running smart motorway with an
+// overhead gantry. Signs on the gantry set the rules for every lane
+// beneath them, from that gantry onwards until the next one cancels
+// them.
+
+function SmartMotorwayBase({ children }: { children?: ReactNode }) {
+  return (
+    <svg viewBox="0 0 640 380" className="block h-full w-full" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="sm-tarmac" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3a3a40" />
+          <stop offset="1" stopColor="#2b2b30" />
+        </linearGradient>
+        <linearGradient id="sm-grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3f6b3f" />
+          <stop offset="1" stopColor="#345a34" />
+        </linearGradient>
+      </defs>
+      {/* Verges */}
+      <rect x="0" y="0" width="640" height="380" fill="url(#sm-grass)" />
+      {/* Motorway carriageway (40..600), 4 lanes each 140 wide */}
+      <rect x="40" y="0" width="560" height="380" fill="url(#sm-tarmac)" />
+      {/* Solid white edge lines */}
+      <rect x="42" y="0" width="4" height="380" fill="#f8fafc" />
+      <rect x="594" y="0" width="4" height="380" fill="#f8fafc" />
+      {/* Broken white lane dividers at x=180, 320, 460 */}
+      <g fill="#f8fafc">
+        {[-10, 30, 70, 110, 150, 190, 230, 270, 310, 350].map((y) => (
+          <g key={y}>
+            <rect x="178" y={y} width="4" height="22" />
+            <rect x="318" y={y} width="4" height="22" />
+            <rect x="458" y={y} width="4" height="22" />
+          </g>
+        ))}
+      </g>
+      {/* Direction-of-travel arrows near the bottom of every lane */}
+      <g fill="#f8fafc" opacity="0.55">
+        {[110, 250, 390, 530].map((x) => (
+          <polygon key={x} points={`${x - 8},350 ${x + 8},350 ${x},322`} />
+        ))}
+      </g>
+      {/* Overhead gantry (upright pillars + horizontal beam) */}
+      <rect x="14" y="46" width="10" height="220" fill="#3b3b40" />
+      <rect x="616" y="46" width="10" height="220" fill="#3b3b40" />
+      <rect x="14" y="46" width="612" height="8" fill="#4b5563" />
+      <rect x="14" y="130" width="612" height="6" fill="#4b5563" />
+      {/* Cross bracing */}
+      <line x1="24" y1="54" x2="616" y2="130" stroke="#4b5563" strokeWidth="1" opacity="0.55" />
+      <line x1="616" y1="54" x2="24" y2="130" stroke="#4b5563" strokeWidth="1" opacity="0.55" />
+      {children}
+    </svg>
+  );
+}
+
+function GantrySignPanel({ x, children }: { x: number; children: ReactNode }) {
+  // A single sign panel bolted to the gantry, centred on a lane.
+  return (
+    <g transform={`translate(${x} 62)`}>
+      <rect x="-46" y="0" width="92" height="66" rx="4" fill="#0b1220" stroke="#1f2937" strokeWidth="1.5" />
+      <rect x="-44" y="2" width="88" height="62" rx="3" fill="none" stroke="#111827" strokeWidth="0.5" />
+      {children}
+    </g>
+  );
+}
+
+function LaneClosedSign({ x }: { x: number }) {
+  return (
+    <GantrySignPanel x={x}>
+      {/* Red X for a closed lane (Rule 258 / matrix sign) */}
+      <line x1="-26" y1="14" x2="26" y2="52" stroke="#ef4444" strokeWidth="8" strokeLinecap="round" />
+      <line x1="26" y1="14" x2="-26" y2="52" stroke="#ef4444" strokeWidth="8" strokeLinecap="round" />
+    </GantrySignPanel>
+  );
+}
+
+function VariableSpeedSign({ x, mph }: { x: number; mph: number }) {
+  // LED "variable" speed limit: red ring, mph in the middle, mandatory
+  // when shown on a gantry (Rule 261).
+  return (
+    <GantrySignPanel x={x}>
+      <circle cx="0" cy="33" r="22" fill="#0b1220" stroke="#ef4444" strokeWidth="5" />
+      <text
+        x="0"
+        y="41"
+        textAnchor="middle"
+        fontFamily="Arial, sans-serif"
+        fontSize="22"
+        fontWeight="900"
+        fill="#f8fafc"
+      >
+        {mph}
+      </text>
+    </GantrySignPanel>
+  );
+}
+
+function NationalLimitSign({ x }: { x: number }) {
+  // The "national speed limit applies" pictogram: white circle with a
+  // single diagonal white bar from top-left to bottom-right. On a
+  // matrix gantry this cancels the previous variable limit.
+  return (
+    <GantrySignPanel x={x}>
+      <circle cx="0" cy="33" r="22" fill="none" stroke="#f8fafc" strokeWidth="4" />
+      <line
+        x1="-16"
+        y1="17"
+        x2="16"
+        y2="49"
+        stroke="#f8fafc"
+        strokeWidth="6"
+        strokeLinecap="round"
+      />
+    </GantrySignPanel>
+  );
+}
+
+// Compact top-down car for the motorway diagrams — same visual style as
+// the crossroads Car but smaller so four abreast fit comfortably.
+function MotorwayCar({ x, y, color, ghost = false }: { x: number; y: number; color: string; ghost?: boolean }) {
+  return (
+    <g transform={`translate(${x} ${y})`} opacity={ghost ? 0.35 : 1}>
+      <rect x="-11" y="-20" width="22" height="40" rx="5" fill="#000" opacity="0.28" transform="translate(1 2)" />
+      <rect x="-11" y="-20" width="22" height="40" rx="5" fill={color} stroke="#0b0b0b" strokeWidth="1" />
+      <rect x="-9" y="-16" width="18" height="9" rx="1.5" fill="#0f172a" opacity="0.85" />
+      <rect x="-9" y="7" width="18" height="7" rx="1.5" fill="#0f172a" opacity="0.85" />
+      <circle cx="-7" cy="-18" r="1.2" fill="#fff8dc" />
+      <circle cx="7" cy="-18" r="1.2" fill="#fff8dc" />
+    </g>
+  );
+}
+
+function GantryFromHereMarker({ label, color = "#facc15" }: { label: string; color?: string }) {
+  // A little dashed leader line from the gantry down to a label saying
+  // "from this gantry onwards …". Sits below the signs.
+  return (
+    <g>
+      <line x1="530" y1="140" x2="580" y2="188" stroke={color} strokeWidth="2" strokeDasharray="5 4" />
+      <rect x="440" y="184" width="188" height="26" rx="3" fill="#ffffff" opacity="0.94" />
+      <text
+        x="534"
+        y="202"
+        textAnchor="middle"
+        fontFamily="Arial, sans-serif"
+        fontSize="11"
+        fontWeight="700"
+        fill="#0b1f1c"
+      >
+        {label}
+      </text>
+    </g>
+  );
+}
+
+function SmartMotorwayClosureSvg() {
+  return (
+    <SmartMotorwayBase>
+      {/* Gantry — lane 1 (leftmost) closed, all remaining lanes limited to 60 */}
+      <LaneClosedSign x={110} />
+      <VariableSpeedSign x={250} mph={60} />
+      <VariableSpeedSign x={390} mph={60} />
+      <VariableSpeedSign x={530} mph={60} />
+
+      {/* Traffic: lane 1 empty (closed), other lanes flowing at 60 */}
+      <MotorwayCar x={250} y={200} color="#dc2626" />
+      <MotorwayCar x={390} y={230} color="#f59e0b" />
+      <MotorwayCar x={530} y={210} color="#1d4ed8" />
+      <MotorwayCar x={250} y={310} color="#0ea5e9" />
+      <MotorwayCar x={390} y={330} color="#22c55e" />
+
+      {/* Ghost car merging OUT of the closed lane 1 into lane 2 */}
+      <MotorwayCar x={130} y={300} color="#94a3b8" ghost />
+      <g fill="none" stroke="#facc15" strokeWidth="2.5" strokeDasharray="5 4" opacity="0.9">
+        <path d="M 130 290 C 160 260 210 250 240 240" />
+      </g>
+      <polygon points="234,232 250,240 234,248" fill="#facc15" />
+
+      {/* Leader label */}
+      <GantryFromHereMarker label="60 mph applies FROM HERE" />
+    </SmartMotorwayBase>
+  );
+}
+
+function SmartMotorwayEndSvg() {
+  return (
+    <SmartMotorwayBase>
+      {/* Gantry — restriction cancelled: national speed limit above every lane */}
+      <NationalLimitSign x={110} />
+      <NationalLimitSign x={250} />
+      <NationalLimitSign x={390} />
+      <NationalLimitSign x={530} />
+
+      {/* Traffic in all four lanes now that lane 1 is open again */}
+      <MotorwayCar x={110} y={220} color="#dc2626" />
+      <MotorwayCar x={250} y={260} color="#f59e0b" />
+      <MotorwayCar x={390} y={210} color="#1d4ed8" />
+      <MotorwayCar x={530} y={250} color="#22c55e" />
+      <MotorwayCar x={110} y={330} color="#0ea5e9" />
+      <MotorwayCar x={390} y={330} color="#a855f7" />
+
+      {/* Leader label */}
+      <GantryFromHereMarker label="Back to 70 mph FROM HERE" color="#f8fafc" />
+    </SmartMotorwayBase>
+  );
+}
+
+function SmartMotorway() {
+  return (
+    <Panel
+      title="Smart motorway gantry signs"
+      subtitle="Rules 258 & 261. The signs above your lane tell you what to do — from that gantry, until the next one cancels them."
+    >
+      <div className="grid gap-5">
+        <figure role="group" aria-label="Smart motorway gantry showing lane 1 closed with a red X, and 60 mph variable speed limit signs above the remaining three lanes. A car is merging out of the closed lane into lane 2.">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-accent">Diagram 1 · Lane closed + reduced speed</div>
+          <ZoomPan aspect="640/380" label="Smart motorway — lane 1 closed by a red X and a 60 mph limit applied to all remaining lanes.">
+            <SmartMotorwayClosureSvg />
+          </ZoomPan>
+          <p className="mt-3 text-sm">
+            The <strong>red X</strong> above lane 1 means <strong>that lane is closed</strong> — you must not drive, stop or overtake in it. The <strong>60 mph in a red ring</strong> above every other lane is a <strong>mandatory speed limit</strong> that <strong>applies from this gantry onwards</strong> across the whole carriageway.
+          </p>
+        </figure>
+
+        <figure role="group" aria-label="Smart motorway gantry showing the national speed limit sign (white circle with a diagonal white bar) above all four lanes, meaning the previous restriction has ended.">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-accent">Diagram 2 · National speed limit resumes</div>
+          <ZoomPan aspect="640/380" label="Smart motorway — national speed limit signs above every lane, cancelling the previous 60 mph restriction.">
+            <SmartMotorwayEndSvg />
+          </ZoomPan>
+          <p className="mt-3 text-sm">
+            The <strong>national speed limit</strong> pictogram (white circle with a diagonal white bar) <strong>cancels the previous variable limit</strong>. From this gantry onwards you are back to the motorway's national limit — <strong>70 mph</strong> for cars and light vans. Lane 1 is open again.
+          </p>
+        </figure>
+      </div>
+
+      <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <div className="border border-border p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">Red X — lane closed</div>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm">
+            <li><strong>Do not drive</strong> in a lane closed by a red X — even if it looks empty.</li>
+            <li>Move out <strong>early</strong> and steadily; don't cut across at the last moment.</li>
+            <li>The closure lasts <strong>until the next gantry</strong> shows a blank sign or "End" symbol.</li>
+          </ul>
+        </div>
+        <div className="border border-border p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">Variable speed limit</div>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm">
+            <li>Numbers in a <strong>red ring</strong> on a gantry are <strong>mandatory</strong>, not advisory.</li>
+            <li>They <strong>apply from this gantry onwards</strong>, across every lane below the sign.</li>
+            <li>Only the <strong>national speed limit pictogram</strong> — or a blank gantry — cancels them.</li>
+          </ul>
+        </div>
+      </div>
+    </Panel>
+  );
+}
