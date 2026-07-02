@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
+import { evaluateAttemptState, fingerprintCode, guardCodeAttempt, logCodeAttempt } from "./auth-guard.functions";
 
 const BOOTSTRAP_CODE = "7777";
 
@@ -37,14 +38,23 @@ async function requireAdmin(password: string) {
 }
 
 export const verifyPortalAccess = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; mode: "learner" | "admin" }) => d)
+  .inputValidator((d: { password: string; mode: "learner" | "admin"; captchaToken?: string | null }) => d)
   .handler(async ({ data }): Promise<{
     ok: boolean;
+    reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed";
+    retryAfterSeconds?: number;
+    captchaRequiredNext?: boolean;
     subscription?: { email: string | null; expires_at: string | null } | null;
     session?: { access_token: string; refresh_token: string } | null;
   }> => {
     const password = (data.password || "").trim();
     if (!password) return { ok: false };
+    const fingerprint = await fingerprintCode(password);
+    const guard = await guardCodeAttempt(fingerprint, data.mode, data.captchaToken);
+    if (!guard.proceed) {
+      return { ok: false, reason: guard.reason, retryAfterSeconds: guard.retryAfterSeconds };
+    }
+    const captchaVerified = guard.captchaVerified;
     let req: Request | undefined;
     try {
       req = getRequest();
@@ -95,6 +105,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
 
     if (data.mode === "admin") {
       const ok = await verifyAdminPasswordServer(password);
+      await logCodeAttempt(fingerprint, "admin", ok, captchaVerified);
       if (ok) {
         const supabase = await admin();
         const { data: row } = await supabase
@@ -105,8 +116,10 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
           .eq("revoked", false)
           .maybeSingle();
         if (row?.id) await logUsage(row.id, "admin");
+        return { ok: true };
       }
-      return { ok };
+      const after = await evaluateAttemptState(fingerprint);
+      return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
     }
     const supabase = await admin();
     const nowIso = new Date().toISOString();
@@ -119,8 +132,13 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
       .in("kind", ["learner", "subscription"])
       .maybeSingle();
     if (row) {
-      if (row.expires_at && row.expires_at <= nowIso) return { ok: false };
+      if (row.expires_at && row.expires_at <= nowIso) {
+        await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
+        const after = await evaluateAttemptState(fingerprint);
+        return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
+      }
       await logUsage(row.id, "learner");
+      await logCodeAttempt(fingerprint, "learner", true, captchaVerified);
       let session: { access_token: string; refresh_token: string } | null = null;
       if (row.kind === "subscription" && row.email) {
         try {
@@ -140,8 +158,13 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
       .select("id", { count: "exact", head: true })
       .eq("kind", "learner")
       .eq("revoked", false);
-    if ((count ?? 0) === 0 && password === BOOTSTRAP_CODE) return { ok: true };
-    return { ok: false };
+    if ((count ?? 0) === 0 && password === BOOTSTRAP_CODE) {
+      await logCodeAttempt(fingerprint, "learner", true, captchaVerified);
+      return { ok: true };
+    }
+    await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
+    const after = await evaluateAttemptState(fingerprint);
+    return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
   });
 
 /**
