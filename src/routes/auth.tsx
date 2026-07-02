@@ -66,13 +66,30 @@ function AuthPage() {
         window.sessionStorage.setItem("admin_unlocked", "1");
         window.sessionStorage.setItem("admin_password", pw);
       }
+      // Subscription codes carry a student email — link the code login to
+      // that Supabase account so progress persists across devices.
+      let linked = false;
+      if (!isAdmin && res.session?.access_token && res.session?.refresh_token) {
+        const { error: setErr } = await supabase.auth.setSession({
+          access_token: res.session.access_token,
+          refresh_token: res.session.refresh_token,
+        });
+        if (!setErr) linked = true;
+      }
       toast.success(
         isAdmin
           ? "Admin access granted."
+          : linked && res.subscription?.email
+          ? `Signed in as ${res.subscription.email}. Progress will save to your account.`
           : res.subscription?.expires_at
           ? `Access granted until ${new Date(res.subscription.expires_at).toLocaleDateString()}.`
           : "Access granted. Welcome to the learner portal.",
       );
+      if (!isAdmin && res.subscription && !linked) {
+        toast.warning(
+          "Progress on this code won't sync across devices. Sign in with your email + password to save it to your account.",
+        );
+      }
       navigate({ to: isAdmin ? "/admin" : "/dashboard" });
     } catch {
       toast.error("Could not verify code. Please try again.");
