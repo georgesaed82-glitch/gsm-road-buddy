@@ -3022,7 +3022,7 @@ function SmartMotorwayEndSvg() {
       <NationalLimitSign x={530} />
 
       {/* "Back to 70 mph" reference line under the gantry */}
-      <AppliesFromHereBand label="Back to national limit — 70 mph FROM HERE" color="#f8fafc" />
+      <AppliesFromHereBand label="70 mph applies FROM HERE" color="#f8fafc" />
 
       {/* Traffic AFTER the gantry — lane 1 is open again */}
       <MotorwayCar x={110} y={220} color="#dc2626" />
