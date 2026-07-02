@@ -24,9 +24,7 @@ const theoryItems: Item[] = [
   { to: "/review", label: "Review mistakes", icon: RotateCcw },
 ];
 
-const hazardItems: Item[] = [
-  { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
-];
+const hazardItem: Item = { to: "/hazard-perception", label: "Hazard perception", icon: Eye };
 
 const bottomItems: Item[] = [
   { to: "/profile", label: "Profile", icon: UserCircle2 },
@@ -51,15 +49,7 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
     return theoryActive;
   });
 
-  const hazardPaths = hazardItems.map((i) => i.to);
-  const hazardActive = hazardPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
-  const [hazardOpen, setHazardOpen] = useState<boolean>(() => {
-    if (typeof window === "undefined") return hazardActive;
-    const saved = window.localStorage.getItem("gsm.portal.hazardOpen");
-    if (saved === "1") return true;
-    if (saved === "0") return false;
-    return hazardActive;
-  });
+  const hazardActive = pathname === hazardItem.to || pathname.startsWith(hazardItem.to + "/");
 
   // Auto-open when navigating into a theory page, but don't force-close
   // when leaving — respect the user's explicit choice.
@@ -71,15 +61,6 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
     if (typeof window === "undefined") return;
     window.localStorage.setItem("gsm.portal.theoryOpen", theoryOpen ? "1" : "0");
   }, [theoryOpen]);
-
-  useEffect(() => {
-    if (hazardActive) setHazardOpen(true);
-  }, [hazardActive]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem("gsm.portal.hazardOpen", hazardOpen ? "1" : "0");
-  }, [hazardOpen]);
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
@@ -162,50 +143,23 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={() => setHazardOpen((v) => !v)}
-              aria-expanded={hazardOpen}
-              aria-controls="portal-hazard-group"
+            {(() => {
+              const HazardIcon = hazardItem.icon;
+              return (
+                <Link
+                  to={hazardItem.to}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
                 hazardActive
-                  ? "text-foreground"
+                  ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground",
               )}
             >
-              <Eye className="h-4 w-4" />
-              <span className="flex-1 text-left">Hazard perception</span>
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 transition-transform",
-                  hazardOpen ? "rotate-180" : "rotate-0",
-                )}
-              />
-            </button>
-            {hazardOpen && (
-              <div id="portal-hazard-group" className="flex flex-col gap-0.5 pl-3 border-l border-border ml-4">
-                {hazardItems.map((item) => {
-                  const active = pathname === item.to;
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
-                        active
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-                      )}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
+                  <HazardIcon className="h-4 w-4" />
+                  {hazardItem.label}
+                </Link>
+              );
+            })()}
 
             {bottomItems.map((item) => {
               const active = pathname === item.to;

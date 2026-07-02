@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import { PortalShell } from "@/components/PortalShell";
+import hazardHowItWorksAsset from "@/assets/hazard-how-it-works.jpeg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -120,7 +121,17 @@ function HazardPage() {
 
   return (
     <PortalShell eyebrow="Practice on real West London clips" title="Hazard perception">
-      {/* 1 · Interactive tutorial at the very top */}
+      {/* 0 · How it works — reference card at top */}
+      <figure className="mb-8 overflow-hidden border border-border bg-card">
+        <img
+          src={hazardHowItWorksAsset.url}
+          alt="How hazard perception works: 30–45 second West London clips, click when you spot a developing hazard, score 5 for early clicks, 0 for a miss."
+          className="block h-auto w-full"
+          loading="eager"
+        />
+      </figure>
+
+      {/* 1 · Interactive tutorial */}
       <HazardTutorial />
 
       {/* 2 · Supporting explainer */}
