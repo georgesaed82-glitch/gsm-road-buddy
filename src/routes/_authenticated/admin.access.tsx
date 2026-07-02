@@ -19,8 +19,9 @@ import {
   exportAccessUsesCsv,
   type AccessCodeRow,
 } from "@/lib/portal-access.functions";
+import { sendOutlookMail } from "@/lib/outlook-mail.functions";
 import { getAdminPassword, setAdminPassword as cacheAdminPassword } from "@/lib/admin-gate";
-import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight, Download } from "lucide-react";
+import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight, Download, Send } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/access")({
   component: AdminAccessPage,
@@ -523,6 +524,8 @@ function CodeRow({
 }) {
   const [open, setOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [sending, setSending] = useState(false);
+  const sendMail = useServerFn(sendOutlookMail);
   const uses = useQuery({
     queryKey: ["access-uses", row.id],
     queryFn: () => fetchUses({ data: { password, codeId: row.id, limit: 100 } }),
@@ -556,12 +559,26 @@ function CodeRow({
     `Hi,\n\nYour learner portal access code is: ${row.code}\n` +
     (row.expires_at ? `Valid until: ${new Date(row.expires_at).toLocaleString()}\n` : "") +
     `\nLog in at https://gsmdrivingschool.com/auth\n\n— George School of Motoring\ngsmdrivingschool@outlook.com`;
-  // Opens Outlook.com web compose signed in as gsmdrivingschool@outlook.com
-  const outlookCompose =
-    row.email &&
-    `https://outlook.live.com/mail/0/deeplink/compose?to=${encodeURIComponent(row.email)}` +
-      `&subject=${encodeURIComponent(emailSubject)}` +
-      `&body=${encodeURIComponent(emailBody)}`;
+
+  const handleSendEmail = async () => {
+    if (!row.email || sending) return;
+    setSending(true);
+    try {
+      await sendMail({
+        data: {
+          password,
+          to: row.email,
+          subject: emailSubject,
+          body: emailBody,
+        },
+      });
+      toast.success(`Emailed code to ${row.email}`);
+    } catch (e: any) {
+      toast.error(e?.message || "Could not send email.");
+    } finally {
+      setSending(false);
+    }
+  };
 
   const lastUsed = row.last_used_at ? new Date(row.last_used_at).toLocaleString() : "—";
   const colSpan = masterView ? 6 : 8;
@@ -601,11 +618,19 @@ function CodeRow({
         {!masterView && (
           <td className="py-2 pr-3">
             <div className="flex justify-end gap-1">
-              {outlookCompose && (
-                <Button asChild variant="ghost" size="sm" title="Email code from gsmdrivingschool@outlook.com">
-                  <a href={outlookCompose} target="_blank" rel="noopener noreferrer">
+              {row.email && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSendEmail}
+                  disabled={sending}
+                  title={`Send code from gsmdrivingschool@outlook.com to ${row.email}`}
+                >
+                  {sending ? (
+                    <Send className="h-3.5 w-3.5 animate-pulse" />
+                  ) : (
                     <Mail className="h-3.5 w-3.5" />
-                  </a>
+                  )}
                 </Button>
               )}
               <Button
