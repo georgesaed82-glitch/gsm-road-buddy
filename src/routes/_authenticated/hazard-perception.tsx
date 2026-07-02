@@ -270,3 +270,194 @@ function Row({ k, v }: { k: string; v: string }) {
     </div>
   );
 }
+
+function HazardExplainer() {
+  // Animation cycle: countdown 5→0, then hazard develops, then flags plant on clicks
+  const CYCLE = 9000; // ms total loop
+  const [t, setT] = useState(0);
+  const [running, setRunning] = useState(true);
+  const startRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!running) return;
+    startRef.current = performance.now();
+    const tick = () => {
+      const now = performance.now();
+      const elapsed = (now - startRef.current) % CYCLE;
+      setT(elapsed);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [running]);
+
+  // Timeline (ms):
+  // 0-3000 : countdown 5..1
+  // 3000-3800 : "GO — scan the scene"
+  // 3800-5200 : pedestrian appears at kerb (potential hazard)
+  // 5200-5400 : click 1 (spotted)
+  // 6200-6400 : click 2 (developing)
+  // 7000-7200 : click 3 (committed)
+  // 7200-9000 : show score 5/5
+  const countdownNumber = t < 3000 ? 5 - Math.floor(t / 600) : null; // 5,4,3,2,1
+  const pedProgress = t < 3800 ? 0 : Math.min(1, (t - 3800) / 3400); // 0→1 across road
+  const click1 = t >= 5200;
+  const click2 = t >= 6200;
+  const click3 = t >= 7000;
+  const showScore = t >= 7200;
+
+  return (
+    <section className="mt-12">
+      <h2 className="font-display text-2xl">Understanding hazard perception</h2>
+      <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
+        A hazard is anything on the road that makes you take action. Learn to spot it early, click it right, and you'll score full marks every time.
+      </p>
+
+      {/* The three S's — big and bold */}
+      <div className="mt-6 border-2 border-accent bg-card p-6">
+        <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">The three S's</div>
+        <p className="mt-2 text-sm text-muted-foreground">A hazard is anything that makes you…</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {[
+            { s: "Slow", d: "Ease off the accelerator or brake — speed must drop." },
+            { s: "Stop", d: "Come to a complete stop to avoid a collision." },
+            { s: "Swerve", d: "Change direction or lane to steer around danger." },
+          ].map((x) => (
+            <div key={x.s} className="border border-border bg-background p-4">
+              <div className="font-display text-4xl font-bold text-accent sm:text-5xl">{x.s}</div>
+              <div className="mt-2 text-xs text-muted-foreground">{x.d}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Animated countdown + hazard demo */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Live demo</div>
+          <div className="relative mt-2 aspect-video w-full overflow-hidden border border-border bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900">
+            {/* Road */}
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-slate-800">
+              {/* lane divider dashes */}
+              <div className="absolute left-1/2 top-1/2 h-1 w-full -translate-x-1/2 -translate-y-1/2 bg-[repeating-linear-gradient(to_right,#facc15_0_20px,transparent_20px_40px)] opacity-80" />
+              {/* kerbs */}
+              <div className="absolute inset-x-0 top-0 h-[3px] bg-slate-500" />
+              <div className="absolute inset-x-0 bottom-0 h-[3px] bg-slate-500" />
+            </div>
+            {/* Sky area label */}
+            <div className="absolute left-3 top-3 text-[10px] uppercase tracking-[0.22em] text-white/60">
+              Built-up area · 30 mph
+            </div>
+
+            {/* Countdown */}
+            {countdownNumber !== null && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div key={countdownNumber} className="animate-in fade-in zoom-in-50 duration-300 font-display text-[8rem] leading-none text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.6)]">
+                  {countdownNumber}
+                </div>
+              </div>
+            )}
+            {t >= 3000 && t < 3800 && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="rounded bg-accent px-4 py-2 font-display text-xl text-accent-foreground">Scan the scene</div>
+              </div>
+            )}
+
+            {/* Pedestrian crossing the road (the hazard) */}
+            {t >= 3800 && (
+              <div
+                className="absolute bottom-[18%]"
+                style={{
+                  left: `${20 + pedProgress * 55}%`,
+                  transition: "left 60ms linear",
+                }}
+              >
+                <div className="flex flex-col items-center">
+                  {/* head */}
+                  <div className="h-3 w-3 rounded-full bg-orange-300" />
+                  {/* body */}
+                  <div className="mt-0.5 h-4 w-2 bg-red-500" />
+                  {/* legs */}
+                  <div className="mt-0.5 h-3 w-3 bg-blue-600" style={{ clipPath: "polygon(0 0, 40% 0, 40% 100%, 60% 100%, 60% 0, 100% 0, 100% 100%, 0 100%)" }} />
+                </div>
+              </div>
+            )}
+
+            {/* Click flags (planted where the driver clicked) */}
+            {click1 && <ClickFlag x="26%" y="60%" label="Click 1" delay={0} />}
+            {click2 && <ClickFlag x="46%" y="60%" label="Click 2" delay={0} />}
+            {click3 && <ClickFlag x="66%" y="60%" label="Click 3" delay={0} />}
+
+            {/* Score badge */}
+            {showScore && (
+              <div className="absolute right-3 top-3 animate-in fade-in slide-in-from-top-2 duration-500 border-2 border-accent bg-primary px-3 py-2 text-primary-foreground">
+                <div className="text-[10px] uppercase tracking-[0.22em] opacity-70">You scored</div>
+                <div className="font-display text-3xl">5<span className="text-base opacity-60">/5</span></div>
+              </div>
+            )}
+
+            {/* Timeline strip */}
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-white/10">
+              <div className="h-full bg-accent" style={{ width: `${(t / CYCLE) * 100}%` }} />
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+            <button
+              onClick={() => setRunning((r) => !r)}
+              className="border border-border px-3 py-1 uppercase tracking-wider hover:bg-secondary"
+            >
+              {running ? "Pause" : "Play"} demo
+            </button>
+            <span>Watch the countdown → scan → click once, twice, three times as the hazard develops.</span>
+          </div>
+        </div>
+
+        {/* Explanation cards */}
+        <div className="space-y-4">
+          <div className="border border-border bg-card p-5">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">1 · Use the countdown</div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Before every clip a countdown appears (<span className="font-mono">5 · 4 · 3 · 2 · 1</span>). Read the road type — <span className="text-foreground">built-up area, dual carriageway, country lane</span> — and predict what the main hazard could be.
+            </p>
+          </div>
+          <div className="border border-border bg-card p-5">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">2 · The 1-2-3 click rule</div>
+            <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
+              <li><span className="text-foreground">Click 1</span> — the moment you first spot the hazard.</li>
+              <li><span className="text-foreground">Click 2</span> — when you get near it / it develops.</li>
+              <li><span className="text-foreground">Click 3</span> — just before you pass it.</li>
+            </ul>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Three well-spaced clicks guarantee a <span className="text-foreground">5, 4, 3, 2 or 1</span>. Clicking rapidly (spamming) triggers the DVSA cheat detector and gives you <span className="text-foreground">0/5</span>.
+            </p>
+          </div>
+          <div className="border border-border bg-primary p-5 text-primary-foreground">
+            <div className="text-[11px] uppercase tracking-[0.22em] opacity-70">3 · Scan like a driver</div>
+            <p className="mt-2 text-sm opacity-90">
+              Avoid <span className="font-medium">tunnel vision</span>. Sweep left, right, and stretch your eyes far ahead. Anything that could make you <span className="font-medium">slow, stop, or swerve</span> is a hazard in development.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ClickFlag({ x, y, label, delay }: { x: string; y: string; label: string; delay: number }) {
+  return (
+    <div
+      className="absolute animate-in fade-in slide-in-from-bottom-2 duration-300"
+      style={{ left: x, bottom: y, animationDelay: `${delay}ms` }}
+    >
+      <div className="flex flex-col items-center">
+        <div className="flex items-center gap-1 rounded-sm bg-accent px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-foreground">
+          <Flag className="h-3 w-3" />
+          {label}
+        </div>
+        <div className="h-6 w-px bg-accent" />
+      </div>
+    </div>
+  );
+}
