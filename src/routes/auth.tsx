@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { useServerFn } from "@tanstack/react-start";
 import { verifyPortalAccess } from "@/lib/portal-access.functions";
+import { getAttemptState, getCaptchaConfig, studentSignIn } from "@/lib/auth-guard.functions";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
@@ -36,6 +38,9 @@ function AuthPage() {
   const [submitting, setSubmitting] = useState(false);
   const tracked = useRef(false);
   const verify = useServerFn(verifyPortalAccess);
+  const runStudentSignIn = useServerFn(studentSignIn);
+  const runAttemptState = useServerFn(getAttemptState);
+  const runCaptchaConfig = useServerFn(getCaptchaConfig);
 
   // Student email + password sign-in (persists per-student progress)
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -44,20 +49,49 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [studentSubmitting, setStudentSubmitting] = useState(false);
 
+  // Captcha state
+  const [siteKey, setSiteKey] = useState<string | null>(null);
+  const [studentCaptchaRequired, setStudentCaptchaRequired] = useState(false);
+  const [studentCaptchaToken, setStudentCaptchaToken] = useState<string | null>(null);
+  const [codeCaptchaRequired, setCodeCaptchaRequired] = useState(false);
+  const [codeCaptchaToken, setCodeCaptchaToken] = useState<string | null>(null);
+
   useEffect(() => {
     if (tracked.current) return;
     tracked.current = true;
     trackContactClick("portal_view", "learner-portal");
-  }, []);
+    runCaptchaConfig().then((c) => setSiteKey(c.siteKey)).catch(() => {});
+  }, [runCaptchaConfig]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     const pw = password.trim();
     try {
-      const res = await verify({ data: { password: pw, mode: isAdmin ? "admin" : "learner" } });
+      const res = await verify({
+        data: {
+          password: pw,
+          mode: isAdmin ? "admin" : "learner",
+          captchaToken: codeCaptchaToken,
+        },
+      });
       if (!res.ok) {
-        toast.error("Incorrect or expired code. Email George to request access.");
+        if (res.reason === "locked") {
+          toast.error("Too many attempts. Try again in 15 minutes.");
+        } else if (res.reason === "captcha_required") {
+          setCodeCaptchaRequired(true);
+          toast.error("Please complete the verification below and try again.");
+        } else if (res.reason === "captcha_failed") {
+          setCodeCaptchaToken(null);
+          toast.error("Verification failed. Try the check again.");
+        } else {
+          toast.error("Incorrect or expired code. Email George to request access.");
+        }
+        // Re-check state to show the captcha as soon as the threshold trips.
+        try {
+          const st = await runAttemptState({ data: { identifier: `code:${pw}` } });
+          if (st.required) setCodeCaptchaRequired(true);
+        } catch { /* ignore */ }
         setSubmitting(false);
         return;
       }
@@ -124,11 +158,38 @@ function AuthPage() {
           return;
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password: studentPw,
+        // Route sign-in through our guarded server function so brute-force
+        // attempts trip captcha / lockout server-side.
+        const res = await runStudentSignIn({
+          data: {
+            email: email.trim(),
+            password: studentPw,
+            captchaToken: studentCaptchaToken,
+          },
         });
-        if (error) throw error;
+        if (!res.ok) {
+          if (res.reason === "locked") {
+            throw new Error("Too many attempts. Try again in 15 minutes.");
+          }
+          if (res.reason === "captcha_required") {
+            setStudentCaptchaRequired(true);
+            throw new Error("Please complete the verification below and try again.");
+          }
+          if (res.reason === "captcha_failed") {
+            setStudentCaptchaToken(null);
+            throw new Error("Verification failed. Try the check again.");
+          }
+          // Re-check state so captcha appears once threshold is crossed.
+          try {
+            const st = await runAttemptState({ data: { identifier: email.trim().toLowerCase() } });
+            if (st.required) setStudentCaptchaRequired(true);
+          } catch { /* ignore */ }
+          throw new Error("Invalid email or password.");
+        }
+        if (res.session) {
+          const { error: setErr } = await supabase.auth.setSession(res.session);
+          if (setErr) throw setErr;
+        }
       }
       window.sessionStorage.setItem("portal_unlocked", "1");
       toast.success("Signed in. Your progress will save automatically.");
