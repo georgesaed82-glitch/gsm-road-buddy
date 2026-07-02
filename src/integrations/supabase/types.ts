@@ -155,6 +155,78 @@ export type Database = {
         }
         Relationships: []
       }
+      error_alert_state: {
+        Row: {
+          count: number
+          fingerprint: string
+          last_alert_at: string
+        }
+        Insert: {
+          count?: number
+          fingerprint: string
+          last_alert_at?: string
+        }
+        Update: {
+          count?: number
+          fingerprint?: string
+          last_alert_at?: string
+        }
+        Relationships: []
+      }
+      error_logs: {
+        Row: {
+          alert_sent: boolean
+          created_at: string
+          extra: Json
+          fingerprint: string | null
+          id: string
+          level: string
+          mechanism: string | null
+          message: string
+          route: string | null
+          source: string
+          stack: string | null
+          url: string | null
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          alert_sent?: boolean
+          created_at?: string
+          extra?: Json
+          fingerprint?: string | null
+          id?: string
+          level?: string
+          mechanism?: string | null
+          message: string
+          route?: string | null
+          source?: string
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          alert_sent?: boolean
+          created_at?: string
+          extra?: Json
+          fingerprint?: string | null
+          id?: string
+          level?: string
+          mechanism?: string | null
+          message?: string
+          route?: string | null
+          source?: string
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       hazard_clip_videos: {
         Row: {
           clip_slug: string
