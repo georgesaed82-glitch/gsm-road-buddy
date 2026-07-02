@@ -3,13 +3,17 @@ import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles } from "lucide-react";
+import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   getMistakeIds,
   removeMistake,
   clearMistakes,
   subscribeMistakes,
+  recordRetry,
+  getRetryStats,
+  subscribeRetryStats,
+  resetRetryStats,
 } from "@/lib/mistakes";
 
 export const Route = createFileRoute("/_authenticated/review")({
@@ -37,8 +41,16 @@ function useMistakes(): TheoryQuestion[] {
   }, [tick]);
 }
 
+function useRetryStats() {
+  const [tick, setTick] = useState(0);
+  useEffect(() => subscribeRetryStats(() => setTick((n) => n + 1)), []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => getRetryStats(), [tick]);
+}
+
 function ReviewPage() {
   const mistakes = useMistakes();
+  const stats = useRetryStats();
   const [mode, setMode] = useState<"list" | "retry">("list");
 
   if (mode === "retry" && mistakes.length > 0) {
@@ -55,9 +67,16 @@ function ReviewPage() {
       title={mistakes.length ? `${mistakes.length} to review` : "You're all caught up"}
     >
       {mistakes.length === 0 ? (
-        <EmptyState />
+        <>
+          <ProgressStats stats={stats} bankSize={0} />
+          <div className="mt-6">
+            <EmptyState />
+          </div>
+        </>
       ) : (
         <>
+          <ProgressStats stats={stats} bankSize={mistakes.length} />
+          <div className="mt-6" />
           <div className="border border-border bg-card p-6 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div>
