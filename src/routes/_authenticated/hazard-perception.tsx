@@ -80,6 +80,8 @@ function HazardPage() {
 
       <HazardExplainer />
 
+      <HazardTutorial />
+
       <h2 className="mt-12 font-display text-2xl">Clip library</h2>
       <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
         {hazardClips.map((raw) => {
@@ -459,5 +461,291 @@ function ClickFlag({ x, y, label, delay }: { x: string; y: string; label: string
         <div className="h-6 w-px bg-accent" />
       </div>
     </div>
+  );
+}
+
+type TutorialPhase = "idle" | "countdown" | "scan" | "hazard" | "done";
+
+function HazardTutorial() {
+  const [phase, setPhase] = useState<TutorialPhase>("idle");
+  const [countdown, setCountdown] = useState(5);
+  const [t, setT] = useState(0); // seconds since hazard started developing
+  const [clicks, setClicks] = useState<{ pct: number; time: number }[]>([]);
+  const [tooEarly, setTooEarly] = useState(false);
+  const [spam, setSpam] = useState(false);
+  const rafRef = useRef<number | null>(null);
+  const startRef = useRef(0);
+
+  const HAZARD_DURATION = 5; // seconds pedestrian is crossing
+  const WINDOWS = [
+    { label: "Click 1 — Spot it", min: 0.2, max: 1.6 },
+    { label: "Click 2 — Developing", min: 1.8, max: 3.2 },
+    { label: "Click 3 — Committed", min: 3.4, max: 4.8 },
+  ];
+
+  // Countdown effect
+  useEffect(() => {
+    if (phase !== "countdown") return;
+    setCountdown(5);
+    const id = setInterval(() => {
+      setCountdown((n) => {
+        if (n <= 1) {
+          clearInterval(id);
+          setPhase("scan");
+          setTimeout(() => setPhase("hazard"), 900);
+          return 0;
+        }
+        return n - 1;
+      });
+    }, 700);
+    return () => clearInterval(id);
+  }, [phase]);
+
+  // Hazard timer
+  useEffect(() => {
+    if (phase !== "hazard") return;
+    startRef.current = performance.now();
+    const tick = () => {
+      const elapsed = (performance.now() - startRef.current) / 1000;
+      setT(elapsed);
+      if (elapsed >= HAZARD_DURATION) {
+        setPhase("done");
+        return;
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [phase]);
+
+  const reset = () => {
+    setPhase("idle");
+    setCountdown(5);
+    setT(0);
+    setClicks([]);
+    setTooEarly(false);
+    setSpam(false);
+  };
+
+  const start = () => {
+    reset();
+    setTimeout(() => setPhase("countdown"), 60);
+  };
+
+  const handleClick = () => {
+    if (phase === "countdown" || phase === "scan") {
+      setTooEarly(true);
+      setTimeout(() => setTooEarly(false), 900);
+      return;
+    }
+    if (phase !== "hazard") return;
+    // spam detection: > 3 clicks within window
+    if (clicks.length >= 3) {
+      setSpam(true);
+      return;
+    }
+    // register click
+    const pct = 20 + (t / HAZARD_DURATION) * 55; // matches pedestrian left%
+    setClicks((c) => [...c, { pct, time: t }]);
+  };
+
+  // Compute score
+  const score = (() => {
+    if (spam) return 0;
+    if (clicks.length === 0) return 0;
+    let s = 0;
+    const used = new Set<number>();
+    for (const c of clicks) {
+      for (let i = 0; i < WINDOWS.length; i++) {
+        if (used.has(i)) continue;
+        if (c.time >= WINDOWS[i].min && c.time <= WINDOWS[i].max) {
+          s += i === 0 ? 3 : i === 1 ? 1 : 1; // 3 + 1 + 1 = 5
+          used.add(i);
+          break;
+        }
+      }
+    }
+    return Math.min(5, s);
+  })();
+
+  const pedProgress = phase === "hazard" ? Math.min(1, t / HAZARD_DURATION) : phase === "done" ? 1 : 0;
+  const currentWindow = WINDOWS.findIndex((w) => t >= w.min && t <= w.max);
+
+  return (
+    <section className="mt-12">
+      <div className="flex items-baseline justify-between gap-4">
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Interactive tutorial</div>
+          <h2 className="mt-1 font-display text-2xl">Try it yourself</h2>
+        </div>
+        <button
+          onClick={phase === "idle" ? start : reset}
+          className="border border-border bg-card px-3 py-1.5 text-xs uppercase tracking-wider hover:bg-secondary"
+        >
+          {phase === "idle" ? "Start tutorial" : "Reset"}
+        </button>
+      </div>
+
+      {/* Steps strip */}
+      <ol className="mt-4 grid gap-2 sm:grid-cols-4">
+        {[
+          { k: "countdown", label: "1. Countdown", desc: "Read the road" },
+          { k: "scan", label: "2. Scan", desc: "Predict the hazard" },
+          { k: "hazard", label: "3. Click 1·2·3", desc: "Spot → develop → pass" },
+          { k: "done", label: "4. Score", desc: "See your marks" },
+        ].map((s) => {
+          const active = phase === s.k;
+          const passed =
+            (s.k === "countdown" && ["scan", "hazard", "done"].includes(phase)) ||
+            (s.k === "scan" && ["hazard", "done"].includes(phase)) ||
+            (s.k === "hazard" && phase === "done");
+          return (
+            <li
+              key={s.k}
+              className={`border p-3 transition-colors ${active ? "border-accent bg-accent/10" : passed ? "border-border bg-card" : "border-border bg-background"}`}
+            >
+              <div className={`text-[11px] uppercase tracking-wider ${active ? "text-accent" : "text-muted-foreground"}`}>{s.label}</div>
+              <div className="mt-1 text-sm text-foreground">{s.desc}</div>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        {/* Stage */}
+        <div>
+          <div
+            onClick={handleClick}
+            className={`relative aspect-video w-full overflow-hidden border border-border bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900 select-none ${phase === "hazard" ? "cursor-crosshair" : ""}`}
+          >
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-slate-800">
+              <div className="absolute left-1/2 top-1/2 h-1 w-full -translate-x-1/2 -translate-y-1/2 bg-[repeating-linear-gradient(to_right,#facc15_0_20px,transparent_20px_40px)] opacity-80" />
+              <div className="absolute inset-x-0 top-0 h-[3px] bg-slate-500" />
+              <div className="absolute inset-x-0 bottom-0 h-[3px] bg-slate-500" />
+            </div>
+            <div className="absolute left-3 top-3 text-[10px] uppercase tracking-[0.22em] text-white/60">Built-up area · 30 mph</div>
+
+            {phase === "idle" && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white/90">
+                <Eye className="h-10 w-10 text-accent" />
+                <div className="mt-3 font-display text-xl">Ready when you are</div>
+                <div className="mt-1 max-w-xs text-xs text-white/60">Press Start tutorial. Watch the countdown, then click the pedestrian three times as they cross.</div>
+              </div>
+            )}
+
+            {phase === "countdown" && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div key={countdown} className="animate-in fade-in zoom-in-50 duration-300 font-display text-[8rem] leading-none text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.6)]">
+                  {countdown}
+                </div>
+              </div>
+            )}
+
+            {phase === "scan" && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="animate-in fade-in duration-300 rounded bg-accent px-4 py-2 font-display text-xl text-accent-foreground">Scan the scene…</div>
+              </div>
+            )}
+
+            {(phase === "hazard" || phase === "done") && (
+              <div
+                className="absolute bottom-[18%]"
+                style={{ left: `${20 + pedProgress * 55}%`, transition: "left 60ms linear" }}
+              >
+                <div className="flex flex-col items-center">
+                  <div className="h-3 w-3 rounded-full bg-orange-300" />
+                  <div className="mt-0.5 h-4 w-2 bg-red-500" />
+                  <div className="mt-0.5 h-3 w-3 bg-blue-600" />
+                </div>
+              </div>
+            )}
+
+            {/* User's actual click flags */}
+            {clicks.map((c, i) => (
+              <ClickFlag key={i} x={`${c.pct}%`} y="60%" label={`Click ${i + 1}`} delay={0} />
+            ))}
+
+            {/* Live click prompt */}
+            {phase === "hazard" && currentWindow >= 0 && clicks.length === currentWindow && (
+              <div className="absolute left-1/2 top-4 -translate-x-1/2 animate-in fade-in slide-in-from-top-2 duration-300 rounded-full border border-accent bg-primary/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary-foreground">
+                {WINDOWS[currentWindow].label} — click now
+              </div>
+            )}
+
+            {/* Feedback banners */}
+            {tooEarly && (
+              <div className="absolute left-1/2 top-4 -translate-x-1/2 animate-in fade-in duration-200 rounded-full bg-destructive px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-destructive-foreground">
+                Too early — wait for the hazard
+              </div>
+            )}
+            {spam && (
+              <div className="absolute inset-x-4 top-4 animate-in fade-in duration-200 rounded bg-destructive px-3 py-2 text-center text-xs font-semibold uppercase tracking-wider text-destructive-foreground">
+                Too many clicks — DVSA cheat detector triggered · 0/5
+              </div>
+            )}
+
+            {/* Score */}
+            {phase === "done" && (
+              <div className="absolute inset-0 flex items-center justify-center bg-primary/70 backdrop-blur-sm">
+                <div className="animate-in fade-in zoom-in-90 duration-500 border-2 border-accent bg-primary p-5 text-center text-primary-foreground">
+                  <div className="text-[10px] uppercase tracking-[0.22em] opacity-70">You scored</div>
+                  <div className="mt-1 font-display text-6xl">{score}<span className="text-2xl opacity-60">/5</span></div>
+                  <div className="mt-2 text-xs opacity-80">{score === 5 ? "Perfect timing." : score >= 3 ? "Good — try clicking earlier." : "Click the moment you spot the hazard."}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Progress bar during hazard */}
+            {(phase === "hazard" || phase === "done") && (
+              <div className="absolute inset-x-0 bottom-0 h-1 bg-white/10">
+                <div className="h-full bg-accent" style={{ width: `${pedProgress * 100}%` }} />
+              </div>
+            )}
+          </div>
+
+          <p className="mt-3 text-xs text-muted-foreground">
+            Tap or click <span className="text-foreground">anywhere on the scene</span> once the pedestrian appears — once when you spot them, once as they develop, and once just before they leave. Rapid-clicking will fail you.
+          </p>
+        </div>
+
+        {/* Live stats panel */}
+        <aside className="space-y-4">
+          <div className="border border-border bg-card p-5">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Live status</div>
+            <div className="mt-3 space-y-2 text-sm">
+              <Row k="Phase" v={phase === "idle" ? "Not started" : phase === "countdown" ? `Countdown ${countdown}` : phase === "scan" ? "Scanning" : phase === "hazard" ? "Hazard live" : "Complete"} />
+              <Row k="Clicks" v={`${clicks.length} / 3`} />
+              <Row k="Score" v={phase === "done" ? `${score} / 5` : "—"} />
+            </div>
+          </div>
+
+          <div className="border border-border bg-card p-5">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Click timing</div>
+            <ul className="mt-3 space-y-2">
+              {WINDOWS.map((w, i) => {
+                const registered = clicks[i];
+                const active = phase === "hazard" && currentWindow === i && !registered;
+                return (
+                  <li
+                    key={i}
+                    className={`flex items-center justify-between border px-3 py-2 text-sm transition-colors ${
+                      registered ? "border-accent bg-accent/10 text-foreground" : active ? "border-accent bg-background text-foreground" : "border-border bg-background text-muted-foreground"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Flag className={`h-3.5 w-3.5 ${registered || active ? "text-accent" : "text-muted-foreground"}`} />
+                      {w.label}
+                    </span>
+                    <span className="font-mono text-xs">
+                      {registered ? `${registered.time.toFixed(1)}s` : active ? "now" : "—"}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
   );
 }
