@@ -1148,3 +1148,101 @@ function HazardTutorial() {
     </section>
   );
 }
+
+function HapticsSettingsPanel() {
+  const [settings, setSettings] = useHapticsSettings();
+  const [open, setOpen] = useState(false);
+  const supported = typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
+
+  const test = (tone: "good" | "warn" | "bad") => triggerHaptic(tone, settings);
+
+  return (
+    <div className="mt-6 border border-border bg-card">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between gap-3 px-5 py-3 text-left transition-colors hover:bg-secondary"
+      >
+        <span className="flex items-center gap-3">
+          <Settings2 className="h-4 w-4 text-accent" />
+          <span className="text-sm font-medium">Feedback settings</span>
+          <span className="hidden text-xs text-muted-foreground sm:inline">
+            Haptics {settings.enabled ? `on · ${settings.intensity}` : "off"}
+          </span>
+        </span>
+        <span className="text-xs uppercase tracking-wider text-muted-foreground">{open ? "Hide" : "Show"}</span>
+      </button>
+
+      {open && (
+        <div className="border-t border-border p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-secondary">
+                <Smartphone className="h-4 w-4 text-accent" />
+              </div>
+              <div>
+                <div className="text-sm font-medium">Mobile haptics</div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Short vibrations confirm each click during the tutorial.{" "}
+                  {supported ? "Your device supports vibration." : <span className="text-destructive">This browser doesn't support vibration.</span>}
+                </p>
+              </div>
+            </div>
+            <label className="inline-flex cursor-pointer items-center gap-2 self-start">
+              <span className="text-xs uppercase tracking-wider text-muted-foreground">{settings.enabled ? "On" : "Off"}</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={settings.enabled}
+                onClick={() => setSettings({ ...settings, enabled: !settings.enabled })}
+                className={`relative h-6 w-11 rounded-full transition-colors ${settings.enabled ? "bg-accent" : "bg-muted"}`}
+              >
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-background shadow transition-transform ${settings.enabled ? "translate-x-5" : "translate-x-0.5"}`}
+                />
+              </button>
+            </label>
+          </div>
+
+          <div className="mt-5">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Intensity</div>
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              {(["low", "medium", "high"] as const).map((level) => {
+                const active = settings.intensity === level;
+                return (
+                  <button
+                    key={level}
+                    disabled={!settings.enabled}
+                    onClick={() => {
+                      setSettings({ ...settings, intensity: level });
+                      // give an immediate preview
+                      setTimeout(() => triggerHaptic("good", { enabled: true, intensity: level }), 50);
+                    }}
+                    className={`border px-3 py-2 text-sm capitalize transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                      active
+                        ? "border-accent bg-accent text-accent-foreground"
+                        : "border-border bg-background hover:bg-secondary"
+                    }`}
+                  >
+                    {level}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              Low = subtle tap · Medium = default · High = firmer buzz (great in noisy environments).
+            </p>
+          </div>
+
+          <div className="mt-5 border-t border-border pt-4">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Test the feedback</div>
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              <button onClick={() => test("good")} disabled={!settings.enabled} className="border border-accent bg-accent/10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-foreground disabled:cursor-not-allowed disabled:opacity-40">Good</button>
+              <button onClick={() => test("warn")} disabled={!settings.enabled} className="border border-yellow-500 bg-yellow-500/10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-foreground disabled:cursor-not-allowed disabled:opacity-40">Warn</button>
+              <button onClick={() => test("bad")} disabled={!settings.enabled} className="border border-destructive bg-destructive/10 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-foreground disabled:cursor-not-allowed disabled:opacity-40">Bad</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
