@@ -551,15 +551,17 @@ function CodeRow({
     }
   };
 
-  const mailto =
+  const emailSubject = "Your GSM learner portal access";
+  const emailBody =
+    `Hi,\n\nYour learner portal access code is: ${row.code}\n` +
+    (row.expires_at ? `Valid until: ${new Date(row.expires_at).toLocaleString()}\n` : "") +
+    `\nLog in at https://gsmdrivingschool.com/auth\n\n— George School of Motoring\ngsmdrivingschool@outlook.com`;
+  // Opens Outlook.com web compose signed in as gsmdrivingschool@outlook.com
+  const outlookCompose =
     row.email &&
-    `mailto:${row.email}?subject=${encodeURIComponent(
-      "Your GSM learner portal access",
-    )}&body=${encodeURIComponent(
-      `Hi,\n\nYour learner portal access code is: ${row.code}\n` +
-        (row.expires_at ? `Valid until: ${new Date(row.expires_at).toLocaleString()}\n` : "") +
-        `\nLog in at https://gsmdrivingschool.com/auth\n\n— George School of Motoring`,
-    )}`;
+    `https://outlook.live.com/mail/0/deeplink/compose?to=${encodeURIComponent(row.email)}` +
+      `&subject=${encodeURIComponent(emailSubject)}` +
+      `&body=${encodeURIComponent(emailBody)}`;
 
   const lastUsed = row.last_used_at ? new Date(row.last_used_at).toLocaleString() : "—";
   const colSpan = masterView ? 6 : 8;
@@ -599,9 +601,9 @@ function CodeRow({
         {!masterView && (
           <td className="py-2 pr-3">
             <div className="flex justify-end gap-1">
-              {mailto && (
-                <Button asChild variant="ghost" size="sm" title="Email code to learner">
-                  <a href={mailto}>
+              {outlookCompose && (
+                <Button asChild variant="ghost" size="sm" title="Email code from gsmdrivingschool@outlook.com">
+                  <a href={outlookCompose} target="_blank" rel="noopener noreferrer">
                     <Mail className="h-3.5 w-3.5" />
                   </a>
                 </Button>
