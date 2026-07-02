@@ -2967,17 +2967,14 @@ function AppliesFromHereBand({ label, color = "#facc15" }: { label: string; colo
 // so students can tell which sign sits above which lane.
 function LaneNumbers() {
   return (
-    <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="800" fill="#f8fafc">
+    <g fontFamily="Arial, sans-serif" fontSize="14" fontWeight="800" fill="#f8fafc">
       {[
         { x: 110, n: 1 },
         { x: 250, n: 2 },
         { x: 390, n: 3 },
         { x: 530, n: 4 },
       ].map((l) => (
-        <g key={l.n}>
-          <rect x={l.x - 22} y={355} width="44" height="18" rx="2" fill="#0b1220" opacity="0.75" />
-          <text x={l.x} y={368} textAnchor="middle">Lane {l.n}</text>
-        </g>
+        <text key={l.n} x={l.x} y={406} textAnchor="middle">Lane {l.n}</text>
       ))}
     </g>
   );
@@ -3051,7 +3048,7 @@ function SmartMotorway() {
       <div className="grid gap-5">
         <figure role="group" aria-label="Smart motorway gantry showing lane 1 closed with a red X, and 60 mph variable speed limit signs above the remaining three lanes. A car is merging out of the closed lane into lane 2.">
           <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-accent">Diagram 1 · Lane closed + reduced speed</div>
-          <ZoomPan aspect="640/380" label="Smart motorway — lane 1 closed by a red X and a 60 mph limit applied to all remaining lanes.">
+          <ZoomPan aspect="640/420" label="Smart motorway — lane 1 closed by a red X and a 60 mph limit applied to all remaining lanes.">
             <SmartMotorwayClosureSvg />
           </ZoomPan>
           <p className="mt-3 text-sm">
@@ -3061,7 +3058,7 @@ function SmartMotorway() {
 
         <figure role="group" aria-label="Smart motorway gantry showing the national speed limit sign (white circle with a diagonal white bar) above all four lanes, meaning the previous restriction has ended.">
           <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-accent">Diagram 2 · National speed limit resumes</div>
-          <ZoomPan aspect="640/380" label="Smart motorway — national speed limit signs above every lane, cancelling the previous 60 mph restriction.">
+          <ZoomPan aspect="640/420" label="Smart motorway — national speed limit signs above every lane, cancelling the previous 60 mph restriction.">
             <SmartMotorwayEndSvg />
           </ZoomPan>
           <p className="mt-3 text-sm">
