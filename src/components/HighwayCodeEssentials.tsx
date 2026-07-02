@@ -438,6 +438,241 @@ function RoadStuds() {
   );
 }
 
+// ── Speed limits for different vehicles (Rule 124) ─────────────────
+// Table of UK national speed limits by vehicle class, plus a gallery
+// of the round regulatory signs a driver will actually see on the road.
+function SpeedSignCircle({
+  mph,
+  variant = "limit",
+  size = 96,
+}: {
+  mph?: number | string;
+  variant?: "limit" | "national" | "minimum" | "endMinimum" | "zone20";
+  size?: number;
+}) {
+  // Authentic UK regulatory sign: white disc with red ring for limits,
+  // blue disc for minimum speed, national uses a diagonal black bar
+  // on white.
+  const r = 46;
+  const cx = 50;
+  const cy = 50;
+  if (variant === "national") {
+    return (
+      <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden>
+        <circle cx={cx} cy={cy} r={r} fill="#ffffff" stroke="#0b1220" strokeWidth="3" />
+        <line x1="20" y1="20" x2="80" y2="80" stroke="#0b1220" strokeWidth="9" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (variant === "minimum") {
+    return (
+      <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden>
+        <circle cx={cx} cy={cy} r={r} fill="#1d4ed8" stroke="#0b1220" strokeWidth="3" />
+        <text x="50" y="63" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="34" fontWeight="900" fill="#ffffff">
+          {mph}
+        </text>
+      </svg>
+    );
+  }
+  if (variant === "endMinimum") {
+    return (
+      <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden>
+        <circle cx={cx} cy={cy} r={r} fill="#1d4ed8" stroke="#0b1220" strokeWidth="3" />
+        <text x="50" y="63" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="34" fontWeight="900" fill="#ffffff">
+          {mph}
+        </text>
+        <line x1="18" y1="18" x2="82" y2="82" stroke="#ef4444" strokeWidth="8" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (variant === "zone20") {
+    return (
+      <svg viewBox="0 0 100 120" width={size} height={size * 1.2} aria-hidden>
+        <rect x="6" y="6" width="88" height="108" rx="4" fill="#ffffff" stroke="#0b1220" strokeWidth="3" />
+        <circle cx="50" cy="42" r="26" fill="#ffffff" stroke="#ef4444" strokeWidth="7" />
+        <text x="50" y="52" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="22" fontWeight="900" fill="#0b1220">
+          {mph ?? 20}
+        </text>
+        <text x="50" y="94" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="18" fontWeight="900" fill="#0b1220">
+          ZONE
+        </text>
+      </svg>
+    );
+  }
+  // Default: mandatory speed limit (red ring, mph inside)
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden>
+      <circle cx={cx} cy={cy} r={r} fill="#ffffff" stroke="#ef4444" strokeWidth="9" />
+      <text x="50" y="63" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="34" fontWeight="900" fill="#0b1220">
+        {mph}
+      </text>
+    </svg>
+  );
+}
+
+function SignCard({
+  children,
+  title,
+  desc,
+}: {
+  children: ReactNode;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-2 border border-border p-3 text-center">
+      <div className="flex h-28 items-center justify-center">{children}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">{title}</div>
+      <p className="text-xs leading-snug">{desc}</p>
+    </div>
+  );
+}
+
+function VehicleSpeedLimits() {
+  const rows: {
+    vehicle: string;
+    builtUp: string;
+    single: string;
+    dual: string;
+    motorway: string;
+    note?: string;
+  }[] = [
+    {
+      vehicle: "Cars, motorcycles, car-derived vans & dual-purpose vehicles",
+      builtUp: "30",
+      single: "60",
+      dual: "70",
+      motorway: "70",
+    },
+    {
+      vehicle: "Cars towing caravans or trailers",
+      builtUp: "30",
+      single: "50",
+      dual: "60",
+      motorway: "60",
+      note: "Not permitted in the outside (right-hand) lane of a 3+ lane motorway.",
+    },
+    {
+      vehicle: "Buses, coaches & minibuses (≤ 12 m)",
+      builtUp: "30",
+      single: "50",
+      dual: "60",
+      motorway: "70",
+    },
+    {
+      vehicle: "Goods vehicles up to 7.5 tonnes MAM",
+      builtUp: "30",
+      single: "50",
+      dual: "60",
+      motorway: "70",
+      note: "60 mph on the motorway if articulated or towing a trailer.",
+    },
+    {
+      vehicle: "Goods vehicles over 7.5 tonnes MAM (England & Wales)",
+      builtUp: "30",
+      single: "50",
+      dual: "60",
+      motorway: "60",
+    },
+  ];
+
+  return (
+    <Panel
+      title="Speed limits for different vehicles"
+      subtitle="Rule 124. The national speed limit depends on the vehicle you're driving AND the type of road. A lower limit shown on a sign always overrides these figures."
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-border text-left">
+              <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-accent">Vehicle type</th>
+              <th className="py-2 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Built-up<br />area (mph)</th>
+              <th className="py-2 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Single<br />carriageway</th>
+              <th className="py-2 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Dual<br />carriageway</th>
+              <th className="py-2 pl-3 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Motorway</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.vehicle} className="border-b border-border/60 align-top">
+                <td className="py-2 pr-3">
+                  <div className="font-medium">{r.vehicle}</div>
+                  {r.note && <div className="mt-1 text-xs text-muted-foreground">{r.note}</div>}
+                </td>
+                <td className="py-2 px-3 text-center font-mono font-bold">{r.builtUp}</td>
+                <td className="py-2 px-3 text-center font-mono font-bold">{r.single}</td>
+                <td className="py-2 px-3 text-center font-mono font-bold">{r.dual}</td>
+                <td className="py-2 pl-3 text-center font-mono font-bold">{r.motorway}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p className="mt-4 text-xs text-muted-foreground">
+        A <strong>built-up area</strong> is any road with a system of street lighting (lamps not more than 200 yards apart) unless a sign says otherwise — the default is 30 mph. In Scotland the goods-vehicle limits on single and dual carriageways are 40 mph and 50 mph respectively.
+      </p>
+
+      <div className="mt-6">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">The signs you'll see</div>
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <SignCard title="20 mph limit" desc="Mandatory limit — often around schools, hospitals and residential streets.">
+            <SpeedSignCircle mph={20} />
+          </SignCard>
+          <SignCard title="30 mph limit" desc="Default in built-up areas with street lighting, unless a sign says different.">
+            <SpeedSignCircle mph={30} />
+          </SignCard>
+          <SignCard title="40 mph limit" desc="Common on urban dual carriageways and busy A-roads out of town.">
+            <SpeedSignCircle mph={40} />
+          </SignCard>
+          <SignCard title="50 mph limit" desc="Rural single carriageways with hazards, or roadworks on faster roads.">
+            <SpeedSignCircle mph={50} />
+          </SignCard>
+          <SignCard title="60 mph limit" desc="A specific 60 mph limit sign — do not confuse with the national limit disc.">
+            <SpeedSignCircle mph={60} />
+          </SignCard>
+          <SignCard title="70 mph limit" desc="Shown on the approach to motorways and some dual carriageways.">
+            <SpeedSignCircle mph={70} />
+          </SignCard>
+          <SignCard title="National speed limit applies" desc="White disc with a diagonal black bar. Actual mph depends on your vehicle and road type — check the table above.">
+            <SpeedSignCircle variant="national" />
+          </SignCard>
+          <SignCard title="20 mph zone" desc="A whole area at 20 mph — the limit stays until you see an 'End of zone' sign, even without repeaters.">
+            <SpeedSignCircle variant="zone20" mph={20} />
+          </SignCard>
+          <SignCard title="Minimum speed" desc="Blue disc — you must not drive slower than the number shown (e.g. in some tunnels).">
+            <SpeedSignCircle variant="minimum" mph={30} />
+          </SignCard>
+          <SignCard title="End of minimum speed" desc="Blue disc with a red diagonal — the minimum speed requirement no longer applies.">
+            <SpeedSignCircle variant="endMinimum" mph={30} />
+          </SignCard>
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="border border-border p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">How to read the road</div>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm">
+            <li><strong>Street lights + no signs = 30 mph</strong> (20 mph in parts of Wales).</li>
+            <li><strong>No street lights = national speed limit</strong> for your vehicle and road.</li>
+            <li><strong>Small repeater signs</strong> on lamp posts confirm the current limit.</li>
+            <li>A limit applies <strong>from the sign onwards</strong> until a new limit sign changes it.</li>
+          </ul>
+        </div>
+        <div className="border border-border p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">Remember</div>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm">
+            <li>Limits are a <strong>maximum</strong>, not a target — drive to the conditions.</li>
+            <li><strong>Towing?</strong> Drop 10 mph on single/dual carriageways and motorways.</li>
+            <li><strong>Large goods vehicles</strong> stay at 60 mph on the motorway.</li>
+            <li>Newly-qualified drivers must obey <strong>every</strong> limit — penalty points in the first 2 years revoke your licence at 6 points.</li>
+          </ul>
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
 // Top-down, TSRGD-faithful dual carriageway showing the five stud colours.
 // Hard shoulder on the LEFT, traffic flowing UP the page.
 const DualCarriagewayStudsSvg = forwardRef<SVGSVGElement>((_props, ref) => {
