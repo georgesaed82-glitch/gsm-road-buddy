@@ -3,8 +3,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check } from "lucide-react";
+import { Star, Check, Loader2, CloudCheck, CloudOff } from "lucide-react";
 import { toast } from "sonner";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/lessons")({
   head: () => ({ meta: [{ title: "Lessons & progress · GSM" }] }),
@@ -26,6 +27,19 @@ const skillMilestones = [
 
 function LessonsPage() {
   const qc = useQueryClient();
+  type Rating = { skill_key: string; rating: number };
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const inFlight = useRef<Map<string, number>>(new Map());
+
+  useEffect(() => {
+    return () => {
+      if (savedTimer.current) clearTimeout(savedTimer.current);
+      debounceTimers.current.forEach((t) => clearTimeout(t));
+    };
+  }, []);
+
   const { data: bookings = [] } = useQuery({
     queryKey: ["all-bookings"],
     queryFn: async () => {
@@ -38,31 +52,74 @@ function LessonsPage() {
     queryKey: ["skill-ratings"],
     queryFn: async () => {
       const { data } = await supabase.from("skill_ratings").select("skill_key, rating");
-      return (data ?? []) as Array<{ skill_key: string; rating: number }>;
+      return (data ?? []) as Rating[];
     },
+    staleTime: 30_000,
   });
 
   const ratingMap = new Map(ratings.map((r) => [r.skill_key, r.rating]));
 
-  const saveRating = useMutation({
-    mutationFn: async (vars: { key: string; rating: number }) => {
-      const { data: auth } = await supabase.auth.getUser();
-      const uid = auth.user?.id;
-      if (!uid) throw new Error("Not signed in");
-      const { error } = await supabase
-        .from("skill_ratings")
-        .upsert(
-          { user_id: uid, skill_key: vars.key, rating: vars.rating },
-          { onConflict: "user_id,skill_key" },
-        );
-      if (error) throw error;
-    },
-    onSuccess: (_d, vars) => {
-      if (vars.rating === 10) toast.success("Mastered! 🎉");
-      qc.invalidateQueries({ queryKey: ["skill-ratings"] });
-    },
-    onError: (e: any) => toast.error(e?.message || "Could not save rating"),
-  });
+  const persist = async (key: string, rating: number) => {
+    // Validate: integer between 0 and 10
+    const clean = Math.max(0, Math.min(10, Math.round(rating)));
+    inFlight.current.set(key, clean);
+    setSaveState("saving");
+    const { data: auth } = await supabase.auth.getUser();
+    const uid = auth.user?.id;
+    if (!uid) throw new Error("Not signed in");
+    const { error } = await supabase
+      .from("skill_ratings")
+      .upsert(
+        { user_id: uid, skill_key: key, rating: clean },
+        { onConflict: "user_id,skill_key" },
+      );
+    if (error) throw error;
+    // If a newer value was queued while we were saving, don't clobber "saved" state prematurely
+    if (inFlight.current.get(key) === clean) {
+      inFlight.current.delete(key);
+    }
+  };
+
+  const setRating = (key: string, next: number) => {
+    const clean = Math.max(0, Math.min(10, Math.round(next)));
+    const prev = ratingMap.get(key) ?? 0;
+    if (clean === prev) return;
+
+    // Optimistic cache update — instant UI feedback, survives refresh once persisted
+    qc.setQueryData<Rating[]>(["skill-ratings"], (old = []) => {
+      const idx = old.findIndex((r) => r.skill_key === key);
+      if (idx === -1) return [...old, { skill_key: key, rating: clean }];
+      const copy = old.slice();
+      copy[idx] = { skill_key: key, rating: clean };
+      return copy;
+    });
+
+    // Debounce rapid taps on the same skill so we save only the final value
+    const existing = debounceTimers.current.get(key);
+    if (existing) clearTimeout(existing);
+    const t = setTimeout(async () => {
+      debounceTimers.current.delete(key);
+      try {
+        await persist(key, clean);
+        if (clean === 10 && prev !== 10) toast.success("Mastered! 🎉");
+        setSaveState("saved");
+        if (savedTimer.current) clearTimeout(savedTimer.current);
+        savedTimer.current = setTimeout(() => setSaveState("idle"), 1500);
+      } catch (e: any) {
+        // Roll back optimistic value and surface error
+        qc.setQueryData<Rating[]>(["skill-ratings"], (old = []) => {
+          const idx = old.findIndex((r) => r.skill_key === key);
+          if (idx === -1) return old;
+          const copy = old.slice();
+          copy[idx] = { skill_key: key, rating: prev };
+          return copy;
+        });
+        setSaveState("error");
+        toast.error(e?.message || "Could not save — check your connection");
+      }
+    }, 350);
+    debounceTimers.current.set(key, t);
+  };
 
   const completed = bookings.filter((b) => b.status === "completed").length;
   const upcoming = bookings.filter((b) => new Date(b.scheduled_at) > new Date() && b.status === "scheduled");
@@ -80,8 +137,9 @@ function LessonsPage() {
           <div className="border border-border bg-card p-5">
             <div className="flex items-baseline justify-between">
               <h2 className="font-display text-2xl">Progress chart</h2>
-              <div className="text-sm text-muted-foreground">
-                {mastered}/{skillMilestones.length} mastered · {overallPct}%
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <SaveIndicator state={saveState} />
+                <span>{mastered}/{skillMilestones.length} mastered · {overallPct}%</span>
               </div>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -156,10 +214,7 @@ function LessonsPage() {
                         <button
                           key={value}
                           type="button"
-                          disabled={saveRating.isPending}
-                          onClick={() =>
-                            saveRating.mutate({ key: m.key, rating: value === r ? value - 1 : value })
-                          }
+                          onClick={() => setRating(m.key, value === r ? value - 1 : value)}
                           className={`h-7 w-7 rounded-md border text-xs font-medium transition-colors ${
                             active
                               ? done
@@ -248,5 +303,26 @@ function Stat({ label, value }: { label: string; value: string }) {
       <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
       <div className="mt-1 font-display text-2xl text-foreground">{value}</div>
     </div>
+  );
+}
+
+function SaveIndicator({ state }: { state: "idle" | "saving" | "saved" | "error" }) {
+  if (state === "idle") return null;
+  if (state === "saving")
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving…
+      </span>
+    );
+  if (state === "saved")
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400">
+        <CloudCheck className="h-3.5 w-3.5" /> Saved
+      </span>
+    );
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-destructive">
+      <CloudOff className="h-3.5 w-3.5" /> Retry
+    </span>
   );
 }
