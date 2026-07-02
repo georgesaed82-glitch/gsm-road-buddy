@@ -252,6 +252,10 @@ export function Header() {
                       <div className="flex flex-col border-b border-border/60 pb-2">
                         {portalLinks.map((link) => {
                           const Icon = link.icon;
+                          const active =
+                            link.to.startsWith("/#")
+                              ? pathname === "/"
+                              : pathname === link.to || pathname.startsWith(link.to + "/");
                           return (
                             <Link
                               key={link.to}
@@ -259,10 +263,12 @@ export function Header() {
                               onClick={() => setOpen(false)}
                               className={cn(
                                 "flex items-center gap-2 py-2.5 pl-7 text-sm transition-colors",
-                                pathname === link.to ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                                active
+                                  ? "font-semibold text-primary"
+                                  : "text-muted-foreground hover:text-foreground",
                               )}
                             >
-                              <Icon className="h-4 w-4" />
+                              <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
                               <span>{link.label}</span>
                             </Link>
                           );
