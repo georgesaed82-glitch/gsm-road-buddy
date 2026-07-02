@@ -173,3 +173,27 @@
     -webkit-text-size-adjust: 100%;
   }
 }
+
+/* Learner portal copyright watermark overlay.
+   A subtle diagonal repeating text watermark placed over all media
+   (images, SVG diagrams, videos, canvases) inside the portal. */
+.portal-watermark-wrap :is(img, svg, video, canvas, picture) {
+  position: relative;
+}
+.portal-watermark-wrap :is(figure, .relative, [class*="aspect-"]) {
+  position: relative;
+}
+.portal-watermark-wrap {
+  position: relative;
+}
+.portal-watermark-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='160' viewBox='0 0 420 160'><g transform='rotate(-24 210 80)' fill='rgba(15,23,42,0.08)' font-family='Arial, sans-serif' font-size='14' font-weight='700' text-anchor='middle'><text x='210' y='72'>George School of Motoring</text><text x='210' y='94' font-size='11' font-weight='600'>(GSM Driving School) — Copyright</text></g></svg>");
+  background-repeat: repeat;
+  background-size: 420px 160px;
+  mix-blend-mode: multiply;
+}
