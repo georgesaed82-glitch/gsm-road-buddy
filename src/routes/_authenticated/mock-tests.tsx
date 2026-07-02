@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, Clock, Trophy, Download } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Trophy, Download, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { addMistakes } from "@/lib/mistakes";
 
 const TEST_LENGTH = 50;
 const TEST_MINUTES = 60;
@@ -121,6 +122,11 @@ function MockRunner({ onRestart }: { onRestart: () => void }) {
         <div className="mt-4 flex flex-wrap gap-2">
           <Button className="rounded-none" onClick={downloadReview} disabled={wrong.length === 0}>
             <Download className="mr-2 h-4 w-4" /> Save wrong answers ({wrong.length})
+          </Button>
+          <Button asChild variant="secondary" className="rounded-none" disabled={wrong.length === 0}>
+            <Link to="/review">
+              <RotateCcw className="mr-2 h-4 w-4" /> Review mistakes
+            </Link>
           </Button>
           <Button variant="outline" className="rounded-none" onClick={onRestart}>Retake mock</Button>
         </div>
