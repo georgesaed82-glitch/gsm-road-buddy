@@ -607,39 +607,41 @@ function ZebraSceneSvg() {
   const AMBER = "#ffb300";
   const AMBER_GLOW = "#ffdd66";
 
-  // Zebra stripes centred around x=320, running vertically across the road.
+  // Zebra crossing geometry — full width of the carriageway.
+  // Highway Code (TSRGD diagram 1055.1): equal-width white stripes on tarmac,
+  // sawtooth zig-zag markings on the approach, no stop line, Belisha beacon
+  // globes aligned with the outer edges of the stripes.
+  const ROAD_TOP = 92;
+  const ROAD_BOT = 288;
+  const CROSS_X1 = 208;   // left edge of striped area
+  const CROSS_X2 = 452;   // right edge of striped area
+  const STRIPE_W = 22;    // equal stripes & gaps for correct 1:1 rhythm
+
   const stripes: ReactNode[] = [];
-  const stripeW = 22;
-  const gap = 12;
-  const stripeYTop = 118;
-  const stripeYBot = 262;
-  let sx = 200;
-  let alt = true;
-  while (sx < 460) {
-    stripes.push(
-      <rect
-        key={`stripe-${sx}`}
-        x={sx}
-        y={stripeYTop}
-        width={stripeW}
-        height={stripeYBot - stripeYTop}
-        fill={alt ? PAINT : "transparent"}
-      />,
-    );
-    sx += stripeW + gap;
-    alt = !alt;
+  for (let sx = CROSS_X1, i = 0; sx + STRIPE_W <= CROSS_X2; sx += STRIPE_W, i++) {
+    if (i % 2 === 0) {
+      stripes.push(
+        <rect key={`stripe-${sx}`} x={sx} y={ROAD_TOP} width={STRIPE_W} height={ROAD_BOT - ROAD_TOP} fill={PAINT} />,
+      );
+    }
   }
 
-  // Zig-zag lines (approach controlled area). Each is a polyline.
-  const zigzag = (yBase: number, side: "top" | "bottom") => {
-    const pts: string[] = [];
-    const amp = 8;
-    const step = 16;
-    for (let x = 20; x <= 620; x += step) {
-      const dy = ((x / step) % 2 === 0 ? 0 : amp) * (side === "top" ? 1 : -1);
-      pts.push(`${x},${yBase + dy}`);
+  // Proper sawtooth zig-zag markings (TSRGD 1001.3) — 8 teeth per approach,
+  // pointing away from the carriageway on both sides of the crossing.
+  const zigzagPath = (xStart: number, xEnd: number, yKerb: number, side: "top" | "bottom") => {
+    const teeth = 8;
+    const width = (xEnd - xStart) / teeth;
+    const amp = 10;
+    const dir = side === "top" ? 1 : -1;
+    const yBase = yKerb + dir * 2;
+    const yPeak = yBase + dir * amp;
+    let d = `M ${xStart} ${yBase}`;
+    for (let t = 0; t < teeth; t++) {
+      const x1 = xStart + width * (t + 0.5);
+      const x2 = xStart + width * (t + 1);
+      d += ` L ${x1} ${yPeak} L ${x2} ${yBase}`;
     }
-    return <polyline points={pts.join(" ")} fill="none" stroke={PAINT} strokeWidth="2.2" strokeLinejoin="miter" />;
+    return <path d={d} fill="none" stroke={PAINT} strokeWidth="2.4" strokeLinejoin="miter" strokeLinecap="square" />;
   };
 
   return (
@@ -706,53 +708,75 @@ function ZebraSceneSvg() {
       {/* Road */}
       <rect x="0" y="92" width="640" height="196" fill="url(#zebra-asphalt)" />
 
-      {/* Zig-zag approach markings on both lanes (top and bottom of road) */}
-      {zigzag(104, "top")}
-      {zigzag(276, "bottom")}
+      {/* Central broken lane line — stops at the zebra (no markings inside the crossing) */}
+      <line x1="10" y1="190" x2={CROSS_X1 - 6} y2="190" stroke={PAINT} strokeWidth="2.4" strokeDasharray="20 14" />
+      <line x1={CROSS_X2 + 6} y1="190" x2="630" y2="190" stroke={PAINT} strokeWidth="2.4" strokeDasharray="20 14" />
 
-      {/* Give-way lines (broken white) just before the crossing on each carriageway */}
-      <line x1="0" y1="114" x2="180" y2="114" stroke={PAINT} strokeWidth="3" strokeDasharray="10 8" />
-      <line x1="480" y1="266" x2="640" y2="266" stroke={PAINT} strokeWidth="3" strokeDasharray="10 8" />
+      {/* Zig-zag controlled area — both approaches, both kerbs. Zebras have NO stop line. */}
+      {zigzagPath(20, CROSS_X1 - 8, ROAD_TOP, "top")}
+      {zigzagPath(CROSS_X2 + 8, 620, ROAD_TOP, "top")}
+      {zigzagPath(20, CROSS_X1 - 8, ROAD_BOT, "bottom")}
+      {zigzagPath(CROSS_X2 + 8, 620, ROAD_BOT, "bottom")}
 
-      {/* Central broken line */}
-      <line x1="0" y1="190" x2="188" y2="190" stroke={PAINT} strokeWidth="2.2" strokeDasharray="18 14" />
-      <line x1="472" y1="190" x2="640" y2="190" stroke={PAINT} strokeWidth="2.2" strokeDasharray="18 14" />
-
-      {/* Zebra stripes */}
+      {/* Zebra stripes (equal width & gap, full carriageway) */}
       {stripes}
 
-      {/* Belisha beacons — pole + globe + halo, one on each side */}
+      {/* Reflective road studs flanking the stripes at the kerb edges */}
+      {Array.from({ length: 12 }, (_, i) => {
+        const x = CROSS_X1 + (i + 0.5) * ((CROSS_X2 - CROSS_X1) / 12);
+        return (
+          <g key={`stud-${i}`}>
+            <circle cx={x} cy={ROAD_TOP + 3} r="1.8" fill="#e8e6dc" stroke="#000" strokeWidth="0.3" />
+            <circle cx={x} cy={ROAD_BOT - 3} r="1.8" fill="#e8e6dc" stroke="#000" strokeWidth="0.3" />
+          </g>
+        );
+      })}
+
+      {/* Belisha beacons — one at each corner of the crossing, striped pole + amber globe */}
       {[
-        { x: 180, yTop: 60 },
-        { x: 460, yTop: 60 },
-        { x: 180, yTop: 292, flip: true },
-        { x: 460, yTop: 292, flip: true },
-      ].map((b, i) => (
-        <g key={`beacon-${i}`}>
-          {/* pole with black & white bands */}
-          {b.flip ? (
-            <g>
-              <rect x={b.x - 1.5} y={b.yTop} width="3" height="28" fill={PAINT} />
-              <rect x={b.x - 1.5} y={b.yTop} width="3" height="7" fill="#111" />
-              <rect x={b.x - 1.5} y={b.yTop + 14} width="3" height="7" fill="#111" />
-            </g>
-          ) : (
-            <g>
-              <rect x={b.x - 1.5} y={b.yTop} width="3" height="28" fill={PAINT} />
-              <rect x={b.x - 1.5} y={b.yTop + 7} width="3" height="7" fill="#111" />
-              <rect x={b.x - 1.5} y={b.yTop + 21} width="3" height="7" fill="#111" />
-            </g>
-          )}
-          {/* halo (flashing glow) */}
-          <circle cx={b.x} cy={b.flip ? b.yTop + 30 : b.yTop - 3} r="14" fill="url(#beacon-glow)" />
-          {/* globe */}
-          <circle cx={b.x} cy={b.flip ? b.yTop + 30 : b.yTop - 3} r="6.5" fill="url(#beacon-body)" stroke="#7a5300" strokeWidth="0.5" />
-          <circle cx={b.x - 2} cy={(b.flip ? b.yTop + 30 : b.yTop - 3) - 2} r="1.5" fill="#fff8d1" opacity="0.9" />
-        </g>
-      ))}
+        { x: CROSS_X1 - 6, top: true },
+        { x: CROSS_X2 + 6, top: true },
+        { x: CROSS_X1 - 6, top: false },
+        { x: CROSS_X2 + 6, top: false },
+      ].map((b, i) => {
+        // Pole sits on the pavement, globe above/below aligned with the kerb.
+        const poleH = 34;
+        const poleY = b.top ? 60 - 4 : 92 - poleH + 30; // top pavement or bottom pavement
+        const poleTop = b.top ? 56 : 292;               // where pole begins (on pavement)
+        const poleBot = b.top ? 88 : 292 + poleH;
+        const globeCy = b.top ? poleTop - 6 : poleBot + 6;
+        // 5 equal alternating black/white bands (traditional Belisha pole)
+        const bandCount = 5;
+        const bandH = (poleBot - poleTop) / bandCount;
+        void poleY;
+        return (
+          <g key={`beacon-${i}`}>
+            {/* pole bands */}
+            {Array.from({ length: bandCount }, (_, k) => (
+              <rect
+                key={k}
+                x={b.x - 2}
+                y={poleTop + k * bandH}
+                width="4"
+                height={bandH}
+                fill={k % 2 === 0 ? "#111" : PAINT}
+                stroke="#000"
+                strokeWidth="0.3"
+              />
+            ))}
+            {/* flashing halo */}
+            <circle cx={b.x} cy={globeCy} r="16" fill="url(#beacon-glow)" />
+            {/* amber globe */}
+            <circle cx={b.x} cy={globeCy} r="7" fill="url(#beacon-body)" stroke="#7a5300" strokeWidth="0.6" />
+            <circle cx={b.x - 2.2} cy={globeCy - 2.2} r="1.6" fill="#fff8d1" opacity="0.9" />
+            {/* small mounting cap between pole and globe */}
+            <rect x={b.x - 2} y={b.top ? poleTop - 2 : poleBot} width="4" height="2" fill="#222" />
+          </g>
+        );
+      })}
 
       {/* Pedestrian stepping onto the crossing (top pavement → road) */}
-      <g transform="translate(300 105)">
+      <g transform="translate(300 110)">
         {/* shadow */}
         <ellipse cx="0" cy="34" rx="10" ry="2.5" fill="rgba(0,0,0,0.35)" />
         {/* legs */}
@@ -796,8 +820,8 @@ function ZebraSceneSvg() {
 
       {/* PRIORITY arrow above pedestrian */}
       <g>
-        <path d="M 300 78 L 300 96 L 296 96 L 302 104 L 308 96 L 304 96 L 304 78 Z" fill="#ffd54a" stroke="#111" strokeWidth="0.6" />
-        <text x="316" y="90" fill="#ffd54a" fontFamily="Arial, sans-serif" fontSize="10" fontWeight="700" letterSpacing="0.4">
+        <path d="M 298 44 L 298 62 L 294 62 L 302 72 L 310 62 L 306 62 L 306 44 Z" fill="#ffd54a" stroke="#111" strokeWidth="0.6" />
+        <text x="316" y="58" fill="#ffd54a" fontFamily="Arial, sans-serif" fontSize="10" fontWeight="700" letterSpacing="0.4">
           PEDESTRIAN HAS PRIORITY
         </text>
       </g>
@@ -806,8 +830,8 @@ function ZebraSceneSvg() {
       <g fontFamily="Arial, sans-serif" fill={PAINT} fontWeight="700" letterSpacing="0.4">
         <text x="14" y="22" fontSize="10">PAVEMENT</text>
         <text x="14" y="358" fontSize="10">PAVEMENT</text>
-        <text x="20" y="140" fontSize="9" opacity="0.9">ZIG-ZAG · NO OVERTAKING / PARKING</text>
-        <text x="20" y="286" fontSize="9" opacity="0.9">ZIG-ZAG · NO OVERTAKING / PARKING</text>
+        <text x="24" y="130" fontSize="9" opacity="0.9">ZIG-ZAGS · NO OVERTAKING · NO PARKING</text>
+        <text x="24" y="262" fontSize="9" opacity="0.9">ZIG-ZAGS · NO OVERTAKING · NO PARKING</text>
       </g>
     </svg>
   );
