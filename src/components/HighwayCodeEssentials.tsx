@@ -2044,28 +2044,39 @@ function YellowBoxJunctionSvg() {
         </defs>
       </g>
 
-      {/* Red car — has entered the box, indicating right, waiting for oncoming to clear.
-          Approached from the south (bottom), rotated to face north-east as it starts the turn. */}
-      <Car x={335} y={205} rotate={-45} color="#dc2626" indicator="right" />
+      {/* Red car — approached from the south in the LEFT lane (UK drive-on-left),
+          now paused inside the box, signalling right, waiting for the oncoming
+          driver to clear so it can exit east into the far side's left lane. */}
+      <Car x={355} y={210} rotate={-35} color="#dc2626" indicator="right" label="You" />
 
-      {/* Oncoming vehicle — travelling southbound, blocking the exit that the red car needs */}
-      <Car x={305} y={155} rotate={180} color="#1d4ed8" indicator="none" />
+      {/* Oncoming vehicle — travelling south, still well north of the junction
+          (far away). It is going STRAIGHT ahead through the box. */}
+      <Car x={300} y={40} rotate={180} color="#1d4ed8" indicator="none" label="Oncoming" />
 
-      {/* Path the red car wants to take (dashed) */}
-      <g fill="none" stroke="#facc15" strokeWidth="2.5" strokeDasharray="6 5" opacity="0.9">
-        <path d="M 335 340 Q 335 260 335 205 Q 360 190 420 190" />
+      {/* Curved dashed arrow: the red car's intended right-turn path.
+          Starts in the south approach's LEFT lane (x≈355) and sweeps into the
+          east exit's LEFT lane (y≈150 — left side of east-bound carriageway). */}
+      <g fill="none" stroke="#facc15" strokeWidth="3" strokeDasharray="7 5" opacity="0.95">
+        <path d="M 355 360 C 355 260 360 220 385 190 C 410 168 470 155 560 150" />
       </g>
-      {/* Arrowhead at exit */}
-      <polygon points="420,184 434,190 420,196" fill="#facc15" />
+      <polygon points="560,142 578,150 560,158" fill="#facc15" />
 
-      {/* Labels */}
+      {/* Straight arrow: the oncoming vehicle is coming down the north approach
+          in its own left lane and continuing straight through. */}
+      <g fill="none" stroke="#93c5fd" strokeWidth="3" strokeDasharray="8 5" opacity="0.95">
+        <line x1="300" y1="70" x2="300" y2="345" />
+      </g>
+      <polygon points="292,345 300,362 308,345" fill="#93c5fd" />
+
+      {/* Legend / labels */}
       <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="700">
-        <rect x="18" y="22" width="200" height="36" fill="#ffffff" opacity="0.92" rx="3" />
-        <text x="28" y="38" fill="#0b1f1c">Turning right — exit BLOCKED</text>
-        <text x="28" y="52" fill="#0b1f1c" fontWeight="500">You MAY wait inside the box.</text>
+        <rect x="14" y="14" width="230" height="48" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="24" y="32" fill="#dc2626">Red — turning RIGHT</text>
+        <text x="24" y="48" fill="#0b1f1c" fontWeight="500">May wait in box if only oncoming blocks you</text>
 
-        <rect x="440" y="20" width="180" height="30" fill="#ffffff" opacity="0.92" rx="3" />
-        <text x="450" y="40" fill="#0b1f1c">Oncoming — do not cross</text>
+        <rect x="410" y="14" width="216" height="48" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="420" y="32" fill="#1d4ed8">Blue — STRAIGHT ahead</text>
+        <text x="420" y="48" fill="#0b1f1c" fontWeight="500">Still far away — priority through the box</text>
       </g>
     </CrossroadsBase>
   );
