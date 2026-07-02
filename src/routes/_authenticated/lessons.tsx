@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
+import { Star, Check } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/lessons")({
   head: () => ({ meta: [{ title: "Lessons & progress · GSM" }] }),
@@ -11,19 +12,20 @@ export const Route = createFileRoute("/_authenticated/lessons")({
 });
 
 const skillMilestones = [
-  { name: "Cockpit drill & controls", target: 1 },
-  { name: "Moving off & stopping", target: 2 },
-  { name: "Junctions (left & right)", target: 4 },
-  { name: "Roundabouts", target: 6 },
-  { name: "Bay parking", target: 8 },
-  { name: "Parallel parking", target: 10 },
-  { name: "Pull up on the right", target: 11 },
-  { name: "Forward bay park", target: 12 },
-  { name: "Independent driving", target: 14 },
-  { name: "Mock test routes", target: 18 },
+  { key: "cockpit", name: "Cockpit drill & controls", target: 1 },
+  { key: "move_stop", name: "Moving off & stopping", target: 2 },
+  { key: "junctions", name: "Junctions (left & right)", target: 4 },
+  { key: "roundabouts", name: "Roundabouts", target: 6 },
+  { key: "bay_park", name: "Bay parking", target: 8 },
+  { key: "parallel", name: "Parallel parking", target: 10 },
+  { key: "pull_right", name: "Pull up on the right", target: 11 },
+  { key: "forward_bay", name: "Forward bay park", target: 12 },
+  { key: "independent", name: "Independent driving", target: 14 },
+  { key: "mock_test", name: "Mock test routes", target: 18 },
 ];
 
 function LessonsPage() {
+  const qc = useQueryClient();
   const { data: bookings = [] } = useQuery({
     queryKey: ["all-bookings"],
     queryFn: async () => {
@@ -32,34 +34,146 @@ function LessonsPage() {
     },
   });
 
+  const { data: ratings = [] } = useQuery({
+    queryKey: ["skill-ratings"],
+    queryFn: async () => {
+      const { data } = await supabase.from("skill_ratings").select("skill_key, rating");
+      return (data ?? []) as Array<{ skill_key: string; rating: number }>;
+    },
+  });
+
+  const ratingMap = new Map(ratings.map((r) => [r.skill_key, r.rating]));
+
+  const saveRating = useMutation({
+    mutationFn: async (vars: { key: string; rating: number }) => {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) throw new Error("Not signed in");
+      const { error } = await supabase
+        .from("skill_ratings")
+        .upsert(
+          { user_id: uid, skill_key: vars.key, rating: vars.rating },
+          { onConflict: "user_id,skill_key" },
+        );
+      if (error) throw error;
+    },
+    onSuccess: (_d, vars) => {
+      if (vars.rating === 10) toast.success("Mastered! 🎉");
+      qc.invalidateQueries({ queryKey: ["skill-ratings"] });
+    },
+    onError: (e: any) => toast.error(e?.message || "Could not save rating"),
+  });
+
   const completed = bookings.filter((b) => b.status === "completed").length;
   const upcoming = bookings.filter((b) => new Date(b.scheduled_at) > new Date() && b.status === "scheduled");
   const history = bookings.filter((b) => b.status === "completed" || new Date(b.scheduled_at) <= new Date());
   const allSkills = new Set<string>(bookings.flatMap((b) => b.skills_covered ?? []));
+  const totalRating = skillMilestones.reduce((n, m) => n + (ratingMap.get(m.key) ?? 0), 0);
+  const mastered = skillMilestones.filter((m) => (ratingMap.get(m.key) ?? 0) >= 10).length;
+  const overallPct = Math.round((totalRating / (skillMilestones.length * 10)) * 100);
 
   return (
     <PortalShell eyebrow="Your journey" title="Lessons & progress">
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <section>
-          <h2 className="font-display text-2xl">Skills roadmap</h2>
+          {/* Progress chart */}
+          <div className="border border-border bg-card p-5">
+            <div className="flex items-baseline justify-between">
+              <h2 className="font-display text-2xl">Progress chart</h2>
+              <div className="text-sm text-muted-foreground">
+                {mastered}/{skillMilestones.length} mastered · {overallPct}%
+              </div>
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Every skill is marked 0 – 10. When a bar hits 10 it turns green — that skill is mastered.
+            </p>
+            <div className="mt-5 space-y-3">
+              {skillMilestones.map((m) => {
+                const r = ratingMap.get(m.key) ?? 0;
+                const done = r >= 10;
+                return (
+                  <div key={m.key} className="flex items-center gap-3">
+                    <div className="w-40 truncate text-sm font-medium">{m.name}</div>
+                    <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={`h-full transition-all ${done ? "bg-emerald-500" : "bg-primary"}`}
+                        style={{ width: `${r * 10}%` }}
+                      />
+                    </div>
+                    <div className={`w-10 text-right text-sm tabular-nums ${done ? "font-semibold text-emerald-600 dark:text-emerald-400" : ""}`}>
+                      {r}/10
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <h2 className="mt-10 font-display text-2xl">Skills roadmap</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Standard DVSA syllabus. Each milestone unlocks as your instructor marks it after a lesson.
+            Tap 1 – 10 to record your current standard on each skill. Reach 10 and the section turns green.
           </p>
           <ol className="mt-6 border border-border bg-card">
             {skillMilestones.map((m, i) => {
-              const reached = allSkills.has(m.name) || completed >= m.target;
+              const r = ratingMap.get(m.key) ?? 0;
+              const done = r >= 10;
+              const reached = done || allSkills.has(m.name) || completed >= m.target;
               return (
-                <li key={m.name} className="flex items-center gap-4 border-b border-border px-5 py-4 last:border-b-0">
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
-                    reached ? "bg-primary text-primary-foreground" : "border border-border text-muted-foreground"
-                  }`}>
-                    {String(i + 1).padStart(2, "0")}
+                <li
+                  key={m.key}
+                  className={`border-b border-border px-5 py-4 last:border-b-0 transition-colors ${
+                    done ? "bg-emerald-50 dark:bg-emerald-500/10" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
+                        done
+                          ? "bg-emerald-500 text-white"
+                          : reached
+                            ? "bg-primary text-primary-foreground"
+                            : "border border-border text-muted-foreground"
+                      }`}
+                    >
+                      {done ? <Check className="h-4 w-4" /> : String(i + 1).padStart(2, "0")}
+                    </div>
+                    <div className="flex-1">
+                      <div className={`font-medium ${done ? "text-emerald-800 dark:text-emerald-200" : reached ? "text-foreground" : "text-muted-foreground"}`}>
+                        {m.name}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Typically by lesson {m.target}</div>
+                    </div>
+                    <div className={`text-sm tabular-nums ${done ? "font-semibold text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}>
+                      {r}/10
+                    </div>
+                    {done && <Badge className="bg-emerald-500 text-white hover:bg-emerald-500">Mastered</Badge>}
                   </div>
-                  <div className="flex-1">
-                    <div className={`font-medium ${reached ? "text-foreground" : "text-muted-foreground"}`}>{m.name}</div>
-                    <div className="text-xs text-muted-foreground">Typically by lesson {m.target}</div>
+                  <div className="mt-3 flex flex-wrap gap-1">
+                    {Array.from({ length: 10 }).map((_, n) => {
+                      const value = n + 1;
+                      const active = value <= r;
+                      return (
+                        <button
+                          key={value}
+                          type="button"
+                          disabled={saveRating.isPending}
+                          onClick={() =>
+                            saveRating.mutate({ key: m.key, rating: value === r ? value - 1 : value })
+                          }
+                          className={`h-7 w-7 rounded-md border text-xs font-medium transition-colors ${
+                            active
+                              ? done
+                                ? "border-emerald-500 bg-emerald-500 text-white"
+                                : "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                          }`}
+                          title={`Mark standard ${value}/10`}
+                        >
+                          {value}
+                        </button>
+                      );
+                    })}
                   </div>
-                  {reached && <Badge className="bg-success text-success-foreground">Mastered</Badge>}
                 </li>
               );
             })}
