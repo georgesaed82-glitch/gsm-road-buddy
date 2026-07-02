@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp } from "lucide-react";
+import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   getMistakeIds,
@@ -53,6 +53,14 @@ function ReviewPage() {
   const stats = useRetryStats();
   const [mode, setMode] = useState<"list" | "retry">("list");
 
+  // Count how many questions in the current mistakes bank fall under each
+  // category. Used to enrich the accuracy breakdown.
+  const bankByCategory = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const q of mistakes) m.set(q.category, (m.get(q.category) ?? 0) + 1);
+    return m;
+  }, [mistakes]);
+
   if (mode === "retry" && mistakes.length > 0) {
     return (
       <PortalShell eyebrow="Review mistakes" title="Retry the ones you missed">
@@ -68,14 +76,14 @@ function ReviewPage() {
     >
       {mistakes.length === 0 ? (
         <>
-          <ProgressStats stats={stats} bankSize={0} />
+          <ProgressStats stats={stats} bankSize={0} bankByCategory={bankByCategory} />
           <div className="mt-6">
             <EmptyState />
           </div>
         </>
       ) : (
         <>
-          <ProgressStats stats={stats} bankSize={mistakes.length} />
+          <ProgressStats stats={stats} bankSize={mistakes.length} bankByCategory={bankByCategory} />
           <div className="mt-6" />
           <div className="border border-border bg-card p-6 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -162,7 +170,15 @@ function EmptyState() {
 
 type Stats = ReturnType<typeof getRetryStats>;
 
-function ProgressStats({ stats, bankSize }: { stats: Stats; bankSize: number }) {
+function ProgressStats({
+  stats,
+  bankSize,
+  bankByCategory,
+}: {
+  stats: Stats;
+  bankSize: number;
+  bankByCategory: Map<string, number>;
+}) {
   const accuracyPct = Math.round(stats.accuracy * 100);
   const maxDay = Math.max(1, ...stats.days.map((d) => d.total));
   const hasHistory = stats.total > 0;
@@ -258,6 +274,109 @@ function ProgressStats({ stats, bankSize }: { stats: Stats; bankSize: number }) 
           ))}
         </ul>
       </div>
+
+      <CategoryBreakdown byCategory={stats.byCategory} bankByCategory={bankByCategory} />
+    </div>
+  );
+}
+
+function formatCategoryLabel(slug: string) {
+  if (slug === "uncategorised") return "Uncategorised";
+  return slug
+    .replaceAll("-", " ")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function CategoryBreakdown({
+  byCategory,
+  bankByCategory,
+}: {
+  byCategory: Stats["byCategory"];
+  bankByCategory: Map<string, number>;
+}) {
+  // Merge categories from retry history AND the current bank so a category
+  // you haven't retried yet still shows up with "0 attempts".
+  const rows = useMemo(() => {
+    const map = new Map<
+      string,
+      { category: string; total: number; correct: number; accuracy: number; bank: number }
+    >();
+    for (const row of byCategory) {
+      map.set(row.category, { ...row, bank: bankByCategory.get(row.category) ?? 0 });
+    }
+    for (const [cat, bank] of bankByCategory) {
+      if (!map.has(cat)) {
+        map.set(cat, { category: cat, total: 0, correct: 0, accuracy: 0, bank });
+      }
+    }
+    // Rank by attempts, then by remaining bank size, so the most-practised
+    // categories float to the top and unpractised weak spots follow.
+    return Array.from(map.values()).sort(
+      (a, b) => b.total - a.total || b.bank - a.bank || a.category.localeCompare(b.category),
+    );
+  }, [byCategory, bankByCategory]);
+
+  if (rows.length === 0) {
+    return (
+      <div className="mt-6 border border-dashed border-border bg-background p-4 text-xs text-muted-foreground">
+        Accuracy by category will appear here once you retry a few questions.
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-6">
+      <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5">
+          <Layers className="h-3.5 w-3.5" />
+          Accuracy by category
+        </span>
+        <span>correct / attempts · left in bank</span>
+      </div>
+      <ul className="divide-y divide-border border border-border bg-background">
+        {rows.map((r) => {
+          const pct = Math.round(r.accuracy * 100);
+          const barColor =
+            r.total === 0
+              ? "bg-muted"
+              : pct >= 80
+                ? "bg-emerald-600/70"
+                : pct >= 50
+                  ? "bg-amber-500/70"
+                  : "bg-destructive/70";
+          return (
+            <li key={r.category} className="grid grid-cols-[1fr_auto] items-center gap-3 px-3 py-2.5">
+              <div className="min-w-0">
+                <div className="truncate text-sm font-medium">
+                  {formatCategoryLabel(r.category)}
+                </div>
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden bg-border">
+                  <div
+                    className={cn("h-full", barColor)}
+                    style={{ width: `${r.total === 0 ? 0 : Math.max(4, pct)}%` }}
+                    aria-hidden="true"
+                  />
+                </div>
+                <div className="mt-1 text-[11px] text-muted-foreground">
+                  {r.total === 0
+                    ? "No retries yet"
+                    : `${pct}% accuracy · ${r.correct}/${r.total} attempts`}
+                  {r.bank > 0 && ` · ${r.bank} in bank`}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-display text-lg leading-none">
+                  {r.total === 0 ? "—" : `${pct}%`}
+                </div>
+                <div className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                  {r.bank > 0 ? `${r.bank} to go` : "cleared"}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
@@ -322,10 +441,10 @@ function RetryRunner({ queue, onExit }: { queue: TheoryQuestion[]; onExit: () =>
         next.add(q.id);
         return next;
       });
-      recordRetry(true);
+      recordRetry(true, q.category);
     } else {
       setTriedThisQuestion(true);
-      recordRetry(false);
+      recordRetry(false, q.category);
     }
   };
 
