@@ -1096,12 +1096,22 @@ function GiveWayJunctionSvg() {
         <rect key={i} x="357" y={310 + i * 32} width="6" height="16" fill={PAINT} />
       ))}
 
-      {/* Give-way markings across the mouth of the minor road — SINGLE broken
-          line because the driver is turning from a MAJOR road into a MINOR
-          road (a full double broken line would apply the other way around). */}
-      {Array.from({ length: 8 }).map((_, i) => (
-        <rect key={i} x={296 + i * 17} y="270" width="10" height="7" fill={PAINT} />
+      {/* Give-way markings across the mouth of the minor road.
+          LEFT half (nearside as the pedestrian steps on) — DOUBLE broken line.
+          RIGHT half — SINGLE broken line. */}
+      {/* Left half: double broken line */}
+      {Array.from({ length: 4 }).map((_, i) => (
+        <g key={`gw-l-${i}`}>
+          <rect x={296 + i * 17} y="266" width="10" height="6" fill={PAINT} />
+          <rect x={296 + i * 17} y="276" width="10" height="6" fill={PAINT} />
+        </g>
       ))}
+      {/* Right half: single broken line */}
+      {Array.from({ length: 4 }).map((_, i) => (
+        <rect key={`gw-r-${i}`} x={364 + i * 17} y="270" width="10" height="7" fill={PAINT} />
+      ))}
+      {/* Thin divider between the two halves for clarity */}
+      <line x1="360" y1="264" x2="360" y2="286" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="1" />
 
       {/* Red car coming FROM THE LEFT along the major road and turning LEFT
           into the minor road — shown mid-arc, front pointing down into the
