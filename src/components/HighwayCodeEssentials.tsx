@@ -97,13 +97,46 @@ function ZoomPan({ children, aspect = "16/9", label }: { children: ReactNode; as
           {children}
         </div>
       </div>
-      <div className="pointer-events-none absolute left-2 top-2 rounded-sm bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+      {/* Hint sits bottom-left, out of the way of most diagrams */}
+      <div className="pointer-events-none absolute left-2 bottom-2 rounded-sm bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
         Pinch · scroll · double-tap to zoom
       </div>
-      <div className="absolute right-2 top-2 flex gap-1">
-        <button type="button" onClick={() => zoomTo(scale + 0.6)} className="h-7 w-7 rounded-sm bg-black/60 text-white text-sm font-bold hover:bg-black/80" aria-label="Zoom in">+</button>
-        <button type="button" onClick={() => zoomTo(scale - 0.6)} className="h-7 w-7 rounded-sm bg-black/60 text-white text-sm font-bold hover:bg-black/80" aria-label="Zoom out">−</button>
-        <button type="button" onClick={() => zoomTo(1)} className="h-7 rounded-sm bg-black/60 px-2 text-[11px] font-semibold text-white hover:bg-black/80" aria-label="Reset zoom">Reset</button>
+      {/* Zoom controls: large touch targets, current % badge, reset only when zoomed */}
+      <div className="absolute right-2 bottom-2 flex items-center gap-1">
+        <div
+          className="pointer-events-none rounded-sm bg-black/60 px-2 py-1 text-[10px] font-semibold text-white tabular-nums"
+          aria-live="polite"
+        >
+          {Math.round(scale * 100)}%
+        </div>
+        {scale > 1 && (
+          <button
+            type="button"
+            onClick={() => zoomTo(1)}
+            className="h-9 rounded-sm bg-black/70 px-2 text-[11px] font-semibold text-white hover:bg-black/85"
+            aria-label="Reset zoom"
+          >
+            Reset
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => zoomTo(scale - 0.6)}
+          disabled={scale <= 1}
+          className="grid h-9 w-9 place-items-center rounded-sm bg-black/70 text-lg font-bold text-white hover:bg-black/85 disabled:opacity-40"
+          aria-label="Zoom out"
+        >
+          −
+        </button>
+        <button
+          type="button"
+          onClick={() => zoomTo(scale + 0.6)}
+          disabled={scale >= 6}
+          className="grid h-9 w-9 place-items-center rounded-sm bg-black/70 text-lg font-bold text-white hover:bg-black/85 disabled:opacity-40"
+          aria-label="Zoom in"
+        >
+          +
+        </button>
       </div>
     </div>
   );
