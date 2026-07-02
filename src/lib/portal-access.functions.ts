@@ -43,6 +43,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     ok: boolean;
     reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed";
     retryAfterSeconds?: number;
+    captchaRequiredNext?: boolean;
     subscription?: { email: string | null; expires_at: string | null } | null;
     session?: { access_token: string; refresh_token: string } | null;
   }> => {
