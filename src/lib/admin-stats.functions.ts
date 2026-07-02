@@ -521,3 +521,131 @@ export const exportAdminCsv = createServerFn({ method: "POST" })
     const filename = `${data.dataset}_${from}_to_${to}.csv`;
     return { filename, csv, rangeFrom: from, rangeTo: to };
   });
+
+export type TrafficStats = {
+  rangeDays: number;
+  totalViews: number;
+  uniqueSessions: number;
+  bySurface: { app: number; browser: number; unknown: number };
+  byDevice: { ios: number; android: number; mobile: number; desktop: number; unknown: number };
+  byPlatform: { platform: string; views: number; sessions: number }[];
+  topPaths: { path: string; views: number; sessions: number }[];
+  topPathsByPlatform: {
+    path: string;
+    app: number;
+    browser: number;
+    total: number;
+  }[];
+  series: { date: string; app: number; browser: number; total: number }[];
+};
+
+export const getTrafficStats = createServerFn({ method: "POST" })
+  .inputValidator((d: { password: string; rangeDays: number }) => d)
+  .handler(async ({ data }): Promise<TrafficStats> => {
+    const supabase = await adminClient(data.password);
+    const range = [1, 7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 7;
+    const sinceIso = new Date(Date.now() - range * 24 * 60 * 60 * 1000).toISOString();
+
+    const { data: rows, error } = await supabase
+      .from("page_views")
+      .select("path,platform,session_id,user_agent,created_at")
+      .gte("created_at", sinceIso)
+      .order("created_at", { ascending: false })
+      .limit(20000);
+    if (error) throw new Response(error.message, { status: 500 });
+
+    type Row = { path: string; platform: string | null; session_id: string | null; user_agent: string | null; created_at: string };
+    const list = (rows ?? []) as Row[];
+
+    const surfaceOf = (p: string | null, ua: string | null): "app" | "browser" | "unknown" => {
+      if (p) {
+        if (p.startsWith("app-")) return "app";
+        if (p.startsWith("browser-")) return "browser";
+      }
+      if (ua) return "browser";
+      return "unknown";
+    };
+    const deviceOf = (p: string | null, ua: string | null): "ios" | "android" | "mobile" | "desktop" | "unknown" => {
+      if (p) {
+        const d = p.split("-")[1];
+        if (d === "ios" || d === "android" || d === "mobile" || d === "desktop") return d;
+      }
+      if (ua) {
+        if (/iPhone|iPad|iPod/i.test(ua)) return "ios";
+        if (/Android/i.test(ua)) return "android";
+        if (/Mobile/i.test(ua)) return "mobile";
+        return "desktop";
+      }
+      return "unknown";
+    };
+
+    const bySurface = { app: 0, browser: 0, unknown: 0 };
+    const byDevice = { ios: 0, android: 0, mobile: 0, desktop: 0, unknown: 0 };
+    const platformCounts = new Map<string, { views: number; sessions: Set<string> }>();
+    const pathCounts = new Map<string, { views: number; sessions: Set<string>; app: number; browser: number }>();
+    const sessions = new Set<string>();
+    const dayBuckets: Record<string, { app: number; browser: number; total: number }> = {};
+    const today = new Date();
+    for (let i = range - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      dayBuckets[d.toISOString().slice(0, 10)] = { app: 0, browser: 0, total: 0 };
+    }
+
+    for (const r of list) {
+      const surface = surfaceOf(r.platform, r.user_agent);
+      const device = deviceOf(r.platform, r.user_agent);
+      bySurface[surface] += 1;
+      byDevice[device] += 1;
+      const plat = r.platform || `${surface}-${device}`;
+      const pRow = platformCounts.get(plat) ?? { views: 0, sessions: new Set<string>() };
+      pRow.views += 1;
+      if (r.session_id) pRow.sessions.add(r.session_id);
+      platformCounts.set(plat, pRow);
+
+      const path = r.path || "(unknown)";
+      const pathRow = pathCounts.get(path) ?? { views: 0, sessions: new Set<string>(), app: 0, browser: 0 };
+      pathRow.views += 1;
+      if (r.session_id) pathRow.sessions.add(r.session_id);
+      if (surface === "app") pathRow.app += 1;
+      else if (surface === "browser") pathRow.browser += 1;
+      pathCounts.set(path, pathRow);
+
+      if (r.session_id) sessions.add(r.session_id);
+
+      const key = r.created_at.slice(0, 10);
+      if (key in dayBuckets) {
+        dayBuckets[key].total += 1;
+        if (surface === "app") dayBuckets[key].app += 1;
+        else if (surface === "browser") dayBuckets[key].browser += 1;
+      }
+    }
+
+    const byPlatform = Array.from(platformCounts.entries())
+      .map(([platform, v]) => ({ platform, views: v.views, sessions: v.sessions.size }))
+      .sort((a, b) => b.views - a.views);
+
+    const topPaths = Array.from(pathCounts.entries())
+      .map(([path, v]) => ({ path, views: v.views, sessions: v.sessions.size }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 15);
+
+    const topPathsByPlatform = Array.from(pathCounts.entries())
+      .map(([path, v]) => ({ path, app: v.app, browser: v.browser, total: v.views }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 15);
+
+    const series = Object.entries(dayBuckets).map(([date, v]) => ({ date, ...v }));
+
+    return {
+      rangeDays: range,
+      totalViews: list.length,
+      uniqueSessions: sessions.size,
+      bySurface,
+      byDevice,
+      byPlatform,
+      topPaths,
+      topPathsByPlatform,
+      series,
+    };
+  });
