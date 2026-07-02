@@ -741,33 +741,53 @@ function TrafficLights() {
       title="Traffic lights & pedestrian crossings"
       subtitle="The signal sequence, the flashing amber phase, filter arrows, and what Pelican / Puffin / Toucan actually stand for."
     >
-      {/* Standard sequence */}
+      {/* Standard sequence — the two clear phases on top, then the two "STOP
+          but there's more to know" phases each paired with an explanation
+          the same way as the Green Filter Arrow / Flashing Amber below. */}
       <div>
         <div className="text-sm font-semibold">Signal sequence (rule 175)</div>
-        <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Signal label="RED — STOP. Wait behind the white line" red />
-          <Signal label="RED + AMBER — STOP. Do NOT go until green shows" red amber />
-          <Signal label="GREEN — GO, if the way is clear" green />
-          <Signal label="SOLID AMBER — STOP" amber />
+
+        {/* Row 1: the simple phases */}
+        <div className="mt-3 grid grid-cols-2 gap-4">
+          <div className="flex items-center gap-4">
+            <Signal label="RED" red />
+            <p className="text-sm text-muted-foreground">
+              <strong>STOP.</strong> Wait behind the white line.
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Signal label="GREEN" green />
+            <p className="text-sm text-muted-foreground">
+              <strong>GO</strong> — if the way is clear.
+            </p>
+          </div>
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Red + Amber together</div>
-            <strong>Red and amber also means STOP.</strong> Do <strong>not</strong>
-            go until the <strong>green</strong> shows. Stay behind the white
-            line, keep the handbrake / footbrake on and be ready to move off
-            smoothly when green appears.
+        {/* Row 2: red+amber and solid amber, each with signal + full explanation */}
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="flex items-start gap-4 border border-border bg-secondary/40 p-3">
+            <Signal label="RED + AMBER" red amber />
+            <div className="text-sm leading-relaxed">
+              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Red + Amber together</div>
+              <strong>Red and amber also means STOP.</strong> Do <strong>not</strong>
+              go until the <strong>green</strong> shows. Stay behind the white
+              line, keep the brake on and be ready to move off smoothly when
+              green appears.
+            </div>
           </div>
-          <div className="border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solid Amber</div>
-            <strong>Solid amber means STOP.</strong> Do <strong>not</strong> go
-            past the amber light <em>unless</em>:
-            <ul className="mt-1 list-disc pl-5">
-              <li>you have <strong>already crossed the white line</strong> when the amber shows, or</li>
-              <li><strong>stopping might cause an accident</strong> — for example, the vehicle behind you is too close and would run into you if you braked hard.</li>
-            </ul>
-            In every other case, stop and wait for green.
+
+          <div className="flex items-start gap-4 border border-border bg-secondary/40 p-3">
+            <Signal label="SOLID AMBER" amber />
+            <div className="text-sm leading-relaxed">
+              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solid Amber</div>
+              <strong>Solid amber means STOP.</strong> Do <strong>not</strong> go
+              past the amber light <em>unless</em>:
+              <ul className="mt-1 list-disc pl-5">
+                <li>you have <strong>already crossed the white line</strong> when the amber shows, or</li>
+                <li><strong>stopping might cause an accident</strong> — for example, the vehicle behind you is too close and would run into you if you braked hard.</li>
+              </ul>
+              In every other case, stop and wait for green.
+            </div>
           </div>
         </div>
       </div>
@@ -1575,6 +1595,273 @@ function ZebraCrossing() {
       <div className="mt-4 border border-border bg-secondary/40 p-3 text-xs text-muted-foreground">
         Also worth knowing: on a <strong>parallel crossing</strong> (zebra with a cycle lane alongside), cyclists have the same priority as pedestrians. A <strong>staggered</strong> crossing with a central island counts as <strong>two separate crossings</strong>.
       </div>
+
+      {/* Second diagram — zebra with a central refuge island */}
+      <div className="mt-8">
+        <div className="text-sm font-semibold">Zebra crossing with a central island (refuge)</div>
+        <p className="mt-1 text-sm text-muted-foreground">
+          When a zebra has a <strong>central island</strong> in the middle of the
+          road, it counts as <strong>two separate zebra crossings</strong> — one
+          for each half of the carriageway.
+        </p>
+
+        <div className="mt-3">
+          <ZoomPan aspect="640/380" label="Zebra crossing with central island — pinch or scroll to zoom">
+            <ZebraSceneWithIslandSvg />
+          </ZoomPan>
+        </div>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">If the pedestrian is on the far side</div>
+            If the pedestrian is <strong>on the other side of the island</strong>
+            from you and clearly hasn't started crossing your half,
+            <strong> you can go</strong> — that's a different crossing.
+          </div>
+          <div className="border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">If they'll reach your side before you do</div>
+            If you judge that they'll be <strong>halfway across (on the island)
+            before you reach the crossing</strong>, you <strong>must wait</strong>.
+            It's <em>not a competition</em> — never race a pedestrian.
+          </div>
+        </div>
+
+        <div className="mt-3 border border-border bg-secondary/40 p-3 text-xs text-muted-foreground">
+          <strong>Funnel vision:</strong> as your speed rises your view narrows to a
+          funnel straight ahead. Actively <strong>scan wider</strong> — kerb to
+          kerb, both sides of the island — so you see anyone approaching either
+          half of the crossing well before they step off.
+        </div>
+      </div>
     </Panel>
+  );
+}
+
+// Zebra crossing with a central refuge island — visually the same style as
+// ZebraSceneSvg, but the crossing is split by an island so it becomes two
+// independent zebra crossings (one per carriageway half).
+function ZebraSceneWithIslandSvg() {
+  const TARMAC = "#3a3a3d";
+  const TARMAC_DARK = "#2b2b2e";
+  const PAINT = "#f6f6f0";
+  const AMBER = "#ffb300";
+  const AMBER_GLOW = "#ffdd66";
+
+  const ROAD_TOP = 92;
+  const ROAD_BOT = 288;
+  const CROSS_X1 = 208;
+  const CROSS_X2 = 452;
+  const STRIPE_W = 22;
+
+  // Central refuge island geometry
+  const ISLAND_Y1 = 178;
+  const ISLAND_Y2 = 202;
+  const ISLAND_PAD = 6; // island slightly narrower than the stripe band
+
+  const topStripes: ReactNode[] = [];
+  const botStripes: ReactNode[] = [];
+  for (let sx = CROSS_X1, i = 0; sx + STRIPE_W <= CROSS_X2; sx += STRIPE_W, i++) {
+    if (i % 2 === 0) {
+      topStripes.push(
+        <rect key={`ts-${sx}`} x={sx} y={ROAD_TOP} width={STRIPE_W} height={ISLAND_Y1 - ROAD_TOP} fill={PAINT} />,
+      );
+      botStripes.push(
+        <rect key={`bs-${sx}`} x={sx} y={ISLAND_Y2} width={STRIPE_W} height={ROAD_BOT - ISLAND_Y2} fill={PAINT} />,
+      );
+    }
+  }
+
+  const zigzagPath = (xStart: number, xEnd: number, yKerb: number, side: "top" | "bottom", key: string) => {
+    const teeth = 8;
+    const width = (xEnd - xStart) / teeth;
+    const amp = 10;
+    const dir = side === "top" ? 1 : -1;
+    const yBase = yKerb + dir * 2;
+    const yPeak = yBase + dir * amp;
+    let d = `M ${xStart} ${yBase}`;
+    for (let t = 0; t < teeth; t++) {
+      const x1 = xStart + width * (t + 0.5);
+      const x2 = xStart + width * (t + 1);
+      d += ` L ${x1} ${yPeak} L ${x2} ${yBase}`;
+    }
+    return <path key={key} d={d} fill="none" stroke={PAINT} strokeWidth="2.4" strokeLinejoin="miter" strokeLinecap="square" />;
+  };
+
+  const beacons = [
+    { x: CROSS_X1 - 6, top: true },
+    { x: CROSS_X2 + 6, top: true },
+    { x: CROSS_X1 - 6, top: false },
+    { x: CROSS_X2 + 6, top: false },
+  ];
+
+  return (
+    <svg
+      viewBox="0 0 640 380"
+      className="block w-full h-auto"
+      role="img"
+      aria-label="Top-down view of a UK zebra crossing split by a central refuge island, counting as two separate zebra crossings"
+      shapeRendering="geometricPrecision"
+    >
+      <defs>
+        <linearGradient id="zebra2-tarmac" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={TARMAC} />
+          <stop offset="0.5" stopColor={TARMAC_DARK} />
+          <stop offset="1" stopColor={TARMAC} />
+        </linearGradient>
+        <pattern id="zebra2-asphalt" width="6" height="6" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" fill="url(#zebra2-tarmac)" />
+          <circle cx="1.3" cy="1.7" r="0.35" fill="rgba(255,255,255,0.05)" />
+          <circle cx="4.2" cy="3.1" r="0.3" fill="rgba(0,0,0,0.18)" />
+          <circle cx="2.6" cy="4.6" r="0.28" fill="rgba(255,255,255,0.05)" />
+        </pattern>
+        <linearGradient id="zebra2-verge" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#365a29" />
+          <stop offset="1" stopColor="#4a7c3a" />
+        </linearGradient>
+        <linearGradient id="zebra2-pavement" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#a9a4a0" />
+          <stop offset="1" stopColor="#8a857f" />
+        </linearGradient>
+        <radialGradient id="beacon2-glow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor={AMBER_GLOW} stopOpacity="0.9" />
+          <stop offset="0.6" stopColor={AMBER} stopOpacity="0.55" />
+          <stop offset="1" stopColor={AMBER} stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="beacon2-body" cx="0.35" cy="0.35" r="0.7">
+          <stop offset="0" stopColor="#fff5cc" />
+          <stop offset="0.4" stopColor={AMBER_GLOW} />
+          <stop offset="1" stopColor={AMBER} />
+        </radialGradient>
+      </defs>
+
+      {/* Verges + pavements */}
+      <rect x="0" y="0" width="640" height="60" fill="url(#zebra2-verge)" />
+      <rect x="0" y="320" width="640" height="60" fill="url(#zebra2-verge)" />
+      <rect x="0" y="60" width="640" height="30" fill="url(#zebra2-pavement)" />
+      <rect x="0" y="290" width="640" height="30" fill="url(#zebra2-pavement)" />
+      {Array.from({ length: 16 }, (_, i) => (
+        <line key={`p1-${i}`} x1={i * 40} y1="60" x2={i * 40} y2="90" stroke="rgba(0,0,0,0.2)" strokeWidth="0.6" />
+      ))}
+      {Array.from({ length: 16 }, (_, i) => (
+        <line key={`p2-${i}`} x1={i * 40} y1="290" x2={i * 40} y2="320" stroke="rgba(0,0,0,0.2)" strokeWidth="0.6" />
+      ))}
+      <rect x="0" y="88" width="640" height="4" fill="#c9c4bd" />
+      <rect x="0" y="288" width="640" height="4" fill="#c9c4bd" />
+
+      {/* Road */}
+      <rect x="0" y="92" width="640" height="196" fill="url(#zebra2-asphalt)" />
+
+      {/* Broken lane lines — stop at the crossing */}
+      <line x1="10" y1="140" x2={CROSS_X1 - 6} y2="140" stroke={PAINT} strokeWidth="2.4" strokeDasharray="20 14" />
+      <line x1={CROSS_X2 + 6} y1="140" x2="630" y2="140" stroke={PAINT} strokeWidth="2.4" strokeDasharray="20 14" />
+      <line x1="10" y1="240" x2={CROSS_X1 - 6} y2="240" stroke={PAINT} strokeWidth="2.4" strokeDasharray="20 14" />
+      <line x1={CROSS_X2 + 6} y1="240" x2="630" y2="240" stroke={PAINT} strokeWidth="2.4" strokeDasharray="20 14" />
+
+      {/* Zig-zags — approach on both sides, both kerbs */}
+      {zigzagPath(20, CROSS_X1 - 8, ROAD_TOP, "top", "zz-tl")}
+      {zigzagPath(CROSS_X2 + 8, 620, ROAD_TOP, "top", "zz-tr")}
+      {zigzagPath(20, CROSS_X1 - 8, ROAD_BOT, "bottom", "zz-bl")}
+      {zigzagPath(CROSS_X2 + 8, 620, ROAD_BOT, "bottom", "zz-br")}
+
+      {/* Two independent stripe fields (split by island) */}
+      {topStripes}
+      {botStripes}
+
+      {/* Central refuge island — kerbed, with white keep-left arrows painted */}
+      <rect
+        x={CROSS_X1 + ISLAND_PAD}
+        y={ISLAND_Y1}
+        width={CROSS_X2 - CROSS_X1 - ISLAND_PAD * 2}
+        height={ISLAND_Y2 - ISLAND_Y1}
+        rx="4"
+        fill="#b8b3ac"
+        stroke="#5c574f"
+        strokeWidth="1.4"
+      />
+      {/* Island kerb highlight */}
+      <rect
+        x={CROSS_X1 + ISLAND_PAD}
+        y={ISLAND_Y1}
+        width={CROSS_X2 - CROSS_X1 - ISLAND_PAD * 2}
+        height={ISLAND_Y2 - ISLAND_Y1}
+        rx="4"
+        fill="none"
+        stroke="rgba(255,255,255,0.4)"
+        strokeWidth="0.8"
+      />
+      {/* Keep-left chevron blocks each side of the island */}
+      <g fill="#ffffff" opacity="0.85">
+        <polygon points={`${CROSS_X1 + 12},190 ${CROSS_X1 + 22},184 ${CROSS_X1 + 22},196`} />
+        <polygon points={`${CROSS_X2 - 12},190 ${CROSS_X2 - 22},184 ${CROSS_X2 - 22},196`} />
+      </g>
+
+      {/* Belisha beacons — outer corners */}
+      {beacons.map((b, i) => {
+        const poleH = 34;
+        const poleTop = b.top ? 56 : 292;
+        const poleBot = b.top ? 88 : 292 + poleH;
+        const globeCy = b.top ? poleTop - 6 : poleBot + 6;
+        const bandCount = 5;
+        const bandH = (poleBot - poleTop) / bandCount;
+        return (
+          <g key={`b-${i}`}>
+            {Array.from({ length: bandCount }, (_, k) => (
+              <rect key={k} x={b.x - 2} y={poleTop + k * bandH} width="4" height={bandH} fill={k % 2 === 0 ? "#111" : PAINT} stroke="#000" strokeWidth="0.3" />
+            ))}
+            <circle cx={b.x} cy={globeCy} r="16" fill="url(#beacon2-glow)" />
+            <circle cx={b.x} cy={globeCy} r="7" fill="url(#beacon2-body)" stroke="#7a5300" strokeWidth="0.6" />
+            <circle cx={b.x - 2.2} cy={globeCy - 2.2} r="1.6" fill="#fff8d1" opacity="0.9" />
+            <rect x={b.x - 2} y={b.top ? poleTop - 2 : poleBot} width="4" height="2" fill="#222" />
+          </g>
+        );
+      })}
+
+      {/* Belisha beacons ON the island — one per side */}
+      {[CROSS_X1 + 16, CROSS_X2 - 16].map((bx, i) => (
+        <g key={`bi-${i}`}>
+          {/* short pole embedded in island */}
+          {Array.from({ length: 3 }, (_, k) => (
+            <rect key={k} x={bx - 2} y={ISLAND_Y1 + 2 + k * 6} width="4" height="6" fill={k % 2 === 0 ? "#111" : PAINT} stroke="#000" strokeWidth="0.3" />
+          ))}
+          <circle cx={bx} cy={ISLAND_Y1 - 6} r="12" fill="url(#beacon2-glow)" />
+          <circle cx={bx} cy={ISLAND_Y1 - 6} r="5.5" fill="url(#beacon2-body)" stroke="#7a5300" strokeWidth="0.5" />
+        </g>
+      ))}
+
+      {/* Pedestrian standing on the island (halfway across) */}
+      <g transform="translate(330 190)">
+        <ellipse cx="0" cy="10" rx="8" ry="2" fill="rgba(0,0,0,0.4)" />
+        <path d="M -3 0 L -5 10 L -2 10 L -1 2 Z" fill="#1f2937" />
+        <path d="M 3 0 L 5 10 L 2 10 L 1 2 Z" fill="#1f2937" />
+        <path d="M -5 -10 Q -6 -2 -4 4 L 4 4 Q 6 -2 5 -10 Z" fill="#0f766e" />
+        <circle cx="0" cy="-14" r="3.6" fill="#f3d3b0" />
+      </g>
+
+      {/* Approaching car on bottom lane — must wait, ped is on island */}
+      <g transform="translate(560 250)">
+        <ellipse cx="0" cy="24" rx="34" ry="4" fill="rgba(0,0,0,0.45)" />
+        <rect x="-30" y="-4" width="60" height="24" rx="6" fill="#1e3a8a" />
+        <path d="M -20 -4 L -12 -16 L 14 -16 L 22 -4 Z" fill="#0b1e4d" />
+        <path d="M -18 -5 L -11 -14 L 13 -14 L 20 -5 Z" fill="#7dd3fc" opacity="0.85" />
+        <circle cx="-18" cy="20" r="5.5" fill="#111" />
+        <circle cx="18" cy="20" r="5.5" fill="#111" />
+        <rect x="26" y="0" width="4" height="4" rx="1" fill="#ef4444" />
+        <rect x="26" y="14" width="4" height="4" rx="1" fill="#ef4444" />
+      </g>
+
+      {/* Labels */}
+      <g fontFamily="Arial, sans-serif" fill={PAINT} fontWeight="700" letterSpacing="0.4">
+        <text x="14" y="22" fontSize="10">PAVEMENT</text>
+        <text x="14" y="358" fontSize="10">PAVEMENT</text>
+        <text x="24" y="128" fontSize="9" opacity="0.9">CROSSING 1 — TOP HALF</text>
+        <text x="24" y="262" fontSize="9" opacity="0.9">CROSSING 2 — BOTTOM HALF</text>
+      </g>
+
+      {/* Island callout */}
+      <g fontFamily="Arial, sans-serif" fontSize="10" fontWeight="700">
+        <rect x="470" y="182" width="150" height="18" fill="#ffffff" opacity="0.92" />
+        <text x="478" y="195" fill="#0b1f1c">Central refuge island</text>
+      </g>
+    </svg>
   );
 }
