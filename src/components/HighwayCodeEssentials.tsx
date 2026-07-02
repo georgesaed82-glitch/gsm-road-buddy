@@ -1190,18 +1190,6 @@ function HierarchyOfRoadUsers() {
   );
 }
 
-function _HighwayCodeEssentialsUnused() {
-  return (
-    <div className="grid gap-6">
-      <RoadStuds />
-      <HierarchyOfRoadUsers />
-      <StoppingDistances />
-      <TrafficLights />
-      <ZebraCrossing />
-    </div>
-  );
-}
-
 // ── Zebra crossing ─────────────────────────────────────────────────
 // Driver-eye top-down scene: two-lane road with a zebra crossing, Belisha
 // beacons on both sides, zig-zag controlled area, a pedestrian stepping on,
