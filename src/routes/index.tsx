@@ -307,6 +307,23 @@ function Home() {
               <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                 Hazard perception & anticipation
               </div>
+              <div className="mb-4 overflow-hidden border-2 border-accent bg-primary p-6 text-primary-foreground shadow-lg sm:p-8">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="text-[11px] uppercase tracking-[0.24em] text-accent">Status update</div>
+                    <div className="mt-2 font-display text-3xl leading-[1.05] sm:text-4xl md:text-5xl">
+                      Hazard perception from GSM — <span className="italic text-accent">coming soon</span>
+                    </div>
+                    <p className="mt-3 max-w-2xl text-sm opacity-90 sm:text-base">
+                      Built from <span className="font-semibold text-accent">real dashcam recordings of live driving situations</span> around West London — not stock footage. Filming now.
+                    </p>
+                  </div>
+                  <div className="flex-none self-start border border-accent/60 px-4 py-2 text-center">
+                    <div className="text-[10px] uppercase tracking-[0.22em] opacity-70">Progress</div>
+                    <div className="mt-1 font-display text-lg">Filming now</div>
+                  </div>
+                </div>
+              </div>
               <HomeHazardQuiz />
             </div>
           </div>
