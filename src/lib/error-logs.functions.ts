@@ -15,7 +15,7 @@ export type ErrorLogRow = {
   user_agent: string | null;
   mechanism: string | null;
   fingerprint: string | null;
-  extra: Record<string, unknown>;
+  extra: unknown;
   alert_sent: boolean;
 };
 
@@ -42,7 +42,7 @@ export const logClientError = createServerFn({ method: "POST" })
       source?: string;
       userId?: string | null;
       userEmail?: string | null;
-      extra?: Record<string, unknown>;
+      extra?: Record<string, string | number | boolean | null>;
     }) => d,
   )
   .handler(async ({ data }) => {
@@ -66,7 +66,7 @@ export const logClientError = createServerFn({ method: "POST" })
         user_agent: data.userAgent ? String(data.userAgent).slice(0, 1000) : null,
         mechanism: data.mechanism ? String(data.mechanism).slice(0, 100) : null,
         fingerprint: fp,
-        extra: data.extra ?? {},
+        extra: (data.extra ?? {}) as never,
       })
       .select("id")
       .single();
