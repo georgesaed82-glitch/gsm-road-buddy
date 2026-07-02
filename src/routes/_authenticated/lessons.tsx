@@ -251,7 +251,9 @@ function LessonsPage() {
             </div>
           </div>
           <ol className="mt-6 border border-border bg-card">
-            {skillMilestones.map((m, i) => {
+            {skillMilestones
+              .filter((m) => skillFilter === "all" || m.key === skillFilter)
+              .map((m, i) => {
               const r = ratingMap.get(m.key) ?? 0;
               const done = r >= 10;
               const reached = done || allSkills.has(m.name) || completed >= m.target;
