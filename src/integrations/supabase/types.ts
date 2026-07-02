@@ -256,6 +256,7 @@ export type Database = {
           created_at: string
           id: string
           path: string
+          platform: string | null
           referrer: string | null
           session_id: string | null
           user_agent: string | null
@@ -264,6 +265,7 @@ export type Database = {
           created_at?: string
           id?: string
           path: string
+          platform?: string | null
           referrer?: string | null
           session_id?: string | null
           user_agent?: string | null
@@ -272,6 +274,7 @@ export type Database = {
           created_at?: string
           id?: string
           path?: string
+          platform?: string | null
           referrer?: string | null
           session_id?: string | null
           user_agent?: string | null
