@@ -68,7 +68,7 @@ export const officialSignImages: Record<string, string> = {
   "c-pelican": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
   "c-puffin": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
   "c-toucan": "/__l5e/assets-v1/25c70e1c-a6a8-483c-a661-079a81d90da1/UK_traffic_sign_544.2.svg",
-  "c-pegasus": "/__l5e/assets-v1/02e1af99-77c8-4b5d-899f-cdb204414d93/UK_traffic_sign_550.1.svg",
+  "c-pegasus": "https://commons.wikimedia.org/wiki/Special:FilePath/UK_traffic_sign_550.1.svg",
   "t-red": "/__l5e/assets-v1/5f9941fa-6b61-497a-b5ee-b3a4eb679d79/Traffic_lights_red.svg",
   "t-red-amber": "/__l5e/assets-v1/5857526d-92b4-4060-8d58-54614e49c641/Traffic_lights_red-yellow.svg",
   "t-amber": "/__l5e/assets-v1/d63e6eca-058d-4d34-819f-3e88d61882bc/Traffic_lights_yellow.svg",

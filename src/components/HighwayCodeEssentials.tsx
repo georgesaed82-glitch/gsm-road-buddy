@@ -1,4 +1,5 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
+import dualCarriagewayStuds from "@/assets/dual-carriageway-studs.jpeg.asset.json";
 
 // ─────────────────────────────────────────────────────────────
 // Highway Code — visual essentials
@@ -316,8 +317,13 @@ function RoadStuds() {
       title="Road stud colours (rule 132)"
       subtitle="Reflective studs mark lane edges — colour tells you what the line means."
     >
-      <ZoomPan aspect="640/360" label="UK dual carriageway showing road stud colours — pinch or scroll to zoom in">
-        <RoadStudsDiagram />
+      <ZoomPan aspect="16/9" label="UK dual carriageway showing road stud colours — pinch or scroll to zoom in">
+        <img
+          src={dualCarriagewayStuds.url}
+          alt="UK dual carriageway road stud colours: red, white, green, green/yellow and amber"
+          className="h-full w-full object-contain"
+          draggable={false}
+        />
       </ZoomPan>
       <ul className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
         <li className="flex items-start gap-2">
