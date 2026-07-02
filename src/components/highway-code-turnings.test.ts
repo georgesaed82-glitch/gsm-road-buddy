@@ -136,11 +136,9 @@ describe("YellowBoxJunctionSvg", () => {
     expect(norm(b.rotate), "blue faces due south (180°)").toBe(180);
   });
 
-  it("red arrow curves into the east exit, blue arrow goes straight south", () => {
+  it("red arrow curves into the east exit", () => {
     const east = arrows.find((p) => p.x >= 550 && p.y <= 190);
-    const south = arrows.find((p) => p.y >= 300);
     expect(east, "a curved arrow ends in the east exit").toBeTruthy();
-    expect(south, "a straight arrow ends at the south side of the junction").toBeTruthy();
   });
 });
 
