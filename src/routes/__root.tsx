@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { installGlobalErrorHandlers } from "../lib/lovable-error-reporting";
+import { initSentryOnce } from "../lib/sentry";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { AIChatWidget } from "../components/AIChatWidget";
@@ -244,6 +246,11 @@ function RootComponent() {
 
   useEffect(() => {
     registerServiceWorker();
+  }, []);
+
+  useEffect(() => {
+    installGlobalErrorHandlers();
+    void initSentryOnce();
   }, []);
 
   return (
