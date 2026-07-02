@@ -878,7 +878,14 @@ function HazardTutorial() {
 
             {/* User's actual click flags */}
             {clicks.map((c, i) => (
-              <ClickFlag key={i} x={`${c.pct}%`} y="60%" label={`Click ${i + 1}`} delay={0} />
+              <ClickFlag
+                key={i}
+                x={`${c.pct}%`}
+                y="42%"
+                label={`Click ${i + 1}`}
+                tone={c.verdict === "perfect" ? "good" : c.verdict === "early" ? "warn" : "bad"}
+                delay={0}
+              />
             ))}
 
             {/* Live click prompt */}
