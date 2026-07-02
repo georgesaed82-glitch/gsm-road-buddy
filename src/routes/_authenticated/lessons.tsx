@@ -3,9 +3,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, Loader2, CloudCheck, CloudOff } from "lucide-react";
+import { Star, Check, Loader2, CloudCheck, CloudOff, History, ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export const Route = createFileRoute("/_authenticated/lessons")({
   head: () => ({ meta: [{ title: "Lessons & progress · GSM" }] }),
@@ -57,6 +62,32 @@ function LessonsPage() {
     staleTime: 30_000,
   });
 
+  type HistoryEntry = {
+    id: string;
+    skill_key: string;
+    rating: number;
+    previous_rating: number | null;
+    changed_at: string;
+  };
+  const { data: history = [] } = useQuery({
+    queryKey: ["skill-rating-history"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("skill_rating_history")
+        .select("id, skill_key, rating, previous_rating, changed_at")
+        .order("changed_at", { ascending: false })
+        .limit(500);
+      return (data ?? []) as HistoryEntry[];
+    },
+    staleTime: 15_000,
+  });
+  const historyBySkill = new Map<string, HistoryEntry[]>();
+  for (const h of history) {
+    const list = historyBySkill.get(h.skill_key);
+    if (list) list.push(h);
+    else historyBySkill.set(h.skill_key, [h]);
+  }
+
   const ratingMap = new Map(ratings.map((r) => [r.skill_key, r.rating]));
 
   const persist = async (key: string, rating: number) => {
@@ -105,6 +136,7 @@ function LessonsPage() {
         setSaveState("saved");
         if (savedTimer.current) clearTimeout(savedTimer.current);
         savedTimer.current = setTimeout(() => setSaveState("idle"), 1500);
+        qc.invalidateQueries({ queryKey: ["skill-rating-history"] });
       } catch (e: any) {
         // Roll back optimistic value and surface error
         qc.setQueryData<Rating[]>(["skill-ratings"], (old = []) => {
