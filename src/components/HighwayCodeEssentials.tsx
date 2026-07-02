@@ -360,6 +360,11 @@ function DualCarriagewayStudsSvg() {
   const xCentR = 300;
   const xRoadR = 340;
 
+  // Slip road merging in from the LEFT (bottom-left → up into lane 1).
+  // Green studs mark the main carriageway edge along this merge.
+  const slipTop = 300; // where the slip road finishes merging (nose)
+  const slipBot = 560; // where the slip road enters the frame
+
   const Stud = ({ x, y, r = 3.4, fill }: { x: number; y: number; r?: number; fill: string }) => (
     <circle cx={x} cy={y} r={r} fill={fill} stroke="#0a0a0a" strokeWidth={0.5} />
   );
@@ -400,6 +405,25 @@ function DualCarriagewayStudsSvg() {
       {/* Hard shoulder — full length on the LEFT */}
       <rect x={xGrassL} y="0" width={xHard - xGrassL} height={H} fill="url(#rs-hs)" />
 
+      {/* Slip road tarmac — enters from the bottom-left, tapers up to the hard shoulder */}
+      <path
+        d={`M -20 ${H}
+            L ${xHard} ${slipTop}
+            L ${xHard} ${slipBot}
+            L -20 ${H + 40} Z`}
+        fill="url(#rs-tarmac2)"
+      />
+      {/* Cover the verge under the slip road so it looks tarmacked all the way to the edge */}
+      <path
+        d={`M 0 ${slipBot - 10}
+            L ${xGrassL} ${slipBot}
+            L ${xGrassL} ${H}
+            L 0 ${H} Z`}
+        fill="url(#rs-tarmac2)"
+      />
+      {/* White edge markings guiding the slip road into the main carriageway */}
+      <line x1={-20} y1={H} x2={xHard} y2={slipTop} stroke="#f4f4f4" strokeWidth="2" opacity="0.85" />
+
       {/* Two-lane carriageway */}
       <rect x={xHard} y="0" width={xLane2R - xHard} height={H} fill="url(#rs-tarmac2)" />
 
@@ -414,7 +438,12 @@ function DualCarriagewayStudsSvg() {
       <rect x={xCentR} y="0" width={xRoadR - xCentR} height={H} fill="url(#rs-tarmac2)" opacity="0.9" />
 
       {/* Solid white edge line: hard shoulder ↔ lane 1 */}
-      <line x1={xHard} y1="0" x2={xHard} y2={H} stroke="#f4f4f4" strokeWidth="2.4" />
+      <line x1={xHard} y1="0" x2={xHard} y2={slipTop} stroke="#f4f4f4" strokeWidth="2.4" />
+      {/* Along the merge, the edge line becomes broken (ghost island) */}
+      {Array.from({ length: 10 }).map((_, i) => (
+        <rect key={`gi-${i}`} x={xHard - 1.2} y={slipTop + 6 + i * 22} width="2.4" height="10" fill="#f4f4f4" opacity="0.85" />
+      ))}
+      <line x1={xHard} y1={slipBot} x2={xHard} y2={H} stroke="#f4f4f4" strokeWidth="2.4" />
 
       {/* Broken white centre line between the two lanes */}
       {Array.from({ length: 22 }).map((_, i) => (
@@ -424,8 +453,21 @@ function DualCarriagewayStudsSvg() {
       {/* Solid white edge line: lane 2 ↔ central reservation */}
       <line x1={xLane2R} y1="0" x2={xLane2R} y2={H} stroke="#f4f4f4" strokeWidth="2.4" />
 
-      {/* RED studs — sit ON the left edge line, full length */}
-      {verticalStuds(xHard, 26, "#ef4444")}
+      {/* RED studs — sit ON the left edge line, but replaced by GREEN across the merge */}
+      {verticalStuds(xHard, 26, "#ef4444", [slipTop - 8, slipBot + 8])}
+
+      {/* GREEN studs — main carriageway edge where the slip road joins */}
+      {Array.from({ length: 10 }).map((_, i) => (
+        <circle
+          key={`gs-${i}`}
+          cx={xHard}
+          cy={slipTop + i * ((slipBot - slipTop) / 9)}
+          r={3.6}
+          fill="#22c55e"
+          stroke="#0a0a0a"
+          strokeWidth={0.5}
+        />
+      ))}
 
       {/* WHITE studs — aligned with the broken centre line, full length */}
       {verticalStuds(xMid, 30, "#f5f5f5")}
@@ -440,6 +482,27 @@ function DualCarriagewayStudsSvg() {
         <polygon points={`${(xMid + xLane2R) / 2},30 ${(xMid + xLane2R) / 2 - 8},46 ${(xMid + xLane2R) / 2 + 8},46`} />
         <rect x={(xMid + xLane2R) / 2 - 2.5} y="46" width="5" height="20" />
       </g>
+
+      {/* In-diagram legend */}
+      <g fontFamily="Arial, sans-serif">
+        <rect x={xRoadR - 132} y={H - 118} width="128" height="104" rx="6" fill="#0f172a" opacity="0.88" stroke="#1f2937" />
+        <text x={xRoadR - 122} y={H - 96} fill="#f8fafc" fontSize="10.5" fontWeight="700" letterSpacing="0.6">STUD COLOURS</text>
+        <g fontSize="10" fill="#e5e7eb">
+          <circle cx={xRoadR - 116} cy={H - 78} r="4" fill="#ef4444" stroke="#0a0a0a" strokeWidth="0.5" />
+          <text x={xRoadR - 106} y={H - 74}>Red · left edge</text>
+          <circle cx={xRoadR - 116} cy={H - 62} r="4" fill="#f5f5f5" stroke="#0a0a0a" strokeWidth="0.5" />
+          <text x={xRoadR - 106} y={H - 58}>White · between lanes</text>
+          <circle cx={xRoadR - 116} cy={H - 46} r="4" fill="#f59e0b" stroke="#0a0a0a" strokeWidth="0.5" />
+          <text x={xRoadR - 106} y={H - 42}>Amber · right edge</text>
+          <circle cx={xRoadR - 116} cy={H - 30} r="4" fill="#22c55e" stroke="#0a0a0a" strokeWidth="0.5" />
+          <text x={xRoadR - 106} y={H - 26}>Green · slip road</text>
+        </g>
+      </g>
+
+      {/* Slip-road label */}
+      <text x={10} y={slipBot + 30} fill="#e5e7eb" fontSize="10" fontFamily="Arial, sans-serif" fontWeight="700" letterSpacing="0.6">
+        SLIP ROAD
+      </text>
     </svg>
   );
 }
