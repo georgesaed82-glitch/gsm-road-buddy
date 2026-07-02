@@ -15,7 +15,7 @@ export type ErrorLogRow = {
   user_agent: string | null;
   mechanism: string | null;
   fingerprint: string | null;
-  extra: unknown;
+  extra: string | null;
   alert_sent: boolean;
 };
 
@@ -196,7 +196,11 @@ export const listErrorLogs = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(limit);
     if (error) throw new Error(error.message);
-    return { rows: (rows ?? []) as ErrorLogRow[] };
+    const serialized: ErrorLogRow[] = (rows ?? []).map((r) => ({
+      ...r,
+      extra: r.extra ? JSON.stringify(r.extra) : null,
+    })) as ErrorLogRow[];
+    return { rows: serialized };
   });
 
 export const getErrorStats = createServerFn({ method: "POST" })
