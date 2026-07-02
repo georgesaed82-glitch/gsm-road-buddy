@@ -19,7 +19,7 @@ function Panel({ title, subtitle, children }: { title: string; subtitle?: string
 
 // ── Zoom & pan wrapper ─────────────────────────────────────────────
 // Wrap any SVG scene so users can pinch / wheel / button-zoom and drag to pan.
-// Works with mouse, trackpad wheel and touch pinch.
+// Works with mouse, trackpad wheel, touch drag and touch pinch.
 function ZoomPan({ children, aspect = "16/9", label }: { children: ReactNode; aspect?: string; label?: string }) {
   const [scale, setScale] = useState(1);
   const [tx, setTx] = useState(0);
@@ -27,6 +27,7 @@ function ZoomPan({ children, aspect = "16/9", label }: { children: ReactNode; as
   const dragging = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinchStart = useRef<{ dist: number; scale: number } | null>(null);
+  const touchPinch = useRef<{ dist: number; scale: number; cx: number; cy: number; tx: number; ty: number } | null>(null);
 
   const clampScale = (s: number) => Math.max(1, Math.min(6, s));
   const zoomTo = (next: number) => {
@@ -76,23 +77,77 @@ function ZoomPan({ children, aspect = "16/9", label }: { children: ReactNode; as
     if (pointers.current.size === 0) dragging.current = null;
   };
 
+  // Touch fallback for mobile browsers that delay or split pointer events.
+  const getTouchDist = (touches: React.TouchList) => {
+    const a = touches[0];
+    const b = touches[1];
+    return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+  };
+  const getTouchCenter = (touches: React.TouchList) => {
+    const a = touches[0];
+    const b = touches[1];
+    return { cx: (a.clientX + b.clientX) / 2, cy: (a.clientY + b.clientY) / 2 };
+  };
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dist = getTouchDist(e.touches);
+      const { cx, cy } = getTouchCenter(e.touches);
+      touchPinch.current = { dist, scale, cx, cy, tx, ty };
+      dragging.current = null;
+    } else if (e.touches.length === 1 && scale > 1) {
+      const t = e.touches[0];
+      dragging.current = { x: t.clientX, y: t.clientY, tx, ty };
+    }
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && touchPinch.current) {
+      e.preventDefault();
+      const dist = getTouchDist(e.touches);
+      const { cx, cy } = getTouchCenter(e.touches);
+      const start = touchPinch.current;
+      const nextScale = clampScale(start.scale * (dist / start.dist));
+      // Pan content so the pinch centre stays under the user's fingers.
+      const scaleRatio = nextScale / scale;
+      const nextTx = cx - (cx - start.tx) * (nextScale / start.scale);
+      const nextTy = cy - (cy - start.ty) * (nextScale / start.scale);
+      setScale(nextScale);
+      setTx(nextTx);
+      setTy(nextTy);
+      return;
+    }
+    if (e.touches.length === 1 && dragging.current) {
+      e.preventDefault();
+      const t = e.touches[0];
+      setTx(dragging.current.tx + (t.clientX - dragging.current.x));
+      setTy(dragging.current.ty + (t.clientY - dragging.current.y));
+    }
+  };
+  const onTouchEnd = () => {
+    touchPinch.current = null;
+    dragging.current = null;
+    if (scale < 1) zoomTo(1);
+  };
+
   return (
     <div className="relative overflow-hidden rounded-sm border border-border bg-[#111]">
       <div
         className="relative w-full touch-none select-none"
-        style={{ aspectRatio: aspect, cursor: scale > 1 ? "grab" : "zoom-in" }}
+        style={{ aspectRatio: aspect, cursor: scale > 1 ? "grab" : "zoom-in", touchAction: "none" }}
         onWheel={onWheel}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endPointer}
         onPointerCancel={endPointer}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
         onDoubleClick={() => zoomTo(scale >= 3 ? 1 : scale * 2)}
         role="group"
         aria-label={label}
       >
         <div
           className="absolute inset-0 origin-center"
-          style={{ transform: `translate(${tx}px, ${ty}px) scale(${scale})`, transition: dragging.current || pinchStart.current ? "none" : "transform 120ms ease-out" }}
+          style={{ transform: `translate(${tx}px, ${ty}px) scale(${scale})`, transition: dragging.current || pinchStart.current || touchPinch.current ? "none" : "transform 120ms ease-out" }}
         >
           {children}
         </div>
