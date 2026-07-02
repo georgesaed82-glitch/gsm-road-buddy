@@ -308,7 +308,8 @@ function RoadStudsDiagram() {
       </g>
     </svg>
   );
-}
+});
+DualCarriagewayStudsSvg.displayName = "DualCarriagewayStudsSvg";
 
 function RoadStuds() {
   const svgRef = useRef<SVGSVGElement | null>(null);
