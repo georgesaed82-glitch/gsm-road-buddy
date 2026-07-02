@@ -854,6 +854,8 @@ export function HighwayCodeEssentials() {
 // junction" scene showing a driver turning from a major road into a
 // minor road with a pedestrian crossing (or waiting to cross).
 function HierarchyPyramid() {
+  const titleId = useId();
+  const descId = useId();
   // Rows from top (most vulnerable, highest priority) to bottom.
   const rows = [
     {
