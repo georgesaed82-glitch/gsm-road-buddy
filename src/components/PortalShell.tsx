@@ -211,16 +211,21 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
         <div
           role="note"
           aria-label="Copyright notice"
-          className="mt-6 flex items-start gap-3 border border-accent/40 bg-accent/5 px-4 py-3 text-xs leading-relaxed text-foreground"
+          className="mt-6 flex items-start gap-3 border border-accent/60 bg-accent/10 px-4 py-4 text-sm leading-relaxed text-foreground"
         >
-          <Copyright className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-          <p>
-            <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
-            All images, videos, diagrams and notes on the learner portal are the copyright of
-            George School of Motoring (GSM Driving School). They are provided for personal
-            learning use only and must not be copied, redistributed, republished or used in any
-            other training material without written permission.
-          </p>
+          <Copyright className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+          <div>
+            <p className="font-semibold text-foreground">
+              Important: copyright protected learning material
+            </p>
+            <p className="mt-1">
+              <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
+              All images, videos, diagrams and notes on the learner portal are owned by
+              George School of Motoring (GSM Driving School). They are provided for personal
+              learning use only and may not be copied, redistributed, republished or used in any
+              other training material without written permission.
+            </p>
+          </div>
         </div>
         <div className="portal-watermark-wrap pt-8">{children}</div>
         <p className="mt-10 border-t border-border pt-4 text-center text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
