@@ -92,7 +92,7 @@ export function Header() {
         <nav className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => {
             const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
-            const Icon = link.icon;
+            const Icon = (link as { icon?: typeof Download }).icon;
             return (
               <Link
                 key={link.to}
