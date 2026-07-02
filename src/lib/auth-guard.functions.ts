@@ -169,6 +169,7 @@ export const studentSignIn = createServerFn({ method: "POST" })
     ok: boolean;
     reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed";
     retryAfterSeconds?: number;
+    captchaRequiredNext?: boolean;
     session?: { access_token: string; refresh_token: string };
   }> => {
     const email = (data.email || "").trim().toLowerCase();
@@ -201,7 +202,8 @@ export const studentSignIn = createServerFn({ method: "POST" })
     const { data: signed, error } = await stateless.auth.signInWithPassword({ email, password });
     if (error || !signed?.session) {
       await recordAttempt(email, "student_signin", false, captchaVerified);
-      return { ok: false, reason: "invalid" };
+      const after = await evaluateAttemptState(email);
+      return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
     }
     await recordAttempt(email, "student_signin", true, captchaVerified);
     return {
