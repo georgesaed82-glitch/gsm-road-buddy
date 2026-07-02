@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ const items = [
   { to: "/police-signals", label: "Police signals", icon: Hand },
   { to: "/questions", label: "Questions", icon: HelpCircle },
   { to: "/mock-tests", label: "Mock tests", icon: ClipboardCheck },
+  { to: "/review", label: "Review mistakes", icon: RotateCcw },
   { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
   { to: "/profile", label: "Profile", icon: UserCircle2 },
 ];
