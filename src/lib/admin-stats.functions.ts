@@ -708,13 +708,13 @@ export const getTrafficStats = createServerFn({ method: "POST" })
 
     const { data: rows, error } = await supabase
       .from("page_views")
-      .select("path,platform,session_id,user_agent,created_at")
+      .select("path,platform,session_id,user_agent,referrer,created_at")
       .gte("created_at", sinceIso)
       .order("created_at", { ascending: false })
       .limit(20000);
     if (error) throw new Response(error.message, { status: 500 });
 
-    type Row = { path: string; platform: string | null; session_id: string | null; user_agent: string | null; created_at: string };
+    type Row = { path: string; platform: string | null; session_id: string | null; user_agent: string | null; referrer: string | null; created_at: string };
     const list = (rows ?? []) as Row[];
 
     const surfaceOf = (p: string | null, ua: string | null): "app" | "browser" | "unknown" => {
@@ -743,6 +743,8 @@ export const getTrafficStats = createServerFn({ method: "POST" })
     const byDevice = { ios: 0, android: 0, mobile: 0, desktop: 0, unknown: 0 };
     const platformCounts = new Map<string, { views: number; sessions: Set<string> }>();
     const pathCounts = new Map<string, { views: number; sessions: Set<string>; app: number; browser: number }>();
+    const sourceCounts = new Map<string, { views: number; sessions: Set<string> }>();
+    const referrerCounts = new Map<string, { source: string; views: number }>();
     const sessions = new Set<string>();
     const dayBuckets: Record<string, { app: number; browser: number; total: number }> = {};
     const today = new Date();
@@ -771,6 +773,19 @@ export const getTrafficStats = createServerFn({ method: "POST" })
       else if (surface === "browser") pathRow.browser += 1;
       pathCounts.set(path, pathRow);
 
+      const src = classifyReferrer(r.referrer);
+      const sRow = sourceCounts.get(src) ?? { views: 0, sessions: new Set<string>() };
+      sRow.views += 1;
+      if (r.session_id) sRow.sessions.add(r.session_id);
+      sourceCounts.set(src, sRow);
+      if (r.referrer) {
+        let host = r.referrer;
+        try { host = new URL(r.referrer).hostname.toLowerCase() || r.referrer; } catch {}
+        const rRow = referrerCounts.get(host) ?? { source: src, views: 0 };
+        rRow.views += 1;
+        referrerCounts.set(host, rRow);
+      }
+
       if (r.session_id) sessions.add(r.session_id);
 
       const key = r.created_at.slice(0, 10);
@@ -794,6 +809,14 @@ export const getTrafficStats = createServerFn({ method: "POST" })
       .map(([path, v]) => ({ path, app: v.app, browser: v.browser, total: v.views }))
       .sort((a, b) => b.total - a.total)
       .slice(0, 15);
+
+    const bySource = Array.from(sourceCounts.entries())
+      .map(([source, v]) => ({ source, views: v.views, sessions: v.sessions.size }))
+      .sort((a, b) => b.views - a.views);
+    const topReferrers = Array.from(referrerCounts.entries())
+      .map(([referrer, v]) => ({ referrer, source: v.source, views: v.views }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 10);
 
     const series = Object.entries(dayBuckets).map(([date, v]) => ({ date, ...v }));
 
