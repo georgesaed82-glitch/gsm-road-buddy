@@ -5,6 +5,39 @@ function dayAgo(days: number) {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
 }
 
+const INTERNAL_HOSTS = new Set([
+  "gsmdrivingschool.com",
+  "www.gsmdrivingschool.com",
+  "gsm-road-buddy.lovable.app",
+  "id-preview--075fff9d-63c2-4fd4-8c7b-4bca170e1863.lovable.app",
+  "project--075fff9d-63c2-4fd4-8c7b-4bca170e1863.lovable.app",
+]);
+
+export function classifyReferrer(ref: string | null | undefined): string {
+  if (!ref) return "Direct";
+  let host = "";
+  try {
+    host = new URL(ref).hostname.toLowerCase();
+  } catch {
+    return "Other";
+  }
+  if (INTERNAL_HOSTS.has(host) || host.endsWith(".gsmdrivingschool.com")) return "Internal";
+  if (/(^|\.)google\./.test(host)) return "Google";
+  if (/(^|\.)bing\./.test(host)) return "Bing";
+  if (/(^|\.)duckduckgo\./.test(host)) return "DuckDuckGo";
+  if (/(^|\.)yahoo\./.test(host)) return "Yahoo";
+  if (/(^|\.)(facebook|fb)\./.test(host) || host === "l.facebook.com" || host === "m.facebook.com") return "Facebook";
+  if (/(^|\.)instagram\./.test(host) || host === "l.instagram.com") return "Instagram";
+  if (/(^|\.)tiktok\./.test(host)) return "TikTok";
+  if (/(^|\.)(twitter|x)\./.test(host) || host === "t.co") return "Twitter / X";
+  if (host.includes("whatsapp")) return "WhatsApp";
+  if (/(^|\.)linkedin\./.test(host)) return "LinkedIn";
+  if (/(^|\.)youtube\./.test(host) || host === "youtu.be") return "YouTube";
+  if (/(^|\.)reddit\./.test(host)) return "Reddit";
+  if (host === "lovable.app" || host.endsWith(".lovable.app")) return "Lovable";
+  return host;
+}
+
 async function adminClient(password: string) {
   if (!(await verifyAdminPasswordServer(password))) {
     throw new Response("Unauthorized", { status: 401 });
