@@ -2126,32 +2126,32 @@ function YellowBoxJunction() {
 function NearsideTurnSvg() {
   return (
     <CrossroadsBase>
-      <g fill="#f8fafc" opacity="0.9">
-        <path d="M 325 300 L 325 285 L 340 285 L 340 280 L 352 288 L 340 296 L 340 291 L 331 291 L 331 300 Z" />
-        <path d="M 315 80 L 315 95 L 300 95 L 300 100 L 288 92 L 300 84 L 300 89 L 309 89 L 309 80 Z" />
+      {/* NEARSIDE-to-NEARSIDE (turn IN FRONT):
+          both drivers turn early/tight, meeting passenger-side to passenger-side.
+          UK drive-on-left, so:
+            • Red enters from south in the LEFT lane (x≈355), exits EAST in the far side's LEFT lane (y≈150).
+            • Blue enters from north in the LEFT lane (x≈285), exits WEST in the far side's LEFT lane (y≈230). */}
+
+      {/* Turn paths (tight — cars cross in front of each other) */}
+      <g fill="none" stroke="#f472b6" strokeWidth="3" strokeDasharray="5 4">
+        <path d="M 355 360 C 355 260 340 210 310 190 C 275 175 230 158 20 150" />
+        <path d="M 285 20 C 285 130 300 175 330 195 C 365 210 410 225 620 230" />
       </g>
+      <polygon points="20,142 4,150 20,158" fill="#f472b6" />
+      <polygon points="620,222 636,230 620,238" fill="#f472b6" />
 
-      {/* Both cars meeting in the middle, mid-turn, passenger-side to passenger-side */}
-      {/* Red car from south, part-way through right turn — heading roughly east-north-east */}
-      <Car x={300} y={210} rotate={-60} color="#dc2626" indicator="right" />
-      {/* Blue car from north, part-way through right turn — heading roughly west-south-west */}
-      <Car x={340} y={170} rotate={120} color="#1d4ed8" indicator="right" />
+      {/* Red car — from south, mid-turn, heading roughly east */}
+      <Car x={320} y={205} rotate={-70} color="#dc2626" indicator="right" label="You" />
+      {/* Blue car — from north, mid-turn, heading roughly west */}
+      <Car x={340} y={185} rotate={110} color="#1d4ed8" indicator="right" label="Them" />
 
-      {/* Turn paths crossing in front of each other */}
-      <g fill="none" stroke="#f472b6" strokeWidth="2.5" strokeDasharray="4 4">
-        <path d="M 325 300 C 325 240 300 210 275 195 L 210 190" />
-        <path d="M 315 90 C 315 150 340 185 365 200 L 430 200" />
-      </g>
-      <polygon points="210,196 196,190 210,184" fill="#f472b6" />
-      <polygon points="430,194 444,200 430,206" fill="#f472b6" />
-
-      {/* Meeting point marker */}
-      <circle cx="320" cy="195" r="6" fill="none" stroke="#f472b6" strokeWidth="2" />
+      {/* Meeting-point marker (passenger sides pass here) */}
+      <circle cx="330" cy="195" r="7" fill="none" stroke="#f472b6" strokeWidth="2" />
 
       <g fontFamily="Arial, sans-serif" fontSize="11">
-        <rect x="14" y="14" width="260" height="46" fill="#ffffff" opacity="0.94" rx="3" />
-        <text x="24" y="32" fill="#0b1f1c" fontWeight="700">Nearside to nearside</text>
-        <text x="24" y="48" fill="#0b1f1c">Cross IN FRONT — passenger-side to passenger-side.</text>
+        <rect x="14" y="14" width="270" height="46" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="24" y="32" fill="#0b1f1c" fontWeight="700">Nearside to nearside — turn IN FRONT</text>
+        <text x="24" y="48" fill="#0b1f1c">Both turn right, passing passenger-side to passenger-side.</text>
       </g>
     </CrossroadsBase>
   );
@@ -2162,32 +2162,32 @@ function NearsideTurnSvg() {
 function OffsideTurnSvg() {
   return (
     <CrossroadsBase>
-      <g fill="#f8fafc" opacity="0.9">
-        <path d="M 325 300 L 325 285 L 340 285 L 340 280 L 352 288 L 340 296 L 340 291 L 331 291 L 331 300 Z" />
-        <path d="M 315 80 L 315 95 L 300 95 L 300 100 L 288 92 L 300 84 L 300 89 L 309 89 L 309 80 Z" />
+      {/* OFFSIDE-to-OFFSIDE (swing BEHIND):
+          both drivers drive past the centre of the junction before turning,
+          meeting driver-side to driver-side. Same destinations as the
+          nearside method (both still end up in the left lane of their exit). */}
+
+      {/* Turn paths (wide — cars swing behind each other) */}
+      <g fill="none" stroke="#22d3ee" strokeWidth="3" strokeDasharray="7 5">
+        <path d="M 355 360 C 355 240 365 205 355 185 C 345 165 280 150 20 150" />
+        <path d="M 285 20 C 285 140 275 175 285 195 C 295 215 360 230 620 230" />
       </g>
+      <polygon points="20,142 4,150 20,158" fill="#22d3ee" />
+      <polygon points="620,222 636,230 620,238" fill="#22d3ee" />
 
-      {/* Both cars meeting in the middle, mid-turn, driver-side to driver-side */}
-      {/* Red car from south — swung wide, now heading east */}
-      <Car x={340} y={215} rotate={-30} color="#dc2626" indicator="right" />
-      {/* Blue car from north — swung wide, now heading west */}
-      <Car x={300} y={175} rotate={150} color="#1d4ed8" indicator="right" />
+      {/* Red car — from south, past centre, now curving west-then-east.
+          Placed on the offside side of the junction (right of centre). */}
+      <Car x={360} y={175} rotate={-100} color="#dc2626" indicator="right" label="You" />
+      {/* Blue car — from north, past centre, offside of the junction (left of centre). */}
+      <Car x={280} y={205} rotate={80} color="#1d4ed8" indicator="right" label="Them" />
 
-      {/* Turn paths swinging behind each other */}
-      <g fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeDasharray="7 5">
-        <path d="M 325 300 C 325 245 355 235 380 218 L 430 200" />
-        <path d="M 315 90 C 315 140 285 150 260 168 L 210 186" />
-      </g>
-      <polygon points="430,194 444,200 430,206" fill="#22d3ee" />
-      <polygon points="210,192 196,186 210,180" fill="#22d3ee" />
-
-      {/* Meeting point marker */}
-      <circle cx="320" cy="195" r="6" fill="none" stroke="#22d3ee" strokeWidth="2" />
+      {/* Meeting-point marker (driver sides pass here) */}
+      <circle cx="320" cy="190" r="7" fill="none" stroke="#22d3ee" strokeWidth="2" />
 
       <g fontFamily="Arial, sans-serif" fontSize="11">
-        <rect x="14" y="14" width="260" height="46" fill="#ffffff" opacity="0.94" rx="3" />
-        <text x="24" y="32" fill="#0b1f1c" fontWeight="700">Offside to offside</text>
-        <text x="24" y="48" fill="#0b1f1c">Swing BEHIND — driver-side to driver-side.</text>
+        <rect x="14" y="14" width="270" height="46" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="24" y="32" fill="#0b1f1c" fontWeight="700">Offside to offside — swing BEHIND</text>
+        <text x="24" y="48" fill="#0b1f1c">Both turn right, passing driver-side to driver-side.</text>
       </g>
     </CrossroadsBase>
   );
