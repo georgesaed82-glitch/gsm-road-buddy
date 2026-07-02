@@ -884,6 +884,7 @@ export function HighwayCodeEssentials() {
       <NearsideOffsideJunction />
       <MoreRule181Scenarios />
       <SmartMotorway />
+      <VehicleSpeedLimits />
     </div>
   );
 }
