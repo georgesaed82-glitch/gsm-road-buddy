@@ -741,33 +741,53 @@ function TrafficLights() {
       title="Traffic lights & pedestrian crossings"
       subtitle="The signal sequence, the flashing amber phase, filter arrows, and what Pelican / Puffin / Toucan actually stand for."
     >
-      {/* Standard sequence */}
+      {/* Standard sequence — the two clear phases on top, then the two "STOP
+          but there's more to know" phases each paired with an explanation
+          the same way as the Green Filter Arrow / Flashing Amber below. */}
       <div>
         <div className="text-sm font-semibold">Signal sequence (rule 175)</div>
-        <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Signal label="RED — STOP. Wait behind the white line" red />
-          <Signal label="RED + AMBER — STOP. Do NOT go until green shows" red amber />
-          <Signal label="GREEN — GO, if the way is clear" green />
-          <Signal label="SOLID AMBER — STOP" amber />
+
+        {/* Row 1: the simple phases */}
+        <div className="mt-3 grid grid-cols-2 gap-4">
+          <div className="flex items-center gap-4">
+            <Signal label="RED" red />
+            <p className="text-sm text-muted-foreground">
+              <strong>STOP.</strong> Wait behind the white line.
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Signal label="GREEN" green />
+            <p className="text-sm text-muted-foreground">
+              <strong>GO</strong> — if the way is clear.
+            </p>
+          </div>
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Red + Amber together</div>
-            <strong>Red and amber also means STOP.</strong> Do <strong>not</strong>
-            go until the <strong>green</strong> shows. Stay behind the white
-            line, keep the handbrake / footbrake on and be ready to move off
-            smoothly when green appears.
+        {/* Row 2: red+amber and solid amber, each with signal + full explanation */}
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="flex items-start gap-4 border border-border bg-secondary/40 p-3">
+            <Signal label="RED + AMBER" red amber />
+            <div className="text-sm leading-relaxed">
+              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Red + Amber together</div>
+              <strong>Red and amber also means STOP.</strong> Do <strong>not</strong>
+              go until the <strong>green</strong> shows. Stay behind the white
+              line, keep the brake on and be ready to move off smoothly when
+              green appears.
+            </div>
           </div>
-          <div className="border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solid Amber</div>
-            <strong>Solid amber means STOP.</strong> Do <strong>not</strong> go
-            past the amber light <em>unless</em>:
-            <ul className="mt-1 list-disc pl-5">
-              <li>you have <strong>already crossed the white line</strong> when the amber shows, or</li>
-              <li><strong>stopping might cause an accident</strong> — for example, the vehicle behind you is too close and would run into you if you braked hard.</li>
-            </ul>
-            In every other case, stop and wait for green.
+
+          <div className="flex items-start gap-4 border border-border bg-secondary/40 p-3">
+            <Signal label="SOLID AMBER" amber />
+            <div className="text-sm leading-relaxed">
+              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solid Amber</div>
+              <strong>Solid amber means STOP.</strong> Do <strong>not</strong> go
+              past the amber light <em>unless</em>:
+              <ul className="mt-1 list-disc pl-5">
+                <li>you have <strong>already crossed the white line</strong> when the amber shows, or</li>
+                <li><strong>stopping might cause an accident</strong> — for example, the vehicle behind you is too close and would run into you if you braked hard.</li>
+              </ul>
+              In every other case, stop and wait for green.
+            </div>
           </div>
         </div>
       </div>
