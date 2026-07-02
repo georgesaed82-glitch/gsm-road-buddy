@@ -2933,24 +2933,48 @@ function MotorwayCar({ x, y, color, ghost = false }: { x: number; y: number; col
   );
 }
 
-function GantryFromHereMarker({ label, color = "#facc15" }: { label: string; color?: string }) {
-  // A little dashed leader line from the gantry down to a label saying
-  // "from this gantry onwards …". Sits below the signs.
+// A bright dashed line right under the gantry that reads across every
+// lane, plus a small label pinned to the grass verge. This is the
+// "the sign applies FROM HERE" reference students look for.
+function AppliesFromHereBand({ label, color = "#facc15" }: { label: string; color?: string }) {
   return (
     <g>
-      <line x1="530" y1="140" x2="580" y2="188" stroke={color} strokeWidth="2" strokeDasharray="5 4" />
-      <rect x="440" y="184" width="188" height="26" rx="3" fill="#ffffff" opacity="0.94" />
-      <text
-        x="534"
-        y="202"
-        textAnchor="middle"
-        fontFamily="Arial, sans-serif"
-        fontSize="11"
-        fontWeight="700"
-        fill="#0b1f1c"
-      >
-        {label}
-      </text>
+      {/* Dashed reference line across the full carriageway */}
+      <line x1="40" y1="150" x2="600" y2="150" stroke={color} strokeWidth="3" strokeDasharray="8 6" />
+      {/* Label on the right-hand verge so it never covers a lane */}
+      <g transform="translate(602 138)">
+        <rect x="0" y="0" width="34" height="26" rx="3" fill={color} />
+        <text x="17" y="18" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="900" fill="#0b1f1c">
+          ↓
+        </text>
+      </g>
+      {/* Wide caption on the grass verge below the gantry */}
+      <g>
+        <rect x="180" y="158" width="280" height="22" rx="3" fill="#ffffff" opacity="0.95" />
+        <text x="320" y="174" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="800" fill="#0b1f1c">
+          {label}
+        </text>
+      </g>
+    </g>
+  );
+}
+
+// Small "Lane 1 / 2 / 3 / 4" labels at the very bottom of the diagram
+// so students can tell which sign sits above which lane.
+function LaneNumbers() {
+  return (
+    <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="800" fill="#f8fafc">
+      {[
+        { x: 110, n: 1 },
+        { x: 250, n: 2 },
+        { x: 390, n: 3 },
+        { x: 530, n: 4 },
+      ].map((l) => (
+        <g key={l.n}>
+          <rect x={l.x - 22} y={355} width="44" height="18" rx="2" fill="#0b1220" opacity="0.75" />
+          <text x={l.x} y={368} textAnchor="middle">Lane {l.n}</text>
+        </g>
+      ))}
     </g>
   );
 }
@@ -2958,28 +2982,31 @@ function GantryFromHereMarker({ label, color = "#facc15" }: { label: string; col
 function SmartMotorwayClosureSvg() {
   return (
     <SmartMotorwayBase>
-      {/* Gantry — lane 1 (leftmost) closed, all remaining lanes limited to 60 */}
+      {/* Gantry — lane 1 (leftmost) closed by a red X, lanes 2–4 limited to 60 mph */}
       <LaneClosedSign x={110} />
       <VariableSpeedSign x={250} mph={60} />
       <VariableSpeedSign x={390} mph={60} />
       <VariableSpeedSign x={530} mph={60} />
 
-      {/* Traffic: lane 1 empty (closed), other lanes flowing at 60 */}
-      <MotorwayCar x={250} y={200} color="#dc2626" />
-      <MotorwayCar x={390} y={230} color="#f59e0b" />
-      <MotorwayCar x={530} y={210} color="#1d4ed8" />
+      {/* "60 mph applies FROM HERE" reference line under the gantry */}
+      <AppliesFromHereBand label="60 mph applies FROM HERE" />
+
+      {/* Traffic AFTER the gantry (below the reference line) — lane 1 empty */}
+      <MotorwayCar x={250} y={220} color="#dc2626" />
+      <MotorwayCar x={390} y={240} color="#f59e0b" />
+      <MotorwayCar x={530} y={220} color="#1d4ed8" />
       <MotorwayCar x={250} y={310} color="#0ea5e9" />
       <MotorwayCar x={390} y={330} color="#22c55e" />
+      <MotorwayCar x={530} y={310} color="#a855f7" />
 
       {/* Ghost car merging OUT of the closed lane 1 into lane 2 */}
-      <MotorwayCar x={130} y={300} color="#94a3b8" ghost />
-      <g fill="none" stroke="#facc15" strokeWidth="2.5" strokeDasharray="5 4" opacity="0.9">
-        <path d="M 130 290 C 160 260 210 250 240 240" />
+      <MotorwayCar x={110} y={330} color="#94a3b8" ghost />
+      <g fill="none" stroke="#facc15" strokeWidth="2.5" strokeDasharray="5 4" opacity="0.95">
+        <path d="M 110 320 C 140 290 200 275 240 268" />
       </g>
-      <polygon points="234,232 250,240 234,248" fill="#facc15" />
+      <polygon points="234,260 252,268 234,276" fill="#facc15" />
 
-      {/* Leader label */}
-      <GantryFromHereMarker label="60 mph applies FROM HERE" />
+      <LaneNumbers />
     </SmartMotorwayBase>
   );
 }
@@ -2993,16 +3020,20 @@ function SmartMotorwayEndSvg() {
       <NationalLimitSign x={390} />
       <NationalLimitSign x={530} />
 
-      {/* Traffic in all four lanes now that lane 1 is open again */}
-      <MotorwayCar x={110} y={220} color="#dc2626" />
-      <MotorwayCar x={250} y={260} color="#f59e0b" />
-      <MotorwayCar x={390} y={210} color="#1d4ed8" />
-      <MotorwayCar x={530} y={250} color="#22c55e" />
-      <MotorwayCar x={110} y={330} color="#0ea5e9" />
-      <MotorwayCar x={390} y={330} color="#a855f7" />
+      {/* "Back to 70 mph" reference line under the gantry */}
+      <AppliesFromHereBand label="Back to national limit — 70 mph FROM HERE" color="#f8fafc" />
 
-      {/* Leader label */}
-      <GantryFromHereMarker label="Back to 70 mph FROM HERE" color="#f8fafc" />
+      {/* Traffic AFTER the gantry — lane 1 is open again */}
+      <MotorwayCar x={110} y={220} color="#dc2626" />
+      <MotorwayCar x={250} y={250} color="#f59e0b" />
+      <MotorwayCar x={390} y={220} color="#1d4ed8" />
+      <MotorwayCar x={530} y={250} color="#22c55e" />
+      <MotorwayCar x={110} y={320} color="#0ea5e9" />
+      <MotorwayCar x={250} y={330} color="#a855f7" />
+      <MotorwayCar x={390} y={320} color="#ec4899" />
+      <MotorwayCar x={530} y={330} color="#14b8a6" />
+
+      <LaneNumbers />
     </SmartMotorwayBase>
   );
 }
