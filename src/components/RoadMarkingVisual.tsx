@@ -153,18 +153,43 @@ export function ZigZagCrossing() {
 }
 
 export function YellowBoxJunction() {
-  // Yellow crosshatch box.
+  // DVSA yellow box: yellow border with evenly-spaced diagonal cross-hatch
+  // painted inside. Rendered with a clip path so nothing bleeds outside the
+  // box, and drawn from both diagonals so the pattern reads as an X-hatch
+  // (matches Traffic Signs Manual chapter 5 illustrations).
+  const x0 = 22;
+  const y0 = 22;
+  const w = 156;
+  const spacing = 18;
+  const diagCount = Math.ceil((w * 2) / spacing);
+  const forward: number[] = [];
+  const backward: number[] = [];
+  for (let i = 1; i < diagCount; i++) forward.push(i * spacing);
+  for (let i = 1; i < diagCount; i++) backward.push(i * spacing);
   return (
     <Frame>
-      <rect x="20" y="20" width="160" height="160" fill="none" stroke={YELLOW} strokeWidth="6" />
-      <g stroke={YELLOW} strokeWidth="3">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <line key={i} x1="20" y1={20 + i * 30} x2={180 - i * 15} y2="180" />
+      <defs>
+        <clipPath id="ybj-clip">
+          <rect x={x0} y={y0} width={w} height={w} />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#ybj-clip)" stroke={YELLOW} strokeWidth="3" strokeLinecap="square">
+        {forward.map((k) => (
+          <line key={"f" + k} x1={x0 + k - w} y1={y0} x2={x0 + k} y2={y0 + w} />
         ))}
-        {Array.from({ length: 8 }).map((_, i) => (
-          <line key={"b" + i} x1={20 + i * 30} y1="20" x2="180" y2={40 + i * 30} />
+        {backward.map((k) => (
+          <line key={"b" + k} x1={x0 + k} y1={y0} x2={x0 + k - w} y2={y0 + w} />
         ))}
       </g>
+      <rect
+        x={x0}
+        y={y0}
+        width={w}
+        height={w}
+        fill="none"
+        stroke={YELLOW}
+        strokeWidth="6"
+      />
     </Frame>
   );
 }
@@ -208,28 +233,115 @@ export function RedRoute() {
 }
 
 export function BusLane() {
+  // Red tarmac lane with white boundary lines and painted 'BUS LANE' text,
+  // plus a mounted blue time-plate sign showing the operating hours.
+  const LANE_LEFT = 8;
+  const LANE_RIGHT = 132;
+  const RED_TARMAC = "#b91c1c";
+  const SIGN_BLUE = "#1d4ed8";
   return (
     <Frame>
-      <rect x="10" y="0" width="6" height="200" fill={PAINT} />
-      <rect x="184" y="0" width="6" height="200" fill={PAINT} />
+      {/* Red painted bus-lane surface */}
+      <rect
+        x={LANE_LEFT + 6}
+        y="0"
+        width={LANE_RIGHT - LANE_LEFT - 12}
+        height="200"
+        fill={RED_TARMAC}
+      />
+      {/* Solid white boundary lines */}
+      <rect x={LANE_LEFT} y="0" width="6" height="200" fill={PAINT} />
+      <rect x={LANE_RIGHT - 6} y="0" width="6" height="200" fill={PAINT} />
+      {/* 'BUS LANE' text painted on the tarmac */}
       <text
-        x="100"
-        y="90"
+        x={(LANE_LEFT + LANE_RIGHT) / 2}
+        y="95"
         textAnchor="middle"
         fill={PAINT}
-        style={{ font: "700 22px sans-serif", letterSpacing: 2 }}
+        style={{ font: "700 20px sans-serif", letterSpacing: 2 }}
       >
         BUS
       </text>
       <text
-        x="100"
+        x={(LANE_LEFT + LANE_RIGHT) / 2}
         y="120"
         textAnchor="middle"
         fill={PAINT}
-        style={{ font: "700 22px sans-serif", letterSpacing: 2 }}
+        style={{ font: "700 20px sans-serif", letterSpacing: 2 }}
       >
         LANE
       </text>
+
+      {/* Blue time-plate sign mounted alongside the lane */}
+      <g transform="translate(142, 40)">
+        {/* Post */}
+        <rect x="24" y="118" width="4" height="42" fill="#6b7280" />
+        {/* Sign panel */}
+        <rect
+          x="0"
+          y="0"
+          width="52"
+          height="120"
+          fill={SIGN_BLUE}
+          stroke={PAINT}
+          strokeWidth="2"
+        />
+        <text
+          x="26"
+          y="18"
+          textAnchor="middle"
+          fill={PAINT}
+          style={{ font: "700 10px sans-serif", letterSpacing: 1 }}
+        >
+          BUS
+        </text>
+        <text
+          x="26"
+          y="32"
+          textAnchor="middle"
+          fill={PAINT}
+          style={{ font: "700 10px sans-serif", letterSpacing: 1 }}
+        >
+          LANE
+        </text>
+        <line x1="8" y1="42" x2="44" y2="42" stroke={PAINT} strokeWidth="1" />
+        <text
+          x="26"
+          y="60"
+          textAnchor="middle"
+          fill={PAINT}
+          style={{ font: "600 9px sans-serif" }}
+        >
+          Mon – Sat
+        </text>
+        <text
+          x="26"
+          y="76"
+          textAnchor="middle"
+          fill={PAINT}
+          style={{ font: "600 9px sans-serif" }}
+        >
+          7 am
+        </text>
+        <text
+          x="26"
+          y="90"
+          textAnchor="middle"
+          fill={PAINT}
+          style={{ font: "600 9px sans-serif" }}
+        >
+          –
+        </text>
+        <text
+          x="26"
+          y="104"
+          textAnchor="middle"
+          fill={PAINT}
+          style={{ font: "600 9px sans-serif" }}
+        >
+          4 pm
+        </text>
+      </g>
     </Frame>
   );
 }
@@ -237,12 +349,36 @@ export function BusLane() {
 // ── WORDS / SPECIAL ──────────────────────────────────
 
 export function RoundaboutTriangles() {
+  // Mini-roundabout marking: a solid white painted disc at the centre of a
+  // small junction, with three curved clockwise directional arrows ringing it
+  // to signal 'go around clockwise'.
+  const cx = 100;
+  const cy = 100;
   return (
     <Frame>
-      <circle cx="100" cy="100" r="34" fill="none" stroke={PAINT} strokeWidth="4" />
-      <polygon points="82,50 118,50 100,74" fill={PAINT} />
-      <polygon points="126,150 152,132 152,168" fill={PAINT} />
-      <polygon points="48,132 74,132 61,168" fill={PAINT} />
+      {/* Faint approach lane lines to give context */}
+      <g stroke={PAINT} strokeWidth="3" strokeDasharray="8 10" opacity="0.35">
+        <line x1={cx} y1="0" x2={cx} y2="40" />
+        <line x1={cx} y1="160" x2={cx} y2="200" />
+        <line x1="0" y1={cy} x2="40" y2={cy} />
+        <line x1="160" y1={cy} x2="200" y2={cy} />
+      </g>
+
+      {/* Three curved clockwise arrows sweeping around the disc */}
+      <g fill="none" stroke={PAINT} strokeWidth="6" strokeLinecap="round">
+        <path d="M 100 42 A 58 58 0 0 1 158 100" />
+        <path d="M 158 100 A 58 58 0 0 1 100 158" />
+        <path d="M 100 158 A 58 58 0 0 1 42 100" />
+      </g>
+      {/* Arrow heads at the end of each curve (rotated triangles) */}
+      <g fill={PAINT}>
+        <polygon points="150,100 168,90 168,110" />
+        <polygon points="100,150 90,168 110,168" />
+        <polygon points="50,100 32,90 32,110" />
+      </g>
+
+      {/* Solid white painted mini-roundabout disc */}
+      <circle cx={cx} cy={cy} r="34" fill={PAINT} />
     </Frame>
   );
 }
