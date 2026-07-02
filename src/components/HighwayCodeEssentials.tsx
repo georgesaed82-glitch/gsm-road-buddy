@@ -882,6 +882,7 @@ export function HighwayCodeEssentials() {
       <ZebraCrossing />
       <YellowBoxJunction />
       <NearsideOffsideJunction />
+      <MoreRule181Scenarios />
     </div>
   );
 }
@@ -2264,6 +2265,306 @@ function NearsideOffsideJunction() {
           <li><strong>If there are no markings</strong> (this diagram), you have to <strong>read the other driver</strong>. Watch their line, their wheels and their eyes as they enter the box — commit to whichever side they are giving you.</li>
           <li><strong>Never assume.</strong> A firm, early <strong>right indicator</strong> plus gentle creep tells the other driver you're turning; make eye contact if you can.</li>
           <li><strong>Big vehicles turn wide.</strong> Lorries, buses and vans almost always take the offside line — give them room and expect the swept path.</li>
+        </ul>
+      </div>
+    </Panel>
+  );
+}
+
+// ── Extra Rule 181 scenarios ─────────────────────────────────────────
+// Same clock-based convention as CrossroadsBase:
+//   12 = north (top), 3 = east (right), 6 = south (bottom), 9 = west (left)
+//   rotate=0 → car faces 12; +90 → 3; ±180 → 6; ±270/−90 → 9.
+// UK left-hand traffic — cars always finish in the destination's LEFT lane.
+
+// A staggered crossroads: the north stub is offset WEST, the south stub is
+// offset EAST. The offset forces both right-turners onto the offside line —
+// nearside would put the two cars nose-to-nose. Great teaching example.
+function StaggeredBase({ children }: { children?: ReactNode }) {
+  return (
+    <svg viewBox="0 0 640 380" className="block h-full w-full" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="stg-tarmac" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3a3a40" />
+          <stop offset="1" stopColor="#2b2b30" />
+        </linearGradient>
+        <linearGradient id="stg-grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3f6b3f" />
+          <stop offset="1" stopColor="#345a34" />
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="640" height="380" fill="url(#stg-grass)" />
+      {/* Horizontal main road */}
+      <rect x="0" y="120" width="640" height="140" fill="url(#stg-tarmac)" />
+      {/* North stub (offset WEST, x=170..270) */}
+      <rect x="170" y="0" width="100" height="120" fill="url(#stg-tarmac)" />
+      {/* South stub (offset EAST, x=370..470) */}
+      <rect x="370" y="260" width="100" height="120" fill="url(#stg-tarmac)" />
+
+      {/* Kerbs */}
+      <g stroke="#e5e7eb" strokeWidth="1.5" fill="none">
+        <line x1="0" y1="120" x2="170" y2="120" />
+        <line x1="270" y1="120" x2="370" y2="120" />
+        <line x1="470" y1="120" x2="640" y2="120" />
+        <line x1="0" y1="260" x2="370" y2="260" />
+        <line x1="470" y1="260" x2="640" y2="260" />
+        <line x1="170" y1="0" x2="170" y2="120" />
+        <line x1="270" y1="0" x2="270" y2="120" />
+        <line x1="370" y1="260" x2="370" y2="380" />
+        <line x1="470" y1="260" x2="470" y2="380" />
+      </g>
+
+      {/* Broken centre lines */}
+      <g fill="#f8fafc">
+        {[10, 50, 90, 130].map((x) => (<rect key={`hw${x}`} x={x} y="188" width="20" height="4" />))}
+        {[490, 530, 570, 610].map((x) => (<rect key={`he${x}`} x={x} y="188" width="20" height="4" />))}
+        {[10, 30, 50, 70, 90].map((y) => (<rect key={`nv${y}`} x="218" y={y} width="4" height="14" />))}
+        {[280, 300, 320, 340, 360].map((y) => (<rect key={`sv${y}`} x="418" y={y} width="4" height="14" />))}
+      </g>
+
+      {/* Stop lines */}
+      <g fill="#f8fafc">
+        <rect x="220" y="114" width="46" height="6" />
+        <rect x="374" y="260" width="46" height="6" />
+      </g>
+      {children}
+    </svg>
+  );
+}
+
+function StaggeredOffsideSvg() {
+  return (
+    <StaggeredBase>
+      {/* Red arrow — from south stub (left lane x≈425) to east exit (y≈150).
+          Wide/offside line: swings past centre through NW quadrant before turning. */}
+      <g fill="none" stroke="#22d3ee" strokeWidth="3" strokeDasharray="7 5">
+        <path d="M 425 380 C 425 300 380 220 310 195 C 380 155 500 148 620 150" />
+      </g>
+      <polygon points="620,142 638,150 620,158" fill="#22d3ee" />
+
+      {/* Blue arrow — from north stub (left lane x≈245) to west exit (y≈230). */}
+      <g fill="none" stroke="#22d3ee" strokeWidth="3" strokeDasharray="7 5">
+        <path d="M 245 0 C 245 90 285 175 335 195 C 260 235 130 232 20 230" />
+      </g>
+      <polygon points="20,222 2,230 20,238" fill="#22d3ee" />
+
+      {/* Cars mid-turn — offside/behind: red NORTH of centre, blue SOUTH of centre */}
+      <Car x={295} y={168} rotate={55} color="#dc2626" indicator="right" label="You" />
+      <Car x={345} y={215} rotate={235} color="#1d4ed8" indicator="right" label="Them" />
+
+      <g fontFamily="Arial, sans-serif" fontSize="11">
+        <rect x="14" y="14" width="300" height="46" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="24" y="32" fill="#0b1f1c" fontWeight="700">Staggered — OFFSIDE recommended</text>
+        <text x="24" y="48" fill="#0b1f1c">Offset approaches force a wide swing behind each other.</text>
+      </g>
+    </StaggeredBase>
+  );
+}
+
+function StaggeredNearsideSvg() {
+  return (
+    <StaggeredBase>
+      {/* Nearside/tight lines — clearly awkward on a staggered junction. */}
+      <g fill="none" stroke="#f472b6" strokeWidth="3" strokeDasharray="5 4">
+        <path d="M 425 380 C 425 300 420 240 400 215 C 480 180 550 155 620 150" />
+      </g>
+      <polygon points="620,142 638,150 620,158" fill="#f472b6" />
+      <g fill="none" stroke="#f472b6" strokeWidth="3" strokeDasharray="5 4">
+        <path d="M 245 0 C 245 90 250 140 245 170 C 175 200 90 225 20 230" />
+      </g>
+      <polygon points="20,222 2,230 20,238" fill="#f472b6" />
+
+      {/* Cars nose-to-nose warning: the tight lines almost collide. */}
+      <Car x={365} y={205} rotate={55} color="#dc2626" indicator="right" label="You" />
+      <Car x={280} y={175} rotate={235} color="#1d4ed8" indicator="right" label="Them" />
+
+      {/* Conflict marker */}
+      <g>
+        <circle cx="320" cy="190" r="14" fill="none" stroke="#ef4444" strokeWidth="3" />
+        <line x1="308" y1="178" x2="332" y2="202" stroke="#ef4444" strokeWidth="3" />
+        <line x1="332" y1="178" x2="308" y2="202" stroke="#ef4444" strokeWidth="3" />
+      </g>
+
+      <g fontFamily="Arial, sans-serif" fontSize="11">
+        <rect x="14" y="14" width="300" height="46" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="24" y="32" fill="#0b1f1c" fontWeight="700">Staggered — NEARSIDE risky</text>
+        <text x="24" y="48" fill="#0b1f1c">Tight lines converge — high conflict at centre.</text>
+      </g>
+    </StaggeredBase>
+  );
+}
+
+// A major road (horizontal, wider, priority) meeting a minor road
+// (vertical, narrower, give way). Both turners come out of the minor
+// road and must give way before turning right onto the major.
+function MajorMinorBase({ children }: { children?: ReactNode }) {
+  return (
+    <svg viewBox="0 0 640 380" className="block h-full w-full" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="mm-tarmac" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3a3a40" />
+          <stop offset="1" stopColor="#2b2b30" />
+        </linearGradient>
+        <linearGradient id="mm-grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3f6b3f" />
+          <stop offset="1" stopColor="#345a34" />
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="640" height="380" fill="url(#mm-grass)" />
+      {/* Major road (wide, horizontal) */}
+      <rect x="0" y="90" width="640" height="200" fill="url(#mm-tarmac)" />
+      {/* Minor road (narrow, vertical) */}
+      <rect x="280" y="0" width="80" height="380" fill="url(#mm-tarmac)" />
+
+      {/* Kerbs */}
+      <g stroke="#e5e7eb" strokeWidth="1.5" fill="none">
+        <line x1="0" y1="90" x2="280" y2="90" />
+        <line x1="360" y1="90" x2="640" y2="90" />
+        <line x1="0" y1="290" x2="280" y2="290" />
+        <line x1="360" y1="290" x2="640" y2="290" />
+        <line x1="280" y1="0" x2="280" y2="90" />
+        <line x1="280" y1="290" x2="280" y2="380" />
+        <line x1="360" y1="0" x2="360" y2="90" />
+        <line x1="360" y1="290" x2="360" y2="380" />
+      </g>
+
+      {/* Major road centre line (broken) */}
+      <g fill="#f8fafc">
+        {[10, 50, 90, 130, 170, 210].map((x) => (<rect key={`mw${x}`} x={x} y="188" width="20" height="4" />))}
+        {[420, 460, 500, 540, 580, 610].map((x) => (<rect key={`me${x}`} x={x} y="188" width="20" height="4" />))}
+        {/* Minor road centre line */}
+        {[10, 30, 50].map((y) => (<rect key={`mnn${y}`} x="318" y={y} width="4" height="14" />))}
+        {[320, 340, 360].map((y) => (<rect key={`mns${y}`} x="318" y={y} width="4" height="14" />))}
+      </g>
+
+      {/* Give-way lines (double dashed) on both minor approaches */}
+      <g fill="#f8fafc">
+        {/* South-side give way (for cars coming from north) */}
+        {[284, 300, 316, 332, 348].map((x) => (
+          <g key={`gn${x}`}>
+            <rect x={x} y="80" width="10" height="4" />
+            <rect x={x} y="88" width="10" height="4" />
+          </g>
+        ))}
+        {/* North-side give way (for cars coming from south) */}
+        {[284, 300, 316, 332, 348].map((x) => (
+          <g key={`gs${x}`}>
+            <rect x={x} y="296" width="10" height="4" />
+            <rect x={x} y="304" width="10" height="4" />
+          </g>
+        ))}
+      </g>
+      {children}
+    </svg>
+  );
+}
+
+function MajorMinorNearsideSvg() {
+  return (
+    <MajorMinorBase>
+      {/* Red arrow — 6 → 3: south minor left lane (x≈335) to east major left lane (y≈140). Tight nearside line. */}
+      <g fill="none" stroke="#f472b6" strokeWidth="3" strokeDasharray="5 4">
+        <path d="M 335 370 C 335 300 355 240 385 215 C 460 180 550 145 620 140" />
+      </g>
+      <polygon points="620,132 638,140 620,148" fill="#f472b6" />
+      {/* Blue arrow — 12 → 9: north minor left lane (x≈305) to west major left lane (y≈240). */}
+      <g fill="none" stroke="#f472b6" strokeWidth="3" strokeDasharray="5 4">
+        <path d="M 305 10 C 305 80 285 140 255 165 C 180 200 90 235 20 240" />
+      </g>
+      <polygon points="20,232 2,240 20,248" fill="#f472b6" />
+
+      <Car x={340} y={225} rotate={55} color="#dc2626" indicator="right" label="You" />
+      <Car x={300} y={155} rotate={235} color="#1d4ed8" indicator="right" label="Them" />
+
+      <g fontFamily="Arial, sans-serif" fontSize="11">
+        <rect x="14" y="14" width="310" height="46" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="24" y="32" fill="#0b1f1c" fontWeight="700">Major/minor — NEARSIDE</text>
+        <text x="24" y="48" fill="#0b1f1c">Both wait at give-way, then cut in front — quick but blind.</text>
+      </g>
+    </MajorMinorBase>
+  );
+}
+
+function MajorMinorOffsideSvg() {
+  return (
+    <MajorMinorBase>
+      <g fill="none" stroke="#22d3ee" strokeWidth="3" strokeDasharray="7 5">
+        <path d="M 335 370 C 335 250 305 200 285 175 C 340 145 500 138 620 140" />
+      </g>
+      <polygon points="620,132 638,140 620,148" fill="#22d3ee" />
+      <g fill="none" stroke="#22d3ee" strokeWidth="3" strokeDasharray="7 5">
+        <path d="M 305 10 C 305 130 335 180 355 205 C 300 235 140 242 20 240" />
+      </g>
+      <polygon points="20,232 2,240 20,248" fill="#22d3ee" />
+
+      <Car x={295} y={160} rotate={55} color="#dc2626" indicator="right" label="You" />
+      <Car x={345} y={220} rotate={235} color="#1d4ed8" indicator="right" label="Them" />
+
+      <g fontFamily="Arial, sans-serif" fontSize="11">
+        <rect x="14" y="14" width="310" height="46" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="24" y="32" fill="#0b1f1c" fontWeight="700">Major/minor — OFFSIDE (preferred)</text>
+        <text x="24" y="48" fill="#0b1f1c">Wider path but each driver sees oncoming traffic clearly.</text>
+      </g>
+    </MajorMinorBase>
+  );
+}
+
+function MoreRule181Scenarios() {
+  return (
+    <Panel
+      title="More Rule 181 scenarios — compare the outcomes"
+      subtitle="Same rule, different junctions. Approach angle and road type change which method actually works."
+    >
+      {/* Scenario A: staggered */}
+      <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-accent">Scenario A · Staggered crossroads (offset approaches)</div>
+      <p className="mb-3 text-sm text-muted-foreground">
+        The south arm is offset east of the north arm. Two right-turners meet with their approaches out of line — the nearside path forces them nose-to-nose, so the offside sweep is the only comfortable option.
+      </p>
+      <div className="grid gap-3 md:grid-cols-2">
+        <figure role="group" aria-label="Staggered crossroads, offside method: red from south-east arm and blue from north-west arm both turn right and swing wide behind each other, ending in their exit road's left lane.">
+          <ZoomPan aspect="640/380" label="Staggered crossroads, offside-to-offside method">
+            <StaggeredOffsideSvg />
+          </ZoomPan>
+        </figure>
+        <figure role="group" aria-label="Staggered crossroads, nearside method: the tight turn lines converge in the middle of the junction, creating a nose-to-nose conflict marked with a red X.">
+          <ZoomPan aspect="640/380" label="Staggered crossroads, nearside method (risky)">
+            <StaggeredNearsideSvg />
+          </ZoomPan>
+        </figure>
+      </div>
+      <div className="mt-3 border border-border p-4 text-sm">
+        <strong>Outcome:</strong> pick <strong>offside</strong>. The offset means a nearside line would put you nose-to-nose with the other driver in the middle of the box. Drive on until you're level with the other car's offside, then turn.
+      </div>
+
+      {/* Scenario B: major / minor */}
+      <div className="mt-6 mb-2 text-[11px] font-semibold uppercase tracking-wider text-accent">Scenario B · Major road meeting minor road (give-way both sides)</div>
+      <p className="mb-3 text-sm text-muted-foreground">
+        Both turners are emerging from a narrow minor road onto a wider major road, so both must give way to major-road traffic first. Once clear, the method still matters — nearside is fast but blind, offside gives a clear view of any late oncoming vehicle.
+      </p>
+      <div className="grid gap-3 md:grid-cols-2">
+        <figure role="group" aria-label="Major/minor crossroads, nearside method: after giving way, red and blue turn in front of each other, taking the short tight line.">
+          <ZoomPan aspect="640/380" label="Major/minor crossroads, nearside method">
+            <MajorMinorNearsideSvg />
+          </ZoomPan>
+        </figure>
+        <figure role="group" aria-label="Major/minor crossroads, offside method: after giving way, red and blue swing wide behind each other, keeping oncoming traffic in view.">
+          <ZoomPan aspect="640/380" label="Major/minor crossroads, offside method (preferred)">
+            <MajorMinorOffsideSvg />
+          </ZoomPan>
+        </figure>
+      </div>
+      <div className="mt-3 border border-border p-4 text-sm">
+        <strong>Outcome:</strong> <strong>offside</strong> is safer here too. Because you have to accelerate to clear the major road, you need the clearest possible view of anything approaching along it — the nearside line puts the other right-turner directly in your sight-line.
+      </div>
+
+      <div className="mt-5 border border-border bg-secondary/40 p-3 text-sm">
+        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">The pattern to remember</div>
+        <ul className="list-disc space-y-1.5 pl-5 text-sm">
+          <li><strong>Symmetrical box, no markings</strong> → either method works; agree with the other driver.</li>
+          <li><strong>Staggered / offset approaches</strong> → offside (swing wide behind).</li>
+          <li><strong>Painted turn arrows or an island</strong> → follow the paint; usually nearside.</li>
+          <li><strong>Minor onto major</strong> → offside — you need the sightline for the give-way.</li>
+          <li><strong>Whatever you choose</strong> → both cars finish in their exit road's LEFT lane. Always.</li>
         </ul>
       </div>
     </Panel>
