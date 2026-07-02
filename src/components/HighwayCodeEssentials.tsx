@@ -921,9 +921,22 @@ function HierarchyPyramid() {
     <svg
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label="Pyramid showing the Hierarchy of Road Users from Rule H1 of the Highway Code. Pedestrians are at the top with the highest priority; large vehicles are at the bottom with the greatest responsibility to reduce danger."
+      aria-labelledby={`${titleId} ${descId}`}
       className="block h-auto w-full"
     >
+      <title id={titleId}>Hierarchy of Road Users</title>
+      <desc id={descId}>
+        Pyramid diagram from Rule H1 of the UK Highway Code, ordered from the most
+        vulnerable road users at the top to those with the greatest responsibility
+        to reduce danger at the bottom. Top to bottom: 1. Pedestrians — children,
+        older and disabled people have the highest priority. 2. Cyclists —
+        including e-cycles. 3. Horse riders and horse-drawn vehicles. 4.
+        Motorcyclists — mopeds and motorbikes. 5. Cars and taxis — private vehicles.
+        6. Vans and minibuses — light goods vehicles. 7. HGVs and large vehicles —
+        greatest responsibility to reduce danger. Road users who can cause the
+        greatest harm must take the greatest responsibility to reduce the danger
+        they pose to others.
+      </desc>
       <defs>
         <linearGradient id="pyr-sky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#f8fafc" />
