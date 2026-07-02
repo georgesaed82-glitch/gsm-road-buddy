@@ -41,6 +41,7 @@ function LessonsPage() {
   const qc = useQueryClient();
   type Rating = { skill_key: string; rating: number };
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [skillFilter, setSkillFilter] = useState<string>("all");
   const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const inFlight = useRef<Map<string, number>>(new Map());
