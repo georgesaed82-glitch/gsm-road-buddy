@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { useServerFn } from "@tanstack/react-start";
 import { verifyPortalAccess } from "@/lib/portal-access.functions";
-import { getAttemptState, getCaptchaConfig, studentSignIn } from "@/lib/auth-guard.functions";
+import { getCaptchaConfig, studentSignIn } from "@/lib/auth-guard.functions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,7 +39,6 @@ function AuthPage() {
   const tracked = useRef(false);
   const verify = useServerFn(verifyPortalAccess);
   const runStudentSignIn = useServerFn(studentSignIn);
-  const runAttemptState = useServerFn(getAttemptState);
   const runCaptchaConfig = useServerFn(getCaptchaConfig);
 
   // Student email + password sign-in (persists per-student progress)
@@ -87,11 +86,8 @@ function AuthPage() {
         } else {
           toast.error("Incorrect or expired code. Email George to request access.");
         }
-        // Re-check state to show the captcha as soon as the threshold trips.
-        try {
-          const st = await runAttemptState({ data: { identifier: `code:${pw}` } });
-          if (st.required) setCodeCaptchaRequired(true);
-        } catch { /* ignore */ }
+        if (res.captchaRequiredNext) setCodeCaptchaRequired(true);
+        setCodeCaptchaToken(null);
         setSubmitting(false);
         return;
       }
@@ -179,11 +175,8 @@ function AuthPage() {
             setStudentCaptchaToken(null);
             throw new Error("Verification failed. Try the check again.");
           }
-          // Re-check state so captcha appears once threshold is crossed.
-          try {
-            const st = await runAttemptState({ data: { identifier: email.trim().toLowerCase() } });
-            if (st.required) setStudentCaptchaRequired(true);
-          } catch { /* ignore */ }
+          if (res.captchaRequiredNext) setStudentCaptchaRequired(true);
+          setStudentCaptchaToken(null);
           throw new Error("Invalid email or password.");
         }
         if (res.session) {
