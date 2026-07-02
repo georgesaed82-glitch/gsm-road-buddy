@@ -21,6 +21,9 @@ function Frame({ children }: { children: ReactNode }) {
       className="block h-full w-full"
       role="img"
       aria-hidden="true"
+      preserveAspectRatio="xMidYMid meet"
+      shapeRendering="geometricPrecision"
+      textRendering="geometricPrecision"
     >
       <rect width="200" height="200" fill={ROAD} />
       {children}
@@ -236,9 +239,13 @@ export function BusLane() {
   // Red tarmac lane with white boundary lines and painted 'BUS LANE' text,
   // plus a mounted blue time-plate sign showing the operating hours.
   const LANE_LEFT = 8;
-  const LANE_RIGHT = 132;
+  const LANE_RIGHT = 122;
   const RED_TARMAC = "#b91c1c";
   const SIGN_BLUE = "#1d4ed8";
+  const signX = 134;
+  const signY = 40;
+  const signW = 58;
+  const signH = 118;
   return (
     <Frame>
       {/* Red painted bus-lane surface */}
@@ -255,10 +262,10 @@ export function BusLane() {
       {/* 'BUS LANE' text painted on the tarmac */}
       <text
         x={(LANE_LEFT + LANE_RIGHT) / 2}
-        y="95"
+        y="98"
         textAnchor="middle"
         fill={PAINT}
-        style={{ font: "700 20px sans-serif", letterSpacing: 2 }}
+        style={{ font: '700 18px "Arial Narrow", Arial, sans-serif', letterSpacing: 2 }}
       >
         BUS
       </text>
@@ -267,77 +274,79 @@ export function BusLane() {
         y="120"
         textAnchor="middle"
         fill={PAINT}
-        style={{ font: "700 20px sans-serif", letterSpacing: 2 }}
+        style={{ font: '700 18px "Arial Narrow", Arial, sans-serif', letterSpacing: 2 }}
       >
         LANE
       </text>
 
       {/* Blue time-plate sign mounted alongside the lane */}
-      <g transform="translate(142, 40)">
-        {/* Post */}
-        <rect x="24" y="118" width="4" height="42" fill="#6b7280" />
+      <g>
+        {/* Sign post */}
+        <rect x={signX + signW / 2 - 2} y={signY + signH} width="4" height="46" fill="#4b5563" />
         {/* Sign panel */}
         <rect
-          x="0"
-          y="0"
-          width="52"
-          height="120"
+          x={signX}
+          y={signY}
+          width={signW}
+          height={signH}
+          rx="2"
           fill={SIGN_BLUE}
           stroke={PAINT}
           strokeWidth="2"
         />
+        {/* Bus icon */}
+        <g transform={`translate(${signX + 12} ${signY + 10})`}>
+          <rect x="0" y="4" width="34" height="16" rx="2" fill={PAINT} />
+          <rect x="3" y="7" width="9" height="6" fill={SIGN_BLUE} />
+          <rect x="14" y="7" width="9" height="6" fill={SIGN_BLUE} />
+          <rect x="25" y="7" width="6" height="6" fill={SIGN_BLUE} />
+          <circle cx="7" cy="21" r="2.5" fill={SIGN_BLUE} />
+          <circle cx="27" cy="21" r="2.5" fill={SIGN_BLUE} />
+        </g>
+        {/* Divider under bus */}
+        <line
+          x1={signX + 6}
+          y1={signY + 42}
+          x2={signX + signW - 6}
+          y2={signY + 42}
+          stroke={PAINT}
+          strokeWidth="1"
+          opacity="0.7"
+        />
+        {/* Hours (stacked, always fits) */}
         <text
-          x="26"
-          y="18"
+          x={signX + signW / 2}
+          y={signY + 56}
           textAnchor="middle"
           fill={PAINT}
-          style={{ font: "700 10px sans-serif", letterSpacing: 1 }}
-        >
-          BUS
-        </text>
-        <text
-          x="26"
-          y="32"
-          textAnchor="middle"
-          fill={PAINT}
-          style={{ font: "700 10px sans-serif", letterSpacing: 1 }}
-        >
-          LANE
-        </text>
-        <line x1="8" y1="42" x2="44" y2="42" stroke={PAINT} strokeWidth="1" />
-        <text
-          x="26"
-          y="60"
-          textAnchor="middle"
-          fill={PAINT}
-          style={{ font: "600 9px sans-serif" }}
+          style={{ font: '700 9px Arial, sans-serif', letterSpacing: 0.5 }}
         >
           Mon – Sat
         </text>
         <text
-          x="26"
-          y="76"
+          x={signX + signW / 2}
+          y={signY + 74}
           textAnchor="middle"
           fill={PAINT}
-          style={{ font: "600 9px sans-serif" }}
+          style={{ font: '700 11px Arial, sans-serif' }}
         >
           7 am
         </text>
         <text
-          x="26"
-          y="90"
+          x={signX + signW / 2}
+          y={signY + 88}
           textAnchor="middle"
           fill={PAINT}
-          style={{ font: "600 9px sans-serif" }}
+          style={{ font: '700 11px Arial, sans-serif' }}
         >
           –
         </text>
         <text
-          x="26"
-          y="104"
+          x={signX + signW / 2}
+          y={signY + 104}
           textAnchor="middle"
           fill={PAINT}
-          style={{ font: "600 9px sans-serif" }}
+          style={{ font: '700 11px Arial, sans-serif' }}
         >
           4 pm
         </text>
@@ -364,17 +373,22 @@ export function RoundaboutTriangles() {
         <line x1="160" y1={cy} x2="200" y2={cy} />
       </g>
 
-      {/* Three curved clockwise arrows sweeping around the disc */}
-      <g fill="none" stroke={PAINT} strokeWidth="6" strokeLinecap="round">
-        <path d="M 100 42 A 58 58 0 0 1 158 100" />
-        <path d="M 158 100 A 58 58 0 0 1 100 158" />
-        <path d="M 100 158 A 58 58 0 0 1 42 100" />
+      {/* Three curved clockwise arrows sweeping around the disc.
+          Each arc stops just short of its endpoint so the arrowhead
+          (drawn tangent to the sweep) sits cleanly at the tip. */}
+      <g fill="none" stroke={PAINT} strokeWidth="7" strokeLinecap="butt">
+        <path d="M 100 42 A 58 58 0 0 1 154 96" />
+        <path d="M 158 104 A 58 58 0 0 1 104 158" />
+        <path d="M 96 158 A 58 58 0 0 1 42 104" />
       </g>
-      {/* Arrow heads at the end of each curve (rotated triangles) */}
+      {/* Arrowheads — tangent to the sweep direction (clockwise). */}
       <g fill={PAINT}>
-        <polygon points="150,100 168,90 168,110" />
-        <polygon points="100,150 90,168 110,168" />
-        <polygon points="50,100 32,90 32,110" />
+        {/* End of arc 1 near 3 o'clock, pointing DOWN */}
+        <polygon points="148,92 168,92 158,110" />
+        {/* End of arc 2 near 6 o'clock, pointing LEFT */}
+        <polygon points="108,148 108,168 90,158" />
+        {/* End of arc 3 near 9 o'clock, pointing UP */}
+        <polygon points="32,108 52,108 42,90" />
       </g>
 
       {/* Solid white painted mini-roundabout disc */}
