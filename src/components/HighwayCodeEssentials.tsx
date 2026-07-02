@@ -18,74 +18,202 @@ function Panel({ title, subtitle, children }: { title: string; subtitle?: string
 }
 
 // ── Road studs (rule 132) ───────────────────────────────────
+// Bird's-eye view of a UK dual carriageway. Two carriageways separated by a
+// grass central reservation, with a hard shoulder on the far left and a slip
+// road merging in on the near carriageway. Studs sit on real line positions.
 function RoadStudsDiagram() {
-  // A schematic dual carriageway seen from above:
-  //   [ hard shoulder | lane 1 | lane 2 | lane 3 |>< central reservation ><| ... ]
-  // Studs sit on lane divisions. Colours per UK Highway Code rule 132.
-  const ROAD = "#2a2a2a";
-  const PAINT = "#f8fafc";
+  const TARMAC = "#3a3a3d";       // fresh asphalt
+  const TARMAC_DARK = "#2b2b2e";  // shadow band
+  const VERGE = "#4a7c3a";        // grass verge
+  const VERGE_DARK = "#365a29";
+  const RESERVATION = "#3d6a2f";  // central reservation grass
+  const PAINT = "#f5f5f0";        // road paint (slightly warm white)
 
-  // Helper: a dashed row of studs at a given y between x1..x2, colored.
-  const studs = (y: number, color: string, key: string) => {
+  // Row of studs at y, from x1..x2, spacing, colour, radius.
+  const studs = (
+    y: number,
+    x1: number,
+    x2: number,
+    color: string,
+    key: string,
+    { spacing = 22, r = 2.6 }: { spacing?: number; r?: number } = {},
+  ) => {
     const dots: ReactNode[] = [];
-    for (let x = 30; x <= 570; x += 30) {
+    for (let x = x1; x <= x2; x += spacing) {
       dots.push(
-        <circle key={`${key}-${x}`} cx={x} cy={y} r={3.4} fill={color} stroke="#0f172a" strokeWidth={0.6} />,
+        <g key={`${key}-${x}`}>
+          {/* subtle drop shadow */}
+          <ellipse cx={x} cy={y + 1.4} rx={r + 0.6} ry={r * 0.55} fill="rgba(0,0,0,0.5)" />
+          <circle cx={x} cy={y} r={r} fill={color} stroke="#0a0a0a" strokeWidth={0.5} />
+          {/* specular highlight */}
+          <circle cx={x - r * 0.35} cy={y - r * 0.35} r={r * 0.35} fill="rgba(255,255,255,0.55)" />
+        </g>,
       );
     }
     return dots;
   };
 
   return (
-    <svg viewBox="0 0 600 260" className="block w-full h-auto" role="img" aria-label="Coloured road studs on a dual carriageway">
-      {/* Tarmac */}
-      <rect x="0" y="10" width="600" height="240" fill={ROAD} />
+    <svg
+      viewBox="0 0 640 360"
+      className="block w-full h-auto"
+      role="img"
+      aria-label="Bird's-eye view of a UK dual carriageway showing red, white, amber, green and green/yellow road studs"
+      shapeRendering="geometricPrecision"
+    >
+      <defs>
+        <linearGradient id="tarmac-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={TARMAC} />
+          <stop offset="0.5" stopColor={TARMAC_DARK} />
+          <stop offset="1" stopColor={TARMAC} />
+        </linearGradient>
+        <linearGradient id="verge-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={VERGE_DARK} />
+          <stop offset="1" stopColor={VERGE} />
+        </linearGradient>
+        {/* subtle noise via repeating tiny dots for asphalt texture */}
+        <pattern id="asphalt-tex" width="6" height="6" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" fill="url(#tarmac-grad)" />
+          <circle cx="1.3" cy="1.7" r="0.35" fill="rgba(255,255,255,0.04)" />
+          <circle cx="4.2" cy="3.1" r="0.3" fill="rgba(0,0,0,0.18)" />
+          <circle cx="2.6" cy="4.6" r="0.28" fill="rgba(255,255,255,0.05)" />
+        </pattern>
+        <pattern id="grass-tex" width="10" height="10" patternUnits="userSpaceOnUse">
+          <rect width="10" height="10" fill="url(#verge-grad)" />
+          <path d="M2 8 L2.6 4 M5 9 L4.6 5 M7.5 8 L7.9 4" stroke="rgba(0,0,0,0.18)" strokeWidth="0.5" />
+          <path d="M2 7.5 L2.6 3.5 M5 8.5 L4.6 4.5 M7.5 7.5 L7.9 3.5" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" />
+        </pattern>
+      </defs>
 
-      {/* Left verge edge line */}
-      <line x1="0" y1="45" x2="600" y2="45" stroke={PAINT} strokeWidth="2" />
-      {/* Hard shoulder / edge markings — red studs (left edge of carriageway) */}
-      {studs(45, "#ef4444", "red")}
-      <text x="10" y="35" fill="#fca5a5" fontSize="11" fontFamily="Arial, sans-serif" fontWeight="700">
-        RED — left edge of the carriageway
+      {/* ── LEFT VERGE (grass) ── */}
+      <rect x="0" y="0" width="640" height="22" fill="url(#grass-tex)" />
+
+      {/* ── HARD SHOULDER ── */}
+      <rect x="0" y="22" width="640" height="36" fill="url(#asphalt-tex)" />
+      {/* Solid white edge line separating hard shoulder from lane 1 */}
+      <line x1="0" y1="58" x2="640" y2="58" stroke={PAINT} strokeWidth="2.5" />
+      {/* RED studs — between carriageway and hard shoulder */}
+      {studs(58, 20, 620, "#ef2b2b", "red")}
+      <text x="14" y="42" fill={PAINT} fontSize="10.5" fontFamily="Arial, sans-serif" fontWeight="700" letterSpacing="0.5">
+        HARD SHOULDER
       </text>
 
-      {/* Lane 1 / Lane 2 divider — white studs */}
-      <g>
-        <line x1="0" y1="105" x2="600" y2="105" stroke={PAINT} strokeWidth="2" strokeDasharray="18 14" />
-        {studs(105, "#ffffff", "white")}
+      {/* ── CARRIAGEWAY A (two lanes, driving away from viewer) ── */}
+      <rect x="0" y="58" width="640" height="120" fill="url(#asphalt-tex)" />
+
+      {/* Lane divider — long broken white line + WHITE studs */}
+      <line
+        x1="0" y1="118" x2="640" y2="118"
+        stroke={PAINT} strokeWidth="2.5" strokeDasharray="34 22"
+      />
+      {studs(118, 18, 622, "#ffffff", "white", { spacing: 28 })}
+
+      {/* Slip road merge — a diagonal lane joining from the left */}
+      <path
+        d="M -20 178 L 200 178 L 320 130 L 320 138 L 210 186 L -20 186 Z"
+        fill="url(#asphalt-tex)"
+      />
+      {/* Chevron / merge line marked with GREEN studs (edge of main carriageway at slip road) */}
+      <path
+        d="M 320 138 L 210 186"
+        stroke={PAINT} strokeWidth="2" strokeDasharray="10 8" fill="none"
+      />
+      {(() => {
+        const dots: ReactNode[] = [];
+        for (let t = 0; t <= 1; t += 0.09) {
+          const x = 320 + (210 - 320) * t;
+          const y = 138 + (186 - 138) * t;
+          dots.push(
+            <g key={`gm-${t}`}>
+              <ellipse cx={x} cy={y + 1.4} rx={3.2} ry={1.4} fill="rgba(0,0,0,0.5)" />
+              <circle cx={x} cy={y} r={2.6} fill="#22c55e" stroke="#0a0a0a" strokeWidth={0.5} />
+              <circle cx={x - 0.9} cy={y - 0.9} r={0.9} fill="rgba(255,255,255,0.55)" />
+            </g>,
+          );
+        }
+        return dots;
+      })()}
+      {/* Continuation of GREEN studs along the lay-by edge past the merge */}
+      {studs(178, 20, 195, "#22c55e", "green-left", { spacing: 22 })}
+      {studs(178, 335, 622, "#22c55e", "green-right", { spacing: 22 })}
+
+      {/* Right edge of carriageway A (next to central reservation) — solid white edge line + AMBER studs */}
+      <line x1="0" y1="178" x2="640" y2="178" stroke={PAINT} strokeWidth="2.5" />
+
+      {/* ── CENTRAL RESERVATION (grass with crash barriers) ── */}
+      <rect x="0" y="178" width="640" height="30" fill="url(#grass-tex)" />
+      {/* Armco barriers */}
+      <rect x="0" y="182" width="640" height="2.2" fill="#c9c9c9" />
+      <rect x="0" y="182" width="640" height="0.6" fill="#ffffff" opacity="0.7" />
+      <rect x="0" y="202" width="640" height="2.2" fill="#c9c9c9" />
+      <rect x="0" y="202" width="640" height="0.6" fill="#ffffff" opacity="0.7" />
+      {/* Barrier posts */}
+      {Array.from({ length: 16 }, (_, i) => (
+        <rect key={`post-${i}`} x={20 + i * 40} y="180" width="2" height="26" fill="#8a8a8a" />
+      ))}
+      {/* AMBER studs on both edges of the central reservation */}
+      {studs(178, 20, 620, "#f5a300", "amber-top", { spacing: 22 })}
+      {studs(208, 20, 620, "#f5a300", "amber-bot", { spacing: 22 })}
+
+      {/* ── CARRIAGEWAY B (two lanes, driving toward viewer) ── */}
+      <rect x="0" y="208" width="640" height="120" fill="url(#asphalt-tex)" />
+      <line x1="0" y1="208" x2="640" y2="208" stroke={PAINT} strokeWidth="2.5" />
+
+      {/* Lane divider */}
+      <line
+        x1="0" y1="268" x2="640" y2="268"
+        stroke={PAINT} strokeWidth="2.5" strokeDasharray="34 22"
+      />
+      {studs(268, 18, 622, "#ffffff", "white-b", { spacing: 28 })}
+
+      {/* Left edge of carriageway B (nearest the verge) — solid white + RED studs */}
+      <line x1="0" y1="328" x2="640" y2="328" stroke={PAINT} strokeWidth="2.5" />
+      {studs(328, 20, 620, "#ef2b2b", "red-b")}
+
+      {/* Temporary layout — cones + GREEN/YELLOW studs on part of the lane */}
+      {(() => {
+        const cones: ReactNode[] = [];
+        for (let x = 380; x <= 600; x += 24) {
+          cones.push(
+            <g key={`cone-${x}`}>
+              <polygon points={`${x - 3},${238} ${x + 3},${238} ${x + 4.5},${248} ${x - 4.5},${248}`} fill="#ff7a1a" />
+              <rect x={x - 4.7} y={244} width="9.4" height="1.6" fill="#ffffff" />
+              <rect x={x - 4.8} y={248} width="9.6" height="1.6" fill="#111" />
+            </g>,
+          );
+        }
+        return cones;
+      })()}
+      {/* Green/yellow fluorescent studs marking the temporary route */}
+      {(() => {
+        const dots: ReactNode[] = [];
+        for (let x = 380; x <= 600; x += 22) {
+          dots.push(
+            <g key={`gy-${x}`}>
+              <ellipse cx={x} cy={255} rx={3.2} ry={1.4} fill="rgba(0,0,0,0.5)" />
+              <circle cx={x} cy={253} r={2.9} fill="#f2ff00" stroke="#0a0a0a" strokeWidth={0.5} />
+              <circle cx={x - 1} cy={252} r={1} fill="rgba(255,255,255,0.7)" />
+            </g>,
+          );
+        }
+        return dots;
+      })()}
+
+      {/* ── RIGHT VERGE ── */}
+      <rect x="0" y="328" width="640" height="32" fill="url(#grass-tex)" />
+
+      {/* Faint direction arrows on the tarmac */}
+      <g fill={PAINT} opacity="0.35">
+        <polygon points="80,90 92,90 92,80 108,100 92,120 92,110 80,110" />
+        <polygon points="560,278 548,278 548,268 532,288 548,308 548,298 560,298" transform="scale(1) translate(0,0)" />
       </g>
-      <text x="10" y="97" fill="#e2e8f0" fontSize="11" fontFamily="Arial, sans-serif" fontWeight="700">
-        WHITE — between lanes / centre of the road
-      </text>
 
-      {/* Slip road / lane join — green studs */}
-      <g>
-        <line x1="0" y1="150" x2="600" y2="150" stroke={PAINT} strokeWidth="2" strokeDasharray="6 10" />
-        {studs(150, "#22c55e", "green")}
+      {/* Compact legend badges — overlaid on grass strips, unobtrusive */}
+      <g fontFamily="Arial, sans-serif" fontSize="9" fontWeight="700" fill={PAINT}>
+        <text x="14" y="16" letterSpacing="0.4">LEFT VERGE</text>
+        <text x="14" y="200" letterSpacing="0.4">CENTRAL RESERVATION</text>
+        <text x="14" y="352" letterSpacing="0.4">VERGE</text>
       </g>
-      <text x="10" y="142" fill="#86efac" fontSize="11" fontFamily="Arial, sans-serif" fontWeight="700">
-        GREEN — edge of the main carriageway at lay-bys and slip roads
-      </text>
-
-      {/* Roadworks / temporary — green/yellow (fluorescent) */}
-      <g>
-        {studs(185, "#facc15", "yellow")}
-      </g>
-      <text x="10" y="177" fill="#fde68a" fontSize="11" fontFamily="Arial, sans-serif" fontWeight="700">
-        GREEN / YELLOW — temporary layout at contraflows and roadworks
-      </text>
-
-      {/* Right edge — amber studs at central reservation */}
-      <g>
-        <line x1="0" y1="225" x2="600" y2="225" stroke="#facc15" strokeWidth="2" />
-        {studs(225, "#f59e0b", "amber")}
-      </g>
-      <text x="10" y="217" fill="#fcd34d" fontSize="11" fontFamily="Arial, sans-serif" fontWeight="700">
-        AMBER — right edge of the carriageway / central reservation
-      </text>
-
-      {/* Right verge */}
-      <rect x="0" y="240" width="600" height="10" fill="#166534" />
     </svg>
   );
 }
