@@ -373,17 +373,22 @@ export function RoundaboutTriangles() {
         <line x1="160" y1={cy} x2="200" y2={cy} />
       </g>
 
-      {/* Three curved clockwise arrows sweeping around the disc */}
-      <g fill="none" stroke={PAINT} strokeWidth="6" strokeLinecap="round">
-        <path d="M 100 42 A 58 58 0 0 1 158 100" />
-        <path d="M 158 100 A 58 58 0 0 1 100 158" />
-        <path d="M 100 158 A 58 58 0 0 1 42 100" />
+      {/* Three curved clockwise arrows sweeping around the disc.
+          Each arc stops just short of its endpoint so the arrowhead
+          (drawn tangent to the sweep) sits cleanly at the tip. */}
+      <g fill="none" stroke={PAINT} strokeWidth="7" strokeLinecap="butt">
+        <path d="M 100 42 A 58 58 0 0 1 154 96" />
+        <path d="M 158 104 A 58 58 0 0 1 104 158" />
+        <path d="M 96 158 A 58 58 0 0 1 42 104" />
       </g>
-      {/* Arrow heads at the end of each curve (rotated triangles) */}
+      {/* Arrowheads — tangent to the sweep direction (clockwise). */}
       <g fill={PAINT}>
-        <polygon points="150,100 168,90 168,110" />
-        <polygon points="100,150 90,168 110,168" />
-        <polygon points="50,100 32,90 32,110" />
+        {/* End of arc 1 near 3 o'clock, pointing DOWN */}
+        <polygon points="148,92 168,92 158,110" />
+        {/* End of arc 2 near 6 o'clock, pointing LEFT */}
+        <polygon points="108,148 108,168 90,158" />
+        {/* End of arc 3 near 9 o'clock, pointing UP */}
+        <polygon points="32,108 52,108 42,90" />
       </g>
 
       {/* Solid white painted mini-roundabout disc */}
