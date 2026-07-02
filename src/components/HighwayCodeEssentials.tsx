@@ -1049,23 +1049,19 @@ function HierarchyPyramid() {
   );
 }
 
-// Top-down junction: major road (horizontal) meeting a minor road (vertical
-// from bottom) with give-way triangle & broken line. A car turns left from
-// the major road into the minor road; a pedestrian is crossing the mouth of
-// the minor road. Illustrates Rule H2.
+// Top-down junction: major road (horizontal) meeting a minor road on the
+// driver's LEFT. The car approaches from the left in the left-hand lane and
+// turns left into the minor road while indicating left. Illustrates Rule H2.
 function GiveWayJunctionSvg() {
-  const TARMAC = "#3a3a3d";
-  const TARMAC_DARK = "#2b2b2e";
   const PAINT = "#f6f6f0";
   const PAVEMENT = "#a9a4a0";
   const PAVEMENT_DARK = "#8a857f";
-  const VERGE = "#4a7c3a";
 
   return (
     <svg
       viewBox="0 0 720 520"
       role="img"
-      aria-label="Top-down junction. A red car coming from the left along the major road turns left into a minor road. A pedestrian is crossing the mouth of the minor road from left to right. The car must give way under Rule H2. Because the driver is turning from a major road into a minor road, the give-way markings are shown as a single broken line."
+      aria-label="Top-down junction. A red car approaches from the left in the left-hand lane of the major road, indicates left, and turns left into the minor road on the driver's left. A pedestrian is crossing the mouth of the minor road from left to right, so the car must give way under Rule H2."
       className="block h-auto w-full"
     >
       <defs>
@@ -1077,61 +1073,75 @@ function GiveWayJunctionSvg() {
           <stop offset="0%" stopColor="#454549" />
           <stop offset="100%" stopColor="#2f2f32" />
         </linearGradient>
+        <marker id="left-turn-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L10,5 L0,10 Z" fill="#f59e0b" />
+        </marker>
       </defs>
 
       {/* Grass */}
       <rect x="0" y="0" width="720" height="520" fill="url(#gw-grass)" />
 
-      {/* Major road (horizontal, top half) */}
-      <rect x="0" y="80" width="720" height="180" fill="url(#gw-tarmac)" />
-      <rect x="0" y="80" width="720" height="4" fill="#000" opacity="0.35" />
-      <rect x="0" y="256" width="720" height="4" fill="#000" opacity="0.35" />
+      {/* Minor road is on the driver's LEFT as the car travels left → right. */}
+      <rect x="290" y="0" width="140" height="250" fill="url(#gw-tarmac)" />
+      <rect x="286" y="0" width="4" height="250" fill="#000" opacity="0.3" />
+      <rect x="430" y="0" width="4" height="250" fill="#000" opacity="0.3" />
 
-      {/* Minor road (vertical, extends downward from major road) */}
-      <rect x="290" y="260" width="140" height="260" fill="url(#gw-tarmac)" />
-      <rect x="286" y="260" width="4" height="260" fill="#000" opacity="0.3" />
-      <rect x="430" y="260" width="4" height="260" fill="#000" opacity="0.3" />
+      {/* Major road (horizontal). UK left-hand traffic means the car uses the upper lane when travelling left → right. */}
+      <rect x="0" y="250" width="720" height="180" fill="url(#gw-tarmac)" />
+      <rect x="0" y="250" width="720" height="4" fill="#000" opacity="0.35" />
+      <rect x="0" y="426" width="720" height="4" fill="#000" opacity="0.35" />
 
       {/* Pavement corners between major road and minor road */}
-      <path d="M0,260 L290,260 Q290,300 250,300 L0,300 Z" fill={PAVEMENT} />
-      <path d="M720,260 L430,260 Q430,300 470,300 L720,300 Z" fill={PAVEMENT} />
-      <rect x="0" y="300" width="250" height="6" fill={PAVEMENT_DARK} opacity="0.55" />
-      <rect x="470" y="300" width="250" height="6" fill={PAVEMENT_DARK} opacity="0.55" />
+      <path d="M0,210 L250,210 Q290,210 290,250 L0,250 Z" fill={PAVEMENT} />
+      <path d="M720,210 L470,210 Q430,210 430,250 L720,250 Z" fill={PAVEMENT} />
+      <rect x="0" y="210" width="250" height="6" fill={PAVEMENT_DARK} opacity="0.55" />
+      <rect x="470" y="210" width="250" height="6" fill={PAVEMENT_DARK} opacity="0.55" />
       {/* Kerb line highlighting inner curve */}
-      <path d="M290,260 Q290,300 250,300" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="1.5" />
-      <path d="M430,260 Q430,300 470,300" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="1.5" />
+      <path d="M290,250 Q290,210 250,210" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="1.5" />
+      <path d="M430,250 Q430,210 470,210" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="1.5" />
 
       {/* Major-road centre line (broken, UK white dashes) */}
       {Array.from({ length: 14 }).map((_, i) => (
-        <rect key={i} x={20 + i * 52} y="167" width="30" height="5" fill={PAINT} />
+        <rect key={i} x={20 + i * 52} y="337" width="30" height="5" fill={PAINT} />
       ))}
 
       {/* Minor-road centre line (broken) */}
       {Array.from({ length: 7 }).map((_, i) => (
-        <rect key={i} x="357" y={310 + i * 32} width="6" height="16" fill={PAINT} />
+        <rect key={i} x="357" y={22 + i * 32} width="6" height="16" fill={PAINT} />
       ))}
 
       {/* Give-way markings across the mouth of the minor road.
-          LEFT half (nearside as the pedestrian steps on) — DOUBLE broken line.
+          LEFT half — DOUBLE broken line.
           RIGHT half — SINGLE broken line. */}
       {/* Left half: double broken line */}
       {Array.from({ length: 4 }).map((_, i) => (
         <g key={`gw-l-${i}`}>
-          <rect x={296 + i * 17} y="266" width="10" height="6" fill={PAINT} />
-          <rect x={296 + i * 17} y="276" width="10" height="6" fill={PAINT} />
+          <rect x={296 + i * 17} y="228" width="10" height="6" fill={PAINT} />
+          <rect x={296 + i * 17} y="238" width="10" height="6" fill={PAINT} />
         </g>
       ))}
       {/* Right half: single broken line */}
       {Array.from({ length: 4 }).map((_, i) => (
-        <rect key={`gw-r-${i}`} x={364 + i * 17} y="270" width="10" height="7" fill={PAINT} />
+        <rect key={`gw-r-${i}`} x={364 + i * 17} y="232" width="10" height="7" fill={PAINT} />
       ))}
       {/* Thin divider between the two halves for clarity */}
-      <line x1="360" y1="264" x2="360" y2="286" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="1" />
+      <line x1="360" y1="226" x2="360" y2="248" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="1" />
 
-      {/* Red car coming FROM THE LEFT along the major road and turning LEFT
-          into the minor road — shown mid-arc, front pointing down into the
-          minor road, left indicator flashing. */}
-      <g transform="translate(345 235) rotate(75)">
+      {/* Left-turn path: from the left-hand lane of the major road into the left-side minor road. */}
+      <path
+        d="M90 292 C185 292 275 292 315 258 C340 236 338 190 338 130"
+        fill="none"
+        stroke="#f59e0b"
+        strokeWidth="8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        markerEnd="url(#left-turn-arrow)"
+        opacity="0.95"
+      />
+
+      {/* Red car: coming FROM THE LEFT, keeping to the LEFT-HAND lane,
+          indicating left, and turning LEFT into the side road. */}
+      <g transform="translate(312 266) rotate(-58)">
         {/* shadow */}
         <rect x="-34" y="-14" width="68" height="34" rx="8" fill="#000" opacity="0.25" transform="translate(3 4)" />
         {/* body */}
@@ -1145,8 +1155,9 @@ function GiveWayJunctionSvg() {
         {/* headlights */}
         <rect x="30" y="-13" width="4" height="5" fill="#fde68a" />
         <rect x="30" y="8" width="4" height="5" fill="#fde68a" />
-        {/* left indicator (flashing amber) — car turning left */}
-        <circle cx="32" cy="12" r="2.6" fill="#f59e0b" />
+        {/* left indicator (flashing amber) — on the car's front-left corner */}
+        <circle cx="32" cy="-12" r="3.2" fill="#f59e0b" stroke="#fff7ed" strokeWidth="1" />
+        <path d="M34 -18 L46 -28 M37 -12 L53 -12 M34 -6 L46 4" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
         {/* wheels */}
         <rect x="-22" y="-19" width="10" height="4" fill="#111" />
         <rect x="14" y="-19" width="10" height="4" fill="#111" />
@@ -1157,7 +1168,7 @@ function GiveWayJunctionSvg() {
       {/* Pedestrian crossing the mouth of the minor road LEFT → RIGHT.
           Body drawn from above (top-down view) and rotated 90° so shoulders
           face the direction of travel. */}
-      <g transform="translate(320 350)">
+      <g transform="translate(320 216)">
         {/* subtle shadow */}
         <ellipse cx="0" cy="8" rx="12" ry="3" fill="#000" opacity="0.28" />
         <g transform="rotate(90)">
@@ -1181,32 +1192,32 @@ function GiveWayJunctionSvg() {
 
       {/* Car approach arrow — showing it came FROM THE LEFT */}
       <g stroke="#ffffff" strokeWidth="3" fill="none" opacity="0.9">
-        <line x1="70" y1="150" x2="250" y2="150" />
-        <polygon points="258,150 246,142 246,158" fill="#ffffff" stroke="none" />
+        <line x1="70" y1="292" x2="236" y2="292" />
+        <polygon points="244,292 232,284 232,300" fill="#ffffff" stroke="none" />
       </g>
 
       {/* STOP-if-safe marker for the car */}
       <g>
-        <circle cx="300" cy="205" r="14" fill="#ef4444" stroke="#0b1f1c" strokeWidth="1.5" />
-        <text x="300" y="209" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="11" fontWeight={700} fill="#fff">STOP</text>
+        <circle cx="260" cy="268" r="14" fill="#ef4444" stroke="#0b1f1c" strokeWidth="1.5" />
+        <text x="260" y="272" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="11" fontWeight={700} fill="#fff">STOP</text>
       </g>
 
       {/* Labels */}
       <g fontFamily="Arial, sans-serif" fontSize="13" fill="#0b1f1c">
-        <rect x="18" y="98" width="200" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="26" y="114" fontWeight={700}>Major road (car approaches)</text>
+        <rect x="18" y="266" width="245" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="26" y="282" fontWeight={700}>Major road — left-hand lane</text>
 
-        <rect x="452" y="452" width="128" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="460" y="468" fontWeight={700}>Minor road</text>
+        <rect x="438" y="42" width="128" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="446" y="58" fontWeight={700}>Minor road</text>
 
-        <rect x="440" y="258" width="260" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="448" y="274">Give-way: double left · single right</text>
+        <rect x="440" y="222" width="260" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="448" y="238">Give-way: double left · single right</text>
 
-        <rect x="440" y="342" width="230" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="448" y="358">Pedestrian crossing L → R (Rule H2)</text>
+        <rect x="440" y="172" width="230" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="448" y="188">Pedestrian crossing L → R (Rule H2)</text>
 
-        <rect x="130" y="196" width="170" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="138" y="212">Car turning left into minor road</text>
+        <rect x="126" y="326" width="235" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="134" y="342">Red car indicating and turning left</text>
       </g>
     </svg>
   );
