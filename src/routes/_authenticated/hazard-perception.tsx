@@ -29,10 +29,26 @@ function loadHaptics(): HapticsSettings {
 
 function useHapticsSettings() {
   const [settings, setSettings] = useState<HapticsSettings>(DEFAULT_HAPTICS);
-  useEffect(() => { setSettings(loadHaptics()); }, []);
+  useEffect(() => {
+    setSettings(loadHaptics());
+    if (typeof window === "undefined") return;
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === HAPTICS_STORAGE_KEY) setSettings(loadHaptics());
+    };
+    const onLocal = () => setSettings(loadHaptics());
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("gsm:haptics-changed", onLocal);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("gsm:haptics-changed", onLocal);
+    };
+  }, []);
   const update = (next: HapticsSettings) => {
     setSettings(next);
-    try { window.localStorage.setItem(HAPTICS_STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+    try {
+      window.localStorage.setItem(HAPTICS_STORAGE_KEY, JSON.stringify(next));
+      window.dispatchEvent(new Event("gsm:haptics-changed"));
+    } catch { /* ignore */ }
   };
   return [settings, update] as const;
 }
