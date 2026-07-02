@@ -42,7 +42,7 @@ export type CaptchaState = {
  */
 export async function evaluateAttemptState(identifier: string): Promise<CaptchaState> {
   const supabase = await admin();
-  const { ip } = reqMeta();
+  const { ip } = await reqMeta();
   const ipHash = await hashIp(ip);
   const since = new Date(Date.now() - WINDOW_MINUTES * 60_000).toISOString();
 
@@ -82,7 +82,7 @@ async function recordAttempt(
 ): Promise<void> {
   try {
     const supabase = await admin();
-    const { ip, ua } = reqMeta();
+    const { ip, ua } = await reqMeta();
     const ipHash = await hashIp(ip);
     await supabase.from("auth_attempts").insert({
       identifier,
@@ -106,7 +106,7 @@ export async function verifyTurnstileToken(token: string | null | undefined): Pr
   if (!secret) return false;
   if (!token) return false;
   try {
-    const { ip } = reqMeta();
+    const { ip } = await reqMeta();
     const body = new URLSearchParams();
     body.append("secret", secret);
     body.append("response", token);
