@@ -42,11 +42,30 @@ function Monogram() {
   );
 }
 
-function PortalMenuItem({ to, label, icon: Icon, onClick }: { to: string; label: string; icon: typeof BookOpen; onClick?: () => void }) {
+function PortalMenuItem({
+  to,
+  label,
+  icon: Icon,
+  active,
+  onClick,
+}: {
+  to: string;
+  label: string;
+  icon: typeof BookOpen;
+  active?: boolean;
+  onClick?: () => void;
+}) {
   return (
-    <DropdownMenuItem asChild className="cursor-pointer">
-      <Link to={to} onClick={onClick} className="flex items-center gap-2">
-        <Icon className="h-4 w-4 text-muted-foreground" />
+    <DropdownMenuItem asChild className={cn("cursor-pointer p-0")}>
+      <Link
+        to={to}
+        onClick={onClick}
+        className={cn(
+          "flex items-center gap-2 px-2 py-2 text-sm outline-none transition-colors",
+          active ? "bg-accent/50 font-medium text-primary" : "text-muted-foreground hover:text-foreground",
+        )}
+      >
+        <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
         <span>{label}</span>
       </Link>
     </DropdownMenuItem>
