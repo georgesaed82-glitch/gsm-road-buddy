@@ -348,158 +348,97 @@ function RoadStuds() {
 // Top-down, TSRGD-faithful dual carriageway showing the five stud colours.
 // Hard shoulder on the LEFT, traffic flowing UP the page.
 function DualCarriagewayStudsSvg() {
-  // Geometry (px in viewBox units)
-  const W = 400;
-  const H = 560;
-  // Cross-section (left → right)
-  const grassL = 40;         // left grass verge width
-  const hardShoulder = 60;   // hard shoulder width
-  const lane = 78;           // each running lane
-  const centralRes = 40;     // central reservation width
-  const xVergeEnd = grassL;                              // 40
-  const xHardEnd = xVergeEnd + hardShoulder;             // 100  → RED studs here
-  const xLane1End = xHardEnd + lane;                     // 178  → WHITE studs here
-  const xLane2End = xLane1End + lane;                    // 256  → AMBER studs here
-  const xCentralEnd = xLane2End + centralRes;            // 296
-  // Right side: opposite carriageway hint + grass
-  const roadRightEnd = W - 20;
+  // Simple, realistic top-down dual carriageway.
+  // Hard shoulder on the LEFT running the FULL length. Traffic flows UP.
+  // Left → right: grass | hard shoulder | lane 1 | lane 2 | central reservation | opposite carriageway hint | grass.
+  const W = 360;
+  const H = 640;
+  const xGrassL = 30;
+  const xHard = 90;   // RED studs live on this line (hard shoulder ↔ lane 1)
+  const xMid = 175;   // WHITE studs live on this line (between lanes)
+  const xLane2R = 260; // AMBER studs live on this line (lane 2 ↔ central reservation)
+  const xCentR = 300;
+  const xRoadR = 340;
 
-  // Stud helper: dashed reflective studs along a vertical line
-  const stud = (x: number, y: number, r: number, fill: string, stroke = "#0b0f0b") => (
-    <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={0.6} />
+  const Stud = ({ x, y, r = 3.4, fill }: { x: number; y: number; r?: number; fill: string }) => (
+    <circle cx={x} cy={y} r={r} fill={fill} stroke="#0a0a0a" strokeWidth={0.5} />
   );
-  const studLine = (x: number, y1: number, y2: number, step: number, fill: string, r = 3.2) => {
-    const out: ReactElement[] = [];
-    for (let y = y1; y <= y2; y += step) out.push(<g key={`${x}-${y}-${fill}`}>{stud(x, y, r, fill)}</g>);
-    return out;
+
+  // Evenly spaced studs along a vertical line, skipping any y within a range
+  const verticalStuds = (x: number, step: number, fill: string, skip?: [number, number]) => {
+    const nodes: ReactElement[] = [];
+    for (let y = 20; y <= H - 20; y += step) {
+      if (skip && y >= skip[0] && y <= skip[1]) continue;
+      nodes.push(<Stud key={`${x}-${y}-${fill}`} x={x} y={y} fill={fill} />);
+    }
+    return nodes;
   };
 
-  // Lay-by cut-out on the LEFT hard shoulder (green studs)
-  const layTop = 210;
-  const layBot = 330;
-  const layDepth = 34; // extra width taken from grass into a lay-by pocket
-
-  // Contraflow band on the RIGHT lane (green/yellow studs down the middle)
-  const cfTop = 400;
-  const cfBot = 540;
-
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label="Top-down UK dual carriageway showing red, white, amber, green and green/yellow road studs">
+    <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label="Top-down UK dual carriageway with hard shoulder on the left showing red, white and amber road studs">
       <defs>
-        <linearGradient id="rs-tarmac" x1="0" x2="1" y1="0" y2="0">
-          <stop offset="0" stopColor="#2b2f33" />
-          <stop offset="0.5" stopColor="#33383d" />
-          <stop offset="1" stopColor="#2b2f33" />
+        <linearGradient id="rs-tarmac2" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stopColor="#2c3035" />
+          <stop offset="0.5" stopColor="#34383d" />
+          <stop offset="1" stopColor="#2c3035" />
         </linearGradient>
-        <pattern id="rs-grass" width="6" height="6" patternUnits="userSpaceOnUse">
-          <rect width="6" height="6" fill="#2f6b3a" />
-          <circle cx="1.5" cy="1.5" r="0.6" fill="#3a8047" />
-          <circle cx="4.5" cy="4" r="0.6" fill="#255a30" />
-        </pattern>
-        <pattern id="rs-hardshoulder" width="8" height="8" patternUnits="userSpaceOnUse">
-          <rect width="8" height="8" fill="#363a3f" />
-          <circle cx="2" cy="2" r="0.4" fill="#4a4f55" />
-          <circle cx="6" cy="5" r="0.4" fill="#2c3035" />
+        <linearGradient id="rs-hs" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stopColor="#3a3f45" />
+          <stop offset="1" stopColor="#31363b" />
+        </linearGradient>
+        <pattern id="rs-grass2" width="8" height="8" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="#2f6b3a" />
+          <circle cx="2" cy="2" r="0.7" fill="#3d8148" />
+          <circle cx="6" cy="5" r="0.7" fill="#245a2f" />
         </pattern>
       </defs>
 
       {/* Grass verges */}
-      <rect x="0" y="0" width={grassL} height={H} fill="url(#rs-grass)" />
-      <rect x={roadRightEnd} y="0" width={W - roadRightEnd} height={H} fill="url(#rs-grass)" />
+      <rect x="0" y="0" width={xGrassL} height={H} fill="url(#rs-grass2)" />
+      <rect x={xRoadR} y="0" width={W - xRoadR} height={H} fill="url(#rs-grass2)" />
 
-      {/* Hard shoulder (slightly lighter tarmac) with lay-by pocket */}
-      <path
-        d={`M ${xVergeEnd} 0
-            L ${xHardEnd} 0
-            L ${xHardEnd} ${layTop}
-            L ${xHardEnd} ${layTop}
-            L ${xHardEnd} ${layBot}
-            L ${xHardEnd} ${H}
-            L ${xVergeEnd} ${H} Z`}
-        fill="url(#rs-hardshoulder)"
-      />
-      {/* Lay-by pocket cut into the verge */}
-      <path
-        d={`M ${xVergeEnd} ${layTop - 20}
-            Q ${xVergeEnd - layDepth} ${(layTop + layBot) / 2} ${xVergeEnd} ${layBot + 20}
-            L ${xHardEnd} ${layBot + 20}
-            L ${xHardEnd} ${layTop - 20} Z`}
-        fill="url(#rs-hardshoulder)"
-      />
+      {/* Hard shoulder — full length on the LEFT */}
+      <rect x={xGrassL} y="0" width={xHard - xGrassL} height={H} fill="url(#rs-hs)" />
 
-      {/* Main carriageway (two lanes) */}
-      <rect x={xHardEnd} y="0" width={lane * 2} height={H} fill="url(#rs-tarmac)" />
+      {/* Two-lane carriageway */}
+      <rect x={xHard} y="0" width={xLane2R - xHard} height={H} fill="url(#rs-tarmac2)" />
 
-      {/* Central reservation with barrier */}
-      <rect x={xLane2End} y="0" width={centralRes} height={H} fill="url(#rs-grass)" />
-      <rect x={xLane2End + centralRes / 2 - 1.5} y="0" width="3" height={H} fill="#c9ccd1" />
-      {/* Armco posts */}
-      {Array.from({ length: 16 }).map((_, i) => (
-        <rect key={i} x={xLane2End + centralRes / 2 - 3} y={10 + i * 36} width="6" height="3" fill="#8a8f96" />
+      {/* Central reservation with steel barrier */}
+      <rect x={xLane2R} y="0" width={xCentR - xLane2R} height={H} fill="url(#rs-grass2)" />
+      <rect x={(xLane2R + xCentR) / 2 - 1.2} y="0" width="2.4" height={H} fill="#c7cad0" />
+      {Array.from({ length: 18 }).map((_, i) => (
+        <rect key={i} x={(xLane2R + xCentR) / 2 - 3} y={12 + i * 36} width="6" height="2.5" fill="#8a8f96" />
       ))}
 
       {/* Opposite carriageway hint */}
-      <rect x={xCentralEnd} y="0" width={roadRightEnd - xCentralEnd} height={H} fill="url(#rs-tarmac)" opacity="0.85" />
+      <rect x={xCentR} y="0" width={xRoadR - xCentR} height={H} fill="url(#rs-tarmac2)" opacity="0.9" />
 
-      {/* White edge line at hard shoulder / lane 1 boundary (continuous) */}
-      <line x1={xHardEnd} y1="0" x2={xHardEnd} y2={H} stroke="#f2f2f2" strokeWidth="2" opacity="0.9" />
-      {/* Broken white lane divider between lane 1 and lane 2 */}
-      {Array.from({ length: 20 }).map((_, i) => (
-        <rect key={i} x={xLane1End - 1.5} y={4 + i * 28} width="3" height="14" fill="#f2f2f2" opacity="0.9" />
+      {/* Solid white edge line: hard shoulder ↔ lane 1 */}
+      <line x1={xHard} y1="0" x2={xHard} y2={H} stroke="#f4f4f4" strokeWidth="2.4" />
+
+      {/* Broken white centre line between the two lanes */}
+      {Array.from({ length: 22 }).map((_, i) => (
+        <rect key={i} x={xMid - 1.4} y={6 + i * 30} width="2.8" height="16" fill="#f4f4f4" />
       ))}
-      {/* Solid white line at right edge of lane 2 (next to central reservation) */}
-      <line x1={xLane2End} y1="0" x2={xLane2End} y2={H} stroke="#f2f2f2" strokeWidth="2" opacity="0.9" />
 
-      {/* RED studs — between hard shoulder and carriageway (left edge of running lanes) */}
-      {studLine(xHardEnd, 12, H - 12, 22, "#ef4444")}
+      {/* Solid white edge line: lane 2 ↔ central reservation */}
+      <line x1={xLane2R} y1="0" x2={xLane2R} y2={H} stroke="#f4f4f4" strokeWidth="2.4" />
 
-      {/* WHITE studs — between lanes (aligned with dashed centre) */}
-      {studLine(xLane1End, 12, H - 12, 28, "#f5f5f5")}
+      {/* RED studs — sit ON the left edge line, full length */}
+      {verticalStuds(xHard, 26, "#ef4444")}
 
-      {/* AMBER studs — right edge next to central reservation */}
-      {studLine(xLane2End, 12, H - 12, 22, "#f59e0b")}
+      {/* WHITE studs — aligned with the broken centre line, full length */}
+      {verticalStuds(xMid, 30, "#f5f5f5")}
 
-      {/* GREEN studs — at the lay-by mouth on the LEFT */}
-      {studLine(xHardEnd, layTop, layBot, 14, "#22c55e", 3.6)}
+      {/* AMBER studs — sit ON the right edge line, full length */}
+      {verticalStuds(xLane2R, 26, "#f59e0b")}
 
-      {/* GREEN/YELLOW studs — temporary contraflow layout on the RIGHT lane */}
-      {studLine(xLane1End + lane / 2, cfTop, cfBot, 14, "#facc15", 3.6)}
-      {/* Traffic cones flanking the contraflow */}
-      {Array.from({ length: 6 }).map((_, i) => {
-        const cy = cfTop + 10 + i * 22;
-        return (
-          <g key={i}>
-            <polygon points={`${xLane1End + 6},${cy + 6} ${xLane1End + 12},${cy - 6} ${xLane1End + 18},${cy + 6}`} fill="#ff6a00" stroke="#8a3a00" strokeWidth="0.5" />
-            <polygon points={`${xLane2End - 18},${cy + 6} ${xLane2End - 12},${cy - 6} ${xLane2End - 6},${cy + 6}`} fill="#ff6a00" stroke="#8a3a00" strokeWidth="0.5" />
-          </g>
-        );
-      })}
-
-      {/* Direction of travel arrow */}
-      <g opacity="0.9">
-        <polygon points={`${xHardEnd + lane},20 ${xHardEnd + lane - 10},40 ${xHardEnd + lane + 10},40`} fill="#ffffff" opacity="0.85" />
-        <rect x={xHardEnd + lane - 3} y="38" width="6" height="26" fill="#ffffff" opacity="0.85" />
-      </g>
-
-      {/* Callout labels */}
-      <g fontFamily="Arial, sans-serif" fontSize="11" fill="#f8fafc">
-        {/* Hard shoulder */}
-        <text x={xVergeEnd + 4} y={110} fill="#e5e7eb" fontSize="10" transform={`rotate(-90 ${xVergeEnd + 4} 110)`}>HARD SHOULDER</text>
-        {/* Red */}
-        <line x1={xHardEnd - 24} y1={90} x2={xHardEnd} y2={90} stroke="#ef4444" strokeWidth="1" />
-        <text x={xHardEnd - 26} y={86} textAnchor="end" fill="#fca5a5">RED — hard shoulder edge</text>
-        {/* White */}
-        <line x1={xLane1End} y1={150} x2={xLane1End + 44} y2={150} stroke="#f5f5f5" strokeWidth="1" />
-        <text x={xLane1End + 48} y={146} fill="#f8fafc">WHITE — between lanes</text>
-        {/* Amber */}
-        <line x1={xLane2End} y1={70} x2={xLane2End + 44} y2={70} stroke="#f59e0b" strokeWidth="1" />
-        <text x={xLane2End + 48} y={66} fill="#fcd34d">AMBER — central reservation</text>
-        {/* Green */}
-        <line x1={xHardEnd} y1={(layTop + layBot) / 2} x2={xHardEnd - 30} y2={(layTop + layBot) / 2 + 24} stroke="#22c55e" strokeWidth="1" />
-        <text x={xHardEnd - 32} y={(layTop + layBot) / 2 + 40} textAnchor="end" fill="#86efac">GREEN — lay-by / slip road</text>
-        {/* Green/Yellow */}
-        <line x1={xLane1End + lane / 2} y1={cfTop - 6} x2={xLane2End + 40} y2={cfTop - 20} stroke="#facc15" strokeWidth="1" />
-        <text x={xLane2End + 44} y={cfTop - 22} fill="#fde68a">GREEN / YELLOW — contraflow</text>
+      {/* Direction of travel — subtle arrows in each lane */}
+      <g fill="#ffffff" opacity="0.55">
+        <polygon points={`${(xHard + xMid) / 2},30 ${(xHard + xMid) / 2 - 8},46 ${(xHard + xMid) / 2 + 8},46`} />
+        <rect x={(xHard + xMid) / 2 - 2.5} y="46" width="5" height="20" />
+        <polygon points={`${(xMid + xLane2R) / 2},30 ${(xMid + xLane2R) / 2 - 8},46 ${(xMid + xLane2R) / 2 + 8},46`} />
+        <rect x={(xMid + xLane2R) / 2 - 2.5} y="46" width="5" height="20" />
       </g>
     </svg>
   );
