@@ -38,7 +38,11 @@ async function requireAdmin(password: string) {
 
 export const verifyPortalAccess = createServerFn({ method: "POST" })
   .inputValidator((d: { password: string; mode: "learner" | "admin" }) => d)
-  .handler(async ({ data }): Promise<{ ok: boolean; subscription?: { email: string | null; expires_at: string | null } | null }> => {
+  .handler(async ({ data }): Promise<{
+    ok: boolean;
+    subscription?: { email: string | null; expires_at: string | null } | null;
+    session?: { access_token: string; refresh_token: string } | null;
+  }> => {
     const password = (data.password || "").trim();
     if (!password) return { ok: false };
     let req: Request | undefined;
@@ -117,9 +121,18 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     if (row) {
       if (row.expires_at && row.expires_at <= nowIso) return { ok: false };
       await logUsage(row.id, "learner");
+      let session: { access_token: string; refresh_token: string } | null = null;
+      if (row.kind === "subscription" && row.email) {
+        try {
+          session = await mintSessionForEmail(row.email);
+        } catch (e) {
+          console.error("[portal-access] mintSessionForEmail failed", e);
+        }
+      }
       return {
         ok: true,
         subscription: row.kind === "subscription" ? { email: row.email, expires_at: row.expires_at } : null,
+        session,
       };
     }
     const { count } = await supabase
@@ -130,6 +143,71 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     if ((count ?? 0) === 0 && password === BOOTSTRAP_CODE) return { ok: true };
     return { ok: false };
   });
+
+/**
+ * Ensures a Supabase auth user exists for `email` and returns a fresh
+ * access/refresh token pair the client can hand to `supabase.auth.setSession`.
+ * This is what links an access-code login to the student's account so their
+ * progress (skill_ratings, user_mistakes, theory_progress) persists across devices.
+ */
+async function mintSessionForEmail(
+  email: string,
+): Promise<{ access_token: string; refresh_token: string } | null> {
+  const supabase = await admin();
+  const normalized = email.trim().toLowerCase();
+
+  // Look up or create the user.
+  let userId: string | null = null;
+  const { data: list } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
+  const existing = list?.users?.find((u) => (u.email || "").toLowerCase() === normalized);
+  if (existing) {
+    userId = existing.id;
+  } else {
+    const { data: created, error: createErr } = await supabase.auth.admin.createUser({
+      email: normalized,
+      email_confirm: true,
+    });
+    if (createErr || !created?.user) {
+      console.error("[portal-access] createUser failed", createErr);
+      return null;
+    }
+    userId = created.user.id;
+  }
+
+  // Generate a magiclink so we can exchange its hashed_token for a session.
+  const { data: link, error: linkErr } = await supabase.auth.admin.generateLink({
+    type: "magiclink",
+    email: normalized,
+  });
+  if (linkErr || !link?.properties?.hashed_token) {
+    console.error("[portal-access] generateLink failed", linkErr);
+    return null;
+  }
+
+  // Use a throwaway client (no persisted session on the server) to verify the
+  // token and receive access/refresh tokens we can ship to the browser.
+  const SUPABASE_URL = process.env.SUPABASE_URL!;
+  const SUPABASE_PUBLISHABLE_KEY =
+    process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY;
+  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) return null;
+  const { createClient } = await import("@supabase/supabase-js");
+  const stateless = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
+  });
+  const { data: verified, error: verifyErr } = await stateless.auth.verifyOtp({
+    type: "magiclink",
+    token_hash: link.properties.hashed_token,
+  });
+  if (verifyErr || !verified?.session) {
+    console.error("[portal-access] verifyOtp failed", verifyErr);
+    return null;
+  }
+  void userId;
+  return {
+    access_token: verified.session.access_token,
+    refresh_token: verified.session.refresh_token,
+  };
+}
 
 export type AccessCodeRow = {
   id: string;
