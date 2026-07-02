@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, XCircle, RotateCcw, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
@@ -52,11 +52,17 @@ function buildRounds(pool: Sign[]): Round[] {
 
 export function HomeSignsQuiz() {
   const pool = useMemo(pickPool, []);
-  const [rounds, setRounds] = useState<Round[]>(() => buildRounds(pool));
+  const [rounds, setRounds] = useState<Round[]>([]);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
+
+  // Build randomised rounds only on the client to avoid SSR/CSR hydration
+  // mismatches from Math.random.
+  useEffect(() => {
+    setRounds(buildRounds(pool));
+  }, [pool]);
 
   const restart = () => {
     setRounds(buildRounds(pool));
@@ -83,6 +89,15 @@ export function HomeSignsQuiz() {
             <RotateCcw className="mr-2 h-4 w-4" /> Play again
           </Button>
         </div>
+      </div>
+    );
+  }
+
+  if (rounds.length === 0) {
+    return (
+      <div className="border border-border bg-card p-5 sm:p-8">
+        <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Loading quiz…</div>
+        <div className="mt-6 h-44 animate-pulse bg-secondary/40" />
       </div>
     );
   }
