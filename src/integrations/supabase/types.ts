@@ -38,6 +38,39 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_attempts: {
+        Row: {
+          captcha_verified: boolean
+          created_at: string
+          id: string
+          identifier: string
+          ip_hash: string | null
+          kind: string
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          captcha_verified?: boolean
+          created_at?: string
+          id?: string
+          identifier: string
+          ip_hash?: string | null
+          kind: string
+          success: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          captcha_verified?: boolean
+          created_at?: string
+          id?: string
+          identifier?: string
+          ip_hash?: string | null
+          kind?: string
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       contact_clicks: {
         Row: {
           channel: string
