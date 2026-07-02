@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/PortalShell";
 import { roadMarkings, markingGroups } from "@/data/roadMarkings";
+import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/road-markings")({
   head: () => ({
@@ -18,6 +19,13 @@ function RoadMarkingsPage() {
       <p className="max-w-2xl text-muted-foreground">
         Painted markings carry the same authority as signs. Get every one of these on sight — they are worth easy marks on theory and confidence on your practical.
       </p>
+
+      <OfflineDownloadButton
+        className="mt-6"
+        sectionKey="road-markings"
+        label="road markings guide"
+        urls={["/road-markings"]}
+      />
 
       <div className="mt-10 space-y-14">
         {markingGroups.map((group) => {
