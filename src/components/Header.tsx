@@ -22,14 +22,14 @@ const navLinks = [
   { to: "/pricing", label: "Pricing" },
   { to: "/reviews", label: "Reviews" },
   { to: "/contact", label: "Contact" },
-  { to: "/#download-app", label: "Download app", icon: Download },
 ];
 
 const portalLinks = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard", label: "Learner portal", icon: LayoutDashboard },
   { to: "/theory", label: "Theory practice", icon: BookOpen },
   { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
   { to: "/lessons", label: "Lessons & progress", icon: GraduationCap },
+  { to: "/#download-app", label: "Download app", icon: Download },
 ];
 
 function Monogram() {
@@ -92,7 +92,7 @@ export function Header() {
         <nav className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => {
             const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
-            const Icon = link.icon;
+            const Icon = (link as { icon?: typeof Download }).icon;
             return (
               <Link
                 key={link.to}
@@ -187,7 +187,7 @@ export function Header() {
                 </Link>
                 <nav className="flex flex-col">
                   {navLinks.map((link) => {
-                    const Icon = link.icon;
+                    const Icon = (link as { icon?: typeof Download }).icon;
                     const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
                     return (
                       <Link
