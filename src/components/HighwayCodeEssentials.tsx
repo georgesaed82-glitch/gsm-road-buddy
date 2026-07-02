@@ -2937,24 +2937,32 @@ function MotorwayCar({ x, y, color, ghost = false }: { x: number; y: number; col
 // lane, plus a small label pinned to the grass verge. This is the
 // "the sign applies FROM HERE" reference students look for.
 function AppliesFromHereBand({ label, color = "#facc15" }: { label: string; color?: string }) {
+  // A single centred caption pill sits directly on the reference line,
+  // reading across every lane. The dashed line continues on both sides
+  // so the caption clearly "cuts" the road at the gantry.
+  const cx = 320;
+  const y = 155;
+  const pillW = 320;
+  const pillH = 30;
+  const pillX = cx - pillW / 2;
   return (
     <g>
       {/* Dashed reference line across the full carriageway */}
-      <line x1="40" y1="150" x2="600" y2="150" stroke={color} strokeWidth="3" strokeDasharray="8 6" />
-      {/* Label on the right-hand verge so it never covers a lane */}
-      <g transform="translate(602 138)">
-        <rect x="0" y="0" width="34" height="26" rx="3" fill={color} />
-        <text x="17" y="18" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="900" fill="#0b1f1c">
-          ↓
-        </text>
-      </g>
-      {/* Wide caption on the grass verge below the gantry */}
-      <g>
-        <rect x="180" y="158" width="280" height="22" rx="3" fill="#ffffff" opacity="0.95" />
-        <text x="320" y="174" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="800" fill="#0b1f1c">
-          {label}
-        </text>
-      </g>
+      <line x1="40" y1={y} x2={pillX} y2={y} stroke={color} strokeWidth="3" strokeDasharray="8 6" />
+      <line x1={pillX + pillW} y1={y} x2="600" y2={y} stroke={color} strokeWidth="3" strokeDasharray="8 6" />
+      {/* Centred caption pill */}
+      <rect x={pillX} y={y - pillH / 2} width={pillW} height={pillH} rx={pillH / 2} fill={color} stroke="#0b1220" strokeWidth="1.5" />
+      <text
+        x={cx}
+        y={y + 5}
+        textAnchor="middle"
+        fontFamily="Arial, sans-serif"
+        fontSize="15"
+        fontWeight="900"
+        fill="#0b1f1c"
+      >
+        {label}
+      </text>
     </g>
   );
 }
