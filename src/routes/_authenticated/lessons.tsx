@@ -3,9 +3,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, Loader2, CloudCheck, CloudOff } from "lucide-react";
+import { Star, Check, Loader2, CloudCheck, CloudOff, History, ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export const Route = createFileRoute("/_authenticated/lessons")({
   head: () => ({ meta: [{ title: "Lessons & progress · GSM" }] }),
@@ -57,6 +62,32 @@ function LessonsPage() {
     staleTime: 30_000,
   });
 
+  type HistoryEntry = {
+    id: string;
+    skill_key: string;
+    rating: number;
+    previous_rating: number | null;
+    changed_at: string;
+  };
+  const { data: ratingHistory = [] } = useQuery({
+    queryKey: ["skill-rating-history"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("skill_rating_history")
+        .select("id, skill_key, rating, previous_rating, changed_at")
+        .order("changed_at", { ascending: false })
+        .limit(500);
+      return (data ?? []) as HistoryEntry[];
+    },
+    staleTime: 15_000,
+  });
+  const historyBySkill = new Map<string, HistoryEntry[]>();
+  for (const h of ratingHistory) {
+    const list = historyBySkill.get(h.skill_key);
+    if (list) list.push(h);
+    else historyBySkill.set(h.skill_key, [h]);
+  }
+
   const ratingMap = new Map(ratings.map((r) => [r.skill_key, r.rating]));
 
   const persist = async (key: string, rating: number) => {
@@ -105,6 +136,7 @@ function LessonsPage() {
         setSaveState("saved");
         if (savedTimer.current) clearTimeout(savedTimer.current);
         savedTimer.current = setTimeout(() => setSaveState("idle"), 1500);
+        qc.invalidateQueries({ queryKey: ["skill-rating-history"] });
       } catch (e: any) {
         // Roll back optimistic value and surface error
         qc.setQueryData<Rating[]>(["skill-ratings"], (old = []) => {
@@ -229,6 +261,7 @@ function LessonsPage() {
                       );
                     })}
                   </div>
+                  <SkillRatingTimeline entries={historyBySkill.get(m.key) ?? []} />
                 </li>
               );
             })}
@@ -325,4 +358,121 @@ function SaveIndicator({ state }: { state: "idle" | "saving" | "saved" | "error"
       <CloudOff className="h-3.5 w-3.5" /> Retry
     </span>
   );
+}
+
+function SkillRatingTimeline({
+  entries,
+}: {
+  entries: Array<{ id: string; rating: number; previous_rating: number | null; changed_at: string }>;
+}) {
+  const [open, setOpen] = useState(false);
+  if (entries.length === 0) return null;
+  const latest = entries[0];
+  const latestDelta =
+    latest.previous_rating == null ? null : latest.rating - latest.previous_rating;
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="mt-3">
+      <CollapsibleTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+        >
+          <History className="h-3.5 w-3.5" />
+          <span>
+            {entries.length} change{entries.length === 1 ? "" : "s"} · last{" "}
+            {relativeTime(latest.changed_at)}
+          </span>
+          {latestDelta != null && latestDelta !== 0 && (
+            <span
+              className={`inline-flex items-center gap-0.5 rounded px-1 py-0.5 tabular-nums ${
+                latestDelta > 0
+                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
+                  : "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300"
+              }`}
+            >
+              {latestDelta > 0 ? (
+                <ArrowUp className="h-3 w-3" />
+              ) : (
+                <ArrowDown className="h-3 w-3" />
+              )}
+              {Math.abs(latestDelta)}
+            </span>
+          )}
+          <span className="ml-1 text-[10px] uppercase tracking-wider">
+            {open ? "Hide" : "Show"}
+          </span>
+        </button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <ol className="mt-3 space-y-2 border-l-2 border-border pl-3">
+          {entries.map((e) => {
+            const delta = e.previous_rating == null ? null : e.rating - e.previous_rating;
+            const isUp = delta != null && delta > 0;
+            const isDown = delta != null && delta < 0;
+            return (
+              <li key={e.id} className="relative flex items-center gap-2 text-xs">
+                <span
+                  className={`absolute -left-[7px] h-2.5 w-2.5 rounded-full ${
+                    e.rating >= 10
+                      ? "bg-emerald-500"
+                      : isUp
+                        ? "bg-primary"
+                        : isDown
+                          ? "bg-amber-500"
+                          : "bg-muted-foreground"
+                  }`}
+                />
+                <span className="tabular-nums font-medium text-foreground">
+                  {e.previous_rating == null ? "—" : e.previous_rating}
+                  <span className="mx-1 text-muted-foreground">→</span>
+                  {e.rating}/10
+                </span>
+                {delta != null && (
+                  <span
+                    className={`inline-flex items-center tabular-nums ${
+                      isUp
+                        ? "text-emerald-600 dark:text-emerald-400"
+                        : isDown
+                          ? "text-amber-600 dark:text-amber-400"
+                          : "text-muted-foreground"
+                    }`}
+                  >
+                    {isUp ? (
+                      <ArrowUp className="h-3 w-3" />
+                    ) : isDown ? (
+                      <ArrowDown className="h-3 w-3" />
+                    ) : (
+                      <Minus className="h-3 w-3" />
+                    )}
+                    {delta !== 0 && Math.abs(delta)}
+                  </span>
+                )}
+                {e.rating >= 10 && (
+                  <Badge className="bg-emerald-500 text-white hover:bg-emerald-500">Mastered</Badge>
+                )}
+                <span className="ml-auto text-muted-foreground">
+                  {new Date(e.changed_at).toLocaleString("en-GB", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+function relativeTime(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.round(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.round(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString("en-GB", { dateStyle: "medium" });
 }
