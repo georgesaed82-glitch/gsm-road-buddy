@@ -104,7 +104,17 @@ function HazardPage() {
 
   return (
     <PortalShell eyebrow="Practice on real West London clips" title="Hazard perception">
-      <div className="mb-8 overflow-hidden border-2 border-accent bg-gradient-to-r from-primary via-primary to-primary/80 p-6 text-primary-foreground shadow-lg">
+      {/* 1 · Interactive tutorial at the very top */}
+      <HazardTutorial />
+
+      {/* 2 · Supporting explainer + haptics settings */}
+      <div className="mt-12">
+        <HazardExplainer />
+      </div>
+      <HapticsSettingsPanel />
+
+      {/* 3 · Coming-soon banner + stats immediately before the clip library */}
+      <div className="mt-12 overflow-hidden border-2 border-accent bg-gradient-to-r from-primary via-primary to-primary/80 p-6 text-primary-foreground shadow-lg">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-accent text-accent-foreground">
@@ -127,15 +137,13 @@ function HazardPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
         <Stat label="Clips practised" value={String(attempts.length)} />
         <Stat label="Average score" value={`${avg} / 5`} accent />
         <Stat label="Personal best" value={`${best} / 5`} />
       </div>
 
-      <HapticsSettingsPanel />
-
-      <div className="mt-10 border-l-4 border-accent bg-card p-5">
+      <div className="mt-8 border-l-4 border-accent bg-card p-5">
         <h2 className="font-display text-xl">How it works</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Each clip is a 30–45 second drive recorded around West London. Watch carefully and click the moment you spot a <span className="text-foreground">developing hazard</span>. Score 5 for early, drop to 0 if you miss it. Real DVSA test has 14 clips — practise here to sharpen your timing.
@@ -144,10 +152,6 @@ function HazardPage() {
           New clips are being filmed around Notting Hill, Holland Park and Kensington — they'll appear here as soon as they're uploaded.
         </p>
       </div>
-
-      <HazardExplainer />
-
-      <HazardTutorial />
 
       <h2 className="mt-12 font-display text-2xl">Clip library</h2>
       <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
