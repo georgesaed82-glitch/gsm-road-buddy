@@ -2809,7 +2809,7 @@ function MoreRule181Scenarios() {
 
 function SmartMotorwayBase({ children }: { children?: ReactNode }) {
   return (
-    <svg viewBox="0 0 640 380" className="block h-full w-full" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 640 420" className="block h-full w-full" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id="sm-tarmac" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#3a3a40" />
@@ -2821,7 +2821,7 @@ function SmartMotorwayBase({ children }: { children?: ReactNode }) {
         </linearGradient>
       </defs>
       {/* Verges */}
-      <rect x="0" y="0" width="640" height="380" fill="url(#sm-grass)" />
+      <rect x="0" y="0" width="640" height="420" fill="url(#sm-grass)" />
       {/* Motorway carriageway (40..600), 4 lanes each 140 wide */}
       <rect x="40" y="0" width="560" height="380" fill="url(#sm-tarmac)" />
       {/* Solid white edge lines */}
@@ -2837,12 +2837,6 @@ function SmartMotorwayBase({ children }: { children?: ReactNode }) {
           </g>
         ))}
       </g>
-      {/* Direction-of-travel arrows near the bottom of every lane */}
-      <g fill="#f8fafc" opacity="0.55">
-        {[110, 250, 390, 530].map((x) => (
-          <polygon key={x} points={`${x - 8},350 ${x + 8},350 ${x},322`} />
-        ))}
-      </g>
       {/* Overhead gantry (upright pillars + horizontal beam) */}
       <rect x="14" y="46" width="10" height="220" fill="#3b3b40" />
       <rect x="616" y="46" width="10" height="220" fill="#3b3b40" />
@@ -2851,6 +2845,8 @@ function SmartMotorwayBase({ children }: { children?: ReactNode }) {
       {/* Cross bracing */}
       <line x1="24" y1="54" x2="616" y2="130" stroke="#4b5563" strokeWidth="1" opacity="0.55" />
       <line x1="616" y1="54" x2="24" y2="130" stroke="#4b5563" strokeWidth="1" opacity="0.55" />
+      {/* Lane label strip below the carriageway so labels never sit on tarmac */}
+      <rect x="0" y="380" width="640" height="40" fill="#0b1220" />
       {children}
     </svg>
   );
