@@ -437,7 +437,7 @@ function RoadStuds() {
 
 // Top-down, TSRGD-faithful dual carriageway showing the five stud colours.
 // Hard shoulder on the LEFT, traffic flowing UP the page.
-function DualCarriagewayStudsSvg() {
+const DualCarriagewayStudsSvg = forwardRef<SVGSVGElement>((_props, ref) => {
   // Simple, realistic top-down dual carriageway.
   // Hard shoulder on the LEFT running the FULL length. Traffic flows UP.
   // Left → right: grass | hard shoulder | lane 1 | lane 2 | central reservation | opposite carriageway hint | grass.
@@ -470,7 +470,7 @@ function DualCarriagewayStudsSvg() {
   };
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label="Top-down UK dual carriageway with hard shoulder on the left showing red, white and amber road studs">
+    <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label="Top-down UK dual carriageway with hard shoulder on the left showing red, white and amber road studs">
       <defs>
         <linearGradient id="rs-tarmac2" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stopColor="#2c3035" />
