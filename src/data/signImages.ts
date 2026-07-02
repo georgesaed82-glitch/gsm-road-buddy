@@ -1,105 +1,79 @@
-// Mapping from local sign id → official UK Department for Transport sign file
-// on Wikimedia Commons. These are Crown Copyright artwork released under the
-// Open Government Licence v3.0 (OGL), which permits reuse, including
-// commercial, with attribution. Attribution is shown on the road signs page.
-//
-// URLs use Wikimedia's Special:FilePath endpoint, which 302-redirects to the
-// current canonical file location on upload.wikimedia.org.
-
-const BASE = "https://commons.wikimedia.org/wiki/Special:FilePath/";
-
-function url(file: string): string {
-  return BASE + encodeURIComponent(file);
-}
+// Mapping from local sign id → hosted UK Department for Transport sign SVG.
+// Sources: Wikimedia Commons, Crown Copyright, reused under the Open Government
+// Licence v3.0 (OGL). Attribution is shown on the road signs page. Files are
+// mirrored to our CDN so quiz renders never depend on Wikimedia rate limits.
 
 export const officialSignImages: Record<string, string> = {
-  // ── Warning triangles ──────────────────────────────────
-  "w-bend-right": url("UK traffic sign 512 (right).svg"),
-  "w-bend-left": url("UK traffic sign 512 (left).svg"),
-  "w-double-bend": url("UK traffic sign 513 (right).svg"),
-  "w-roundabout": url("UK traffic sign 510.svg"),
-  "w-crossroads": url("UK traffic sign 504.1 (variant 1).svg"),
-  "w-staggered": url("UK traffic sign 507.1 (variant 1, left).svg"),
-  "w-t-junction": url("UK traffic sign 505.1 (right).svg"),
-  "w-side-road": url("UK traffic sign 506.1 (variant 1, right).svg"),
-  "w-hump": url("UK traffic sign 529.svg"),
-  "w-slippery": url("UK traffic sign 557.svg"),
-  "w-uneven": url("UK traffic sign 557.1.svg"),
-  "w-narrows": url("UK traffic sign 517 (left).svg"),
-  "w-two-way": url("UK traffic sign 521.svg"),
-  "w-school": url("UK traffic sign 545.svg"),
-  "w-pedestrians": url("UK traffic sign 544.1.svg"),
-  "w-cyclists": url("UK traffic sign 950.svg"),
-  "w-horse": url("UK traffic sign 550.1.svg"),
-  "w-wild": url("UK traffic sign 551.svg"),
-  "w-cattle": url("UK traffic sign 548.svg"),
-  "w-elderly": url("UK traffic sign 544.svg"),
-  "w-roadworks": url("UK traffic sign 7001.svg"),
-  "w-signals": url("UK traffic sign 543.svg"),
-  "w-level": url("UK traffic sign 771 (variant 1).svg"),
-  "w-lowbridge": url("UK traffic sign 530.1.svg"),
-  "w-tunnel": url("UK traffic sign 529.1.svg"),
-  "w-quayside": url("UK traffic sign 555.svg"),
-  "w-steep-down": url("UK traffic sign 524.1.svg"),
-  "w-steep-up": url("UK traffic sign 525.svg"),
-  "w-rocks": url("UK traffic sign 559 (left).svg"),
-  "w-exclaim": url("UK traffic sign 562.svg"),
-
-  // ── Give way / Stop ────────────────────────────────────
-  "p-giveway": url("UK traffic sign 602.svg"),
-  "p-stop": url("UK traffic sign 601.1.svg"),
-
-  // ── Prohibition (red circle) ───────────────────────────
-  "p-no-entry": url("UK traffic sign 616.svg"),
-  "p-no-vehicles": url("UK traffic sign 619.svg"),
-  "p-no-hgv": url("UK traffic sign 622.1A.svg"),
-  "p-no-bikes": url("UK traffic sign 951.svg"),
-  "p-no-peds": url("UK traffic sign 625.1.svg"),
-  "p-no-left": url("UK traffic sign 613.svg"),
-  "p-no-right": url("UK traffic sign 612.svg"),
-  "p-no-uturn": url("UK traffic sign 614.svg"),
-  "p-no-overtake": url("UK traffic sign 632.svg"),
-  "p-end-overtake": url("UK traffic sign 633.svg"),
-
-  // ── Speed limits ───────────────────────────────────────
-  "s-20": url("UK traffic sign 670V20.svg"),
-  "s-30": url("UK traffic sign 670V30.svg"),
-  "s-40": url("UK traffic sign 670V40.svg"),
-  "s-50": url("UK traffic sign 670V50.svg"),
-  "s-60": url("UK traffic sign 670V60.svg"),
-  "s-70": url("UK traffic sign 670V70.svg"),
-  "s-national": url("UK traffic sign 671.svg"),
-
-  // ── Mandatory (blue circle) ────────────────────────────
-  "m-ahead": url("UK traffic sign 606 (ahead).svg"),
-  "m-turn-left": url("UK traffic sign 609 (left).svg"),
-  "m-turn-right": url("UK traffic sign 609 (right).svg"),
-  "m-keep-left": url("UK traffic sign 610 (left).svg"),
-  "m-keep-right": url("UK traffic sign 610 (right).svg"),
-  "m-mini-r": url("UK traffic sign 611.1.svg"),
-  "m-bus": url("UK traffic sign 953.svg"),
-  "m-cycle": url("UK traffic sign 955.svg"),
-
-  // ── Information (blue rectangle) ───────────────────────
-  "i-parking": url("UK traffic sign 801.svg"),
-  "i-hospital": url("UK traffic sign 827.2–V1.svg"),
-
-  // ── Pedestrian crossings ───────────────────────────────
-  // Warning-triangle style plates used to depict each crossing type.
-  "c-zebra": url("UK traffic sign 544.1.svg"),
-  "c-crossing-ahead": url("UK traffic sign 544.1.svg"),
-  "c-pelican": url("UK traffic sign 544.1.svg"),
-  "c-puffin": url("UK traffic sign 544.1.svg"),
-  "c-toucan": url("UK traffic sign 544.2.svg"),
-  "c-pegasus": url("UK traffic sign 550.1.svg"),
-  // ── Traffic light states ───────────────────────────────
-  "t-red": url("Traffic_lights_red.svg"),
-  "t-red-amber": url("Traffic_lights_red-yellow.svg"),
-  "t-amber": url("Traffic_lights_yellow.svg"),
-  "t-green": url("Traffic_lights_green.svg"),
-
-  // ── Information (services) ─────────────────────────────
-  "i-phone": url("UK traffic sign 2306.svg"),
+  "w-bend-right": "/__l5e/assets-v1/8d6f35ad-8a93-422b-8cf4-18f84417c630/UK_traffic_sign_512__right_.svg",
+  "w-bend-left": "/__l5e/assets-v1/d2660d07-fec9-40bc-9205-a4b3092464d1/UK_traffic_sign_512__left_.svg",
+  "w-double-bend": "/__l5e/assets-v1/c674a60b-f663-442c-a382-30357619a1ed/UK_traffic_sign_513__right_.svg",
+  "w-roundabout": "/__l5e/assets-v1/d7b3cfe1-7db5-4d4a-bc50-1593ca71bd1f/UK_traffic_sign_510.svg",
+  "w-crossroads": "/__l5e/assets-v1/3b5067ab-ace1-4dc4-9feb-107b090491ea/UK_traffic_sign_504.1__variant_1_.svg",
+  "w-staggered": "/__l5e/assets-v1/e2f04029-0526-434e-87e1-42f7b1b3a71d/UK_traffic_sign_507.1__variant_1,_left_.svg",
+  "w-t-junction": "/__l5e/assets-v1/e63dd01b-4f26-4fe4-9a9a-1aad6fdeb18a/UK_traffic_sign_505.1__right_.svg",
+  "w-side-road": "/__l5e/assets-v1/506f652f-f546-41a5-b110-97d2699a6b4b/UK_traffic_sign_506.1__variant_1,_right_.svg",
+  "w-hump": "/__l5e/assets-v1/aba6b0cd-de31-4ebd-bb1f-3e1f57872b1c/UK_traffic_sign_529.svg",
+  "w-slippery": "/__l5e/assets-v1/de785913-dcb7-41ed-944f-4fc2cba4804c/UK_traffic_sign_557.svg",
+  "w-uneven": "/__l5e/assets-v1/d864f503-9a3a-42c5-baf6-8e7704e3e06e/UK_traffic_sign_557.1.svg",
+  "w-narrows": "/__l5e/assets-v1/88996f05-0d53-49b4-88c0-c20398d0a262/UK_traffic_sign_517__left_.svg",
+  "w-two-way": "/__l5e/assets-v1/9927d4f4-99f4-4b97-9b7f-97ed062a14c0/UK_traffic_sign_521.svg",
+  "w-school": "/__l5e/assets-v1/2b93c7b1-fcfd-4732-8a4a-7603c1ac83d6/UK_traffic_sign_545.svg",
+  "w-pedestrians": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
+  "w-cyclists": "/__l5e/assets-v1/4f280b61-729b-47ae-a216-58478f477c4a/UK_traffic_sign_950.svg",
+  "w-horse": "/__l5e/assets-v1/02e1af99-77c8-4b5d-899f-cdb204414d93/UK_traffic_sign_550.1.svg",
+  "w-wild": "/__l5e/assets-v1/9af3afb8-2a0d-4994-81c2-625d9c064389/UK_traffic_sign_551.svg",
+  "w-cattle": "/__l5e/assets-v1/273626b6-049c-4249-bf6a-ebac57635c93/UK_traffic_sign_548.svg",
+  "w-elderly": "/__l5e/assets-v1/f307fd10-6f0c-4001-9eca-c00ab1e15a6f/UK_traffic_sign_544.svg",
+  "w-roadworks": "/__l5e/assets-v1/9d8d91ed-7cc6-442e-9cae-a1d953cd954a/UK_traffic_sign_7001.svg",
+  "w-signals": "/__l5e/assets-v1/e943ec19-92cd-436e-bd68-e9e99117eb55/UK_traffic_sign_543.svg",
+  "w-level": "/__l5e/assets-v1/a8a719a7-5e4f-42c3-a851-d80cad938afd/UK_traffic_sign_771.svg",
+  "w-lowbridge": "/__l5e/assets-v1/4b705228-202d-4550-8d22-ee2d82cd5b97/UK_traffic_sign_530.1.svg",
+  "w-tunnel": "/__l5e/assets-v1/978d506a-0e73-4a25-8b96-61a24e5c46d2/UK_traffic_sign_529.1.svg",
+  "w-quayside": "/__l5e/assets-v1/2af9ba96-2e15-42e2-86a1-906e7f2150f2/UK_traffic_sign_555.svg",
+  "w-steep-down": "/__l5e/assets-v1/25b145ba-cd8b-4f93-af93-a2d730a7e8c7/UK_traffic_sign_524.1.svg",
+  "w-steep-up": "/__l5e/assets-v1/8ea7032b-a4a2-45e8-b23e-4ed2d6f165be/UK_traffic_sign_525.svg",
+  "w-rocks": "/__l5e/assets-v1/60283443-7630-45ef-a450-028d4483955b/UK_traffic_sign_559__left_.svg",
+  "w-exclaim": "/__l5e/assets-v1/a0b1401b-ba10-4776-afcf-e555a90d0f36/UK_traffic_sign_562.svg",
+  "p-giveway": "/__l5e/assets-v1/3fa3da0a-b1da-422d-a729-dc64098dcbb1/UK_traffic_sign_602.svg",
+  "p-stop": "/__l5e/assets-v1/711bd9ca-1e0d-4f3d-b6c7-9b3b3b5bd45e/UK_traffic_sign_601.1.svg",
+  "p-no-entry": "/__l5e/assets-v1/9e18c2a9-d3d9-47bd-937f-4b8c1664172b/UK_traffic_sign_616.svg",
+  "p-no-vehicles": "/__l5e/assets-v1/1bd22795-b00f-48c3-9295-6bfa22ddab57/UK_traffic_sign_619.svg",
+  "p-no-hgv": "/__l5e/assets-v1/8cd9c4af-f543-4ca4-9503-1806ed104730/UK_traffic_sign_622.1A.svg",
+  "p-no-bikes": "/__l5e/assets-v1/7bb88f9e-6fa1-4861-8a65-1cc0e444e106/UK_traffic_sign_951.svg",
+  "p-no-peds": "/__l5e/assets-v1/d3bd51c7-6625-4b91-95d3-a6bc0823d40b/UK_traffic_sign_625.1.svg",
+  "p-no-left": "/__l5e/assets-v1/0073ab7a-d75e-4b60-bc96-1795347b5efb/UK_traffic_sign_613.svg",
+  "p-no-right": "/__l5e/assets-v1/8e2c8401-5a66-4376-a9ea-bc0d3cd9db7a/UK_traffic_sign_612.svg",
+  "p-no-uturn": "/__l5e/assets-v1/858b7beb-204f-4c5e-81b7-c6e86fe9c5e7/UK_traffic_sign_614.svg",
+  "p-no-overtake": "/__l5e/assets-v1/43c50fd8-3a8a-4d0a-94d1-3c0c6239b6a0/UK_traffic_sign_632.svg",
+  "p-end-overtake": "/__l5e/assets-v1/44b9aae2-49bb-4347-b856-9eaf63f53121/UK_traffic_sign_633.svg",
+  "s-20": "/__l5e/assets-v1/04b2e685-cb42-4a5e-9833-a1adf6dc555f/UK_traffic_sign_670V20.svg",
+  "s-30": "/__l5e/assets-v1/d627778e-73a0-4089-8249-d54f589b1452/UK_traffic_sign_670V30.svg",
+  "s-40": "/__l5e/assets-v1/05a32b5f-379f-46ca-a8ed-03cee442b919/UK_traffic_sign_670V40.svg",
+  "s-50": "/__l5e/assets-v1/2f6d4220-2c7d-4442-a7cf-4ea5a347b832/UK_traffic_sign_670V50.svg",
+  "s-60": "/__l5e/assets-v1/eb4f3433-a370-40ce-b395-2eefb7a0e263/UK_traffic_sign_670V60.svg",
+  "s-70": "/__l5e/assets-v1/2f43047e-3be3-46ea-94b3-ae4a96e37974/UK_traffic_sign_670V70.svg",
+  "s-national": "/__l5e/assets-v1/2af1b8d0-2a04-4070-9333-f0429f7e43ac/UK_traffic_sign_671.svg",
+  "m-ahead": "/__l5e/assets-v1/ef51fa43-b539-49ea-a5b0-1105e5049336/UK_traffic_sign_606__ahead_.svg",
+  "m-turn-left": "/__l5e/assets-v1/524415b1-29c1-49fc-8f03-1472df34337c/UK_traffic_sign_609__left_.svg",
+  "m-turn-right": "/__l5e/assets-v1/0eb5e73a-bf76-4bc1-9b72-cb289c0ef74d/UK_traffic_sign_609__right_.svg",
+  "m-keep-left": "/__l5e/assets-v1/2ecf2120-4838-4c73-944a-73e7e11972bf/UK_traffic_sign_610__left_.svg",
+  "m-keep-right": "/__l5e/assets-v1/b8d25f82-cd58-4d01-8a69-5f9408cc48ec/UK_traffic_sign_610__right_.svg",
+  "m-mini-r": "/__l5e/assets-v1/8d22b50a-064d-4e09-a3ed-3ea6a855e8f6/UK_traffic_sign_611.1.svg",
+  "m-bus": "/__l5e/assets-v1/b1f87646-5377-40c4-b534-a045c7eb67f0/UK_traffic_sign_953.svg",
+  "m-cycle": "/__l5e/assets-v1/be04b32f-0939-4c6e-9847-705147ea5a33/UK_traffic_sign_955.svg",
+  "i-parking": "/__l5e/assets-v1/31179ec5-68ef-467f-8fe0-56968f6df385/UK_traffic_sign_801.svg",
+  "i-hospital": "/__l5e/assets-v1/50cae835-1777-4671-ba52-145d12b24677/UK_traffic_sign_827.2–V1.svg",
+  "c-zebra": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
+  "c-crossing-ahead": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
+  "c-pelican": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
+  "c-puffin": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
+  "c-toucan": "/__l5e/assets-v1/25c70e1c-a6a8-483c-a661-079a81d90da1/UK_traffic_sign_544.2.svg",
+  "c-pegasus": "/__l5e/assets-v1/02e1af99-77c8-4b5d-899f-cdb204414d93/UK_traffic_sign_550.1.svg",
+  "t-red": "/__l5e/assets-v1/5f9941fa-6b61-497a-b5ee-b3a4eb679d79/Traffic_lights_red.svg",
+  "t-red-amber": "/__l5e/assets-v1/5857526d-92b4-4060-8d58-54614e49c641/Traffic_lights_red-yellow.svg",
+  "t-amber": "/__l5e/assets-v1/d63e6eca-058d-4d34-819f-3e88d61882bc/Traffic_lights_yellow.svg",
+  "t-green": "/__l5e/assets-v1/a59f9bd0-bb6b-41da-abb9-9f41b6782a2c/Traffic_lights_green.svg",
+  "i-phone": "/__l5e/assets-v1/d7f6994f-7ae4-437d-8575-fa93973b5dc4/UK_traffic_sign_2306.svg",
 };
 
 export function officialSignImageFor(id: string): string | undefined {
