@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Mail, Lock } from "lucide-react";
+import { ArrowLeft, Mail, Lock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { useServerFn } from "@tanstack/react-start";
 import { verifyPortalAccess } from "@/lib/portal-access.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -35,6 +36,13 @@ function AuthPage() {
   const [submitting, setSubmitting] = useState(false);
   const tracked = useRef(false);
   const verify = useServerFn(verifyPortalAccess);
+
+  // Student email + password sign-in (persists per-student progress)
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [studentPw, setStudentPw] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [studentSubmitting, setStudentSubmitting] = useState(false);
 
   useEffect(() => {
     if (tracked.current) return;
@@ -72,6 +80,49 @@ function AuthPage() {
     }
   };
 
+  const handleStudentAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || studentPw.length < 6) {
+      toast.error("Enter your email and a password (6+ characters).");
+      return;
+    }
+    setStudentSubmitting(true);
+    try {
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password: studentPw,
+          options: {
+            emailRedirectTo: window.location.origin + "/dashboard",
+            data: { full_name: fullName.trim() },
+          },
+        });
+        if (error) throw error;
+        // If email confirmation is required, there'll be no session yet.
+        const { data: sess } = await supabase.auth.getSession();
+        if (!sess.session) {
+          toast.success("Check your email to confirm, then sign in.");
+          setMode("signin");
+          setStudentSubmitting(false);
+          return;
+        }
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password: studentPw,
+        });
+        if (error) throw error;
+      }
+      window.sessionStorage.setItem("portal_unlocked", "1");
+      toast.success("Signed in. Your progress will save automatically.");
+      navigate({ to: "/dashboard" });
+    } catch (err: any) {
+      toast.error(err?.message || "Could not sign in. Check your details and try again.");
+    } finally {
+      setStudentSubmitting(false);
+    }
+  };
+
   return (
     <div className="flex flex-1 items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md border-border bg-card text-center">
@@ -84,10 +135,59 @@ function AuthPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!isAdmin && (
+            <div className="rounded-md border border-primary/30 bg-primary/5 p-4 text-left">
+              <div className="flex items-center gap-2 font-medium">
+                <User className="h-4 w-4 text-primary" />
+                {mode === "signin" ? "Sign in with your GSM account" : "Create your GSM account"}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Signing in with email + password saves your lesson scores and progress across every device.
+              </p>
+              <form onSubmit={handleStudentAuth} className="mt-3 space-y-2">
+                {mode === "signup" && (
+                  <Input
+                    placeholder="Full name"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    autoComplete="name"
+                  />
+                )}
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  required
+                />
+                <Input
+                  type="password"
+                  placeholder="Password (6+ characters)"
+                  value={studentPw}
+                  onChange={(e) => setStudentPw(e.target.value)}
+                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                  minLength={6}
+                  required
+                />
+                <Button type="submit" className="w-full" disabled={studentSubmitting}>
+                  {studentSubmitting ? "..." : mode === "signin" ? "Sign in" : "Create account"}
+                </Button>
+              </form>
+              <button
+                type="button"
+                className="mt-2 text-xs text-primary underline"
+                onClick={() => setMode((m) => (m === "signin" ? "signup" : "signin"))}
+              >
+                {mode === "signin" ? "New to GSM? Create an account" : "Already have an account? Sign in"}
+              </button>
+            </div>
+          )}
+
           <p className="text-sm text-muted-foreground">
             {isAdmin
               ? "Enter the admin access code to view site analytics, payments, and learner progress."
-              : "Enter your access code to view lessons, theory practice, hazard perception, and payments."}
+              : "Or enter a class access code below (given by George):"}
           </p>
           <form onSubmit={handleSubmit} className="space-y-2 text-left">
             <label className="text-sm font-medium flex items-center gap-2">
