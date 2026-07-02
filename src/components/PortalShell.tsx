@@ -24,9 +24,7 @@ const theoryItems: Item[] = [
   { to: "/review", label: "Review mistakes", icon: RotateCcw },
 ];
 
-const hazardItems: Item[] = [
-  { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
-];
+const hazardItem: Item = { to: "/hazard-perception", label: "Hazard perception", icon: Eye };
 
 const bottomItems: Item[] = [
   { to: "/profile", label: "Profile", icon: UserCircle2 },
@@ -51,15 +49,7 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
     return theoryActive;
   });
 
-  const hazardPaths = hazardItems.map((i) => i.to);
-  const hazardActive = hazardPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
-  const [hazardOpen, setHazardOpen] = useState<boolean>(() => {
-    if (typeof window === "undefined") return hazardActive;
-    const saved = window.localStorage.getItem("gsm.portal.hazardOpen");
-    if (saved === "1") return true;
-    if (saved === "0") return false;
-    return hazardActive;
-  });
+  const hazardActive = pathname === hazardItem.to || pathname.startsWith(hazardItem.to + "/");
 
   // Auto-open when navigating into a theory page, but don't force-close
   // when leaving — respect the user's explicit choice.
@@ -71,15 +61,6 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
     if (typeof window === "undefined") return;
     window.localStorage.setItem("gsm.portal.theoryOpen", theoryOpen ? "1" : "0");
   }, [theoryOpen]);
-
-  useEffect(() => {
-    if (hazardActive) setHazardOpen(true);
-  }, [hazardActive]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem("gsm.portal.hazardOpen", hazardOpen ? "1" : "0");
-  }, [hazardOpen]);
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
