@@ -880,6 +880,8 @@ export function HighwayCodeEssentials() {
       <StoppingDistances />
       <TrafficLights />
       <ZebraCrossing />
+      <YellowBoxJunction />
+      <NearsideOffsideJunction />
     </div>
   );
 }
@@ -1862,5 +1864,343 @@ function ZebraSceneWithIslandSvg() {
         <text x="478" y="195" fill="#0b1f1c">Central refuge island</text>
       </g>
     </svg>
+  );
+}
+
+// ── Signalised crossroads (shared base for the two panels below) ──────
+// Aerial view of a 4-way traffic-light junction with kerbs, stop lines,
+// broken centre lines on each approach, and traffic-light poles at every
+// corner. Callers overlay their own markings/vehicles on top of it.
+function CrossroadsBase({ children }: { children?: ReactNode }) {
+  return (
+    <svg
+      viewBox="0 0 640 380"
+      className="block h-full w-full"
+      role="img"
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <defs>
+        <linearGradient id="xr-tarmac" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3a3a40" />
+          <stop offset="1" stopColor="#2b2b30" />
+        </linearGradient>
+        <linearGradient id="xr-grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3f6b3f" />
+          <stop offset="1" stopColor="#345a34" />
+        </linearGradient>
+        <pattern id="xr-asphalt" width="6" height="6" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" fill="url(#xr-tarmac)" />
+          <circle cx="1.5" cy="1.5" r="0.4" fill="#4a4a52" opacity="0.5" />
+          <circle cx="4.5" cy="4.5" r="0.4" fill="#242428" opacity="0.6" />
+        </pattern>
+      </defs>
+
+      {/* Grass in the four corners */}
+      <rect x="0" y="0" width="640" height="380" fill="url(#xr-grass)" />
+
+      {/* Horizontal road (full width) */}
+      <rect x="0" y="120" width="640" height="140" fill="url(#xr-asphalt)" />
+      {/* Vertical road (full height) */}
+      <rect x="250" y="0" width="140" height="380" fill="url(#xr-asphalt)" />
+
+      {/* Kerbs (thin white lines along the road edges, broken at the junction) */}
+      <g stroke="#e5e7eb" strokeWidth="1.5" fill="none">
+        {/* Horizontal kerbs */}
+        <line x1="0" y1="120" x2="250" y2="120" />
+        <line x1="390" y1="120" x2="640" y2="120" />
+        <line x1="0" y1="260" x2="250" y2="260" />
+        <line x1="390" y1="260" x2="640" y2="260" />
+        {/* Vertical kerbs */}
+        <line x1="250" y1="0" x2="250" y2="120" />
+        <line x1="250" y1="260" x2="250" y2="380" />
+        <line x1="390" y1="0" x2="390" y2="120" />
+        <line x1="390" y1="260" x2="390" y2="380" />
+      </g>
+
+      {/* Broken white centre lines on each approach (stops at the junction) */}
+      <g fill="#f8fafc">
+        {/* West approach */}
+        {[10, 50, 90, 130, 170, 210].map((x) => (
+          <rect key={`w${x}`} x={x} y="188" width="20" height="4" />
+        ))}
+        {/* East approach */}
+        {[420, 460, 500, 540, 580, 610].map((x) => (
+          <rect key={`e${x}`} x={x} y="188" width="20" height="4" />
+        ))}
+        {/* North approach */}
+        {[10, 30, 50, 70, 90].map((y) => (
+          <rect key={`n${y}`} x="318" y={y} width="4" height="14" />
+        ))}
+        {/* South approach */}
+        {[280, 300, 320, 340, 360].map((y) => (
+          <rect key={`s${y}`} x="318" y={y} width="4" height="14" />
+        ))}
+      </g>
+
+      {/* Stop lines at each approach (thick solid white) */}
+      <g fill="#f8fafc">
+        <rect x="250" y="252" width="70" height="6" /> {/* south-bound stop (top of junction) — for vehicles from north */}
+        <rect x="320" y="122" width="70" height="6" /> {/* north-bound stop (bottom of junction, wait no) */}
+        <rect x="252" y="120" width="6" height="70" /> {/* east-bound stop */}
+        <rect x="382" y="190" width="6" height="70" /> {/* west-bound stop */}
+      </g>
+
+      {/* Traffic-light poles at all four corners */}
+      <TrafficLightPole x={232} y={102} />
+      <TrafficLightPole x={392} y={102} />
+      <TrafficLightPole x={232} y={262} />
+      <TrafficLightPole x={392} y={262} />
+
+      {children}
+    </svg>
+  );
+}
+
+function TrafficLightPole({ x, y }: { x: number; y: number }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <rect x="-2" y="0" width="4" height="18" fill="#2a2a2a" />
+      <rect x="-7" y="-24" width="14" height="26" rx="2" fill="#111" stroke="#333" strokeWidth="0.5" />
+      <circle cx="0" cy="-19" r="3" fill="#ef4444" />
+      <circle cx="0" cy="-12" r="3" fill="#f59e0b" opacity="0.35" />
+      <circle cx="0" cy="-5" r="3" fill="#10b981" opacity="0.35" />
+    </g>
+  );
+}
+
+// A simple top-down car with body colour and a small indicator dot.
+function Car({
+  x,
+  y,
+  rotate = 0,
+  color,
+  indicator,
+  label,
+}: {
+  x: number;
+  y: number;
+  rotate?: number;
+  color: string;
+  indicator?: "left" | "right" | "none";
+  label?: string;
+}) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+      {/* shadow */}
+      <rect x="-14" y="-24" width="28" height="48" rx="6" fill="#000" opacity="0.25" transform="translate(1 2)" />
+      {/* body */}
+      <rect x="-14" y="-24" width="28" height="48" rx="6" fill={color} stroke="#0b0b0b" strokeWidth="1" />
+      {/* windscreen (front) */}
+      <rect x="-11" y="-19" width="22" height="10" rx="2" fill="#0f172a" opacity="0.85" />
+      {/* rear window */}
+      <rect x="-11" y="9" width="22" height="8" rx="2" fill="#0f172a" opacity="0.85" />
+      {/* roof line */}
+      <rect x="-12" y="-6" width="24" height="10" fill={color} stroke="#0b0b0b" strokeWidth="0.5" opacity="0.5" />
+      {/* headlights */}
+      <circle cx="-9" cy="-22" r="1.6" fill="#fff8dc" />
+      <circle cx="9" cy="-22" r="1.6" fill="#fff8dc" />
+      {/* indicators */}
+      {indicator === "right" && (
+        <circle cx="12" cy="-22" r="2.2" fill="#f59e0b">
+          <animate attributeName="opacity" values="1;0.2;1" dur="0.9s" repeatCount="indefinite" />
+        </circle>
+      )}
+      {indicator === "left" && (
+        <circle cx="-12" cy="-22" r="2.2" fill="#f59e0b">
+          <animate attributeName="opacity" values="1;0.2;1" dur="0.9s" repeatCount="indefinite" />
+        </circle>
+      )}
+      {label && (
+        <g transform={`rotate(${-rotate})`}>
+          <rect x="-18" y="-8" width="36" height="16" fill="#ffffff" opacity="0.9" rx="2" />
+          <text x="0" y="3" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="10" fontWeight="700" fill="#0b1f1c">{label}</text>
+        </g>
+      )}
+    </g>
+  );
+}
+
+// ── Yellow box junction ──────────────────────────────────────────────
+function YellowBoxJunctionSvg() {
+  return (
+    <CrossroadsBase>
+      {/* Yellow box: outer border + diagonal hatching */}
+      <g>
+        <rect x="252" y="122" width="136" height="136" fill="none" stroke="#facc15" strokeWidth="4" />
+        {/* Hatching (two crossed diagonals) */}
+        <g stroke="#facc15" strokeWidth="3">
+          {[-120, -90, -60, -30, 0, 30, 60, 90, 120].map((d) => (
+            <line key={`d1${d}`} x1={252 + d} y1={122} x2={388 + d} y2={258} clipPath="url(#yb-clip)" />
+          ))}
+          {[-120, -90, -60, -30, 0, 30, 60, 90, 120].map((d) => (
+            <line key={`d2${d}`} x1={388 - d} y1={122} x2={252 - d} y2={258} clipPath="url(#yb-clip)" />
+          ))}
+        </g>
+        <defs>
+          <clipPath id="yb-clip">
+            <rect x="252" y="122" width="136" height="136" />
+          </clipPath>
+        </defs>
+      </g>
+
+      {/* Red car — has entered the box, indicating right, waiting for oncoming to clear.
+          Approached from the south (bottom), rotated to face north-east as it starts the turn. */}
+      <Car x={335} y={205} rotate={-45} color="#dc2626" indicator="right" />
+
+      {/* Oncoming vehicle — travelling southbound, blocking the exit that the red car needs */}
+      <Car x={305} y={155} rotate={180} color="#1d4ed8" indicator="none" />
+
+      {/* Path the red car wants to take (dashed) */}
+      <g fill="none" stroke="#facc15" strokeWidth="2.5" strokeDasharray="6 5" opacity="0.9">
+        <path d="M 335 340 Q 335 260 335 205 Q 360 190 420 190" />
+      </g>
+      {/* Arrowhead at exit */}
+      <polygon points="420,184 434,190 420,196" fill="#facc15" />
+
+      {/* Labels */}
+      <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="700">
+        <rect x="18" y="22" width="200" height="36" fill="#ffffff" opacity="0.92" rx="3" />
+        <text x="28" y="38" fill="#0b1f1c">Turning right — exit BLOCKED</text>
+        <text x="28" y="52" fill="#0b1f1c" fontWeight="500">You MAY wait inside the box.</text>
+
+        <rect x="440" y="20" width="180" height="30" fill="#ffffff" opacity="0.92" rx="3" />
+        <text x="450" y="40" fill="#0b1f1c">Oncoming — do not cross</text>
+      </g>
+    </CrossroadsBase>
+  );
+}
+
+function YellowBoxJunction() {
+  return (
+    <Panel
+      title="Yellow box junction — turning right"
+      subtitle="Rule 174. Do not enter unless your exit is clear — one exception: turning right, blocked only by oncoming traffic."
+    >
+      <ZoomPan aspect="640/380" label="Yellow box junction diagram — pinch or scroll to zoom">
+        <YellowBoxJunctionSvg />
+      </ZoomPan>
+
+      <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <div className="border border-border p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">The rule</div>
+          <p className="mt-2 text-sm">
+            You <strong>must not enter the yellow box</strong> unless your <strong>exit road or lane is clear</strong>. If you stop inside and block the box, that's an offence.
+          </p>
+        </div>
+        <div className="border border-border p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">The right-turn exception</div>
+          <p className="mt-2 text-sm">
+            You <strong>may enter and wait inside the box</strong> when you want to <strong>turn right</strong> and the <em>only</em> thing stopping you is <strong>oncoming traffic</strong>, or vehicles already waiting to turn right ahead of you.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 border border-border bg-secondary/40 p-3 text-sm">
+        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">How to do it safely</div>
+        <ul className="list-disc space-y-1.5 pl-5 text-sm">
+          <li><strong>Check the exit first.</strong> Look past the box to the road you're turning into — if it's queued up, stay behind the box until it clears.</li>
+          <li><strong>Signal right</strong>, move to the centre of the box, wheels straight (so a shunt from behind doesn't push you into oncoming).</li>
+          <li><strong>Wait for a safe gap</strong>, then complete the turn — don't take an "iffy" gap just because the lights are changing.</li>
+          <li>If the lights change to red while you're inside the box, <strong>complete the turn</strong> when it's safe — you're committed.</li>
+        </ul>
+      </div>
+    </Panel>
+  );
+}
+
+// ── Nearside / offside crossroads ────────────────────────────────────
+function NearsideOffsideJunctionSvg() {
+  return (
+    <CrossroadsBase>
+      {/* Turn arrows painted in each approach lane (right-turn arrows) */}
+      <g fill="#f8fafc" opacity="0.9">
+        {/* South approach right-turn arrow */}
+        <path d="M 325 300 L 325 285 L 340 285 L 340 280 L 352 288 L 340 296 L 340 291 L 331 291 L 331 300 Z" />
+        {/* North approach right-turn arrow (mirrored) */}
+        <path d="M 315 80 L 315 95 L 300 95 L 300 100 L 288 92 L 300 84 L 300 89 L 309 89 L 309 80 Z" />
+      </g>
+
+      {/* Car A — from south, turning right (going east) */}
+      <Car x={325} y={320} rotate={0} color="#dc2626" indicator="right" />
+      {/* Car B — from north, turning right (going west) */}
+      <Car x={315} y={60} rotate={180} color="#1d4ed8" indicator="right" />
+
+      {/* PATH 1: "Offside to offside" — cars pass driver-side-to-driver-side,
+          swinging behind each other (the traditional British method). */}
+      <g fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeDasharray="7 5">
+        <path d="M 325 300 C 325 245 355 240 380 218 L 430 200" />
+        <path d="M 315 90 C 315 140 285 145 260 168 L 210 186" />
+      </g>
+      <polygon points="430,194 444,200 430,206" fill="#22d3ee" />
+      <polygon points="210,192 196,186 210,180" fill="#22d3ee" />
+
+      {/* PATH 2: "Nearside to nearside" — cars pass passenger-side-to-passenger-side,
+          crossing in front of each other (safer method, follows most markings). */}
+      <g fill="none" stroke="#f472b6" strokeWidth="2.5" strokeDasharray="3 4">
+        <path d="M 325 300 C 325 230 300 200 275 190 L 210 190" />
+        <path d="M 315 90 C 315 160 340 190 365 200 L 430 200" />
+      </g>
+
+      {/* Legend */}
+      <g fontFamily="Arial, sans-serif" fontSize="11">
+        <rect x="14" y="14" width="240" height="60" fill="#ffffff" opacity="0.94" rx="3" />
+        <line x1="24" y1="30" x2="46" y2="30" stroke="#22d3ee" strokeWidth="3" strokeDasharray="7 5" />
+        <text x="52" y="34" fill="#0b1f1c" fontWeight="700">Offside to offside</text>
+        <text x="52" y="48" fill="#0b1f1c">Pass passenger-side to passenger-side</text>
+
+        <line x1="24" y1="60" x2="46" y2="60" stroke="#f472b6" strokeWidth="3" strokeDasharray="3 4" />
+        <text x="52" y="64" fill="#0b1f1c" fontWeight="700">Nearside to nearside</text>
+      </g>
+      <g fontFamily="Arial, sans-serif" fontSize="11">
+        <rect x="386" y="14" width="238" height="46" fill="#ffffff" opacity="0.94" rx="3" />
+        <text x="396" y="32" fill="#0b1f1c" fontWeight="700">No road markings here</text>
+        <text x="396" y="48" fill="#0b1f1c">Read the other driver — agree the path.</text>
+      </g>
+    </CrossroadsBase>
+  );
+}
+
+function NearsideOffsideJunction() {
+  return (
+    <Panel
+      title="Turning right at a crossroads — nearside vs offside"
+      subtitle="Two vehicles turning right at the same signalised crossroads. Rules 176–181."
+    >
+      <ZoomPan aspect="640/380" label="Nearside / offside crossroads diagram — pinch or scroll to zoom">
+        <NearsideOffsideJunctionSvg />
+      </ZoomPan>
+
+      <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <div className="border border-border p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">Nearside</div>
+          <p className="mt-2 text-sm">
+            <strong>Nearside = driver's side to driver's side.</strong> Both cars pass with their driver's sides closer together — you turn in front of each other, following the painted turn-arrow if one is there.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            This is usually the method road markings guide you into. Sightlines across the junction are easier because you can see past the other car directly.
+          </p>
+        </div>
+        <div className="border border-border p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-accent">Offside</div>
+          <p className="mt-2 text-sm">
+            <strong>Offside = passenger side to passenger side.</strong> Both cars swing wide behind each other — driver sides pass on the outside, passenger sides face each other in the middle of the junction.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            The traditional British method. It gives a wider swept path but the other car briefly blocks your view of oncoming — creep and look.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 border border-border bg-secondary/40 p-3 text-sm">
+        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Which one do I use?</div>
+        <ul className="list-disc space-y-1.5 pl-5 text-sm">
+          <li><strong>Follow the road markings first.</strong> If there is a painted guide arrow, dashed turning line or a raised island in the middle of the junction, use the path the markings show — that overrides your preference.</li>
+          <li><strong>If there are no markings</strong> (this diagram), you have to <strong>read the other driver</strong>. Watch their line, their wheels and their eyes as they enter the box — commit to whichever side they are giving you.</li>
+          <li><strong>Never assume.</strong> A firm, early <strong>right indicator</strong> plus gentle creep tells the other driver you're turning; make eye contact if you can.</li>
+          <li><strong>Big vehicles turn wide.</strong> Lorries, buses and vans almost always take the offside line — give them room and expect the swept path.</li>
+        </ul>
+      </div>
+    </Panel>
   );
 }
