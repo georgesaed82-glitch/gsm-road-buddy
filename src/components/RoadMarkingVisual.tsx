@@ -358,41 +358,92 @@ export function BusLane() {
 // ── WORDS / SPECIAL ──────────────────────────────────
 
 export function RoundaboutTriangles() {
-  // Mini-roundabout marking: a solid white painted disc at the centre of a
-  // small junction, with three curved clockwise directional arrows ringing it
-  // to signal 'go around clockwise'.
+  // Aerial plan of a mini-roundabout junction: four approach roads meeting
+  // at a circular painted island, with give-way triangles on every approach,
+  // lane centre lines, and clockwise arrows sweeping around the island.
   const cx = 100;
   const cy = 100;
+  const GRASS = "#3b6b3f";
+  const ISLAND_R = 22;
+
+  // Give-way triangle rows (shark's teeth) — one row per approach, pointing
+  // toward the driver's direction of travel (i.e. toward the island).
+  const TeethRow = ({
+    transform,
+  }: {
+    transform: string;
+  }) => (
+    <g transform={transform} fill={PAINT}>
+      {[-24, -8, 8, 24].map((x) => (
+        <polygon key={x} points={`${x - 5},0 ${x + 5},0 ${x},9`} />
+      ))}
+    </g>
+  );
+
   return (
     <Frame>
-      {/* Faint approach lane lines to give context */}
-      <g stroke={PAINT} strokeWidth="3" strokeDasharray="8 10" opacity="0.35">
-        <line x1={cx} y1="0" x2={cx} y2="40" />
-        <line x1={cx} y1="160" x2={cx} y2="200" />
-        <line x1="0" y1={cy} x2="40" y2={cy} />
-        <line x1="160" y1={cy} x2="200" y2={cy} />
+      {/* Grass verges in the four corners (everything outside the +-shaped road) */}
+      <g fill={GRASS}>
+        <rect x="0" y="0" width="60" height="60" />
+        <rect x="140" y="0" width="60" height="60" />
+        <rect x="0" y="140" width="60" height="60" />
+        <rect x="140" y="140" width="60" height="60" />
+      </g>
+      {/* Soften the corners where verge meets tarmac with quarter-circle fills */}
+      <g fill={ROAD}>
+        <path d="M 60 0 L 60 60 A 20 20 0 0 0 80 40 L 80 0 Z" />
+        <path d="M 140 0 L 140 40 A 20 20 0 0 0 160 60 L 200 60 L 200 0 Z" transform="translate(-60 0)" />
       </g>
 
-      {/* Three curved clockwise arrows sweeping around the disc.
-          Each arc stops just short of its endpoint so the arrowhead
-          (drawn tangent to the sweep) sits cleanly at the tip. */}
-      <g fill="none" stroke={PAINT} strokeWidth="7" strokeLinecap="butt">
-        <path d="M 100 42 A 58 58 0 0 1 154 96" />
-        <path d="M 158 104 A 58 58 0 0 1 104 158" />
-        <path d="M 96 158 A 58 58 0 0 1 42 104" />
+      {/* Kerb lines around the +-shaped carriageway */}
+      <g stroke={KERB} strokeWidth="2" fill="none">
+        <path d="M 0 60 L 60 60 A 14 14 0 0 1 74 74 L 74 126 A 14 14 0 0 1 60 140 L 0 140" />
+        <path d="M 200 60 L 140 60 A 14 14 0 0 0 126 74 L 126 126 A 14 14 0 0 0 140 140 L 200 140" />
       </g>
-      {/* Arrowheads — tangent to the sweep direction (clockwise). */}
+
+      {/* Broken centre lines down each approach */}
       <g fill={PAINT}>
-        {/* End of arc 1 near 3 o'clock, pointing DOWN */}
-        <polygon points="148,92 168,92 158,110" />
-        {/* End of arc 2 near 6 o'clock, pointing LEFT */}
-        <polygon points="108,148 108,168 90,158" />
-        {/* End of arc 3 near 9 o'clock, pointing UP */}
-        <polygon points="32,108 52,108 42,90" />
+        {/* North approach */}
+        {[6, 26, 46].map((y) => (
+          <rect key={`n${y}`} x="98" y={y} width="4" height="10" />
+        ))}
+        {/* South approach */}
+        {[144, 164, 184].map((y) => (
+          <rect key={`s${y}`} x="98" y={y} width="4" height="10" />
+        ))}
+        {/* West approach */}
+        {[6, 26, 46].map((x) => (
+          <rect key={`w${x}`} x={x} y="98" width="10" height="4" />
+        ))}
+        {/* East approach */}
+        {[144, 164, 184].map((x) => (
+          <rect key={`e${x}`} x={x} y="98" width="10" height="4" />
+        ))}
       </g>
 
-      {/* Solid white painted mini-roundabout disc */}
-      <circle cx={cx} cy={cy} r="34" fill={PAINT} />
+      {/* Give-way shark's-teeth on every approach, positioned just outside the island */}
+      <TeethRow transform={`translate(${cx} 56) rotate(0)`} />
+      <TeethRow transform={`translate(144 ${cy}) rotate(90)`} />
+      <TeethRow transform={`translate(${cx} 144) rotate(180)`} />
+      <TeethRow transform={`translate(56 ${cy}) rotate(270)`} />
+
+      {/* Clockwise directional arrows sweeping around the island */}
+      <g fill="none" stroke={PAINT} strokeWidth="4" strokeLinecap="butt">
+        <path d="M 100 66 A 34 34 0 0 1 133 98" />
+        <path d="M 134 102 A 34 34 0 0 1 102 134" />
+        <path d="M 98 134 A 34 34 0 0 1 66 102" />
+        <path d="M 66 98 A 34 34 0 0 1 98 66" />
+      </g>
+      <g fill={PAINT}>
+        <polygon points="128,94 140,94 134,106" />
+        <polygon points="106,128 106,140 94,134" />
+        <polygon points="72,106 60,106 66,94" />
+        <polygon points="94,72 94,60 106,66" />
+      </g>
+
+      {/* Solid white painted mini-roundabout island with subtle ring */}
+      <circle cx={cx} cy={cy} r={ISLAND_R} fill={PAINT} />
+      <circle cx={cx} cy={cy} r={ISLAND_R - 4} fill="none" stroke={ROAD} strokeWidth="0.75" opacity="0.4" />
     </Frame>
   );
 }
