@@ -197,7 +197,7 @@ if (isBrowser()) {
 // accuracy over time on /review. Kept lightweight (single localStorage key,
 // capped history) so it stays snappy on low-end phones.
 
-export type RetryAttempt = { t: number; correct: boolean };
+export type RetryAttempt = { t: number; correct: boolean; category?: string };
 
 type StatsShape = {
   attempts: RetryAttempt[]; // most recent last
@@ -233,9 +233,12 @@ function writeStats(s: StatsShape) {
   }
 }
 
-export function recordRetry(correct: boolean) {
+export function recordRetry(correct: boolean, category?: string) {
   const s = readStats();
-  const nextAttempts = [...s.attempts, { t: Date.now(), correct }].slice(-MAX_HISTORY);
+  const nextAttempts = [
+    ...s.attempts,
+    { t: Date.now(), correct, category },
+  ].slice(-MAX_HISTORY);
   const currentStreak = correct ? s.currentStreak + 1 : 0;
   const bestStreak = Math.max(s.bestStreak, currentStreak);
   writeStats({ attempts: nextAttempts, currentStreak, bestStreak });
@@ -270,6 +273,26 @@ export function getRetryStats() {
     });
   }
 
+  // By-category breakdown: group every attempt that carries a category label.
+  // Older attempts (pre-category rollout) get bucketed under "Uncategorised" so
+  // the totals still add up to the top-line stats.
+  const catMap = new Map<string, { total: number; correct: number }>();
+  for (const a of s.attempts) {
+    const key = a.category && a.category.trim().length ? a.category : "uncategorised";
+    const cur = catMap.get(key) ?? { total: 0, correct: 0 };
+    cur.total += 1;
+    if (a.correct) cur.correct += 1;
+    catMap.set(key, cur);
+  }
+  const byCategory = Array.from(catMap.entries())
+    .map(([category, v]) => ({
+      category,
+      total: v.total,
+      correct: v.correct,
+      accuracy: v.total ? v.correct / v.total : 0,
+    }))
+    .sort((a, b) => b.total - a.total);
+
   return {
     total,
     correct,
@@ -277,6 +300,7 @@ export function getRetryStats() {
     currentStreak: s.currentStreak,
     bestStreak: s.bestStreak,
     days,
+    byCategory,
   };
 }
 
