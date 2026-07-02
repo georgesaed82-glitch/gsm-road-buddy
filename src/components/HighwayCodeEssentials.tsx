@@ -902,19 +902,22 @@ function HierarchyPyramid() {
     },
   ];
 
-  // Pyramid geometry
-  const W = 720;
-  const H = 640;
+  // Pyramid geometry — enlarged so every tier label fits comfortably inside
+  // its band, including the narrow top "Pedestrians" row.
+  const W = 820;
+  const H = 780;
   const apexX = W / 2;
-  const apexY = 96; // extra clearance so overlay chrome doesn't cover the top row
-  const baseY = H - 72;
-  const baseHalf = 330; // half-width of the base
+  const apexY = 130; // clearance from overlay chrome & room for a wider apex
+  const baseY = H - 90;
+  const baseHalf = 380; // half-width of the base
   const rowH = (baseY - apexY) / rows.length;
+  // Truncate the very tip so the top row is a trapezium wide enough for text.
+  const topHalfMin = 110;
 
   const xAt = (y: number) => {
-    // linear from apex (0) to base (baseHalf)
+    // linear from truncated apex (topHalfMin) to base (baseHalf)
     const t = (y - apexY) / (baseY - apexY);
-    return baseHalf * t;
+    return topHalfMin + (baseHalf - topHalfMin) * t;
   };
 
   return (
@@ -968,19 +971,19 @@ function HierarchyPyramid() {
               textAnchor="middle"
               fontFamily="Arial, sans-serif"
               fontWeight={700}
-              fontSize={i < 2 ? 16 : 20}
+              fontSize={20}
               fill={r.text}
             >
               {r.label}
             </text>
             <text
               x={apexX}
-              y={cy + 16}
+              y={cy + 18}
               textAnchor="middle"
               fontFamily="Arial, sans-serif"
-              fontSize={12}
+              fontSize={13}
               fill={r.text}
-              opacity={0.9}
+              opacity={0.92}
             >
               {r.sub}
             </text>
