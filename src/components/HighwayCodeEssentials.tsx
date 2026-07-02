@@ -2189,10 +2189,10 @@ function NearsideOffsideJunction() {
       subtitle="Two vehicles turning right at the same signalised crossroads. Rules 176–181."
     >
       <div className="space-y-4">
-        <ZoomPan aspect="640/380" label="Nearside-to-nearside — cars cross in front of each other">
+        <ZoomPan aspect="640/380" label="Aerial view of a nearside-to-nearside right turn. A red car from the bottom and a blue oncoming car from the top both turn right, crossing in front of each other so their passenger sides meet in the middle of the junction.">
           <NearsideTurnSvg />
         </ZoomPan>
-        <ZoomPan aspect="640/380" label="Offside-to-offside — cars swing behind each other">
+        <ZoomPan aspect="640/380" label="Aerial view of an offside-to-offside right turn. A red car from the bottom and a blue oncoming car from the top both turn right, swinging wide behind each other so their driver sides pass on the outside.">
           <OffsideTurnSvg />
         </ZoomPan>
       </div>
