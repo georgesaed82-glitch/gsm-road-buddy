@@ -197,8 +197,10 @@ function RetryRunner({ queue, onExit }: { queue: TheoryQuestion[]; onExit: () =>
         next.add(q.id);
         return next;
       });
+      recordRetry(true);
     } else {
       setTriedThisQuestion(true);
+      recordRetry(false);
     }
   };
 
