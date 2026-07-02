@@ -148,17 +148,17 @@ export const roadMarkings: RoadMarking[] = [
     name: "Bus lane",
     group: "kerb",
     meaning:
-      "A solid white line and 'BUS LANE' text mark a bus lane. Only enter during its hours of operation if you are one of the vehicles listed on the sign (often buses, taxis and cycles).",
+      "A red painted lane with solid white boundary lines and 'BUS LANE' painted on the tarmac. The blue time-plate shows the hours the lane is in operation — commonly Monday to Saturday, 7 am to 4 pm. During those hours only the vehicles listed on the sign (usually buses, taxis and cycles) may use the lane. Outside those hours other drivers may use it normally.",
     Visual: BusLane,
   },
 
   // ── WORDS ─────────────────────────────────────────────
   {
     id: "rm-roundabout",
-    name: "Roundabout — small give-way triangles",
+    name: "Mini-roundabout",
     group: "words",
     meaning:
-      "Small triangles on the road at a roundabout entry. Give way to traffic already on the roundabout — usually coming from your right.",
+      "A solid white painted disc in the middle of a small junction. Treat it as a normal roundabout — give way to traffic on your right and go clockwise around the marking. Do not drive over the disc unless the size of your vehicle makes it unavoidable.",
     Visual: RoundaboutTriangles,
   },
   {

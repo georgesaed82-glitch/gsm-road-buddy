@@ -12,12 +12,34 @@ import { addMistake, removeMistake } from "@/lib/mistakes";
 
 export const Route = createFileRoute("/_authenticated/theory")({
   head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    category: typeof search.category === "string" ? search.category : undefined,
+  }),
   component: TheoryPage,
 });
 
 function TheoryPage() {
-  const [active, setActive] = useState<string | null>(null);
+  const { category: initialCategory } = Route.useSearch();
+  const [active, setActive] = useState<string | null>(
+    initialCategory && theoryCategories.some((c) => c.slug === initialCategory)
+      ? initialCategory
+      : null,
+  );
   const [mock, setMock] = useState(false);
+
+  // Deep-links from the review page can change the category param while the
+  // component is already mounted — react to it so "Practice this topic" always
+  // opens the right revision session.
+  useEffect(() => {
+    if (
+      initialCategory &&
+      theoryCategories.some((c) => c.slug === initialCategory) &&
+      initialCategory !== active
+    ) {
+      setActive(initialCategory);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCategory]);
 
   const { data: progress = [] } = useQuery({
     queryKey: ["theory_progress"],
