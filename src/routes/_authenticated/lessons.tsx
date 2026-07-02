@@ -225,8 +225,8 @@ function LessonsPage() {
             <div className="mt-3 grid grid-cols-2 gap-3">
               <Stat label="Completed" value={String(completed)} />
               <Stat label="Upcoming" value={String(upcoming.length)} />
-              <Stat label="Skills" value={String(allSkills.size)} />
-              <Stat label="Total" value={String(bookings.length)} />
+              <Stat label="Mastered" value={`${mastered}/${skillMilestones.length}`} />
+              <Stat label="Overall" value={`${overallPct}%`} />
             </div>
           </div>
           <div className="border border-border bg-primary p-5 text-primary-foreground">
