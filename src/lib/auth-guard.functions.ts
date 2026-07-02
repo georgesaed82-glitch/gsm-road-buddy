@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 
 const WINDOW_MINUTES = 15;
 const CAPTCHA_AFTER = 2; // require captcha after this many failures in window
@@ -19,15 +18,10 @@ async function hashIp(ip: string | null): Promise<string | null> {
     .join("");
 }
 
-function reqMeta(): { ip: string | null; ua: string | null } {
+async function reqMeta(): Promise<{ ip: string | null; ua: string | null }> {
   try {
-    const req = getRequest();
-    const ip =
-      req.headers.get("cf-connecting-ip") ||
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      null;
-    const ua = req.headers.get("user-agent");
-    return { ip, ua: ua ? ua.slice(0, 300) : null };
+    const { reqMeta: rm } = await import("./auth-guard.server");
+    return rm();
   } catch {
     return { ip: null, ua: null };
   }
