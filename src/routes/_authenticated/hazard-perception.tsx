@@ -948,6 +948,56 @@ function HazardTutorial() {
           {phase === "done" && (
             <div className="mt-4 border border-border bg-card p-5">
               <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Why you scored {score}/5</div>
+
+              {/* DVSA-style score strip replay */}
+              <div className="mt-4">
+                <div className="mb-2 flex items-baseline justify-between">
+                  <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">DVSA score strip</div>
+                  <div className="text-[10px] text-muted-foreground">Read left → right as the hazard unfolds</div>
+                </div>
+                <div className="relative">
+                  <div className="grid grid-cols-9 gap-1">
+                    {SCORE_SEGMENTS.map((s, i) => {
+                      const clickInSeg = clicks.find((c) => {
+                        const segIdx = Math.min(
+                          SCORE_SEGMENTS.length - 1,
+                          Math.floor((c.time / HAZARD_DURATION) * SCORE_SEGMENTS.length),
+                        );
+                        return segIdx === i;
+                      });
+                      const tone =
+                        s === 5 ? "bg-emerald-500 text-white"
+                        : s === 4 ? "bg-emerald-400 text-black"
+                        : s === 3 ? "bg-yellow-400 text-black"
+                        : s === 2 ? "bg-orange-400 text-black"
+                        : s === 1 ? "bg-orange-500 text-white"
+                        : "bg-muted text-muted-foreground";
+                      return (
+                        <div key={i} className="relative">
+                          <div className={`flex h-10 items-center justify-center font-mono text-sm font-bold ${tone} ${clickInSeg ? "ring-2 ring-offset-2 ring-offset-card ring-foreground" : ""}`}>
+                            {s}
+                          </div>
+                          {clickInSeg && (
+                            <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-semibold uppercase tracking-wider text-foreground">
+                              ▲ Click {clicks.indexOf(clickInSeg) + 1}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-8 grid grid-cols-9 gap-1 text-[9px] uppercase tracking-wider text-muted-foreground">
+                    <span className="col-span-2 text-left">Too early</span>
+                    <span className="col-span-5 text-center text-accent">Hazard developing</span>
+                    <span className="col-span-2 text-right">Too late</span>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  This is the pattern the DVSA scoring engine uses on every clip: <span className="font-mono text-foreground">0 0 5 4 3 2 1 0 0</span>. Click in a <span className="text-foreground">0</span> band and you score nothing. Click as the hazard first develops → <span className="text-foreground">5</span>. Every fraction of a second later loses a point.
+                </p>
+              </div>
+
+              <div className="mt-6 border-t border-border pt-4 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Per-click breakdown</div>
               <ul className="mt-3 space-y-2">
                 {WINDOWS.map((w, i) => {
                   const hit = clicks.find((c) => c.windowIndex === i);
