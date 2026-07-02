@@ -57,6 +57,16 @@ function MockRunner({ onRestart }: { onRestart: () => void }) {
     [order, answers],
   );
 
+  // Push every wrong / unanswered question into the mistakes bank once the
+  // test finishes so learners can retry them from /review.
+  useEffect(() => {
+    if (!done) return;
+    const wrongIds = order
+      .filter((q, idx) => answers[idx] === undefined || answers[idx] !== q.correctIndex)
+      .map((q) => q.id);
+    if (wrongIds.length) addMistakes(wrongIds);
+  }, [done, order, answers]);
+
   if (done) {
     const pass = correctCount >= PASS_MARK;
     const byCategory = new Map<string, { right: number; total: number }>();
