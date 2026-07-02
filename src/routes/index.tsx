@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Star, ArrowRight, Phone } from "lucide-react";
+import { Star, ArrowRight, Phone, Download } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
