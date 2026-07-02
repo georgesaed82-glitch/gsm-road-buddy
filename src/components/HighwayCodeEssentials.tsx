@@ -1125,7 +1125,7 @@ function HierarchyOfRoadUsers() {
     >
       <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <ZoomPan aspect="720/520" label="Hierarchy pyramid — pinch or scroll to zoom">
+          <ZoomPan aspect="720/640" label="Hierarchy pyramid — pinch or scroll to zoom">
             <HierarchyPyramid />
           </ZoomPan>
           <p className="sr-only">
