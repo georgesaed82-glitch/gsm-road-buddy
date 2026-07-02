@@ -95,7 +95,7 @@ function TheoryPage() {
             <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Exam simulation</div>
             <h2 className="mt-2 font-display text-2xl">Full DVSA mock test</h2>
             <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-              45 questions mixed across all 14 categories. Same 57-minute timer and 86% pass mark as the real DVSA test. Correct answers and explanations are shown the moment you get one wrong.
+              50 questions mixed across all 14 categories. Same 57-minute timer and 86% pass mark (43/50) as the real DVSA test. Correct answers and explanations are shown the moment you get one wrong.
             </p>
           </div>
           <Button onClick={() => setMock(true)} className="rounded-none" size="lg">Start mock test →</Button>
@@ -455,7 +455,7 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
   );
 }
 
-const MOCK_TOTAL = 45;
+const MOCK_TOTAL = 50;
 const MOCK_SECONDS = 57 * 60;
 
 function shuffle<T>(arr: T[]): T[] {
@@ -574,7 +574,7 @@ function MockExam({ onExit }: { onExit: () => void }) {
         <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center">Mock test complete</div>
         <div className={`mt-4 text-center font-display text-6xl ${passed ? "text-success" : "text-foreground"}`}>{pct}%</div>
         <p className="mt-2 text-center text-sm text-muted-foreground">
-          You got {correctCount} of {pool.length} correct. {passed ? "Above the DVSA pass mark of 86%." : "Aim for 86% (≥39/45) to match the DVSA pass mark."}
+          You got {correctCount} of {pool.length} correct. {passed ? "Above the DVSA pass mark of 86% (43/50)." : "Aim for 86% (≥43/50) to match the DVSA pass mark."}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Button onClick={restart} className="rounded-none" size="sm">Take another mock →</Button>
