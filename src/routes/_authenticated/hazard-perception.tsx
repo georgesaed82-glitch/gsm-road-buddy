@@ -80,6 +80,8 @@ function HazardPage() {
 
       <HazardExplainer />
 
+      <HazardTutorial />
+
       <h2 className="mt-12 font-display text-2xl">Clip library</h2>
       <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
         {hazardClips.map((raw) => {
