@@ -186,6 +186,12 @@ export function initMistakesSync() {
   });
 }
 
+// Auto-init on browser import so any page that uses the mistakes bank picks
+// up the signed-in user's data without extra wiring.
+if (isBrowser()) {
+  initMistakesSync();
+}
+
 // ————————————————————————————————————————————————————————————————
 // Retry stats — every retry attempt is logged so we can show streaks and
 // accuracy over time on /review. Kept lightweight (single localStorage key,
