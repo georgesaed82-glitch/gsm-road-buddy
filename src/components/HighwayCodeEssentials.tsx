@@ -101,7 +101,7 @@ function ZoomPan({ children, aspect = "16/9", label }: { children: ReactNode; as
       <div className="pointer-events-none absolute left-2 bottom-2 rounded-sm bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
         Pinch · scroll · double-tap to zoom
       </div>
-      {/* Zoom controls: large touch targets, current % badge, reset only when zoomed */}
+      {/* Zoom controls: large touch targets, current % badge, fit/reset only when zoomed */}
       <div className="absolute right-2 bottom-2 flex items-center gap-1">
         <div
           className="pointer-events-none rounded-sm bg-black/60 px-2 py-1 text-[10px] font-semibold text-white tabular-nums"
@@ -109,6 +109,15 @@ function ZoomPan({ children, aspect = "16/9", label }: { children: ReactNode; as
         >
           {Math.round(scale * 100)}%
         </div>
+        <button
+          type="button"
+          onClick={() => zoomTo(1)}
+          className="h-9 rounded-sm bg-black/70 px-2 text-[11px] font-semibold text-white hover:bg-black/85"
+          aria-label="Fit to screen"
+          title="Fit to screen"
+        >
+          Fit
+        </button>
         {scale > 1 && (
           <button
             type="button"
