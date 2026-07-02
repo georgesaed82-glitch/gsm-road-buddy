@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp } from "lucide-react";
+import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   getMistakeIds,
@@ -322,10 +322,10 @@ function RetryRunner({ queue, onExit }: { queue: TheoryQuestion[]; onExit: () =>
         next.add(q.id);
         return next;
       });
-      recordRetry(true);
+      recordRetry(true, q.category);
     } else {
       setTriedThisQuestion(true);
-      recordRetry(false);
+      recordRetry(false, q.category);
     }
   };
 
