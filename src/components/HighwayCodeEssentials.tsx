@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
 
 // ─────────────────────────────────────────────────────────────
 // Highway Code — visual essentials
@@ -14,6 +14,98 @@ function Panel({ title, subtitle, children }: { title: string; subtitle?: string
       {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
       <div className="mt-5">{children}</div>
     </section>
+  );
+}
+
+// ── Zoom & pan wrapper ─────────────────────────────────────────────
+// Wrap any SVG scene so users can pinch / wheel / button-zoom and drag to pan.
+// Works with mouse, trackpad wheel and touch pinch.
+function ZoomPan({ children, aspect = "16/9", label }: { children: ReactNode; aspect?: string; label?: string }) {
+  const [scale, setScale] = useState(1);
+  const [tx, setTx] = useState(0);
+  const [ty, setTy] = useState(0);
+  const dragging = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinchStart = useRef<{ dist: number; scale: number } | null>(null);
+
+  const clampScale = (s: number) => Math.max(1, Math.min(6, s));
+  const zoomTo = (next: number) => {
+    const s = clampScale(next);
+    setScale(s);
+    if (s === 1) {
+      setTx(0);
+      setTy(0);
+    }
+  };
+
+  const onWheel = (e: ReactWheelEvent) => {
+    if (!e.ctrlKey && Math.abs(e.deltaY) < 8) return;
+    e.preventDefault();
+    const delta = -e.deltaY * 0.0025;
+    zoomTo(scale * (1 + delta));
+  };
+
+  const onPointerDown = (e: ReactPointerEvent) => {
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.current.size === 2) {
+      const [a, b] = Array.from(pointers.current.values());
+      pinchStart.current = { dist: Math.hypot(a.x - b.x, a.y - b.y), scale };
+      dragging.current = null;
+    } else if (scale > 1) {
+      dragging.current = { x: e.clientX, y: e.clientY, tx, ty };
+    }
+  };
+  const onPointerMove = (e: ReactPointerEvent) => {
+    if (!pointers.current.has(e.pointerId)) return;
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.current.size === 2 && pinchStart.current) {
+      const [a, b] = Array.from(pointers.current.values());
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      zoomTo(pinchStart.current.scale * (dist / pinchStart.current.dist));
+      return;
+    }
+    if (dragging.current) {
+      setTx(dragging.current.tx + (e.clientX - dragging.current.x));
+      setTy(dragging.current.ty + (e.clientY - dragging.current.y));
+    }
+  };
+  const endPointer = (e: ReactPointerEvent) => {
+    pointers.current.delete(e.pointerId);
+    if (pointers.current.size < 2) pinchStart.current = null;
+    if (pointers.current.size === 0) dragging.current = null;
+  };
+
+  return (
+    <div className="relative overflow-hidden rounded-sm border border-border bg-[#111]">
+      <div
+        className="relative w-full touch-none select-none"
+        style={{ aspectRatio: aspect, cursor: scale > 1 ? "grab" : "zoom-in" }}
+        onWheel={onWheel}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endPointer}
+        onPointerCancel={endPointer}
+        onDoubleClick={() => zoomTo(scale >= 3 ? 1 : scale * 2)}
+        role="group"
+        aria-label={label}
+      >
+        <div
+          className="absolute inset-0 origin-center"
+          style={{ transform: `translate(${tx}px, ${ty}px) scale(${scale})`, transition: dragging.current || pinchStart.current ? "none" : "transform 120ms ease-out" }}
+        >
+          {children}
+        </div>
+      </div>
+      <div className="pointer-events-none absolute left-2 top-2 rounded-sm bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+        Pinch · scroll · double-tap to zoom
+      </div>
+      <div className="absolute right-2 top-2 flex gap-1">
+        <button type="button" onClick={() => zoomTo(scale + 0.6)} className="h-7 w-7 rounded-sm bg-black/60 text-white text-sm font-bold hover:bg-black/80" aria-label="Zoom in">+</button>
+        <button type="button" onClick={() => zoomTo(scale - 0.6)} className="h-7 w-7 rounded-sm bg-black/60 text-white text-sm font-bold hover:bg-black/80" aria-label="Zoom out">−</button>
+        <button type="button" onClick={() => zoomTo(1)} className="h-7 rounded-sm bg-black/60 px-2 text-[11px] font-semibold text-white hover:bg-black/80" aria-label="Reset zoom">Reset</button>
+      </div>
+    </div>
   );
 }
 
@@ -224,9 +316,9 @@ function RoadStuds() {
       title="Road stud colours (rule 132)"
       subtitle="Reflective studs mark lane edges — colour tells you what the line means."
     >
-      <div className="overflow-hidden rounded-sm border border-border bg-[#111]">
+      <ZoomPan aspect="640/360" label="UK dual carriageway showing road stud colours — pinch or scroll to zoom in">
         <RoadStudsDiagram />
-      </div>
+      </ZoomPan>
       <ul className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
         <li className="flex items-start gap-2">
           <span className="mt-1 h-3 w-3 shrink-0 rounded-full bg-[#ef4444] ring-1 ring-white/40" />
