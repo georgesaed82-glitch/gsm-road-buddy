@@ -841,6 +841,7 @@ export function HighwayCodeEssentials() {
   return (
     <div className="grid gap-6">
       <RoadStuds />
+      <HierarchyOfRoadUsers />
       <StoppingDistances />
       <TrafficLights />
       <ZebraCrossing />
