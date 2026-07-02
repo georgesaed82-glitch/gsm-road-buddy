@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -37,7 +37,27 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
 
   const theoryPaths = theoryItems.map((i) => i.to);
   const theoryActive = theoryPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
-  const [theoryOpen, setTheoryOpen] = useState(theoryActive);
+  // Persist the Theory group's open/closed state across sessions.
+  // Default: open when on a theory page, otherwise fall back to the saved
+  // preference (open by default on first visit).
+  const [theoryOpen, setTheoryOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return theoryActive;
+    const saved = window.localStorage.getItem("gsm.portal.theoryOpen");
+    if (saved === "1") return true;
+    if (saved === "0") return false;
+    return theoryActive;
+  });
+
+  // Auto-open when navigating into a theory page, but don't force-close
+  // when leaving — respect the user's explicit choice.
+  useEffect(() => {
+    if (theoryActive) setTheoryOpen(true);
+  }, [theoryActive]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem("gsm.portal.theoryOpen", theoryOpen ? "1" : "0");
+  }, [theoryOpen]);
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
