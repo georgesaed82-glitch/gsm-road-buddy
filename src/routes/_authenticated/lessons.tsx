@@ -228,10 +228,28 @@ function LessonsPage() {
             </div>
           </div>
 
-          <h2 className="mt-10 font-display text-2xl">Skills roadmap</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Tap 1 – 10 to record your current standard on each skill. Reach 10 and the section turns green.
-          </p>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-display text-2xl">Skills roadmap</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Tap 1 – 10 to record your current standard on each skill. Reach 10 and the section turns green.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <Select value={skillFilter} onValueChange={setSkillFilter}>
+                <SelectTrigger className="w-[200px] text-sm" aria-label="Filter skill timeline">
+                  <SelectValue placeholder="All skills" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All skills</SelectItem>
+                  {skillMilestones.map((m) => (
+                    <SelectItem key={m.key} value={m.key}>{m.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <ol className="mt-6 border border-border bg-card">
             {skillMilestones.map((m, i) => {
               const r = ratingMap.get(m.key) ?? 0;
