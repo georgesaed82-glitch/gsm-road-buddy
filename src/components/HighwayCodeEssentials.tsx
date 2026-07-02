@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
+import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
 
 // ─────────────────────────────────────────────────────────────
 // Highway Code — visual essentials
@@ -369,7 +369,7 @@ function DualCarriagewayStudsSvg() {
     <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={0.6} />
   );
   const studLine = (x: number, y1: number, y2: number, step: number, fill: string, r = 3.2) => {
-    const out: JSX.Element[] = [];
+    const out: ReactElement[] = [];
     for (let y = y1; y <= y2; y += step) out.push(<g key={`${x}-${y}-${fill}`}>{stud(x, y, r, fill)}</g>);
     return out;
   };
