@@ -104,11 +104,36 @@ function HazardPage() {
 
   return (
     <PortalShell eyebrow="Practice on real West London clips" title="Hazard perception">
+      <div className="mb-8 overflow-hidden border-2 border-accent bg-gradient-to-r from-primary via-primary to-primary/80 p-6 text-primary-foreground shadow-lg">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-accent text-accent-foreground">
+              <Camera className="h-6 w-6" />
+            </div>
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.24em] text-accent">Status update</div>
+              <div className="mt-1 font-display text-2xl leading-tight sm:text-3xl">
+                Hazard perception from GSM — coming soon
+              </div>
+              <p className="mt-2 max-w-2xl text-sm opacity-90">
+                We're currently building the library from <span className="font-semibold text-accent">real dashcam recordings of live driving situations</span> around West London — Notting Hill, Holland Park, Kensington and beyond. Every clip is a genuine hazard filmed on the road, not stock footage.
+              </p>
+            </div>
+          </div>
+          <div className="flex-none rounded-none border border-accent/60 bg-primary-foreground/5 px-4 py-2 text-center">
+            <div className="text-[10px] uppercase tracking-[0.22em] opacity-70">Progress</div>
+            <div className="mt-1 font-display text-lg">Filming now</div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat label="Clips practised" value={String(attempts.length)} />
         <Stat label="Average score" value={`${avg} / 5`} accent />
         <Stat label="Personal best" value={`${best} / 5`} />
       </div>
+
+      <HapticsSettingsPanel />
 
       <div className="mt-10 border-l-4 border-accent bg-card p-5">
         <h2 className="font-display text-xl">How it works</h2>
