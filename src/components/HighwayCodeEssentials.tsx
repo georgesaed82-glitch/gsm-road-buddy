@@ -1217,7 +1217,7 @@ function HierarchyOfRoadUsers() {
           minor road.
         </p>
 
-        <ZoomPan aspect="720/480" label="Junction give-way example — pinch or scroll to zoom">
+        <ZoomPan aspect="720/520" label="Junction give-way example — pinch or scroll to zoom">
           <GiveWayJunctionSvg />
         </ZoomPan>
 
