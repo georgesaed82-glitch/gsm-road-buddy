@@ -66,7 +66,7 @@ function DashboardPage() {
   const hoursRemaining = Math.max(0, (stats?.hoursPurchased ?? 0) - (stats?.completed ?? 0));
 
   return (
-    <PortalShell eyebrow="Welcome back" title={`Hello, ${greeting}.`}>
+    <PortalShell eyebrow="Welcome back" title={`Hello, ${greeting}.`} showCopyright>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Lessons completed" value={String(stats?.completed ?? 0)} icon={CheckCircle2} />
         <StatCard label="Hours remaining" value={hoursRemaining.toFixed(1)} icon={Clock} accent />

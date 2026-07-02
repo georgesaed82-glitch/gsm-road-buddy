@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 
 const WINDOW_MINUTES = 15;
 const CAPTCHA_AFTER = 2; // require captcha after this many failures in window
@@ -19,15 +18,10 @@ async function hashIp(ip: string | null): Promise<string | null> {
     .join("");
 }
 
-function reqMeta(): { ip: string | null; ua: string | null } {
+async function reqMeta(): Promise<{ ip: string | null; ua: string | null }> {
   try {
-    const req = getRequest();
-    const ip =
-      req.headers.get("cf-connecting-ip") ||
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      null;
-    const ua = req.headers.get("user-agent");
-    return { ip, ua: ua ? ua.slice(0, 300) : null };
+    const { reqMeta: rm } = await import("./auth-guard.server");
+    return rm();
   } catch {
     return { ip: null, ua: null };
   }
@@ -48,7 +42,7 @@ export type CaptchaState = {
  */
 export async function evaluateAttemptState(identifier: string): Promise<CaptchaState> {
   const supabase = await admin();
-  const { ip } = reqMeta();
+  const { ip } = await reqMeta();
   const ipHash = await hashIp(ip);
   const since = new Date(Date.now() - WINDOW_MINUTES * 60_000).toISOString();
 
@@ -88,7 +82,7 @@ async function recordAttempt(
 ): Promise<void> {
   try {
     const supabase = await admin();
-    const { ip, ua } = reqMeta();
+    const { ip, ua } = await reqMeta();
     const ipHash = await hashIp(ip);
     await supabase.from("auth_attempts").insert({
       identifier,
@@ -112,7 +106,7 @@ export async function verifyTurnstileToken(token: string | null | undefined): Pr
   if (!secret) return false;
   if (!token) return false;
   try {
-    const { ip } = reqMeta();
+    const { ip } = await reqMeta();
     const body = new URLSearchParams();
     body.append("secret", secret);
     body.append("response", token);
