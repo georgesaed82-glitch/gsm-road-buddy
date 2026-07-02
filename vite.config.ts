@@ -19,7 +19,9 @@ export default defineConfig({
       devOptions: { enabled: false },
       manifest: false,
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,ico,webp,woff2}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,jpg,jpeg,ico,webp,woff2,json}"],
+        // Allow larger precached chunks (hazard-perception media, quiz bundles).
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
         navigateFallback: "/offline.html",
         navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//, /^\/__l5e\//],
         cleanupOutdatedCaches: true,
@@ -33,7 +35,7 @@ export default defineConfig({
             options: {
               cacheName: "gsm-pages",
               networkTimeoutSeconds: 4,
-              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 14 },
             },
           },
           {
@@ -42,7 +44,7 @@ export default defineConfig({
             handler: "CacheFirst",
             options: {
               cacheName: "gsm-assets",
-              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
           {
@@ -50,7 +52,28 @@ export default defineConfig({
             handler: "CacheFirst",
             options: {
               cacheName: "gsm-images",
-              expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
+          {
+            // Learner-portal content JSON (theory questions, road signs, etc.)
+            urlPattern: ({ url, sameOrigin }) =>
+              sameOrigin && /\.json$/.test(url.pathname),
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "gsm-content",
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
+          {
+            // Audio clips (theory read-aloud, hazard cues) if present.
+            urlPattern: ({ request }) =>
+              request.destination === "audio" || request.destination === "video",
+            handler: "CacheFirst",
+            options: {
+              cacheName: "gsm-media",
+              rangeRequests: true,
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 14 },
             },
           },
         ],
