@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { theoryCategories, sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
 import { CheckCircle2, XCircle, BookOpen, FileText, Lightbulb, Sparkles, Target, Clock, ShieldCheck, Eye as Eye2, Trophy } from "lucide-react";
+import { addMistake, removeMistake } from "@/lib/mistakes";
 
 export const Route = createFileRoute("/_authenticated/theory")({
   head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
@@ -280,6 +281,8 @@ function CategoryPractice({ slug, onExit }: { slug: string; onExit: () => void }
     const delta = { answered: 1, correct: isCorrect ? 1 : 0 };
     setScore((s) => ({ answered: s.answered + 1, correct: s.correct + delta.correct }));
     if (!isCorrect) setMissed((m) => [...m, poolIndices[idx]]);
+    if (isCorrect) removeMistake(q.id);
+    else addMistake(q.id);
     save.mutate(delta);
   };
 
@@ -454,6 +457,16 @@ function MockExam({ onExit }: { onExit: () => void }) {
   useEffect(() => {
     if (secondsLeft === 0 && !finished) setFinished(true);
   }, [secondsLeft, finished]);
+
+  // On finish, sync the mistakes bank: add wrong / unanswered, remove correct.
+  useEffect(() => {
+    if (!finished) return;
+    pool.forEach((qq, i) => {
+      const a = answers[i];
+      if (a !== null && a === qq.correctIndex) removeMistake(qq.id);
+      else addMistake(qq.id);
+    });
+  }, [finished, pool, answers]);
 
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
   const ss = String(secondsLeft % 60).padStart(2, "0");
