@@ -241,6 +241,14 @@ function AuthPage() {
                   minLength={6}
                   required
                 />
+                {studentCaptchaRequired && siteKey && mode === "signin" && (
+                  <div className="pt-1">
+                    <p className="mb-1 text-xs text-muted-foreground">
+                      Please confirm you're not a bot:
+                    </p>
+                    <TurnstileWidget siteKey={siteKey} onToken={setStudentCaptchaToken} />
+                  </div>
+                )}
                 <Button type="submit" className="w-full" disabled={studentSubmitting}>
                   {studentSubmitting ? "..." : mode === "signin" ? "Sign in" : "Create account"}
                 </Button>
@@ -279,6 +287,14 @@ function AuthPage() {
                 {submitting ? "..." : "Enter"}
               </Button>
             </div>
+            {codeCaptchaRequired && siteKey && (
+              <div className="pt-2">
+                <p className="mb-1 text-xs text-muted-foreground">
+                  Please confirm you're not a bot:
+                </p>
+                <TurnstileWidget siteKey={siteKey} onToken={setCodeCaptchaToken} />
+              </div>
+            )}
           </form>
           <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left">
             <div className="flex items-center gap-2 font-medium">
