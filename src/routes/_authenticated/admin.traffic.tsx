@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getTrafficStats, type TrafficStats } from "@/lib/admin-stats.functions";
+import { getTrafficStats, getSectionBreakdown, type TrafficStats, type SectionBreakdown } from "@/lib/admin-stats.functions";
 import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -42,11 +42,20 @@ function labelForPath(p: string) {
 
 function TrafficPage() {
   const [rangeDays, setRangeDays] = useState<number>(7);
+  const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const fetchStats = useServerFn(getTrafficStats);
   const { data, isLoading } = useQuery({
     queryKey: ["admin_traffic", rangeDays],
     queryFn: async (): Promise<TrafficStats> =>
       (await fetchStats({ data: { password: getAdminPassword(), rangeDays } })) as TrafficStats,
+    retry: false,
+  });
+  const fetchSection = useServerFn(getSectionBreakdown);
+  const { data: section, isLoading: sectionLoading } = useQuery({
+    queryKey: ["admin_traffic_section", rangeDays, selectedPath],
+    enabled: !!selectedPath,
+    queryFn: async (): Promise<SectionBreakdown> =>
+      (await fetchSection({ data: { password: getAdminPassword(), rangeDays, path: selectedPath! } })) as SectionBreakdown,
     retry: false,
   });
 
@@ -192,7 +201,14 @@ function TrafficPage() {
               </thead>
               <tbody>
                 {(data?.topPathsByPlatform ?? []).map((p) => (
-                  <tr key={p.path} className="border-t border-border">
+                  <tr
+                    key={p.path}
+                    onClick={() => setSelectedPath(p.path)}
+                    className={cn(
+                      "cursor-pointer border-t border-border transition-colors hover:bg-secondary/40",
+                      selectedPath === p.path && "bg-secondary/60",
+                    )}
+                  >
                     <td className="py-2">
                       <div className="font-medium">{labelForPath(p.path)}</div>
                       <div className="text-xs text-muted-foreground">{p.path}</div>
@@ -205,8 +221,11 @@ function TrafficPage() {
               </tbody>
             </table>
           )}
+          <p className="mt-3 text-xs text-muted-foreground">Tip: click a section to see its platform and device breakdown for the selected range.</p>
         </CardContent>
       </Card>
+
+      {selectedPath && <SectionDrilldown path={selectedPath} label={labelForPath(selectedPath)} rangeDays={rangeDays} data={section} loading={sectionLoading} onClose={() => setSelectedPath(null)} />}
 
       <Card>
         <CardHeader>
@@ -253,6 +272,143 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
         <div className="text-2xl font-display">{value}</div>
         <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
         {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
+      </CardContent>
+    </Card>
+  );
+}
+
+function SectionDrilldown({
+  path,
+  label,
+  rangeDays,
+  data,
+  loading,
+  onClose,
+}: {
+  path: string;
+  label: string;
+  rangeDays: number;
+  data: SectionBreakdown | undefined;
+  loading: boolean;
+  onClose: () => void;
+}) {
+  const total = data?.totalViews ?? 0;
+  const bySurface = data?.bySurface ?? { app: 0, browser: 0, unknown: 0 };
+  const byDevice = data?.byDevice ?? { ios: 0, android: 0, mobile: 0, desktop: 0, unknown: 0 };
+  const appPct = total ? Math.round((bySurface.app / total) * 100) : 0;
+  const browserPct = total ? Math.round((bySurface.browser / total) * 100) : 0;
+  const seriesMax = Math.max(1, ...(data?.series ?? []).map((s) => s.total));
+
+  return (
+    <Card className="mb-8 border-primary/40">
+      <CardHeader className="flex flex-row items-start justify-between gap-4">
+        <div>
+          <div className="text-xs uppercase tracking-wider text-muted-foreground">Section drilldown · last {rangeDays === 1 ? "24h" : `${rangeDays} days`}</div>
+          <h2 className="font-display text-lg">{label}</h2>
+          <div className="text-xs text-muted-foreground">{path}</div>
+        </div>
+        <button onClick={onClose} className="text-sm text-muted-foreground underline hover:text-foreground">Close</button>
+      </CardHeader>
+      <CardContent>
+        {loading ? (
+          <p className="text-sm text-muted-foreground">Loading…</p>
+        ) : total === 0 ? (
+          <p className="text-sm text-muted-foreground">No visits recorded for this section in the selected range.</p>
+        ) : (
+          <>
+            <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <StatCard label="Views" value={String(total)} />
+              <StatCard label="Sessions" value={String(data?.uniqueSessions ?? 0)} />
+              <StatCard label="From app" value={String(bySurface.app)} sub={`${appPct}%`} />
+              <StatCard label="From browser" value={String(bySurface.browser)} sub={`${browserPct}%`} />
+            </div>
+
+            <div className="mb-6">
+              <div className="mb-2 flex h-3 w-full overflow-hidden rounded-full bg-secondary">
+                <div className="h-3 bg-primary" style={{ width: `${appPct}%` }} />
+                <div className="h-3 bg-accent" style={{ width: `${browserPct}%` }} />
+              </div>
+              <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+                <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-primary" />App {bySurface.app} ({appPct}%)</span>
+                <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-accent" />Browser {bySurface.browser} ({browserPct}%)</span>
+                {bySurface.unknown > 0 && <span>Unknown {bySurface.unknown}</span>}
+              </div>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div>
+                <h3 className="mb-2 text-sm font-semibold">By device</h3>
+                <ul className="space-y-2 text-sm">
+                  {[
+                    ["iPhone / iPad", byDevice.ios],
+                    ["Android", byDevice.android],
+                    ["Other mobile", byDevice.mobile],
+                    ["Desktop", byDevice.desktop],
+                    ["Unknown", byDevice.unknown],
+                  ].map(([lbl, count]) => {
+                    const c = count as number;
+                    const pct = total ? Math.round((c / total) * 100) : 0;
+                    return (
+                      <li key={lbl as string} className="flex items-center gap-3">
+                        <span className="w-32 shrink-0 text-muted-foreground">{lbl}</span>
+                        <div className="h-2 flex-1 rounded-full bg-secondary">
+                          <div className="h-2 rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                        </div>
+                        <span className="w-16 text-right tabular-nums">{c}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div>
+                <h3 className="mb-2 text-sm font-semibold">By platform</h3>
+                {(data?.byPlatform ?? []).length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No data.</p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
+                      <tr>
+                        <th className="py-2">Platform</th>
+                        <th className="py-2 text-right">Views</th>
+                        <th className="py-2 text-right">Sessions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(data?.byPlatform ?? []).slice(0, 8).map((p) => (
+                        <tr key={p.platform} className="border-t border-border">
+                          <td className="py-2 capitalize">{p.platform.replace(/-/g, " ")}</td>
+                          <td className="py-2 text-right tabular-nums">{p.views}</td>
+                          <td className="py-2 text-right tabular-nums">{p.sessions}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+
+            {(data?.series ?? []).length > 0 && (
+              <div className="mt-6">
+                <h3 className="mb-2 text-sm font-semibold">Views over time</h3>
+                <div className="flex items-end gap-1 overflow-x-auto pb-2">
+                  {(data?.series ?? []).map((s) => {
+                    const appH = (s.app / seriesMax) * 100;
+                    const browserH = (s.browser / seriesMax) * 100;
+                    return (
+                      <div key={s.date} className="flex min-w-[28px] flex-col items-center gap-1">
+                        <div className="flex h-[100px] w-6 flex-col-reverse overflow-hidden rounded bg-secondary">
+                          <div className="w-full bg-primary" style={{ height: `${appH}px` }} title={`App: ${s.app}`} />
+                          <div className="w-full bg-accent" style={{ height: `${browserH}px` }} title={`Browser: ${s.browser}`} />
+                        </div>
+                        <span className="text-[10px] text-muted-foreground">{s.date.slice(5)}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   );
