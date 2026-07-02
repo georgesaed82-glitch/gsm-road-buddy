@@ -484,6 +484,33 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          rating: number
+          skill_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rating?: number
+          skill_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rating?: number
+          skill_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
