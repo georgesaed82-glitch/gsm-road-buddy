@@ -601,9 +601,9 @@ function CodeRow({
         {!masterView && (
           <td className="py-2 pr-3">
             <div className="flex justify-end gap-1">
-              {mailto && (
-                <Button asChild variant="ghost" size="sm" title="Email code to learner">
-                  <a href={mailto}>
+              {outlookCompose && (
+                <Button asChild variant="ghost" size="sm" title="Email code from gsmdrivingschool@outlook.com">
+                  <a href={outlookCompose} target="_blank" rel="noopener noreferrer">
                     <Mail className="h-3.5 w-3.5" />
                   </a>
                 </Button>
