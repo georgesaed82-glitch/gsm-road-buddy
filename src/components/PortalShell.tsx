@@ -143,8 +143,11 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
               </div>
             )}
 
-            <Link
-              to={hazardItem.to}
+            {(() => {
+              const HazardIcon = hazardItem.icon;
+              return (
+                <Link
+                  to={hazardItem.to}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
                 hazardActive
@@ -152,9 +155,11 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground",
               )}
             >
-              <hazardItem.icon className="h-4 w-4" />
-              {hazardItem.label}
-            </Link>
+                  <HazardIcon className="h-4 w-4" />
+                  {hazardItem.label}
+                </Link>
+              );
+            })()}
 
             {bottomItems.map((item) => {
               const active = pathname === item.to;
