@@ -902,19 +902,22 @@ function HierarchyPyramid() {
     },
   ];
 
-  // Pyramid geometry
-  const W = 720;
-  const H = 640;
+  // Pyramid geometry — enlarged so every tier label fits comfortably inside
+  // its band, including the narrow top "Pedestrians" row.
+  const W = 820;
+  const H = 780;
   const apexX = W / 2;
-  const apexY = 96; // extra clearance so overlay chrome doesn't cover the top row
-  const baseY = H - 72;
-  const baseHalf = 330; // half-width of the base
+  const apexY = 130; // clearance from overlay chrome & room for a wider apex
+  const baseY = H - 90;
+  const baseHalf = 380; // half-width of the base
   const rowH = (baseY - apexY) / rows.length;
+  // Truncate the very tip so the top row is a trapezium wide enough for text.
+  const topHalfMin = 110;
 
   const xAt = (y: number) => {
-    // linear from apex (0) to base (baseHalf)
+    // linear from truncated apex (topHalfMin) to base (baseHalf)
     const t = (y - apexY) / (baseY - apexY);
-    return baseHalf * t;
+    return topHalfMin + (baseHalf - topHalfMin) * t;
   };
 
   return (
@@ -968,19 +971,19 @@ function HierarchyPyramid() {
               textAnchor="middle"
               fontFamily="Arial, sans-serif"
               fontWeight={700}
-              fontSize={i < 2 ? 16 : 20}
+              fontSize={20}
               fill={r.text}
             >
               {r.label}
             </text>
             <text
               x={apexX}
-              y={cy + 16}
+              y={cy + 18}
               textAnchor="middle"
               fontFamily="Arial, sans-serif"
-              fontSize={12}
+              fontSize={13}
               fill={r.text}
-              opacity={0.9}
+              opacity={0.92}
             >
               {r.sub}
             </text>
@@ -1027,7 +1030,7 @@ function GiveWayJunctionSvg() {
     <svg
       viewBox="0 0 720 520"
       role="img"
-      aria-label="Top-down junction. A red car travelling along the major road turns left into a minor road while a pedestrian crosses the mouth of the minor road from the top pavement to the bottom. The car must give way under Rule H2."
+      aria-label="Top-down junction. A red car coming from the left along the major road turns left into a minor road. A pedestrian is crossing the mouth of the minor road from left to right. The car must give way under Rule H2. Because the driver is turning from a major road into a minor road, the give-way markings are shown as a single broken line."
       className="block h-auto w-full"
     >
       <defs>
@@ -1073,20 +1076,17 @@ function GiveWayJunctionSvg() {
         <rect key={i} x="357" y={310 + i * 32} width="6" height="16" fill={PAINT} />
       ))}
 
-      {/* Give-way markings on the minor road — broken double line across mouth */}
+      {/* Give-way markings across the mouth of the minor road — SINGLE broken
+          line because the driver is turning from a MAJOR road into a MINOR
+          road (a full double broken line would apply the other way around). */}
       {Array.from({ length: 8 }).map((_, i) => (
-        <g key={i}>
-          <rect x={296 + i * 17} y="266" width="10" height="6" fill={PAINT} />
-          <rect x={296 + i * 17} y="276" width="10" height="6" fill={PAINT} />
-        </g>
+        <rect key={i} x={296 + i * 17} y="270" width="10" height="7" fill={PAINT} />
       ))}
 
-      {/* Give-way triangle painted on tarmac (points toward driver approaching) */}
-      <polygon points="360,296 344,318 376,318" fill="none" stroke={PAINT} strokeWidth="3" />
-
-      {/* Red car mid-left-turn from major road into minor road.
-          It was travelling right along the major road and is arcing left/down. */}
-      <g transform="translate(345 240) rotate(65)">
+      {/* Red car coming FROM THE LEFT along the major road and turning LEFT
+          into the minor road — shown mid-arc, front pointing down into the
+          minor road, left indicator flashing. */}
+      <g transform="translate(345 235) rotate(75)">
         {/* shadow */}
         <rect x="-34" y="-14" width="68" height="34" rx="8" fill="#000" opacity="0.25" transform="translate(3 4)" />
         {/* body */}
@@ -1109,28 +1109,35 @@ function GiveWayJunctionSvg() {
         <rect x="14" y="15" width="10" height="4" fill="#111" />
       </g>
 
-      {/* Pedestrian on the north (top) pavement, about to step off the kerb to
-          cross the minor road from top to bottom. */}
-      <g>
+      {/* Pedestrian crossing the mouth of the minor road LEFT → RIGHT.
+          Body drawn from above (top-down view) and rotated 90° so shoulders
+          face the direction of travel. */}
+      <g transform="translate(320 350)">
         {/* subtle shadow */}
-        <ellipse cx="378" cy="294" rx="10" ry="3" fill="#000" opacity="0.25" />
-        <g transform="translate(375 268)">
+        <ellipse cx="0" cy="8" rx="12" ry="3" fill="#000" opacity="0.28" />
+        <g transform="rotate(90)">
           {/* head */}
-          <circle cx="0" cy="0" r="6" fill="#f4c9a0" stroke="#0b1f1c" strokeWidth="1" />
+          <circle cx="0" cy="0" r="6.5" fill="#f4c9a0" stroke="#0b1f1c" strokeWidth="1" />
           {/* torso — jacket */}
-          <path d="M-7,6 L7,6 L9,22 L-9,22 Z" fill="#1d4ed8" stroke="#0b1f1c" strokeWidth="0.8" />
-          {/* arms */}
-          <rect x="-10" y="7" width="3" height="12" fill="#1d4ed8" transform="rotate(-8 -8.5 13)" />
-          <rect x="7" y="7" width="3" height="12" fill="#1d4ed8" transform="rotate(8 8.5 13)" />
-          {/* legs — mid-step (one forward) */}
-          <rect x="-6" y="22" width="4" height="12" fill="#0b1f1c" />
-          <rect x="2" y="22" width="4" height="14" fill="#0b1f1c" transform="rotate(6 4 29)" />
+          <path d="M-7.5,6 L7.5,6 L9.5,24 L-9.5,24 Z" fill="#1d4ed8" stroke="#0b1f1c" strokeWidth="0.8" />
+          {/* arms — mid-swing */}
+          <rect x="-11" y="7" width="3" height="13" fill="#1d4ed8" transform="rotate(-14 -9.5 13.5)" />
+          <rect x="8" y="7" width="3" height="13" fill="#1d4ed8" transform="rotate(14 9.5 13.5)" />
+          {/* legs — mid-step */}
+          <rect x="-6" y="24" width="4" height="13" fill="#0b1f1c" transform="rotate(-6 -4 30.5)" />
+          <rect x="2" y="24" width="4" height="14" fill="#0b1f1c" transform="rotate(8 4 31)" />
         </g>
-        {/* Walking direction: top → bottom arrow */}
+        {/* Walking direction: LEFT → RIGHT arrow */}
         <g stroke="#ffffff" strokeWidth="3" fill="none" opacity="0.95">
-          <line x1="405" y1="278" x2="405" y2="330" />
-          <polygon points="405,338 397,326 413,326" fill="#ffffff" stroke="none" />
+          <line x1="18" y1="-22" x2="86" y2="-22" />
+          <polygon points="94,-22 82,-30 82,-14" fill="#ffffff" stroke="none" />
         </g>
+      </g>
+
+      {/* Car approach arrow — showing it came FROM THE LEFT */}
+      <g stroke="#ffffff" strokeWidth="3" fill="none" opacity="0.9">
+        <line x1="70" y1="150" x2="250" y2="150" />
+        <polygon points="258,150 246,142 246,158" fill="#ffffff" stroke="none" />
       </g>
 
       {/* STOP-if-safe marker for the car */}
@@ -1141,20 +1148,20 @@ function GiveWayJunctionSvg() {
 
       {/* Labels */}
       <g fontFamily="Arial, sans-serif" fontSize="13" fill="#0b1f1c">
-        <rect x="18" y="98" width="128" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="26" y="114" fontWeight={700}>Major road</text>
+        <rect x="18" y="98" width="200" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="26" y="114" fontWeight={700}>Major road (car approaches)</text>
 
         <rect x="452" y="452" width="128" height="22" fill="#ffffff" opacity="0.92" />
         <text x="460" y="468" fontWeight={700}>Minor road</text>
 
-        <rect x="440" y="266" width="150" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="448" y="282">Give-way line</text>
+        <rect x="440" y="258" width="230" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="448" y="274">Give-way line (single broken)</text>
 
-        <rect x="440" y="300" width="200" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="448" y="316">Pedestrian crossing (Rule H2)</text>
+        <rect x="440" y="342" width="230" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="448" y="358">Pedestrian crossing L → R (Rule H2)</text>
 
-        <rect x="130" y="196" width="150" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="138" y="212">Car turning left</text>
+        <rect x="130" y="196" width="170" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="138" y="212">Car turning left into minor road</text>
       </g>
     </svg>
   );
@@ -1168,7 +1175,7 @@ function HierarchyOfRoadUsers() {
     >
       <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <ZoomPan aspect="720/640" label="Hierarchy pyramid — pinch or scroll to zoom">
+          <ZoomPan aspect="820/780" label="Hierarchy pyramid — pinch or scroll to zoom">
             <HierarchyPyramid />
           </ZoomPan>
           <p className="sr-only">
