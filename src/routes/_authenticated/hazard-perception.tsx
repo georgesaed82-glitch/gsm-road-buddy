@@ -580,7 +580,11 @@ function HazardTutorial() {
       return;
     }
     // register click — evaluate timing
-    const pct = 20 + (t / HAZARD_DURATION) * 55; // matches pedestrian left%
+    // pct matches whichever is the visible hazard at this moment (ball first, then child)
+    const currentPct = t < 1.5
+      ? 24 + Math.min(1, Math.max(0, (t - 0.6) / (HAZARD_DURATION - 0.6))) * 42
+      : 20 + Math.min(1, (t - 1.5) / (HAZARD_DURATION - 1.5)) * 46;
+    const pct = currentPct;
     const nextIdx = clicks.length; // 0,1,2 — the click number they're on
     const target = WINDOWS[nextIdx];
     let verdict: "perfect" | "early" | "late" | "miss" = "miss";
