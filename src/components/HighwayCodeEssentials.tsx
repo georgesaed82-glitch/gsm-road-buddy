@@ -1,5 +1,4 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
-import dualCarriagewayStuds from "@/assets/dual-carriageway-studs.jpeg.asset.json";
+import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
 
 // ─────────────────────────────────────────────────────────────
 // Highway Code — visual essentials
@@ -317,13 +316,8 @@ function RoadStuds() {
       title="Road stud colours (rule 132)"
       subtitle="Reflective studs mark lane edges — colour tells you what the line means."
     >
-      <ZoomPan aspect="16/9" label="UK dual carriageway showing road stud colours — pinch or scroll to zoom in">
-        <img
-          src={dualCarriagewayStuds.url}
-          alt="UK dual carriageway road stud colours: red, white, green, green/yellow and amber"
-          className="h-full w-full object-contain"
-          draggable={false}
-        />
+      <ZoomPan aspect="3/4" label="UK dual carriageway from above showing road stud colours — pinch or scroll to zoom in">
+        <DualCarriagewayStudsSvg />
       </ZoomPan>
       <ul className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
         <li className="flex items-start gap-2">
@@ -348,6 +342,166 @@ function RoadStuds() {
         </li>
       </ul>
     </Panel>
+  );
+}
+
+// Top-down, TSRGD-faithful dual carriageway showing the five stud colours.
+// Hard shoulder on the LEFT, traffic flowing UP the page.
+function DualCarriagewayStudsSvg() {
+  // Geometry (px in viewBox units)
+  const W = 400;
+  const H = 560;
+  // Cross-section (left → right)
+  const grassL = 40;         // left grass verge width
+  const hardShoulder = 60;   // hard shoulder width
+  const lane = 78;           // each running lane
+  const centralRes = 40;     // central reservation width
+  const xVergeEnd = grassL;                              // 40
+  const xHardEnd = xVergeEnd + hardShoulder;             // 100  → RED studs here
+  const xLane1End = xHardEnd + lane;                     // 178  → WHITE studs here
+  const xLane2End = xLane1End + lane;                    // 256  → AMBER studs here
+  const xCentralEnd = xLane2End + centralRes;            // 296
+  // Right side: opposite carriageway hint + grass
+  const roadRightEnd = W - 20;
+
+  // Stud helper: dashed reflective studs along a vertical line
+  const stud = (x: number, y: number, r: number, fill: string, stroke = "#0b0f0b") => (
+    <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={0.6} />
+  );
+  const studLine = (x: number, y1: number, y2: number, step: number, fill: string, r = 3.2) => {
+    const out: ReactElement[] = [];
+    for (let y = y1; y <= y2; y += step) out.push(<g key={`${x}-${y}-${fill}`}>{stud(x, y, r, fill)}</g>);
+    return out;
+  };
+
+  // Lay-by cut-out on the LEFT hard shoulder (green studs)
+  const layTop = 210;
+  const layBot = 330;
+  const layDepth = 34; // extra width taken from grass into a lay-by pocket
+
+  // Contraflow band on the RIGHT lane (green/yellow studs down the middle)
+  const cfTop = 400;
+  const cfBot = 540;
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label="Top-down UK dual carriageway showing red, white, amber, green and green/yellow road studs">
+      <defs>
+        <linearGradient id="rs-tarmac" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stopColor="#2b2f33" />
+          <stop offset="0.5" stopColor="#33383d" />
+          <stop offset="1" stopColor="#2b2f33" />
+        </linearGradient>
+        <pattern id="rs-grass" width="6" height="6" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" fill="#2f6b3a" />
+          <circle cx="1.5" cy="1.5" r="0.6" fill="#3a8047" />
+          <circle cx="4.5" cy="4" r="0.6" fill="#255a30" />
+        </pattern>
+        <pattern id="rs-hardshoulder" width="8" height="8" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="#363a3f" />
+          <circle cx="2" cy="2" r="0.4" fill="#4a4f55" />
+          <circle cx="6" cy="5" r="0.4" fill="#2c3035" />
+        </pattern>
+      </defs>
+
+      {/* Grass verges */}
+      <rect x="0" y="0" width={grassL} height={H} fill="url(#rs-grass)" />
+      <rect x={roadRightEnd} y="0" width={W - roadRightEnd} height={H} fill="url(#rs-grass)" />
+
+      {/* Hard shoulder (slightly lighter tarmac) with lay-by pocket */}
+      <path
+        d={`M ${xVergeEnd} 0
+            L ${xHardEnd} 0
+            L ${xHardEnd} ${layTop}
+            L ${xHardEnd} ${layTop}
+            L ${xHardEnd} ${layBot}
+            L ${xHardEnd} ${H}
+            L ${xVergeEnd} ${H} Z`}
+        fill="url(#rs-hardshoulder)"
+      />
+      {/* Lay-by pocket cut into the verge */}
+      <path
+        d={`M ${xVergeEnd} ${layTop - 20}
+            Q ${xVergeEnd - layDepth} ${(layTop + layBot) / 2} ${xVergeEnd} ${layBot + 20}
+            L ${xHardEnd} ${layBot + 20}
+            L ${xHardEnd} ${layTop - 20} Z`}
+        fill="url(#rs-hardshoulder)"
+      />
+
+      {/* Main carriageway (two lanes) */}
+      <rect x={xHardEnd} y="0" width={lane * 2} height={H} fill="url(#rs-tarmac)" />
+
+      {/* Central reservation with barrier */}
+      <rect x={xLane2End} y="0" width={centralRes} height={H} fill="url(#rs-grass)" />
+      <rect x={xLane2End + centralRes / 2 - 1.5} y="0" width="3" height={H} fill="#c9ccd1" />
+      {/* Armco posts */}
+      {Array.from({ length: 16 }).map((_, i) => (
+        <rect key={i} x={xLane2End + centralRes / 2 - 3} y={10 + i * 36} width="6" height="3" fill="#8a8f96" />
+      ))}
+
+      {/* Opposite carriageway hint */}
+      <rect x={xCentralEnd} y="0" width={roadRightEnd - xCentralEnd} height={H} fill="url(#rs-tarmac)" opacity="0.85" />
+
+      {/* White edge line at hard shoulder / lane 1 boundary (continuous) */}
+      <line x1={xHardEnd} y1="0" x2={xHardEnd} y2={H} stroke="#f2f2f2" strokeWidth="2" opacity="0.9" />
+      {/* Broken white lane divider between lane 1 and lane 2 */}
+      {Array.from({ length: 20 }).map((_, i) => (
+        <rect key={i} x={xLane1End - 1.5} y={4 + i * 28} width="3" height="14" fill="#f2f2f2" opacity="0.9" />
+      ))}
+      {/* Solid white line at right edge of lane 2 (next to central reservation) */}
+      <line x1={xLane2End} y1="0" x2={xLane2End} y2={H} stroke="#f2f2f2" strokeWidth="2" opacity="0.9" />
+
+      {/* RED studs — between hard shoulder and carriageway (left edge of running lanes) */}
+      {studLine(xHardEnd, 12, H - 12, 22, "#ef4444")}
+
+      {/* WHITE studs — between lanes (aligned with dashed centre) */}
+      {studLine(xLane1End, 12, H - 12, 28, "#f5f5f5")}
+
+      {/* AMBER studs — right edge next to central reservation */}
+      {studLine(xLane2End, 12, H - 12, 22, "#f59e0b")}
+
+      {/* GREEN studs — at the lay-by mouth on the LEFT */}
+      {studLine(xHardEnd, layTop, layBot, 14, "#22c55e", 3.6)}
+
+      {/* GREEN/YELLOW studs — temporary contraflow layout on the RIGHT lane */}
+      {studLine(xLane1End + lane / 2, cfTop, cfBot, 14, "#facc15", 3.6)}
+      {/* Traffic cones flanking the contraflow */}
+      {Array.from({ length: 6 }).map((_, i) => {
+        const cy = cfTop + 10 + i * 22;
+        return (
+          <g key={i}>
+            <polygon points={`${xLane1End + 6},${cy + 6} ${xLane1End + 12},${cy - 6} ${xLane1End + 18},${cy + 6}`} fill="#ff6a00" stroke="#8a3a00" strokeWidth="0.5" />
+            <polygon points={`${xLane2End - 18},${cy + 6} ${xLane2End - 12},${cy - 6} ${xLane2End - 6},${cy + 6}`} fill="#ff6a00" stroke="#8a3a00" strokeWidth="0.5" />
+          </g>
+        );
+      })}
+
+      {/* Direction of travel arrow */}
+      <g opacity="0.9">
+        <polygon points={`${xHardEnd + lane},20 ${xHardEnd + lane - 10},40 ${xHardEnd + lane + 10},40`} fill="#ffffff" opacity="0.85" />
+        <rect x={xHardEnd + lane - 3} y="38" width="6" height="26" fill="#ffffff" opacity="0.85" />
+      </g>
+
+      {/* Callout labels */}
+      <g fontFamily="Arial, sans-serif" fontSize="11" fill="#f8fafc">
+        {/* Hard shoulder */}
+        <text x={xVergeEnd + 4} y={110} fill="#e5e7eb" fontSize="10" transform={`rotate(-90 ${xVergeEnd + 4} 110)`}>HARD SHOULDER</text>
+        {/* Red */}
+        <line x1={xHardEnd - 24} y1={90} x2={xHardEnd} y2={90} stroke="#ef4444" strokeWidth="1" />
+        <text x={xHardEnd - 26} y={86} textAnchor="end" fill="#fca5a5">RED — hard shoulder edge</text>
+        {/* White */}
+        <line x1={xLane1End} y1={150} x2={xLane1End + 44} y2={150} stroke="#f5f5f5" strokeWidth="1" />
+        <text x={xLane1End + 48} y={146} fill="#f8fafc">WHITE — between lanes</text>
+        {/* Amber */}
+        <line x1={xLane2End} y1={70} x2={xLane2End + 44} y2={70} stroke="#f59e0b" strokeWidth="1" />
+        <text x={xLane2End + 48} y={66} fill="#fcd34d">AMBER — central reservation</text>
+        {/* Green */}
+        <line x1={xHardEnd} y1={(layTop + layBot) / 2} x2={xHardEnd - 30} y2={(layTop + layBot) / 2 + 24} stroke="#22c55e" strokeWidth="1" />
+        <text x={xHardEnd - 32} y={(layTop + layBot) / 2 + 40} textAnchor="end" fill="#86efac">GREEN — lay-by / slip road</text>
+        {/* Green/Yellow */}
+        <line x1={xLane1End + lane / 2} y1={cfTop - 6} x2={xLane2End + 40} y2={cfTop - 20} stroke="#facc15" strokeWidth="1" />
+        <text x={xLane2End + 44} y={cfTop - 22} fill="#fde68a">GREEN / YELLOW — contraflow</text>
+      </g>
+    </svg>
   );
 }
 
