@@ -2,8 +2,23 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
-import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
-import { CheckCircle2, XCircle, RotateCcw, Trash2, Sparkles, Flame, Target, TrendingUp, Layers, ChevronRight, X } from "lucide-react";
+import { sampleTheoryQuestions, theoryCategories, type TheoryQuestion } from "@/data/theory";
+import {
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
+  Trash2,
+  Sparkles,
+  Flame,
+  Target,
+  TrendingUp,
+  Layers,
+  ChevronRight,
+  X,
+  Lightbulb,
+  BookOpen,
+  FileText,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   getMistakeIds,
@@ -77,6 +92,16 @@ function ReviewPage() {
     }
   }, [selectedCategory, bankByCategory]);
 
+  // Recommendations: rank categories by how much they need work. We combine
+  // three signals — mistakes still in the bank, low retry accuracy (with a
+  // minimum sample so a single wrong answer doesn't dominate), and zero
+  // practice yet on a topic with mistakes. Only theory-slug categories are
+  // recommended (the /theory route can deep-link into them).
+  const recommendations = useMemo(
+    () => buildRecommendations(stats.byCategory, bankByCategory),
+    [stats.byCategory, bankByCategory],
+  );
+
   if (mode === "retry" && filteredMistakes.length > 0) {
     return (
       <PortalShell eyebrow="Review mistakes" title="Retry the ones you missed">
@@ -112,6 +137,12 @@ function ReviewPage() {
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}
           />
+          {recommendations.length > 0 && (
+            <Recommendations
+              recs={recommendations}
+              onFocusCategory={(slug) => setSelectedCategory(slug)}
+            />
+          )}
           <div className="mt-6" />
           <div className="border border-border bg-card p-6 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
