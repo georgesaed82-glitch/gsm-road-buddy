@@ -1184,8 +1184,8 @@ function GiveWayJunctionSvg() {
         <rect x="452" y="452" width="128" height="22" fill="#ffffff" opacity="0.92" />
         <text x="460" y="468" fontWeight={700}>Minor road</text>
 
-        <rect x="440" y="258" width="230" height="22" fill="#ffffff" opacity="0.92" />
-        <text x="448" y="274">Give-way line (single broken)</text>
+        <rect x="440" y="258" width="260" height="22" fill="#ffffff" opacity="0.92" />
+        <text x="448" y="274">Give-way: double left · single right</text>
 
         <rect x="440" y="342" width="230" height="22" fill="#ffffff" opacity="0.92" />
         <text x="448" y="358">Pedestrian crossing L → R (Rule H2)</text>
