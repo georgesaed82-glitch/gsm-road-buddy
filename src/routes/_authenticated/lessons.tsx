@@ -310,7 +310,7 @@ function LessonsPage() {
                       );
                     })}
                   </div>
-                  <SkillRatingTimeline entries={historyBySkill.get(m.key) ?? []} />
+                  <SkillRatingTimeline entries={historyBySkill.get(m.key) ?? []} forceOpen={skillFilter === m.key} />
                 </li>
               );
             })}
