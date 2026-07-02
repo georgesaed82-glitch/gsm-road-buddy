@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
+import { forwardRef, useId, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
 
 // ─────────────────────────────────────────────────────────────
 // Highway Code — visual essentials
