@@ -307,6 +307,178 @@ function MistakeCard({
 }
 
 function EmptyState() {
+  return null as never;
+}
+// The real EmptyState is below; the above stub is unreachable because we
+// only render EmptyState conditionally.
+
+// ---- Recommendations engine --------------------------------------------------
+
+type Recommendation = {
+  slug: string;
+  title: string;
+  reason: string;
+  accuracyPct: number | null;
+  bank: number;
+  attempts: number;
+  priority: number; // higher = more urgent
+};
+
+const THEORY_SLUG_TO_TITLE = new Map(theoryCategories.map((c) => [c.slug, c.title]));
+
+function buildRecommendations(
+  byCategory: Stats["byCategory"],
+  bankByCategory: Map<string, number>,
+): Recommendation[] {
+  const catSet = new Set<string>();
+  for (const c of byCategory) catSet.add(c.category);
+  for (const c of bankByCategory.keys()) catSet.add(c);
+
+  const rows: Recommendation[] = [];
+  for (const slug of catSet) {
+    // Only recommend real theory categories we can deep-link into.
+    if (!THEORY_SLUG_TO_TITLE.has(slug)) continue;
+    const row = byCategory.find((r) => r.category === slug);
+    const attempts = row?.total ?? 0;
+    const correct = row?.correct ?? 0;
+    const bank = bankByCategory.get(slug) ?? 0;
+    // Accuracy is only meaningful once we have enough retries.
+    const hasSignal = attempts >= 3;
+    const accuracy = hasSignal ? correct / attempts : null;
+    const accuracyPct = accuracy === null ? null : Math.round(accuracy * 100);
+
+    // Skip categories that are cleared and never troubled the user.
+    if (bank === 0 && (accuracy === null || accuracy >= 0.9)) continue;
+
+    // Priority weighting:
+    //  - Bank size (each unresolved question hurts).
+    //  - Low accuracy (below the DVSA 86% pass mark).
+    //  - Zero practice on a topic that has mistakes → high urgency.
+    let priority = bank * 10;
+    if (accuracy !== null && accuracy < 0.86) {
+      priority += Math.round((0.86 - accuracy) * 100);
+    }
+    if (attempts === 0 && bank > 0) priority += 15;
+
+    let reason: string;
+    if (attempts === 0) {
+      reason = `${bank} unpractised mistake${bank === 1 ? "" : "s"} in this topic — you haven't retried any yet.`;
+    } else if (accuracy !== null && accuracy < 0.5) {
+      reason = `Only ${accuracyPct}% accuracy across ${attempts} retries. This is your weakest topic.`;
+    } else if (accuracy !== null && accuracy < 0.86) {
+      reason = `${accuracyPct}% accuracy — below the 86% DVSA pass mark.`;
+    } else if (bank > 0) {
+      reason = `${bank} question${bank === 1 ? "" : "s"} still in your bank.`;
+    } else {
+      reason = `Keep this one warm — sharpen it before the test.`;
+    }
+
+    rows.push({
+      slug,
+      title: THEORY_SLUG_TO_TITLE.get(slug) ?? slug,
+      reason,
+      accuracyPct,
+      bank,
+      attempts,
+      priority,
+    });
+  }
+
+  rows.sort((a, b) => b.priority - a.priority);
+  return rows.slice(0, 3);
+}
+
+function Recommendations({
+  recs,
+  onFocusCategory,
+}: {
+  recs: Recommendation[];
+  onFocusCategory: (slug: string) => void;
+}) {
+  return (
+    <div className="mt-6 border border-border bg-card p-6 sm:p-8">
+      <div className="flex items-start gap-3">
+        <div className="grid h-9 w-9 shrink-0 place-items-center border border-accent bg-accent/10 text-accent">
+          <Lightbulb className="h-4 w-4" />
+        </div>
+        <div className="min-w-0">
+          <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            Practice plan
+          </div>
+          <h2 className="mt-1 font-display text-2xl">Your weakest topics</h2>
+          <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+            Based on your retry accuracy and what's still in your bank. Start with the top card —
+            it needs you the most.
+          </p>
+        </div>
+      </div>
+
+      <ol className="mt-5 space-y-3">
+        {recs.map((r, i) => (
+          <li
+            key={r.slug}
+            className="border border-border bg-background p-4 sm:flex sm:items-start sm:gap-4"
+          >
+            <div className="flex items-baseline gap-2 sm:min-w-0 sm:flex-1">
+              <span className="font-display text-2xl leading-none text-accent">{i + 1}</span>
+              <div className="min-w-0">
+                <div className="font-medium">{r.title}</div>
+                <div className="mt-1 text-xs text-muted-foreground">{r.reason}</div>
+                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                  <span>{r.bank} in bank</span>
+                  <span>·</span>
+                  <span>
+                    {r.accuracyPct === null ? "no retries yet" : `${r.accuracyPct}% accuracy`}
+                  </span>
+                  {r.attempts > 0 && (
+                    <>
+                      <span>·</span>
+                      <span>{r.attempts} attempts</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2 sm:mt-0 sm:shrink-0">
+              <Button asChild size="sm" className="rounded-none">
+                <Link to="/theory" search={{ category: r.slug }}>
+                  <BookOpen className="mr-1.5 h-3.5 w-3.5" />
+                  Practice topic
+                </Link>
+              </Button>
+              {r.bank > 0 && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-none"
+                  onClick={() => onFocusCategory(r.slug)}
+                >
+                  <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                  Retry mistakes
+                </Button>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+        <p className="text-xs text-muted-foreground">
+          Ready for a full run? Sit a 50-question mock and any new wrong answers land here
+          automatically.
+        </p>
+        <Button asChild size="sm" variant="secondary" className="rounded-none">
+          <Link to="/mock-tests">
+            <FileText className="mr-1.5 h-3.5 w-3.5" />
+            Start mock test
+          </Link>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function EmptyStateReal() {
   return (
     <div className="border border-border bg-card p-8 text-center">
       <Sparkles className="mx-auto h-8 w-8 text-accent" />
