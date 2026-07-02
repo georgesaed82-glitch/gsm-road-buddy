@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
@@ -25,22 +25,6 @@ export const Route = createFileRoute("/_authenticated/review")({
   }),
   component: ReviewPage,
 });
-
-function useMistakeIds(): string[] {
-  return useSyncExternalStore(
-    subscribeMistakes,
-    () => JSON.stringify(getMistakeIds()),
-    () => "[]",
-  ).length
-    ? JSON.parse(
-        useSyncExternalStore(
-          subscribeMistakes,
-          () => JSON.stringify(getMistakeIds()),
-          () => "[]",
-        ),
-      )
-    : [];
-}
 
 function useMistakes(): TheoryQuestion[] {
   // Simple subscription pattern (avoid double-hook footgun above): re-render on change.
