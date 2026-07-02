@@ -904,11 +904,11 @@ function HierarchyPyramid() {
 
   // Pyramid geometry
   const W = 720;
-  const H = 520;
+  const H = 640;
   const apexX = W / 2;
-  const apexY = 40;
-  const baseY = H - 60;
-  const baseHalf = 320; // half-width of the base
+  const apexY = 96; // extra clearance so overlay chrome doesn't cover the top row
+  const baseY = H - 72;
+  const baseHalf = 330; // half-width of the base
   const rowH = (baseY - apexY) / rows.length;
 
   const xAt = (y: number) => {
