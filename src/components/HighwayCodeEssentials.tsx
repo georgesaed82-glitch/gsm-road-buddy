@@ -438,6 +438,8 @@ function RoadStuds() {
 // Top-down, TSRGD-faithful dual carriageway showing the five stud colours.
 // Hard shoulder on the LEFT, traffic flowing UP the page.
 const DualCarriagewayStudsSvg = forwardRef<SVGSVGElement>((_props, ref) => {
+  const titleId = useId();
+  const descId = useId();
   // Simple, realistic top-down dual carriageway.
   // Hard shoulder on the LEFT running the FULL length. Traffic flows UP.
   // Left → right: grass | hard shoulder | lane 1 | lane 2 | central reservation | opposite carriageway hint | grass.
@@ -470,7 +472,11 @@ const DualCarriagewayStudsSvg = forwardRef<SVGSVGElement>((_props, ref) => {
   };
 
   return (
-    <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label="Top-down UK dual carriageway with hard shoulder on the left showing red, white and amber road studs">
+    <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-labelledby={`${titleId} ${descId}`}>
+      <title id={titleId}>Top-down UK dual carriageway showing road stud colours</title>
+      <desc id={descId}>
+        A bird's-eye view of a UK dual carriageway with the hard shoulder on the left and traffic flowing up the page. Red studs mark the left edge line between the hard shoulder and lane one. White studs mark the broken centre line between the two lanes. Amber studs mark the right edge line next to the central reservation. Green studs mark the main carriageway edge where a slip road joins from the bottom-left. Green and yellow studs are used for temporary layouts such as contraflows and roadworks.
+      </desc>
       <defs>
         <linearGradient id="rs-tarmac2" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stopColor="#2c3035" />
