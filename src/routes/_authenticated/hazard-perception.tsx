@@ -447,18 +447,20 @@ function HazardExplainer() {
   );
 }
 
-function ClickFlag({ x, y, label, delay }: { x: string; y: string; label: string; delay: number }) {
+function ClickFlag({ x, y, label, delay, tone = "good" }: { x: string; y: string; label: string; delay: number; tone?: "good" | "warn" | "bad" }) {
+  const bg = tone === "good" ? "bg-accent text-accent-foreground" : tone === "warn" ? "bg-yellow-500 text-black" : "bg-destructive text-destructive-foreground";
+  const line = tone === "good" ? "bg-accent" : tone === "warn" ? "bg-yellow-500" : "bg-destructive";
   return (
     <div
       className="absolute animate-in fade-in slide-in-from-bottom-2 duration-300"
       style={{ left: x, bottom: y, animationDelay: `${delay}ms` }}
     >
       <div className="flex flex-col items-center">
-        <div className="flex items-center gap-1 rounded-sm bg-accent px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-foreground">
+        <div className={`flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${bg}`}>
           <Flag className="h-3 w-3" />
           {label}
         </div>
-        <div className="h-6 w-px bg-accent" />
+        <div className={`h-6 w-px ${line}`} />
       </div>
     </div>
   );
