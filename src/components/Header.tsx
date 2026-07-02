@@ -196,7 +196,7 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] bg-background">
+            <SheetContent side="right" className="w-[300px] overflow-y-auto overscroll-contain bg-background pb-24">
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
               <div className="flex flex-col gap-6 pt-6">
                 <Link to="/" className="flex items-center gap-3 text-primary" onClick={() => setOpen(false)}>
