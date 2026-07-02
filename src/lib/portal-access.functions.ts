@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { fingerprintCode, guardCodeAttempt, logCodeAttempt } from "./auth-guard.functions";
+import { evaluateAttemptState, fingerprintCode, guardCodeAttempt, logCodeAttempt } from "./auth-guard.functions";
 
 const BOOTSTRAP_CODE = "7777";
 
@@ -116,8 +116,10 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
           .eq("revoked", false)
           .maybeSingle();
         if (row?.id) await logUsage(row.id, "admin");
+        return { ok: true };
       }
-      return ok ? { ok } : { ok, reason: "invalid" };
+      const after = await evaluateAttemptState(fingerprint);
+      return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
     }
     const supabase = await admin();
     const nowIso = new Date().toISOString();
@@ -132,7 +134,8 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     if (row) {
       if (row.expires_at && row.expires_at <= nowIso) {
         await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
-        return { ok: false, reason: "invalid" };
+        const after = await evaluateAttemptState(fingerprint);
+        return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
       }
       await logUsage(row.id, "learner");
       await logCodeAttempt(fingerprint, "learner", true, captchaVerified);
@@ -160,7 +163,8 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
       return { ok: true };
     }
     await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
-    return { ok: false, reason: "invalid" };
+    const after = await evaluateAttemptState(fingerprint);
+    return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
   });
 
 /**
