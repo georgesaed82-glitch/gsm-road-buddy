@@ -401,6 +401,19 @@ function IssueForm({
           value={days}
           onChange={(e) => setDays(Number(e.target.value) || 30)}
         />
+        <div className="mt-2 flex flex-wrap gap-2">
+          {[1, 5, 30].map((preset) => (
+            <Button
+              key={preset}
+              type="button"
+              size="sm"
+              variant={days === preset ? "default" : "outline"}
+              onClick={() => setDays(preset)}
+            >
+              {preset} day{preset === 1 ? "" : "s"}
+            </Button>
+          ))}
+        </div>
       </div>
       <div>
         <Label>Label (optional)</Label>

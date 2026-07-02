@@ -5,7 +5,7 @@ import { policeSignals, signalGroups } from "@/data/policeSignals";
 export const Route = createFileRoute("/_authenticated/police-signals")({
   head: () => ({
     meta: [
-      { title: "Hand signals — police, HATOs & drivers | GSM Learner Portal" },
+      { title: "Arm signals — police, HATOs & drivers | GSM Learner Portal" },
       { name: "description", content: "Realistic Highway Code illustrations of every hand signal you need — police officers and authorised persons directing traffic, plus the three driver arm signals from rule 103." },
     ],
   }),
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authenticated/police-signals")({
 
 function PoliceSignalsPage() {
   return (
-    <PortalShell eyebrow="Highway Code" title="Hand signals — police, HATOs & drivers">
+    <PortalShell eyebrow="Highway Code" title="Arm signals — police, HATOs & drivers">
       <p className="max-w-2xl text-muted-foreground">
         You must obey signals given by police officers, traffic officers, Highways Agency officers, DVSA examiners and school-crossing patrols. You also need to know the three arm signals you can give from your own vehicle. All of these come up in the theory test and in real life.
       </p>

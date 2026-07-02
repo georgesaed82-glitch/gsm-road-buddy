@@ -18,10 +18,13 @@ const theoryItems: Item[] = [
   { to: "/highway-code", label: "Highway Code", icon: BookOpen },
   { to: "/road-signs", label: "Road signs", icon: SignpostBig },
   { to: "/road-markings", label: "Road markings", icon: Milestone },
-  { to: "/police-signals", label: "Police signals", icon: Hand },
+  { to: "/police-signals", label: "Arm signals", icon: Hand },
   { to: "/questions", label: "Questions", icon: HelpCircle },
   { to: "/mock-tests", label: "Mock tests", icon: ClipboardCheck },
   { to: "/review", label: "Review mistakes", icon: RotateCcw },
+];
+
+const hazardItems: Item[] = [
   { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
 ];
 
@@ -48,6 +51,16 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
     return theoryActive;
   });
 
+  const hazardPaths = hazardItems.map((i) => i.to);
+  const hazardActive = hazardPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const [hazardOpen, setHazardOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return hazardActive;
+    const saved = window.localStorage.getItem("gsm.portal.hazardOpen");
+    if (saved === "1") return true;
+    if (saved === "0") return false;
+    return hazardActive;
+  });
+
   // Auto-open when navigating into a theory page, but don't force-close
   // when leaving — respect the user's explicit choice.
   useEffect(() => {
@@ -58,6 +71,15 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
     if (typeof window === "undefined") return;
     window.localStorage.setItem("gsm.portal.theoryOpen", theoryOpen ? "1" : "0");
   }, [theoryOpen]);
+
+  useEffect(() => {
+    if (hazardActive) setHazardOpen(true);
+  }, [hazardActive]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem("gsm.portal.hazardOpen", hazardOpen ? "1" : "0");
+  }, [hazardOpen]);
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
@@ -119,6 +141,51 @@ export function PortalShell({ children, title, eyebrow }: { children: ReactNode;
             {theoryOpen && (
               <div id="portal-theory-group" className="flex flex-col gap-0.5 pl-3 border-l border-border ml-4">
                 {theoryItems.map((item) => {
+                  const active = pathname === item.to;
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
+                        active
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setHazardOpen((v) => !v)}
+              aria-expanded={hazardOpen}
+              aria-controls="portal-hazard-group"
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
+                hazardActive
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+              )}
+            >
+              <Eye className="h-4 w-4" />
+              <span className="flex-1 text-left">Hazard perception</span>
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  hazardOpen ? "rotate-180" : "rotate-0",
+                )}
+              />
+            </button>
+            {hazardOpen && (
+              <div id="portal-hazard-group" className="flex flex-col gap-0.5 pl-3 border-l border-border ml-4">
+                {hazardItems.map((item) => {
                   const active = pathname === item.to;
                   const Icon = item.icon;
                   return (
