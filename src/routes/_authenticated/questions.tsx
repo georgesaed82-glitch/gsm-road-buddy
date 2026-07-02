@@ -11,6 +11,7 @@ import {
 } from "@/lib/questionDifficulty";
 import { CheckCircle2, XCircle, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/questions")({
   head: () => ({ meta: [{ title: "Theory questions · GSM" }] }),
@@ -43,6 +44,13 @@ function QuestionsPage() {
         Practice DVSA-style theory questions grouped by difficulty. Each question
         shows the correct answer and an explanation the moment you tap.
       </p>
+
+      <OfflineDownloadButton
+        className="mt-6"
+        sectionKey="questions-difficulty"
+        label="difficulty practice"
+        urls={["/questions"]}
+      />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {(["easy", "medium", "hard"] as const).map((d) => {

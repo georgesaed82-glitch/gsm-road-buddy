@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { theoryCategories, sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
 import { CheckCircle2, XCircle, BookOpen, FileText, Lightbulb, Sparkles, Target, Clock, ShieldCheck, Eye as Eye2, Trophy } from "lucide-react";
 import { addMistake, removeMistake } from "@/lib/mistakes";
+import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/theory")({
   head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
@@ -76,6 +77,14 @@ function TheoryPage() {
         <Stat label="Questions answered" value={String(totalAnswered)} />
         <Stat label="Accuracy" value={`${accuracy}%`} accent />
         <Stat label="Topics completed" value={`${completedCount} / ${theoryCategories.length}`} />
+      </div>
+
+      <div className="mt-6">
+        <OfflineDownloadButton
+          sectionKey="theory"
+          label="all 14 theory topics"
+          urls={["/theory", "/highway-code", "/road-signs", "/mock-tests", ...theoryCategories.map((c) => `/theory?category=${c.slug}`)]}
+        />
       </div>
 
       <StudyPack />

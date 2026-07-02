@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { hazardClips, type HazardClip } from "@/data/hazardClips";
 import { Eye, Play, RotateCw, Flag, Settings2, Smartphone, Camera } from "lucide-react";
+import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 type HapticsSettings = { enabled: boolean; intensity: "low" | "medium" | "high" };
 const HAPTICS_STORAGE_KEY = "gsm.haptics.settings";
@@ -167,6 +168,17 @@ function HazardPage() {
         <Stat label="Clips practised" value={String(attempts.length)} />
         <Stat label="Average score" value={`${avg} / 5`} accent />
         <Stat label="Personal best" value={`${best} / 5`} />
+      </div>
+
+      <div className="mt-6">
+        <OfflineDownloadButton
+          sectionKey="hazard-perception"
+          label="hazard perception clips"
+          urls={[
+            "/hazard-perception",
+            ...hazardClips.flatMap((c) => [c.videoUrl, c.posterUrl].filter((u): u is string => !!u)),
+          ]}
+        />
       </div>
 
       <HapticsSettingsPanel />
