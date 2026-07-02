@@ -581,15 +581,37 @@ function VehicleSpeedLimits() {
       title="Speed limits for different vehicles"
       subtitle="Rule 124. The national speed limit depends on the vehicle you're driving AND the type of road. A lower limit shown on a sign always overrides these figures."
     >
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] border-collapse text-sm">
+      {/* Mobile: card per vehicle. Desktop: proper table. */}
+      <div className="grid gap-3 sm:hidden">
+        {rows.map((r) => (
+          <div key={r.vehicle} className="border border-border p-3">
+            <div className="text-sm font-medium">{r.vehicle}</div>
+            {r.note && <div className="mt-1 text-xs text-muted-foreground">{r.note}</div>}
+            <dl className="mt-3 grid grid-cols-4 gap-2 text-center">
+              {[
+                { k: "Built-up", v: r.builtUp },
+                { k: "Single", v: r.single },
+                { k: "Dual", v: r.dual },
+                { k: "Motorway", v: r.motorway },
+              ].map((c) => (
+                <div key={c.k} className="border border-border/60 py-2">
+                  <dt className="text-[9px] font-semibold uppercase tracking-wider text-accent">{c.k}</dt>
+                  <dd className="mt-0.5 font-mono text-base font-bold">{c.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))}
+      </div>
+      <div className="hidden sm:block">
+        <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-border text-left">
               <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-accent">Vehicle type</th>
-              <th className="py-2 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Built-up<br />area (mph)</th>
-              <th className="py-2 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Single<br />carriageway</th>
-              <th className="py-2 px-3 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Dual<br />carriageway</th>
-              <th className="py-2 pl-3 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Motorway</th>
+              <th className="py-2 px-2 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Built-up<br />(mph)</th>
+              <th className="py-2 px-2 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Single<br />c'way</th>
+              <th className="py-2 px-2 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Dual<br />c'way</th>
+              <th className="py-2 pl-2 text-center text-[11px] font-semibold uppercase tracking-wider text-accent">Motorway</th>
             </tr>
           </thead>
           <tbody>
@@ -599,10 +621,10 @@ function VehicleSpeedLimits() {
                   <div className="font-medium">{r.vehicle}</div>
                   {r.note && <div className="mt-1 text-xs text-muted-foreground">{r.note}</div>}
                 </td>
-                <td className="py-2 px-3 text-center font-mono font-bold">{r.builtUp}</td>
-                <td className="py-2 px-3 text-center font-mono font-bold">{r.single}</td>
-                <td className="py-2 px-3 text-center font-mono font-bold">{r.dual}</td>
-                <td className="py-2 pl-3 text-center font-mono font-bold">{r.motorway}</td>
+                <td className="py-2 px-2 text-center font-mono font-bold">{r.builtUp}</td>
+                <td className="py-2 px-2 text-center font-mono font-bold">{r.single}</td>
+                <td className="py-2 px-2 text-center font-mono font-bold">{r.dual}</td>
+                <td className="py-2 pl-2 text-center font-mono font-bold">{r.motorway}</td>
               </tr>
             ))}
           </tbody>
