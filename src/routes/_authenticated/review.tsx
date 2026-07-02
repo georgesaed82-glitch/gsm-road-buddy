@@ -306,12 +306,6 @@ function MistakeCard({
   );
 }
 
-function EmptyState() {
-  return null as never;
-}
-// The real EmptyState is below; the above stub is unreachable because we
-// only render EmptyState conditionally.
-
 // ---- Recommendations engine --------------------------------------------------
 
 type Recommendation = {
@@ -478,7 +472,7 @@ function Recommendations({
   );
 }
 
-function EmptyStateReal() {
+function EmptyState() {
   return (
     <div className="border border-border bg-card p-8 text-center">
       <Sparkles className="mx-auto h-8 w-8 text-accent" />
