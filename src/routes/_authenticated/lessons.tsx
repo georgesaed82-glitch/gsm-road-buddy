@@ -90,6 +90,15 @@ function LessonsPage() {
 
   const ratingMap = new Map(ratings.map((r) => [r.skill_key, r.rating]));
 
+  const { data: sessionInfo } = useQuery({
+    queryKey: ["auth-session"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      return { email: data.user?.email ?? null, signedIn: !!data.user };
+    },
+    staleTime: 30_000,
+  });
+
   const persist = async (key: string, rating: number) => {
     // Validate: integer between 0 and 10
     const clean = Math.max(0, Math.min(10, Math.round(rating)));
@@ -165,6 +174,18 @@ function LessonsPage() {
     <PortalShell eyebrow="Your journey" title="Lessons & progress">
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <section>
+          {sessionInfo && !sessionInfo.signedIn && (
+            <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
+              You're using a shared access code, so scores won't save to your account. Sign in with your
+              email + password on the <a href="/auth" className="font-medium underline">login page</a> to
+              track your personal progress.
+            </div>
+          )}
+          {sessionInfo?.signedIn && sessionInfo.email && (
+            <div className="mb-4 rounded-md border border-emerald-300 bg-emerald-50 p-3 text-xs text-emerald-900 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-100">
+              Signed in as <span className="font-medium">{sessionInfo.email}</span> · progress saves automatically.
+            </div>
+          )}
           {/* Progress chart */}
           <div className="border border-border bg-card p-5">
             <div className="flex items-baseline justify-between">
