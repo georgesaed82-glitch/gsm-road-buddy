@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, Loader2, CloudCheck, CloudOff, History, ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { Star, Check, Loader2, CloudCheck, CloudOff, History, ArrowUp, ArrowDown, Minus, Filter } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -11,6 +11,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/lessons")({
   head: () => ({ meta: [{ title: "Lessons & progress · GSM" }] }),
@@ -34,6 +41,7 @@ function LessonsPage() {
   const qc = useQueryClient();
   type Rating = { skill_key: string; rating: number };
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [skillFilter, setSkillFilter] = useState<string>("all");
   const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const inFlight = useRef<Map<string, number>>(new Map());
@@ -220,12 +228,32 @@ function LessonsPage() {
             </div>
           </div>
 
-          <h2 className="mt-10 font-display text-2xl">Skills roadmap</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Tap 1 – 10 to record your current standard on each skill. Reach 10 and the section turns green.
-          </p>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-display text-2xl">Skills roadmap</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Tap 1 – 10 to record your current standard on each skill. Reach 10 and the section turns green.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <Select value={skillFilter} onValueChange={setSkillFilter}>
+                <SelectTrigger className="w-[200px] text-sm" aria-label="Filter skill timeline">
+                  <SelectValue placeholder="All skills" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All skills</SelectItem>
+                  {skillMilestones.map((m) => (
+                    <SelectItem key={m.key} value={m.key}>{m.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <ol className="mt-6 border border-border bg-card">
-            {skillMilestones.map((m, i) => {
+            {skillMilestones
+              .filter((m) => skillFilter === "all" || m.key === skillFilter)
+              .map((m, i) => {
               const r = ratingMap.get(m.key) ?? 0;
               const done = r >= 10;
               const reached = done || allSkills.has(m.name) || completed >= m.target;
@@ -282,7 +310,7 @@ function LessonsPage() {
                       );
                     })}
                   </div>
-                  <SkillRatingTimeline entries={historyBySkill.get(m.key) ?? []} />
+                  <SkillRatingTimeline entries={historyBySkill.get(m.key) ?? []} forceOpen={skillFilter === m.key} />
                 </li>
               );
             })}
@@ -383,10 +411,15 @@ function SaveIndicator({ state }: { state: "idle" | "saving" | "saved" | "error"
 
 function SkillRatingTimeline({
   entries,
+  forceOpen = false,
 }: {
   entries: Array<{ id: string; rating: number; previous_rating: number | null; changed_at: string }>;
+  forceOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(forceOpen);
+  useEffect(() => {
+    setOpen(forceOpen);
+  }, [forceOpen]);
   if (entries.length === 0) return null;
   const latest = entries[0];
   const latestDelta =
