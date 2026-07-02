@@ -1,20 +1,40 @@
 // Mistakes bank — persists the IDs of theory questions the learner has got
-// wrong so they can retry them in one place via /review. Storage is
-// client-side only (localStorage) so it survives reloads without needing a
-// backend table.
+// wrong so they can retry them in one place via /review.
+//
+// - Anonymous users: mistakes live in localStorage under `KEY` and stay on
+//   this device.
+// - Signed-in users: mistakes are namespaced per-user in localStorage
+//   (`KEY:<userId>`) and mirrored to the `public.user_mistakes` table so
+//   they follow the account across devices. On sign-in we merge any local
+//   anonymous mistakes up so pre-signup practice isn't lost.
+//
+// The exported API stays synchronous — callers get instant UI updates from
+// the cache, and DB writes happen in the background.
+
+import { supabase } from "@/integrations/supabase/client";
 
 const KEY = "gsm.mistakes.v1";
 const STATS_KEY = "gsm.mistakes.stats.v1";
 const STATS_EVENT = "gsm:mistakes-stats-changed";
+const CHANGED_EVENT = "gsm:mistakes-changed";
+
+// Which user's mistakes the in-browser cache currently reflects. `null` =
+// anonymous (device-only). Updated by `initMistakesSync` below.
+let currentUserId: string | null = null;
+let syncInitialized = false;
+
+function userKey(userId: string | null): string {
+  return userId ? `${KEY}:${userId}` : KEY;
+}
 
 function isBrowser() {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
 }
 
-function read(): string[] {
+function readAt(key: string): string[] {
   if (!isBrowser()) return [];
   try {
-    const raw = window.localStorage.getItem(KEY);
+    const raw = window.localStorage.getItem(key);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
@@ -23,14 +43,22 @@ function read(): string[] {
   }
 }
 
-function write(ids: string[]) {
+function writeAt(key: string, ids: string[]) {
   if (!isBrowser()) return;
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(Array.from(new Set(ids))));
-    window.dispatchEvent(new Event("gsm:mistakes-changed"));
+    window.localStorage.setItem(key, JSON.stringify(Array.from(new Set(ids))));
+    window.dispatchEvent(new Event(CHANGED_EVENT));
   } catch {
     // storage full / disabled — silently ignore
   }
+}
+
+function read(): string[] {
+  return readAt(userKey(currentUserId));
+}
+
+function write(ids: string[]) {
+  writeAt(userKey(currentUserId), ids);
 }
 
 export function getMistakeIds(): string[] {
@@ -39,27 +67,30 @@ export function getMistakeIds(): string[] {
 
 export function addMistake(id: string) {
   const cur = read();
-  if (cur.includes(id)) return;
-  write([...cur, id]);
+  if (!cur.includes(id)) write([...cur, id]);
+  pushInsert([id]);
 }
 
 export function addMistakes(ids: string[]) {
   if (!ids.length) return;
   const cur = read();
   const merged = Array.from(new Set([...cur, ...ids]));
-  if (merged.length === cur.length) return;
-  write(merged);
+  const added = merged.filter((x) => !cur.includes(x));
+  if (added.length) write(merged);
+  if (ids.length) pushInsert(ids);
 }
 
 export function removeMistake(id: string) {
   const cur = read();
   const next = cur.filter((x) => x !== id);
-  if (next.length === cur.length) return;
-  write(next);
+  if (next.length !== cur.length) write(next);
+  pushDelete([id]);
 }
 
 export function clearMistakes() {
+  const cur = read();
   write([]);
+  if (cur.length) pushDelete(cur);
 }
 
 /** Subscribe to mistakes-bank changes (same-tab + cross-tab). */
@@ -67,14 +98,98 @@ export function subscribeMistakes(cb: () => void): () => void {
   if (!isBrowser()) return () => {};
   const local = () => cb();
   const storage = (e: StorageEvent) => {
-    if (e.key === KEY) cb();
+    if (e.key && e.key.startsWith(KEY)) cb();
   };
-  window.addEventListener("gsm:mistakes-changed", local);
+  window.addEventListener(CHANGED_EVENT, local);
   window.addEventListener("storage", storage);
   return () => {
-    window.removeEventListener("gsm:mistakes-changed", local);
+    window.removeEventListener(CHANGED_EVENT, local);
     window.removeEventListener("storage", storage);
   };
+}
+
+// ————————————————————————————————————————————————————————————————
+// Supabase sync
+
+function pushInsert(ids: string[]) {
+  if (!currentUserId || !ids.length) return;
+  const userId = currentUserId;
+  const rows = Array.from(new Set(ids)).map((question_id) => ({ user_id: userId, question_id }));
+  // Fire-and-forget. `onConflict` keeps this idempotent when the row exists.
+  void supabase
+    .from("user_mistakes")
+    .upsert(rows, { onConflict: "user_id,question_id", ignoreDuplicates: true });
+}
+
+function pushDelete(ids: string[]) {
+  if (!currentUserId || !ids.length) return;
+  const userId = currentUserId;
+  void supabase
+    .from("user_mistakes")
+    .delete()
+    .eq("user_id", userId)
+    .in("question_id", ids);
+}
+
+async function hydrateFromServer(userId: string) {
+  // Merge order: server rows + this user's local cache + any anonymous
+  // mistakes gathered before sign-in. Local-only IDs get pushed up so the
+  // account picks them up.
+  const localAnon = readAt(userKey(null));
+  const localUser = readAt(userKey(userId));
+  const { data, error } = await supabase
+    .from("user_mistakes")
+    .select("question_id")
+    .eq("user_id", userId);
+  if (error) {
+    // Offline / RLS hiccup — keep the local cache and try again next auth event.
+    return;
+  }
+  const remote = (data ?? []).map((r) => r.question_id);
+  const merged = Array.from(new Set<string>([...remote, ...localUser, ...localAnon]));
+  const missingOnServer = merged.filter((id) => !remote.includes(id));
+
+  writeAt(userKey(userId), merged);
+  if (localAnon.length) writeAt(userKey(null), []); // consumed
+
+  if (missingOnServer.length) {
+    const rows = missingOnServer.map((question_id) => ({ user_id: userId, question_id }));
+    void supabase
+      .from("user_mistakes")
+      .upsert(rows, { onConflict: "user_id,question_id", ignoreDuplicates: true });
+  }
+}
+
+/**
+ * Wire the mistakes bank to the current auth session. Safe to call many
+ * times — only the first call attaches the auth listener.
+ */
+export function initMistakesSync() {
+  if (!isBrowser() || syncInitialized) return;
+  syncInitialized = true;
+
+  supabase.auth.getUser().then(({ data }) => {
+    const uid = data.user?.id ?? null;
+    currentUserId = uid;
+    if (uid) void hydrateFromServer(uid);
+    // Trigger a re-render so components pick up the right namespace.
+    window.dispatchEvent(new Event(CHANGED_EVENT));
+  });
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "INITIAL_SESSION") return;
+    const nextId = session?.user?.id ?? null;
+    if (nextId === currentUserId) return;
+    currentUserId = nextId;
+    if (nextId) void hydrateFromServer(nextId);
+    window.dispatchEvent(new Event(CHANGED_EVENT));
+  });
+}
+
+// Auto-init on browser import so any page that uses the mistakes bank picks
+// up the signed-in user's data without extra wiring.
+if (isBrowser()) {
+  initMistakesSync();
 }
 
 // ————————————————————————————————————————————————————————————————
