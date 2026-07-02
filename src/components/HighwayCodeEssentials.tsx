@@ -2809,7 +2809,7 @@ function MoreRule181Scenarios() {
 
 function SmartMotorwayBase({ children }: { children?: ReactNode }) {
   return (
-    <svg viewBox="0 0 640 380" className="block h-full w-full" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 640 420" className="block h-full w-full" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id="sm-tarmac" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#3a3a40" />
@@ -2821,7 +2821,7 @@ function SmartMotorwayBase({ children }: { children?: ReactNode }) {
         </linearGradient>
       </defs>
       {/* Verges */}
-      <rect x="0" y="0" width="640" height="380" fill="url(#sm-grass)" />
+      <rect x="0" y="0" width="640" height="420" fill="url(#sm-grass)" />
       {/* Motorway carriageway (40..600), 4 lanes each 140 wide */}
       <rect x="40" y="0" width="560" height="380" fill="url(#sm-tarmac)" />
       {/* Solid white edge lines */}
@@ -2837,12 +2837,6 @@ function SmartMotorwayBase({ children }: { children?: ReactNode }) {
           </g>
         ))}
       </g>
-      {/* Direction-of-travel arrows near the bottom of every lane */}
-      <g fill="#f8fafc" opacity="0.55">
-        {[110, 250, 390, 530].map((x) => (
-          <polygon key={x} points={`${x - 8},350 ${x + 8},350 ${x},322`} />
-        ))}
-      </g>
       {/* Overhead gantry (upright pillars + horizontal beam) */}
       <rect x="14" y="46" width="10" height="220" fill="#3b3b40" />
       <rect x="616" y="46" width="10" height="220" fill="#3b3b40" />
@@ -2851,6 +2845,8 @@ function SmartMotorwayBase({ children }: { children?: ReactNode }) {
       {/* Cross bracing */}
       <line x1="24" y1="54" x2="616" y2="130" stroke="#4b5563" strokeWidth="1" opacity="0.55" />
       <line x1="616" y1="54" x2="24" y2="130" stroke="#4b5563" strokeWidth="1" opacity="0.55" />
+      {/* Lane label strip below the carriageway so labels never sit on tarmac */}
+      <rect x="0" y="380" width="640" height="40" fill="#0b1220" />
       {children}
     </svg>
   );
@@ -2971,17 +2967,14 @@ function AppliesFromHereBand({ label, color = "#facc15" }: { label: string; colo
 // so students can tell which sign sits above which lane.
 function LaneNumbers() {
   return (
-    <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="800" fill="#f8fafc">
+    <g fontFamily="Arial, sans-serif" fontSize="14" fontWeight="800" fill="#f8fafc">
       {[
         { x: 110, n: 1 },
         { x: 250, n: 2 },
         { x: 390, n: 3 },
         { x: 530, n: 4 },
       ].map((l) => (
-        <g key={l.n}>
-          <rect x={l.x - 22} y={355} width="44" height="18" rx="2" fill="#0b1220" opacity="0.75" />
-          <text x={l.x} y={368} textAnchor="middle">Lane {l.n}</text>
-        </g>
+        <text key={l.n} x={l.x} y={406} textAnchor="middle">Lane {l.n}</text>
       ))}
     </g>
   );
@@ -3029,7 +3022,7 @@ function SmartMotorwayEndSvg() {
       <NationalLimitSign x={530} />
 
       {/* "Back to 70 mph" reference line under the gantry */}
-      <AppliesFromHereBand label="Back to national limit — 70 mph FROM HERE" color="#f8fafc" />
+      <AppliesFromHereBand label="70 mph applies FROM HERE" color="#f8fafc" />
 
       {/* Traffic AFTER the gantry — lane 1 is open again */}
       <MotorwayCar x={110} y={220} color="#dc2626" />
@@ -3055,7 +3048,7 @@ function SmartMotorway() {
       <div className="grid gap-5">
         <figure role="group" aria-label="Smart motorway gantry showing lane 1 closed with a red X, and 60 mph variable speed limit signs above the remaining three lanes. A car is merging out of the closed lane into lane 2.">
           <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-accent">Diagram 1 · Lane closed + reduced speed</div>
-          <ZoomPan aspect="640/380" label="Smart motorway — lane 1 closed by a red X and a 60 mph limit applied to all remaining lanes.">
+          <ZoomPan aspect="640/420" label="Smart motorway — lane 1 closed by a red X and a 60 mph limit applied to all remaining lanes.">
             <SmartMotorwayClosureSvg />
           </ZoomPan>
           <p className="mt-3 text-sm">
@@ -3065,7 +3058,7 @@ function SmartMotorway() {
 
         <figure role="group" aria-label="Smart motorway gantry showing the national speed limit sign (white circle with a diagonal white bar) above all four lanes, meaning the previous restriction has ended.">
           <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-accent">Diagram 2 · National speed limit resumes</div>
-          <ZoomPan aspect="640/380" label="Smart motorway — national speed limit signs above every lane, cancelling the previous 60 mph restriction.">
+          <ZoomPan aspect="640/420" label="Smart motorway — national speed limit signs above every lane, cancelling the previous 60 mph restriction.">
             <SmartMotorwayEndSvg />
           </ZoomPan>
           <p className="mt-3 text-sm">
