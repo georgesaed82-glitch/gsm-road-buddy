@@ -496,6 +496,19 @@ function MockExam({ onExit }: { onExit: () => void }) {
       (s, a, i) => s + (a !== null && a === pool[i].correctIndex ? 1 : 0),
       0,
     );
+    // Feed wrong / unanswered questions into the mistakes bank so they show
+    // up on /review. Correct answers are removed from the bank.
+    const _wrongIds = pool
+      .filter((qq, i) => {
+        const a = answers[i];
+        return a === null || a !== qq.correctIndex;
+      })
+      .map((qq) => qq.id);
+    const _rightIds = pool
+      .filter((qq, i) => answers[i] !== null && answers[i] === qq.correctIndex)
+      .map((qq) => qq.id);
+    _wrongIds.forEach(addMistake);
+    _rightIds.forEach(removeMistake);
     const pct = pool.length ? Math.round((correctCount / pool.length) * 100) : 0;
     const passed = pct >= 86;
     const byTopic = (() => {
