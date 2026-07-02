@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
 import { signs, signCategories, signsByCategory, buildSignOptions, type Sign, type SignCategory } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
+import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/signs")({
   head: () => ({ meta: [{ title: "Road signs quiz · GSM" }] }),
@@ -45,6 +46,13 @@ function SignsPage() {
       <p className="max-w-2xl text-sm text-muted-foreground">
         Every category from the Highway Code, drawn in the correct shape and colour. Learn them, then test yourself. If you get one wrong, we show you the sign with the answer explained.
       </p>
+
+      <OfflineDownloadButton
+        className="mt-6"
+        sectionKey="signs-quiz"
+        label="signs quiz"
+        urls={["/signs", "/road-signs"]}
+      />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <button
