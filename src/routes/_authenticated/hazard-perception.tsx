@@ -872,11 +872,7 @@ function HazardTutorial() {
                 className="absolute bottom-[18%]"
                 style={{ left: `${20 + pedProgress * 55}%`, transition: "left 60ms linear" }}
               >
-                <div className="flex flex-col items-center">
-                  <div className="h-3 w-3 rounded-full bg-orange-300" />
-                  <div className="mt-0.5 h-4 w-2 bg-red-500" />
-                  <div className="mt-0.5 h-3 w-3 bg-blue-600" />
-                </div>
+                {/* pedestrian marker retired — the child + ball are now drawn inside the SVG */}
               </div>
             )}
 
