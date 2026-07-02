@@ -883,6 +883,7 @@ export function HighwayCodeEssentials() {
       <YellowBoxJunction />
       <NearsideOffsideJunction />
       <MoreRule181Scenarios />
+      <SmartMotorway />
     </div>
   );
 }
