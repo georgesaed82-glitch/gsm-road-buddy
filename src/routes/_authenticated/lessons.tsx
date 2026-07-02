@@ -411,10 +411,15 @@ function SaveIndicator({ state }: { state: "idle" | "saving" | "saved" | "error"
 
 function SkillRatingTimeline({
   entries,
+  forceOpen = false,
 }: {
   entries: Array<{ id: string; rating: number; previous_rating: number | null; changed_at: string }>;
+  forceOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(forceOpen);
+  useEffect(() => {
+    setOpen(forceOpen);
+  }, [forceOpen]);
   if (entries.length === 0) return null;
   const latest = entries[0];
   const latestDelta =
