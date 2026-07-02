@@ -581,6 +581,7 @@ export function HighwayCodeEssentials() {
       <RoadStuds />
       <StoppingDistances />
       <TrafficLights />
+      <ZebraCrossing />
     </div>
   );
 }
