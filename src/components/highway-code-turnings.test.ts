@@ -56,6 +56,11 @@ function extractArrowEndpoints(body: string): Array<{ x: number; y: number }> {
     const n = nums.map(Number);
     out.push({ x: n[n.length - 2], y: n[n.length - 1] });
   }
+  // Also include straight `<line x1=.. y1=.. x2=.. y2=..>` arrows.
+  const lineRe = /<line\s+x1="(-?\d+(?:\.\d+)?)"\s+y1="(-?\d+(?:\.\d+)?)"\s+x2="(-?\d+(?:\.\d+)?)"\s+y2="(-?\d+(?:\.\d+)?)"/g;
+  while ((m = lineRe.exec(body))) {
+    out.push({ x: +m[3], y: +m[4] });
+  }
   return out;
 }
 
