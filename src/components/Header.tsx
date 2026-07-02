@@ -187,7 +187,7 @@ export function Header() {
                 </Link>
                 <nav className="flex flex-col">
                   {navLinks.map((link) => {
-                    const Icon = link.icon;
+                    const Icon = (link as { icon?: typeof Download }).icon;
                     const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
                     return (
                       <Link
