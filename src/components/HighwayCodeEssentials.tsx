@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
+import { forwardRef, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
 
 // ─────────────────────────────────────────────────────────────
 // Highway Code — visual essentials
@@ -311,14 +311,104 @@ function RoadStudsDiagram() {
 }
 
 function RoadStuds() {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  const serializeSvg = () => {
+    const src = svgRef.current;
+    if (!src) return null;
+    const clone = src.cloneNode(true) as SVGSVGElement;
+    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    clone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+    // Ensure the exported file has a solid background
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const vb = (clone.getAttribute("viewBox") || "0 0 360 640").split(/\s+/).map(Number);
+    bg.setAttribute("x", String(vb[0]));
+    bg.setAttribute("y", String(vb[1]));
+    bg.setAttribute("width", String(vb[2]));
+    bg.setAttribute("height", String(vb[3]));
+    bg.setAttribute("fill", "#0b1220");
+    clone.insertBefore(bg, clone.firstChild);
+    return { markup: new XMLSerializer().serializeToString(clone), vb };
+  };
+
+  const download = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const exportSvg = () => {
+    const out = serializeSvg();
+    if (!out) return;
+    download(new Blob([out.markup], { type: "image/svg+xml;charset=utf-8" }), "gsm-road-studs.svg");
+  };
+
+  const exportPng = async (scale = 4) => {
+    const out = serializeSvg();
+    if (!out) return;
+    const [, , vw, vh] = out.vb;
+    const img = new Image();
+    img.decoding = "async";
+    const blob = new Blob([out.markup], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    try {
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("SVG load failed"));
+        img.src = url;
+      });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(vw * scale);
+      canvas.height = Math.round(vh * scale);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((b) => {
+        if (b) download(b, `gsm-road-studs-${canvas.width}x${canvas.height}.png`);
+      }, "image/png");
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  };
+
   return (
     <Panel
       title="Road stud colours (rule 132)"
       subtitle="Reflective studs mark lane edges — colour tells you what the line means."
     >
       <ZoomPan aspect="3/4" label="UK dual carriageway from above showing road stud colours — pinch or scroll to zoom in">
-        <DualCarriagewayStudsSvg />
+        <DualCarriagewayStudsSvg ref={svgRef} />
       </ZoomPan>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={exportSvg}
+          className="rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted"
+        >
+          Export SVG
+        </button>
+        <button
+          type="button"
+          onClick={() => exportPng(4)}
+          className="rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted"
+        >
+          Export PNG (high-res)
+        </button>
+        <button
+          type="button"
+          onClick={() => exportPng(2)}
+          className="rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted"
+        >
+          Export PNG (standard)
+        </button>
+      </div>
       <ul className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
         <li className="flex items-start gap-2">
           <span className="mt-1 h-3 w-3 shrink-0 rounded-full bg-[#ef4444] ring-1 ring-white/40" />
@@ -347,7 +437,7 @@ function RoadStuds() {
 
 // Top-down, TSRGD-faithful dual carriageway showing the five stud colours.
 // Hard shoulder on the LEFT, traffic flowing UP the page.
-function DualCarriagewayStudsSvg() {
+const DualCarriagewayStudsSvg = forwardRef<SVGSVGElement>((_props, ref) => {
   // Simple, realistic top-down dual carriageway.
   // Hard shoulder on the LEFT running the FULL length. Traffic flows UP.
   // Left → right: grass | hard shoulder | lane 1 | lane 2 | central reservation | opposite carriageway hint | grass.
@@ -380,7 +470,7 @@ function DualCarriagewayStudsSvg() {
   };
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label="Top-down UK dual carriageway with hard shoulder on the left showing red, white and amber road studs">
+    <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label="Top-down UK dual carriageway with hard shoulder on the left showing red, white and amber road studs">
       <defs>
         <linearGradient id="rs-tarmac2" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stopColor="#2c3035" />
@@ -505,7 +595,8 @@ function DualCarriagewayStudsSvg() {
       </text>
     </svg>
   );
-}
+});
+DualCarriagewayStudsSvg.displayName = "DualCarriagewayStudsSvg";
 
 // ── Stopping distances (rule 126) ────────────────────────────
 function StoppingDistances() {
