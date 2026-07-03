@@ -8,6 +8,7 @@ import { OfficialSignImage } from "@/components/OfficialSignImage";
 import { signs, signCategories, signsByCategory, buildSignOptions, type Sign, type SignCategory } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import { SignsShapesLegend } from "@/components/SignsShapesLegend";
 
 export const Route = createFileRoute("/_authenticated/signs")({
   head: () => ({ meta: [{ title: "Road signs quiz · GSM" }] }),
@@ -43,6 +44,7 @@ function SignsPage() {
 
   return (
     <PortalShell eyebrow="Know your signs" title="UK road signs — learn & quiz">
+      <SignsShapesLegend />
       <p className="max-w-2xl text-sm text-muted-foreground">
         Every category from the Highway Code, drawn in the correct shape and colour. Learn them, then test yourself. If you get one wrong, we show you the sign with the answer explained.
       </p>
