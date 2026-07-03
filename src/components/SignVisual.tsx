@@ -71,7 +71,18 @@ export type SignVariant =
   | { kind: "motorway"; label: string }
   | { kind: "traffic-light"; state: "red" | "amber" | "green" | "red-amber" }
   | { kind: "zebra-crossing" }
-  | { kind: "signal-crossing"; state: "red-man" | "green-man" };
+  | { kind: "signal-crossing"; state: "red-man" | "green-man" }
+  | { kind: "countdown-marker"; distance: 300 | 200 | 100; background?: "motorway" | "primary" }
+  | {
+      kind: "roundabout-ads";
+      exits: { angle: "left" | "ahead-left" | "ahead" | "ahead-right" | "right"; label: string; route?: string }[];
+      background?: "motorway" | "primary" | "local";
+    }
+  | {
+      kind: "route-lanes";
+      background?: "motorway" | "primary" | "local";
+      lanes: { arrow: "up" | "up-left" | "up-right"; destination: string; route?: string }[];
+    };
 
 /**
  * Highway-Code-style pictogram. Drawn as solid silhouettes so it matches the
