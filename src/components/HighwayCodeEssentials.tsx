@@ -6,9 +6,9 @@ import { forwardRef, useId, useRef, useState, type PointerEvent as ReactPointerE
 // Sections: Road studs · Stopping distances · Traffic light types
 // ─────────────────────────────────────────────────────────────
 
-function Panel({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
+function Panel({ id, title, subtitle, children }: { id?: string; title: string; subtitle?: string; children: ReactNode }) {
   return (
-    <section className="border border-border bg-card p-5 sm:p-6">
+    <section id={id} className="scroll-mt-24 border border-border bg-card p-5 sm:p-6">
       <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Essentials</div>
       <h3 className="mt-1 font-display text-2xl leading-tight">{title}</h3>
       {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
