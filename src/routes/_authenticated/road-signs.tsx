@@ -16,6 +16,8 @@ import {
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import { useEffect } from "react";
+import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
 
 export const Route = createFileRoute("/_authenticated/road-signs")({
   head: () => ({ meta: [{ title: "Road signs · GSM" }] }),
@@ -129,10 +131,23 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
   const [wrong, setWrong] = useState(0);
   const [missed, setMissed] = useState<Sign[]>([]);
   const [q, setQ] = useState(() => buildSignOptions(order[0], pool));
+  const [log, setLog] = useState<QuizAttemptItem[]>([]);
+  const [savedAttempt, setSavedAttempt] = useState(false);
 
   const current = order[i];
 
   if (!current) {
+    // Persist the attempt once the quiz completes.
+    if (!savedAttempt && log.length > 0) {
+      saveAttempt({
+        kind: "signs",
+        label: `${order.length} signs`,
+        score: right,
+        total: order.length,
+        items: log,
+      });
+      setSavedAttempt(true);
+    }
     return (
       <div className="mt-8 border border-border bg-card p-6">
         <h3 className="font-display text-xl">Quiz complete</h3>
