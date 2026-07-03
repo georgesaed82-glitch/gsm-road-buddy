@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { OfficialSignImage, SIGN_IMAGE_SIZES, type SignImageVariant } from "@/components/OfficialSignImage";
 import { signs } from "@/data/signs";
-import { SignVisual } from "@/components/SignVisual";
 
 // Test fixture used by the visual-regression Playwright suite.
 // Renders every OfficialSignImage variant with a stable sample sign so
@@ -33,16 +32,6 @@ function DevSignVariants() {
             </div>
           </div>
         ))}
-      </div>
-      <div className="mt-10 flex flex-wrap items-start gap-6" data-testid="new-direction-signs">
-        {signs
-          .filter((s) => ["d-count-300","d-count-200","d-count-100","d-roundabout-ads","d-route-lanes"].includes(s.id))
-          .map((s) => (
-            <div key={s.id} className="flex flex-col items-center gap-2" data-sign-id={s.id}>
-              <SignVisual variant={s.variant} size={160} />
-              <div className="text-xs text-gray-600 max-w-[220px] text-center">{s.name}</div>
-            </div>
-          ))}
       </div>
     </main>
   );
