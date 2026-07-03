@@ -358,92 +358,65 @@ export function BusLane() {
 // ── WORDS / SPECIAL ──────────────────────────────────
 
 export function RoundaboutTriangles() {
-  // Aerial plan of a mini-roundabout junction: four approach roads meeting
-  // at a circular painted island, with give-way triangles on every approach,
-  // lane centre lines, and clockwise arrows sweeping around the island.
+  // Realistic close-up of a UK mini-roundabout: a solid white painted disc on
+  // plain tarmac, with two large sweeping clockwise arrows painted either side
+  // — matching what a driver actually sees on the road (no verges, no teeth).
   const cx = 100;
-  const cy = 100;
-  const GRASS = "#3b6b3f";
-  const ISLAND_R = 22;
-
-  // Give-way triangle rows (shark's teeth) — one row per approach, pointing
-  // toward the driver's direction of travel (i.e. toward the island).
-  const TeethRow = ({
-    transform,
-  }: {
-    transform: string;
-  }) => (
-    <g transform={transform} fill={PAINT}>
-      {[-24, -8, 8, 24].map((x) => (
-        <polygon key={x} points={`${x - 5},0 ${x + 5},0 ${x},9`} />
-      ))}
-    </g>
-  );
+  const cy = 104;
+  const ISLAND_R = 28;
+  const ARROW_R = 58;
 
   return (
     <Frame>
-      {/* Grass verges in the four corners (everything outside the +-shaped road) */}
-      <g fill={GRASS}>
-        <rect x="0" y="0" width="60" height="60" />
-        <rect x="140" y="0" width="60" height="60" />
-        <rect x="0" y="140" width="60" height="60" />
-        <rect x="140" y="140" width="60" height="60" />
+      {/* Full-frame tarmac */}
+      <rect x="0" y="0" width="200" height="200" fill={ROAD} />
+      {/* Subtle asphalt texture speckle for realism */}
+      <g fill="#3a3a3a" opacity="0.5">
+        {Array.from({ length: 60 }).map((_, i) => {
+          const x = (i * 37) % 200;
+          const y = (i * 53) % 200;
+          return <circle key={i} cx={x} cy={y} r="0.6" />;
+        })}
       </g>
-      {/* Soften the corners where verge meets tarmac with quarter-circle fills */}
-      <g fill={ROAD}>
-        <path d="M 60 0 L 60 60 A 20 20 0 0 0 80 40 L 80 0 Z" />
-        <path d="M 140 0 L 140 40 A 20 20 0 0 0 160 60 L 200 60 L 200 0 Z" transform="translate(-60 0)" />
-      </g>
-
-      {/* Kerb lines around the +-shaped carriageway */}
-      <g stroke={KERB} strokeWidth="2" fill="none">
-        <path d="M 0 60 L 60 60 A 14 14 0 0 1 74 74 L 74 126 A 14 14 0 0 1 60 140 L 0 140" />
-        <path d="M 200 60 L 140 60 A 14 14 0 0 0 126 74 L 126 126 A 14 14 0 0 0 140 140 L 200 140" />
-      </g>
-
-      {/* Broken centre lines down each approach */}
-      <g fill={PAINT}>
-        {/* North approach */}
-        {[6, 26, 46].map((y) => (
-          <rect key={`n${y}`} x="98" y={y} width="4" height="10" />
-        ))}
-        {/* South approach */}
-        {[144, 164, 184].map((y) => (
-          <rect key={`s${y}`} x="98" y={y} width="4" height="10" />
-        ))}
-        {/* West approach */}
-        {[6, 26, 46].map((x) => (
-          <rect key={`w${x}`} x={x} y="98" width="10" height="4" />
-        ))}
-        {/* East approach */}
-        {[144, 164, 184].map((x) => (
-          <rect key={`e${x}`} x={x} y="98" width="10" height="4" />
-        ))}
+      <g fill="#606060" opacity="0.35">
+        {Array.from({ length: 40 }).map((_, i) => {
+          const x = (i * 71 + 11) % 200;
+          const y = (i * 29 + 17) % 200;
+          return <circle key={i} cx={x} cy={y} r="0.8" />;
+        })}
       </g>
 
-      {/* Give-way shark's-teeth on every approach, positioned just outside the island */}
-      <TeethRow transform={`translate(${cx} 56) rotate(0)`} />
-      <TeethRow transform={`translate(144 ${cy}) rotate(90)`} />
-      <TeethRow transform={`translate(${cx} 144) rotate(180)`} />
-      <TeethRow transform={`translate(56 ${cy}) rotate(270)`} />
-
-      {/* Clockwise directional arrows sweeping around the island */}
-      <g fill="none" stroke={PAINT} strokeWidth="4" strokeLinecap="butt">
-        <path d="M 100 66 A 34 34 0 0 1 133 98" />
-        <path d="M 134 102 A 34 34 0 0 1 102 134" />
-        <path d="M 98 134 A 34 34 0 0 1 66 102" />
-        <path d="M 66 98 A 34 34 0 0 1 98 66" />
-      </g>
-      <g fill={PAINT}>
-        <polygon points="128,94 140,94 134,106" />
-        <polygon points="106,128 106,140 94,134" />
-        <polygon points="72,106 60,106 66,94" />
-        <polygon points="94,72 94,60 106,66" />
-      </g>
-
-      {/* Solid white painted mini-roundabout island with subtle ring */}
+      {/* Solid white painted disc — the mini-roundabout marking itself */}
+      <circle cx={cx} cy={cy} r={ISLAND_R + 1.5} fill="#e8e8e8" />
       <circle cx={cx} cy={cy} r={ISLAND_R} fill={PAINT} />
-      <circle cx={cx} cy={cy} r={ISLAND_R - 4} fill="none" stroke={ROAD} strokeWidth="0.75" opacity="0.4" />
+
+      {/* Top-right sweeping arrow (clockwise) */}
+      <g fill={PAINT} stroke={PAINT} strokeLinejoin="round">
+        <path
+          d={`M ${cx - 4} ${cy - ARROW_R}
+              A ${ARROW_R} ${ARROW_R} 0 0 1 ${cx + ARROW_R} ${cy - 4}
+              L ${cx + ARROW_R + 8} ${cy - 10}
+              L ${cx + ARROW_R + 14} ${cy + 4}
+              L ${cx + ARROW_R - 6} ${cy + 6}
+              L ${cx + ARROW_R - 8} ${cy - 2}
+              A ${ARROW_R - 10} ${ARROW_R - 10} 0 0 0 ${cx - 4} ${cy - ARROW_R + 10}
+              Z`}
+        />
+      </g>
+
+      {/* Bottom-left sweeping arrow (clockwise, 180° rotation of the top one) */}
+      <g fill={PAINT} stroke={PAINT} strokeLinejoin="round" transform={`rotate(180 ${cx} ${cy})`}>
+        <path
+          d={`M ${cx - 4} ${cy - ARROW_R}
+              A ${ARROW_R} ${ARROW_R} 0 0 1 ${cx + ARROW_R} ${cy - 4}
+              L ${cx + ARROW_R + 8} ${cy - 10}
+              L ${cx + ARROW_R + 14} ${cy + 4}
+              L ${cx + ARROW_R - 6} ${cy + 6}
+              L ${cx + ARROW_R - 8} ${cy - 2}
+              A ${ARROW_R - 10} ${ARROW_R - 10} 0 0 0 ${cx - 4} ${cy - ARROW_R + 10}
+              Z`}
+        />
+      </g>
     </Frame>
   );
 }
