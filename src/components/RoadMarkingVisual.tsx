@@ -500,7 +500,6 @@ export function StraightAndRightLanes() {
 }
 
 export function MergeShortDashes() {
-export function MergeShortDashes() {
   // Highway Code / DES illustration: a slip road curves in from the bottom
   // left and joins the nearside lane of a two-lane main carriageway.
   //   • Solid white line on the outer edge of the slip road (kerbside edge).
