@@ -3,7 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, Loader2, CloudCheck, CloudOff, History, ArrowUp, ArrowDown, Minus, Filter } from "lucide-react";
+import { Star, Check, Loader2, CloudCheck, CloudOff, History, ArrowUp, ArrowDown, Minus, Filter, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -221,15 +222,45 @@ function LessonsPage() {
   const mastered = skillMilestones.filter((m) => (ratingMap.get(m.key) ?? 0) >= 10).length;
   const overallPct = Math.round((totalRating / (skillMilestones.length * 10)) * 100);
 
+  const saveAll = async () => {
+    // Flush any pending debounced writes immediately
+    debounceTimers.current.forEach((t) => clearTimeout(t));
+    debounceTimers.current.clear();
+    setSaveState("saving");
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      // Persist every current rating to localStorage AND (if signed in) to the account
+      for (const m of skillMilestones) {
+        const val = ratingMap.get(m.key) ?? 0;
+        saveLocalRating(m.key, val);
+        if (uid) {
+          const { error } = await supabase
+            .from("skill_ratings")
+            .upsert({ user_id: uid, skill_key: m.key, rating: val }, { onConflict: "user_id,skill_key" });
+          if (error) throw error;
+        }
+      }
+      setSaveState("saved");
+      toast.success(uid ? "All scores saved to the student's account." : "All scores saved on this device.");
+      if (savedTimer.current) clearTimeout(savedTimer.current);
+      savedTimer.current = setTimeout(() => setSaveState("idle"), 1800);
+      qc.invalidateQueries({ queryKey: ["skill-rating-history"] });
+    } catch (e: any) {
+      setSaveState("error");
+      toast.error(e?.message || "Could not save. Check your connection and try again.");
+    }
+  };
+
   return (
     <PortalShell eyebrow="Your journey" title="Lessons & progress">
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <section>
           {sessionInfo && !sessionInfo.signedIn && (
             <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
-              You're using a shared access code, so scores won't save to your account. Sign in with your
-              email + password on the <a href="/auth" className="font-medium underline">login page</a> to
-              track your personal progress.
+              You're using a shared access code, so scores won't save to your account.
+              Log in with your email + the PIN George gave you on the{' '}
+              <a href="/auth" className="font-medium underline">login page</a> to track your personal progress.
             </div>
           )}
           {sessionInfo?.signedIn && sessionInfo.email && (
@@ -239,15 +270,24 @@ function LessonsPage() {
           )}
           {/* Progress chart */}
           <div className="border border-border bg-card p-5">
-            <div className="flex items-baseline justify-between">
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
               <h2 className="font-display text-2xl">Progress chart</h2>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <SaveIndicator state={saveState} />
                 <span>{mastered}/{skillMilestones.length} mastered · {overallPct}%</span>
+                <Button
+                  size="sm"
+                  onClick={saveAll}
+                  disabled={saveState === "saving"}
+                  className="h-8"
+                >
+                  <Save className="mr-1.5 h-3.5 w-3.5" />
+                  {saveState === "saving" ? "Saving…" : "Save & update"}
+                </Button>
               </div>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              Every skill is marked 0 – 10. When a bar hits 10 it turns green — that skill is mastered.
+              Every skill is marked 0 – 10. Tap Save &amp; update after grading to lock the scores into this student's account.
             </p>
             <div className="mt-5 space-y-3">
               {skillMilestones.map((m) => {
