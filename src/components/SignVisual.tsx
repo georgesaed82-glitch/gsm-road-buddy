@@ -783,18 +783,21 @@ export function SignVisual({ variant, size = 160 }: { variant: SignVariant; size
             : "#fff";
       const fg = variant.background === "local" ? "#000" : "#fff";
       const stroke = variant.background === "local" ? "#000" : "#fff";
-      const w = px * 2;
-      const h = px * 1.6;
-      const cx = 50;
+      const w = px * 2.2;
+      const h = px * 1.7;
+      // wider viewBox so long labels have room outside the ring
+      const VB_W = 140;
+      const VB_H = 90;
+      const cx = 70;
       const cy = 52;
-      const r = 14;
-      // fixed slot positions around the ring
+      const r = 12;
+      // Each label sits well outside the ring so it can never overlap the diagram.
       const slots: Record<string, { x1: number; y1: number; x2: number; y2: number; tx: number; ty: number; anchor: "start" | "middle" | "end" }> = {
-        left: { x1: cx - r, y1: cy, x2: 8, y2: cy, tx: 6, ty: cy - 3, anchor: "start" },
-        "ahead-left": { x1: cx - r * 0.7, y1: cy - r * 0.7, x2: 20, y2: 18, tx: 18, ty: 15, anchor: "start" },
-        ahead: { x1: cx, y1: cy - r, x2: cx, y2: 10, tx: cx, ty: 8, anchor: "middle" },
-        "ahead-right": { x1: cx + r * 0.7, y1: cy - r * 0.7, x2: 80, y2: 18, tx: 82, ty: 15, anchor: "end" },
-        right: { x1: cx + r, y1: cy, x2: 92, y2: cy, tx: 94, ty: cy - 3, anchor: "end" },
+        left:        { x1: cx - r, y1: cy,           x2: 22,  y2: cy, tx: 4,   ty: cy - 5, anchor: "start" },
+        "ahead-left":{ x1: cx - r*0.7, y1: cy - r*0.7, x2: 30, y2: 22, tx: 28, ty: 18,     anchor: "start" },
+        ahead:       { x1: cx, y1: cy - r,           x2: cx, y2: 22, tx: cx, ty: 15,     anchor: "middle" },
+        "ahead-right":{ x1: cx + r*0.7, y1: cy - r*0.7, x2: 110, y2: 22, tx: 112, ty: 18,  anchor: "end" },
+        right:       { x1: cx + r, y1: cy,           x2: 118, y2: cy, tx: 136, ty: cy - 5, anchor: "end" },
       };
       return (
         <div
@@ -806,27 +809,34 @@ export function SignVisual({ variant, size = 160 }: { variant: SignVariant; size
             borderColor: variant.background === "local" ? "#000" : "#fff",
           }}
         >
-          <svg width="94%" height="94%" viewBox="0 0 100 78" fontFamily="Arial, sans-serif">
+          <svg width="96%" height="96%" viewBox={`0 0 ${VB_W} ${VB_H}`} fontFamily="Arial, sans-serif">
             {/* approach stub */}
-            <line x1={cx} y1={cy + r} x2={cx} y2={72} stroke={stroke} strokeWidth="4" strokeLinecap="round" />
+            <line x1={cx} y1={cy + r} x2={cx} y2={VB_H - 6} stroke={stroke} strokeWidth="3.5" strokeLinecap="round" />
             {/* the ring */}
-            <circle cx={cx} cy={cy} r={r} fill="none" stroke={stroke} strokeWidth="4" />
+            <circle cx={cx} cy={cy} r={r} fill="none" stroke={stroke} strokeWidth="3.5" />
             {/* exit stubs + labels */}
             {variant.exits.map((e, i) => {
               const s = slots[e.angle];
               if (!s) return null;
               return (
                 <g key={i}>
-                  <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={stroke} strokeWidth="4" strokeLinecap="round" />
+                  <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={stroke} strokeWidth="3.5" strokeLinecap="round" />
                   <text
                     x={s.tx}
                     y={s.ty}
                     fill={fg}
-                    fontSize="6"
+                    fontSize="5.5"
                     fontWeight="700"
                     textAnchor={s.anchor}
                   >
-                    {e.route ? `${e.route}  ${e.label}` : e.label}
+                    {e.route ? (
+                      <>
+                        <tspan x={s.tx} dy="0">{e.route}</tspan>
+                        <tspan x={s.tx} dy="6">{e.label}</tspan>
+                      </>
+                    ) : (
+                      <tspan x={s.tx}>{e.label}</tspan>
+                    )}
                   </text>
                 </g>
               );
