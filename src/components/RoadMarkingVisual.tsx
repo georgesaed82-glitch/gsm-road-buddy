@@ -469,8 +469,8 @@ export function StraightAheadTwoLanes() {
         <rect key={y} x="98" y={y} width="4" height="16" fill={PAINT} />
       ))}
       {/* Straight arrows in each lane */}
-      <StraightArrow x="60" y="120" />
-      <StraightArrow x="140" y="120" />
+      <StraightArrow x={60} y={120} />
+      <StraightArrow x={140} y={120} />
     </Frame>
   );
 }
@@ -485,7 +485,7 @@ export function StraightAndRightLanes() {
         <rect key={y} x="98" y={y} width="4" height="16" fill={PAINT} />
       ))}
       {/* Left lane: straight only */}
-      <StraightArrow x="60" y="130" />
+      <StraightArrow x={60} y={130} />
       {/* Right lane: right-turn arrow (head to the right) */}
       <g>
         {/* Shaft */}
@@ -518,7 +518,7 @@ export function MergeShortDashes() {
         ))}
       </g>
       {/* Straight-ahead arrow in the through-lane */}
-      <StraightArrow x="140" y="120" scale={0.85} />
+      <StraightArrow x={140} y={120} scale={0.85} />
     </Frame>
   );
 }
