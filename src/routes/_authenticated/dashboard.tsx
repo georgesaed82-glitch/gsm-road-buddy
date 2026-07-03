@@ -206,3 +206,151 @@ function QuickAction({ to, label, detail }: { to: string; label: string; detail:
     </li>
   );
 }
+
+function MarkProgressSection({ signedIn, userId }: { signedIn: boolean; userId: string | null }) {
+  const qc = useQueryClient();
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+
+  useEffect(() => () => {
+    if (savedTimer.current) clearTimeout(savedTimer.current);
+    debounceTimers.current.forEach((t) => clearTimeout(t));
+  }, []);
+
+  type Rating = { skill_key: string; rating: number };
+  const { data: ratings = [] } = useQuery({
+    queryKey: ["skill-ratings"],
+    queryFn: async () => {
+      const local = loadLocalRatings();
+      const localList: Rating[] = Object.entries(local).map(([k, v]) => ({ skill_key: k, rating: Number(v) || 0 }));
+      if (!userId) return localList;
+      const { data } = await supabase.from("skill_ratings").select("skill_key, rating");
+      const map = new Map(localList.map((r) => [r.skill_key, r.rating]));
+      for (const r of (data ?? []) as Rating[]) map.set(r.skill_key, r.rating);
+      return Array.from(map, ([skill_key, rating]) => ({ skill_key, rating }));
+    },
+    staleTime: 30_000,
+  });
+
+  const ratingMap = new Map(ratings.map((r) => [r.skill_key, r.rating]));
+  const totalRating = skillMilestones.reduce((n, m) => n + (ratingMap.get(m.key) ?? 0), 0);
+  const mastered = skillMilestones.filter((m) => (ratingMap.get(m.key) ?? 0) >= 10).length;
+  const overallPct = Math.round((totalRating / (skillMilestones.length * 10)) * 100);
+
+  const setRating = (key: string, next: number) => {
+    const clean = Math.max(0, Math.min(10, Math.round(next)));
+    const prev = ratingMap.get(key) ?? 0;
+    if (clean === prev) return;
+
+    qc.setQueryData<Rating[]>(["skill-ratings"], (old = []) => {
+      const idx = old.findIndex((r) => r.skill_key === key);
+      if (idx === -1) return [...old, { skill_key: key, rating: clean }];
+      const copy = old.slice();
+      copy[idx] = { skill_key: key, rating: clean };
+      return copy;
+    });
+
+    const existing = debounceTimers.current.get(key);
+    if (existing) clearTimeout(existing);
+    setSaveState("saving");
+    const t = setTimeout(async () => {
+      debounceTimers.current.delete(key);
+      try {
+        saveLocalRating(key, clean);
+        if (userId) {
+          const { error } = await supabase
+            .from("skill_ratings")
+            .upsert({ user_id: userId, skill_key: key, rating: clean }, { onConflict: "user_id,skill_key" });
+          if (error) throw error;
+        }
+        if (clean === 10 && prev !== 10) toast.success("Mastered! 🎉");
+        setSaveState("saved");
+        if (savedTimer.current) clearTimeout(savedTimer.current);
+        savedTimer.current = setTimeout(() => setSaveState("idle"), 1500);
+        qc.invalidateQueries({ queryKey: ["skill-rating-history"] });
+      } catch (e: any) {
+        qc.setQueryData<Rating[]>(["skill-ratings"], (old = []) => {
+          const idx = old.findIndex((r) => r.skill_key === key);
+          if (idx === -1) return old;
+          const copy = old.slice();
+          copy[idx] = { skill_key: key, rating: prev };
+          return copy;
+        });
+        setSaveState("error");
+        toast.error(e?.message || "Could not save — check your connection");
+      }
+    }, 350);
+    debounceTimers.current.set(key, t);
+  };
+
+  return (
+    <section className="mt-10 border border-border bg-card">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-4">
+        <div>
+          <h2 className="font-display text-xl">Mark my progress</h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">Tap any number 0 – 10 to update. Saves automatically.</p>
+        </div>
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <SaveBadge state={saveState} signedIn={signedIn} />
+          <span>{mastered}/{skillMilestones.length} mastered · {overallPct}%</span>
+        </div>
+      </header>
+      {!signedIn && (
+        <div className="border-b border-border bg-amber-50 px-6 py-2 text-xs text-amber-900 dark:bg-amber-500/10 dark:text-amber-100">
+          Not signed in with email — scores save on this device only. <Link to="/auth" className="font-medium underline">Sign in</Link> to sync across devices.
+        </div>
+      )}
+      <ul className="divide-y divide-border">
+        {skillMilestones.map((m) => {
+          const r = ratingMap.get(m.key) ?? 0;
+          const done = r >= 10;
+          return (
+            <li key={m.key} className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+              <div className="min-w-[9rem] flex-1">
+                <div className={`text-sm font-medium ${done ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}>{m.name}</div>
+                <div className="mt-1 h-2 w-full max-w-[220px] overflow-hidden rounded-full bg-muted">
+                  <div
+                    className={`h-full transition-all ${done ? "bg-emerald-500" : "bg-primary"}`}
+                    style={{ width: `${(r / 10) * 100}%` }}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-1">
+                {Array.from({ length: 11 }, (_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setRating(m.key, i)}
+                    aria-label={`Set ${m.name} to ${i}`}
+                    className={`h-8 w-8 rounded-md border text-xs font-medium transition-colors ${
+                      i === r
+                        ? done
+                          ? "border-emerald-500 bg-emerald-500 text-white"
+                          : "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background hover:bg-secondary"
+                    }`}
+                  >
+                    {i}
+                  </button>
+                ))}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="border-t border-border px-6 py-3 text-right">
+        <Link to="/lessons" className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-accent">
+          Full timeline & history <ArrowUpRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function SaveBadge({ state, signedIn }: { state: "idle" | "saving" | "saved" | "error"; signedIn: boolean }) {
+  if (state === "saving") return <span className="inline-flex items-center gap-1"><Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving…</span>;
+  if (state === "saved") return <span className="inline-flex items-center gap-1 text-emerald-600"><CloudCheck className="h-3.5 w-3.5" /> Saved</span>;
+  if (state === "error") return <span className="inline-flex items-center gap-1 text-destructive"><CloudOff className="h-3.5 w-3.5" /> Error</span>;
+  return <span className="inline-flex items-center gap-1 opacity-70"><CloudCheck className="h-3.5 w-3.5" /> {signedIn ? "Synced" : "On device"}</span>;
+}
