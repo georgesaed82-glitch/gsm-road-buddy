@@ -1638,19 +1638,20 @@ function HierarchyOfRoadUsers() {
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="border border-border bg-emerald-50 p-3 text-sm dark:bg-emerald-950/30">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-emerald-800 dark:text-emerald-300">You should stop</div>
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-emerald-800 dark:text-emerald-300">You should give way</div>
             If a pedestrian is <strong>crossing</strong>, or is clearly
             <strong> waiting to cross</strong>, and stopping is <strong>safe</strong>
             (nothing close behind you, no risk of being rear-ended), you
-            <strong> must give way</strong> under Rule H2. Stop <em>before</em> the
-            give-way line, make eye contact, and let them finish crossing.
+            <strong> should give way</strong> under Rule H2 (guidance, not a
+            legal MUST). Stop <em>before</em> the give-way line and let them
+            finish crossing — do not wave them across.
           </div>
           <div className="border border-border bg-amber-50 p-3 text-sm dark:bg-amber-950/30">
             <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-300">You don't have to stop</div>
-            If stopping would <strong>cause an accident</strong> — for example a
-            vehicle is right behind you and braking hard would cause a
-            collision — and the pedestrian <strong>has not yet started</strong>
-            to cross, you are not obliged to stop. Safety of everyone comes
+            If <strong>braking suddenly would create an immediate danger</strong>
+            to you or other road users — for example a vehicle is right behind
+            you — and the pedestrian <strong>has not begun crossing</strong>,
+            continue <strong>cautiously</strong>. Defensive driving comes
             first; judgement, not blind rule-following.
           </div>
         </div>
@@ -1659,7 +1660,7 @@ function HierarchyOfRoadUsers() {
           <li><strong>Mirrors — Signal — Position — Speed — Look (MSPSL)</strong> on approach.</li>
           <li>Scan the pavement on both sides <em>before</em> you commit to the turn.</li>
           <li>If a pedestrian is crossing or waiting, and it is safe, <strong>stop and give way</strong>.</li>
-          <li>If stopping would cause a rear-end collision and no one has started crossing, proceed with caution.</li>
+          <li>If braking suddenly would create an immediate danger to you or others, and no one has started crossing, continue cautiously.</li>
           <li>Never wave pedestrians across — let them decide. Other drivers may not see them.</li>
         </ol>
       </div>
