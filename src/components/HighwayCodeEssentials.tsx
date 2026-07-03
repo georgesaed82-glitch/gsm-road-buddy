@@ -477,6 +477,7 @@ function RoadStuds() {
 
   return (
     <Panel
+      id="road-studs"
       title="Road stud colours (rule 132)"
       subtitle="Reflective studs mark lane edges — colour tells you what the line means."
     >
@@ -675,6 +676,7 @@ function VehicleSpeedLimits() {
 
   return (
     <Panel
+      id="speed-limits"
       title="Speed limits for different vehicles"
       subtitle="Rule 124. The national speed limit depends on the vehicle you're driving AND the type of road. A lower limit shown on a sign always overrides these figures."
     >
@@ -975,6 +977,7 @@ function StoppingDistances() {
   const max = 96; // 21+75
   return (
     <Panel
+      id="stopping-distances"
       title="Typical stopping distances (rule 126)"
       subtitle="Total stopping distance = thinking distance + braking distance. In wet weather double it; on ice it can be ten times greater."
     >
@@ -1092,6 +1095,7 @@ function CrossingIcon({ kind }: { kind: "pelican" | "puffin" | "toucan" }) {
 function TrafficLights() {
   return (
     <Panel
+      id="traffic-lights"
       title="Traffic lights & pedestrian crossings"
       subtitle="The signal sequence, the flashing amber phase, filter arrows, and what Pelican / Puffin / Toucan actually stand for."
     >
@@ -1623,6 +1627,7 @@ function GiveWayJunctionSvg() {
 function HierarchyOfRoadUsers() {
   return (
     <Panel
+      id="hierarchy"
       title="Hierarchy of Road Users"
       subtitle="Rules H1, H2 & H3 — introduced in the 2022 Highway Code update"
     >
@@ -1961,6 +1966,7 @@ function ZebraSceneSvg() {
 function ZebraCrossing() {
   return (
     <Panel
+      id="zebra-crossings"
       title="Zebra crossings — pedestrians have priority"
       subtitle="Black-and-white stripes, flashing amber Belisha beacons, no signals. Rules 19, 195."
     >
@@ -2482,6 +2488,7 @@ function YellowBoxJunctionSvg() {
 function YellowBoxJunction() {
   return (
     <Panel
+      id="yellow-box"
       title="Yellow box junction — turning right"
       subtitle="Rule 174. Do not enter unless your exit is clear — one exception: turning right, blocked only by oncoming traffic."
     >
@@ -2608,6 +2615,7 @@ function OffsideTurnSvg() {
 function NearsideOffsideJunction() {
   return (
     <Panel
+      id="nearside-offside"
       title="Turning right at a crossroads — nearside vs offside"
       subtitle="Two vehicles turning right at the same signalised crossroads. Rules 176–181."
     >
@@ -2907,6 +2915,7 @@ function MajorMinorOffsideSvg() {
 function MoreRule181Scenarios() {
   return (
     <Panel
+      id="rule-181"
       title="More Rule 181 scenarios — compare the outcomes"
       subtitle="Same rule, different junctions. Approach angle and road type change which method actually works."
     >
@@ -3207,6 +3216,7 @@ function SmartMotorwayEndSvg() {
 function SmartMotorway() {
   return (
     <Panel
+      id="smart-motorway"
       title="Smart motorway gantry signs"
       subtitle="Rules 258 & 261. The signs above your lane tell you what to do — from that gantry, until the next one cancels them."
     >
