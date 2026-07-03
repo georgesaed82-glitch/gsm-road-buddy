@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { CheckCircle2, XCircle, RotateCcw, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
@@ -30,10 +30,23 @@ function pickPool(): Sign[] {
   return POOL_IDS.map((id) => byId.get(id)).filter(Boolean) as Sign[];
 }
 
-function shuffle<T>(arr: T[]): T[] {
+// Deterministic PRNG (mulberry32) — same seed always produces the same
+// sequence, so SSR and client hydration agree exactly.
+function mulberry32(seed: number) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6d2b79f5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffle<T>(arr: T[], rng: () => number): T[] {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(rng() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
@@ -41,31 +54,32 @@ function shuffle<T>(arr: T[]): T[] {
 
 type Round = { sign: Sign; options: string[]; correctIndex: number };
 
-function buildRounds(pool: Sign[]): Round[] {
-  const chosen = shuffle(pool).slice(0, QUIZ_LENGTH);
+function buildRounds(pool: Sign[], seed: number): Round[] {
+  const rng = mulberry32(seed);
+  const chosen = shuffle(pool, rng).slice(0, QUIZ_LENGTH);
   return chosen.map((sign) => {
-    const distractors = shuffle(pool.filter((s) => s.id !== sign.id)).slice(0, 2);
-    const options = shuffle([sign.name, ...distractors.map((d) => d.name)]);
+    const distractors = shuffle(pool.filter((s) => s.id !== sign.id), rng).slice(0, 2);
+    const options = shuffle([sign.name, ...distractors.map((d) => d.name)], rng);
     return { sign, options, correctIndex: options.indexOf(sign.name) };
   });
 }
 
+// Fixed initial seed — SSR and hydration produce identical HTML. The "Play
+// again" button advances the seed on the client so a new set can be drawn.
+const INITIAL_SEED = 20260702;
+
 export function HomeSignsQuiz() {
   const pool = useMemo(pickPool, []);
-  const [rounds, setRounds] = useState<Round[]>([]);
+  const [seed, setSeed] = useState<number>(INITIAL_SEED);
+  const rounds = useMemo(() => buildRounds(pool, seed), [pool, seed]);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
 
-  // Build randomised rounds only on the client to avoid SSR/CSR hydration
-  // mismatches from Math.random.
-  useEffect(() => {
-    setRounds(buildRounds(pool));
-  }, [pool]);
-
   const restart = () => {
-    setRounds(buildRounds(pool));
+    // Client-only event — safe to use Date.now() to reseed for variety.
+    setSeed((Date.now() ^ (seed * 2654435761)) >>> 0);
     setI(0);
     setPicked(null);
     setScore(0);
@@ -89,15 +103,6 @@ export function HomeSignsQuiz() {
             <RotateCcw className="mr-2 h-4 w-4" /> Play again
           </Button>
         </div>
-      </div>
-    );
-  }
-
-  if (rounds.length === 0) {
-    return (
-      <div className="border border-border bg-card p-5 sm:p-8">
-        <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Loading quiz…</div>
-        <div className="mt-6 h-44 animate-pulse bg-secondary/40" />
       </div>
     );
   }
