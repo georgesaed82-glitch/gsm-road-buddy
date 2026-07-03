@@ -7,6 +7,8 @@ import { HighwayCodeEssentials } from "@/components/HighwayCodeEssentials";
 import { useTopicProgress } from "@/hooks/useTopicProgress";
 import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import { CommonFailReasons } from "@/components/CommonFailReasons";
+import { MemoryTips } from "@/components/MemoryTips";
 
 export const Route = createFileRoute("/_authenticated/highway-code")({
   head: () => ({ meta: [{ title: "Highway Code · GSM" }] }),
@@ -44,6 +46,14 @@ function HighwayCodePage() {
 
       <div className="mt-8">
         <HighwayCodeEssentials />
+      </div>
+
+      <div className="mt-8">
+        <CommonFailReasons />
+      </div>
+
+      <div className="mt-8">
+        <MemoryTips />
       </div>
 
       <div className="mt-10 border-t border-border pt-8">
