@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { roadMarkings, markingGroups } from "@/data/roadMarkings";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
@@ -66,6 +67,15 @@ function RoadMarkingsPage() {
 }
 
 function LaneLegend() {
+  const [open, setOpen] = useState(true);
+  useEffect(() => {
+    const saved = window.localStorage.getItem("road-markings-legend-open");
+    if (saved !== null) setOpen(saved === "1");
+  }, []);
+  useEffect(() => {
+    window.localStorage.setItem("road-markings-legend-open", open ? "1" : "0");
+  }, [open]);
+
   const items: { swatch: ReactNode; title: string; body: string }[] = [
     {
       swatch: (
@@ -132,23 +142,39 @@ function LaneLegend() {
       aria-label="Road-marking legend"
       className="mt-8 border border-border bg-card p-5"
     >
-      <h2 className="font-display text-lg leading-tight">On-screen legend</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        What each painted lane and area means at a glance.
-      </p>
-      <ul className="mt-4 grid gap-4 sm:grid-cols-2">
-        {items.map((it) => (
-          <li key={it.title} className="flex gap-3">
-            <div className="h-14 w-14 shrink-0 overflow-hidden border border-border">
-              {it.swatch}
-            </div>
-            <div>
-              <p className="font-display text-sm leading-tight">{it.title}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{it.body}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls="road-markings-legend-body"
+        className="flex w-full items-center justify-between gap-3 text-left"
+      >
+        <div>
+          <h2 className="font-display text-lg leading-tight">On-screen legend</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {open ? "What each painted lane and area means at a glance." : "Tap to show the legend."}
+          </p>
+        </div>
+        <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground">
+          {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          <span className="sr-only">{open ? "Hide legend" : "Show legend"}</span>
+        </span>
+      </button>
+      {open && (
+        <ul id="road-markings-legend-body" className="mt-4 grid gap-4 sm:grid-cols-2">
+          {items.map((it) => (
+            <li key={it.title} className="flex gap-3">
+              <div className="h-14 w-14 shrink-0 overflow-hidden border border-border">
+                {it.swatch}
+              </div>
+              <div>
+                <p className="font-display text-sm leading-tight">{it.title}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{it.body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
