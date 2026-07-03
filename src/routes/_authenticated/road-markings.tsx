@@ -245,24 +245,18 @@ function DualCarriagewayJoin() {
         <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
           <img
             src={dualCarriagewayAsset.url}
-            alt="Highway Code diagram: slip road joining a dual carriageway with hatched area separating join-in lane and running lane"
+            alt="Diagram: slip road joining a dual carriageway with hatched area separating the join-in lane and running lane"
             className="h-auto w-full"
             loading="lazy"
           />
-          <figcaption className="border-t border-border bg-card p-3 text-xs text-muted-foreground">
-            Highway Code / Driving Essential Skills diagram — join-in lane and hatched area.
-          </figcaption>
         </figure>
         <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
           <img
             src={hatchedPhotoAsset.url}
-            alt="Real-world photo of a hatched area between the slip road and running lane on a UK dual carriageway"
+            alt="Real-world photo of a hatched area between a slip road and the running lane on a dual carriageway"
             className="h-auto w-full"
             loading="lazy"
           />
-          <figcaption className="border-t border-border bg-card p-3 text-xs text-muted-foreground">
-            Same layout on the road — solid-bordered hatched island separating the join-in lane from the running lane.
-          </figcaption>
         </figure>
       </div>
 
