@@ -38,10 +38,10 @@ async function requireAdmin(password: string) {
 }
 
 export const verifyPortalAccess = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; mode: "learner" | "admin"; captchaToken?: string | null }) => d)
+  .inputValidator((d: { password: string; mode: "learner" | "admin"; captchaToken?: string | null; email?: string | null }) => d)
   .handler(async ({ data }): Promise<{
     ok: boolean;
-    reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed";
+    reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed" | "email_mismatch";
     retryAfterSeconds?: number;
     captchaRequiredNext?: boolean;
     subscription?: { email: string | null; expires_at: string | null } | null;
@@ -49,6 +49,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
   }> => {
     const password = (data.password || "").trim();
     if (!password) return { ok: false };
+    const submittedEmail = (data.email || "").trim().toLowerCase();
     const fingerprint = await fingerprintCode(password);
     const guard = await guardCodeAttempt(fingerprint, data.mode, data.captchaToken);
     if (!guard.proceed) {
@@ -136,6 +137,15 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
         await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
         const after = await evaluateAttemptState(fingerprint);
         return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
+      }
+      // For subscription codes tied to an email, enforce that the learner
+      // enters the matching email address alongside the PIN.
+      if (row.kind === "subscription" && row.email) {
+        if (!submittedEmail || submittedEmail !== row.email.trim().toLowerCase()) {
+          await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
+          const after = await evaluateAttemptState(fingerprint);
+          return { ok: false, reason: "email_mismatch", captchaRequiredNext: after.required };
+        }
       }
       await logUsage(row.id, "learner");
       await logCodeAttempt(fingerprint, "learner", true, captchaVerified);
