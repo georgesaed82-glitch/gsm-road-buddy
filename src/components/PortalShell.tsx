@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { PortalSearch } from "@/components/PortalSearch";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
 
@@ -77,6 +78,9 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
           <div className="border-b border-border px-3 py-3">
             <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Learner portal</div>
             <div className="mt-1 font-display text-lg text-foreground">Your dashboard</div>
+          </div>
+          <div className="border-b border-border p-2">
+            <PortalSearch />
           </div>
           <nav className="mt-2 flex flex-col gap-0.5">
             {topItems.map((item) => {
