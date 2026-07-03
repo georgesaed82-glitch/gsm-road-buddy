@@ -79,10 +79,18 @@ function LaneLegend() {
   const items: { swatch: ReactNode; title: string; body: string }[] = [
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full">
-          <rect width="60" height="60" fill="#3f3f46" />
-          <rect x="28" y="4" width="4" height="52" fill="#f8fafc" />
-          <path d="M30 12 L22 22 L27 22 L27 50 L33 50 L33 22 L38 22 Z" fill="#f8fafc" />
+        <svg viewBox="0 0 60 60" className="h-full w-full" aria-hidden>
+          {/* Tarmac */}
+          <rect width="60" height="60" fill="#2b2b2e" />
+          {/* Solid outer edges */}
+          <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
+          <rect x="55" y="0" width="2" height="60" fill="#f8fafc" />
+          {/* Long-dash centre line */}
+          {[0, 16, 32, 48].map((y) => (
+            <rect key={y} x="29" y={y} width="2" height="10" fill="#f8fafc" />
+          ))}
+          {/* Straight-ahead arrow in LEFT lane */}
+          <path d="M18 14 L13 22 L16.4 22 L16.4 48 L19.6 48 L19.6 22 L23 22 Z" fill="#f8fafc" />
         </svg>
       ),
       title: "Normal driving lane (left)",
@@ -90,12 +98,16 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full">
-          <rect width="60" height="60" fill="#3f3f46" />
-          {[0, 12, 24, 36, 48].map((y) => (
-            <rect key={y} x="4" y={y} width="3" height="6" fill="#f8fafc" />
+        <svg viewBox="0 0 60 60" className="h-full w-full" aria-hidden>
+          <rect width="60" height="60" fill="#2b2b2e" />
+          <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
+          <rect x="55" y="0" width="2" height="60" fill="#f8fafc" />
+          {/* Long-dash centre line */}
+          {[0, 16, 32, 48].map((y) => (
+            <rect key={y} x="29" y={y} width="2" height="10" fill="#f8fafc" />
           ))}
-          <path d="M30 12 L22 22 L27 22 L27 50 L33 50 L33 22 L38 22 Z" fill="#f8fafc" />
+          {/* Straight-ahead arrow in RIGHT lane */}
+          <path d="M42 14 L37 22 L40.4 22 L40.4 48 L43.6 48 L43.6 22 L47 22 Z" fill="#f8fafc" />
         </svg>
       ),
       title: "Overtaking lane (right)",
@@ -117,17 +129,35 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full">
-          <rect width="60" height="60" fill="#3f3f46" />
-          <path d="M18 8 L42 8 L46 30 L42 52 L18 52 L14 30 Z" fill="none" stroke="#f8fafc" strokeWidth="2" />
+        <svg viewBox="0 0 60 60" className="h-full w-full" aria-hidden>
+          <rect width="60" height="60" fill="#2b2b2e" />
+          {/* Solid outer edges */}
+          <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
+          <rect x="55" y="0" width="2" height="60" fill="#f8fafc" />
+          {/* Solid-bordered lozenge island */}
+          <path
+            d="M30 6 L44 20 L44 40 L30 54 L16 40 L16 20 Z"
+            fill="none"
+            stroke="#f8fafc"
+            strokeWidth="2"
+          />
+          {/* Diagonal white stripes at 45° inside the island */}
           <g clipPath="url(#legend-hatch)">
-            {[-10, -2, 6, 14, 22, 30, 38, 46, 54].map((y) => (
-              <line key={y} x1="10" y1={y} x2="50" y2={y + 14} stroke="#f8fafc" strokeWidth="2" />
+            {[-30, -22, -14, -6, 2, 10, 18, 26, 34, 42, 50, 58].map((v) => (
+              <line
+                key={v}
+                x1={v}
+                y1={0}
+                x2={v + 60}
+                y2={60}
+                stroke="#f8fafc"
+                strokeWidth="2"
+              />
             ))}
           </g>
           <defs>
             <clipPath id="legend-hatch">
-              <path d="M18 8 L42 8 L46 30 L42 52 L18 52 L14 30 Z" />
+              <path d="M30 6 L44 20 L44 40 L30 54 L16 40 L16 20 Z" />
             </clipPath>
           </defs>
         </svg>
