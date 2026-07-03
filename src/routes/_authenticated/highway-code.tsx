@@ -97,8 +97,9 @@ function HighwayCodePage() {
           return (
             <div
               key={c.slug}
+              id={`topic-${c.slug}`}
               className={cn(
-                "relative border bg-card p-6 transition-colors",
+                "relative scroll-mt-24 border bg-card p-6 transition-colors",
                 done ? "border-accent/60" : "border-border",
               )}
             >
