@@ -11,6 +11,7 @@ import { CommonFailReasons } from "@/components/CommonFailReasons";
 import { MemoryTips } from "@/components/MemoryTips";
 import { TopicMiniQuiz } from "@/components/TopicMiniQuiz";
 import { GeorgesTip } from "@/components/GeorgesTip";
+import { GeorgesPrinciples } from "@/components/GeorgesPrinciples";
 import { georgesTips } from "@/data/georgesTips";
 
 export const Route = createFileRoute("/_authenticated/highway-code")({
@@ -57,6 +58,10 @@ function HighwayCodePage() {
 
       <div className="mt-8">
         <MemoryTips />
+      </div>
+
+      <div className="mt-8">
+        <GeorgesPrinciples />
       </div>
 
       <div className="mt-10 border-t border-border pt-8">
