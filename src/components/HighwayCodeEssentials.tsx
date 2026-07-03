@@ -1,4 +1,5 @@
 import { forwardRef, useId, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
+import { GeorgesTip } from "@/components/GeorgesTip";
 
 // ─────────────────────────────────────────────────────────────
 // Highway Code — visual essentials
