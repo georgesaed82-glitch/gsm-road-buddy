@@ -207,11 +207,24 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
   const onPick = (idx: number) => {
     if (picked !== null) return;
     setPicked(idx);
-    if (idx === q.correctIndex) setRight((n) => n + 1);
+    const isCorrect = idx === q.correctIndex;
+    if (isCorrect) setRight((n) => n + 1);
     else {
       setWrong((n) => n + 1);
       setMissed((m) => [...m, current]);
     }
+    setLog((l) => [
+      ...l,
+      {
+        prompt: `What does this sign mean? (${current.name})`,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        pickedIndex: idx,
+        correct: isCorrect,
+        explanation: current.meaning,
+        meta: current.group,
+      },
+    ]);
   };
 
   const next = () => {
