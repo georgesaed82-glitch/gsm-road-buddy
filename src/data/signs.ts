@@ -110,6 +110,34 @@ export const signs: Sign[] = [
   { id: "d-motorway", name: "Motorway direction sign", meaning: "Blue background with white text = motorway route.", category: "direction", variant: { kind: "motorway", label: "M25  The North" } },
   { id: "d-local", name: "Non-primary / local route sign", meaning: "White with black border = local / non-primary route.", category: "direction", variant: { kind: "info-white", label: "Notting Hill" } },
 
+  // Countdown markers before a motorway exit — Highway Code, "Motorway signals and signs"
+  { id: "d-count-300", name: "Countdown marker — 300 yards to exit", meaning: "Three diagonal bars. You are 300 yards from the start of the slip road at the next exit. Get into the left-hand lane in good time.", category: "direction", variant: { kind: "countdown-marker", distance: 300, background: "motorway" } },
+  { id: "d-count-200", name: "Countdown marker — 200 yards to exit", meaning: "Two diagonal bars. 200 yards from the exit slip road — check mirrors and signal.", category: "direction", variant: { kind: "countdown-marker", distance: 200, background: "motorway" } },
+  { id: "d-count-100", name: "Countdown marker — 100 yards to exit", meaning: "One diagonal bar. 100 yards from the exit slip road — begin to leave the motorway.", category: "direction", variant: { kind: "countdown-marker", distance: 100, background: "motorway" } },
+
+  // Advance direction sign at a roundabout — ring diagram with each exit labelled
+  { id: "d-roundabout-ads", name: "Advance direction sign — roundabout", meaning: "Shown before a roundabout. Each stub coming off the ring is an exit — read the labels to work out which exit you need before you arrive, then position and signal in good time.", category: "direction", variant: {
+    kind: "roundabout-ads",
+    background: "primary",
+    exits: [
+      { angle: "left", label: "Ealing", route: "A4020" },
+      { angle: "ahead", label: "The West", route: "M4" },
+      { angle: "right", label: "Central London", route: "A40" },
+    ],
+  } },
+
+  // Route confirmation / lane-allocation sign — arrows for each lane with destination + route
+  { id: "d-route-lanes", name: "Signs for each lane — follow the arrow for your destination", meaning: "Overhead or advance sign showing which lane serves which destination. Get into the correct lane early — do not change lane at the last moment.", category: "direction", variant: {
+    kind: "route-lanes",
+    background: "motorway",
+    lanes: [
+      { arrow: "up-left", destination: "The North", route: "M40" },
+      { arrow: "up", destination: "Central London", route: "A40" },
+      { arrow: "up-right", destination: "Heathrow", route: "M4" },
+    ],
+  } },
+
+
   // ── Signals ────────────────────────────────────────────
   { id: "t-red", name: "Red light", meaning: "You must stop at the stop line — do not go past the line.", category: "signals", variant: { kind: "traffic-light", state: "red" } },
   { id: "t-red-amber", name: "Red and amber together", meaning: "Stop. Do not pass through or start until GREEN shows.", category: "signals", variant: { kind: "traffic-light", state: "red-amber" } },

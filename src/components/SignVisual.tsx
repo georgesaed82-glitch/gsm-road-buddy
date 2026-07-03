@@ -71,7 +71,18 @@ export type SignVariant =
   | { kind: "motorway"; label: string }
   | { kind: "traffic-light"; state: "red" | "amber" | "green" | "red-amber" }
   | { kind: "zebra-crossing" }
-  | { kind: "signal-crossing"; state: "red-man" | "green-man" };
+  | { kind: "signal-crossing"; state: "red-man" | "green-man" }
+  | { kind: "countdown-marker"; distance: 300 | 200 | 100; background?: "motorway" | "primary" }
+  | {
+      kind: "roundabout-ads";
+      exits: { angle: "left" | "ahead-left" | "ahead" | "ahead-right" | "right"; label: string; route?: string }[];
+      background?: "motorway" | "primary" | "local";
+    }
+  | {
+      kind: "route-lanes";
+      background?: "motorway" | "primary" | "local";
+      lanes: { arrow: "up" | "up-left" | "up-right"; destination: string; route?: string }[];
+    };
 
 /**
  * Highway-Code-style pictogram. Drawn as solid silhouettes so it matches the
@@ -729,6 +740,151 @@ export function SignVisual({ variant, size = 160 }: { variant: SignVariant; size
               )}
             </svg>
           </div>
+        </div>
+      );
+    }
+    case "countdown-marker": {
+      const bg = variant.background === "primary" ? "#0e7c3a" : "#0033a0";
+      const bars = variant.distance === 300 ? 3 : variant.distance === 200 ? 2 : 1;
+      const w = px * 0.9;
+      const h = px * 1.1;
+      return (
+        <div
+          className="flex flex-col items-center justify-center gap-[6%] border-2 border-white text-white shadow-md"
+          style={{ width: w, height: h, background: bg, padding: "6% 8%" }}
+        >
+          {Array.from({ length: bars }).map((_, i) => (
+            <div
+              key={i}
+              style={{
+                width: "70%",
+                height: h * 0.11,
+                background: "#fff",
+                transform: "skewX(-28deg)",
+                borderRadius: 1,
+              }}
+            />
+          ))}
+          <div
+            className="mt-[8%] font-bold leading-none"
+            style={{ fontSize: px * 0.12, fontFamily: "Arial, sans-serif" }}
+          >
+            {variant.distance} yds
+          </div>
+        </div>
+      );
+    }
+    case "roundabout-ads": {
+      const bg =
+        variant.background === "motorway"
+          ? "#0033a0"
+          : variant.background === "primary"
+            ? "#0e7c3a"
+            : "#fff";
+      const fg = variant.background === "local" ? "#000" : "#fff";
+      const stroke = variant.background === "local" ? "#000" : "#fff";
+      const w = px * 2.2;
+      const h = px * 1.7;
+      // wider viewBox so long labels have room outside the ring
+      const VB_W = 140;
+      const VB_H = 90;
+      const cx = 70;
+      const cy = 52;
+      const r = 12;
+      // Each label sits well outside the ring so it can never overlap the diagram.
+      const slots: Record<string, { x1: number; y1: number; x2: number; y2: number; tx: number; ty: number; anchor: "start" | "middle" | "end" }> = {
+        left:        { x1: cx - r, y1: cy,           x2: 22,  y2: cy, tx: 4,   ty: cy - 5, anchor: "start" },
+        "ahead-left":{ x1: cx - r*0.7, y1: cy - r*0.7, x2: 30, y2: 22, tx: 28, ty: 18,     anchor: "start" },
+        ahead:       { x1: cx, y1: cy - r,           x2: cx, y2: 22, tx: cx, ty: 15,     anchor: "middle" },
+        "ahead-right":{ x1: cx + r*0.7, y1: cy - r*0.7, x2: 110, y2: 22, tx: 112, ty: 18,  anchor: "end" },
+        right:       { x1: cx + r, y1: cy,           x2: 118, y2: cy, tx: 136, ty: cy - 5, anchor: "end" },
+      };
+      return (
+        <div
+          className="flex items-center justify-center border-2 shadow-md"
+          style={{
+            width: w,
+            height: h,
+            background: bg,
+            borderColor: variant.background === "local" ? "#000" : "#fff",
+          }}
+        >
+          <svg width="96%" height="96%" viewBox={`0 0 ${VB_W} ${VB_H}`} fontFamily="Arial, sans-serif">
+            {/* approach stub */}
+            <line x1={cx} y1={cy + r} x2={cx} y2={VB_H - 6} stroke={stroke} strokeWidth="3.5" strokeLinecap="round" />
+            {/* the ring */}
+            <circle cx={cx} cy={cy} r={r} fill="none" stroke={stroke} strokeWidth="3.5" />
+            {/* exit stubs + labels */}
+            {variant.exits.map((e, i) => {
+              const s = slots[e.angle];
+              if (!s) return null;
+              return (
+                <g key={i}>
+                  <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={stroke} strokeWidth="3.5" strokeLinecap="round" />
+                  <text
+                    x={s.tx}
+                    y={s.ty}
+                    fill={fg}
+                    fontSize="5.5"
+                    fontWeight="700"
+                    textAnchor={s.anchor}
+                  >
+                    {e.route ? (
+                      <>
+                        <tspan x={s.tx} dy="0">{e.route}</tspan>
+                        <tspan x={s.tx} dy="6">{e.label}</tspan>
+                      </>
+                    ) : (
+                      <tspan x={s.tx}>{e.label}</tspan>
+                    )}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+      );
+    }
+    case "route-lanes": {
+      const bg =
+        variant.background === "motorway"
+          ? "#0033a0"
+          : variant.background === "primary"
+            ? "#0e7c3a"
+            : "#fff";
+      const fg = variant.background === "local" ? "#000" : "#fff";
+      const w = px * 2;
+      const rowH = px * 0.36;
+      const arrowFor = (a: "up" | "up-left" | "up-right") => {
+        if (a === "up")
+          return "M50,6 L64,26 L56,26 L56,52 L44,52 L44,26 L36,26 Z";
+        if (a === "up-left")
+          return "M14,32 L36,18 L36,26 L60,26 L60,44 L36,44 L36,52 Z";
+        return "M86,32 L64,18 L64,26 L40,26 L40,44 L64,44 L64,52 Z";
+      };
+      return (
+        <div
+          className="flex flex-col border-2 shadow-md"
+          style={{
+            width: w,
+            background: bg,
+            borderColor: variant.background === "local" ? "#000" : "#fff",
+            padding: 6,
+            gap: 4,
+            fontFamily: "Arial, sans-serif",
+          }}
+        >
+          {variant.lanes.map((lane, i) => (
+            <div key={i} className="flex items-center" style={{ height: rowH, color: fg }}>
+              <svg width={rowH} height={rowH} viewBox="0 0 100 60">
+                <path d={arrowFor(lane.arrow)} fill={fg} />
+              </svg>
+              <div className="ml-2 flex-1 truncate font-bold" style={{ fontSize: px * 0.13 }}>
+                {lane.route ? `${lane.route}  ` : ""}
+                {lane.destination}
+              </div>
+            </div>
+          ))}
         </div>
       );
     }
