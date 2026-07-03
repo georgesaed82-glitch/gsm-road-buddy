@@ -1229,6 +1229,7 @@ function TrafficLights() {
 export function HighwayCodeEssentials() {
   return (
     <div className="grid gap-6">
+      <MustShouldLegend />
       <RoadStuds />
       <HierarchyOfRoadUsers />
       <StoppingDistances />
@@ -1240,6 +1241,50 @@ export function HighwayCodeEssentials() {
       <SmartMotorway />
       <VehicleSpeedLimits />
     </div>
+  );
+}
+
+// ── MUST vs SHOULD legend ─────────────────────────────────────────
+// The Highway Code uses MUST / MUST NOT for legal requirements and
+// SHOULD / SHOULD NOT (or "do" / "do not") for strong guidance that is
+// not itself a legal offence. Learners routinely confuse the two, so
+// this legend sits at the top of the Highway Code page.
+function MustShouldLegend() {
+  return (
+    <section className="border border-border bg-card p-5 sm:p-6">
+      <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Before you read on</div>
+      <h3 className="mt-1 font-display text-2xl leading-tight">MUST vs SHOULD — read the wording carefully</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        The Highway Code uses two very different tones. Getting the difference
+        right is what separates a competent learner driver from a nervous one.
+      </p>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className="border border-destructive/60 bg-destructive/5 p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-destructive">MUST / MUST NOT</div>
+          <p className="mt-2 text-sm">
+            A <strong>legal requirement</strong>. Breaking it is an offence — you
+            can be fined, get penalty points, be disqualified or, in serious
+            cases, prosecuted. Examples: stopping at a red light, wearing a
+            seatbelt, not using a hand-held phone.
+          </p>
+        </div>
+        <div className="border border-primary/50 bg-primary/5 p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-primary">SHOULD / SHOULD NOT</div>
+          <p className="mt-2 text-sm">
+            <strong>Strong guidance</strong>, not a specific offence in itself —
+            but ignoring it can still be used in court to establish liability
+            (e.g. careless or dangerous driving). Examples: giving way to
+            pedestrians waiting to cross at a junction (Rule H2), leaving a
+            safe following distance (Rule 126).
+          </p>
+        </div>
+      </div>
+      <p className="mt-3 text-xs text-muted-foreground">
+        Throughout this portal we try to use the same wording as the Highway
+        Code. If you see <strong>MUST</strong> it is law; if you see
+        <strong> should</strong> it is guidance you are expected to follow.
+      </p>
+    </section>
   );
 }
 
