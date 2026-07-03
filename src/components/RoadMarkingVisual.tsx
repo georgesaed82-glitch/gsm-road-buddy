@@ -500,49 +500,50 @@ export function StraightAndRightLanes() {
 }
 
 export function MergeShortDashes() {
-  // Highway Code / DES style: a slip road curves in from the left and joins
-  // the main carriageway. The boundary between the slip road and the main
-  // lane is a SHORT white dash with a LONG gap (give-way marking). The
-  // main-carriageway lane line to its right is a normal long-dash line.
+  // Highway Code / DES illustration: a slip road curves in from the bottom
+  // left and joins the nearside lane of a two-lane main carriageway.
+  //   • Solid white line on the outer edge of the slip road (kerbside edge).
+  //   • Solid white line on the far-side (right) edge of the main road.
+  //   • Long-dash lane divider between the two main-carriageway lanes.
+  //   • Short dashes with long gaps ("give way") along the curve where the
+  //     slip road meets the nearside lane — rule 259.
+  //   • Straight-ahead arrow painted in the through (right-hand) lane.
   return (
     <Frame>
-      {/* Right-hand road edge (solid) */}
-      <rect x="180" y="0" width="4" height="200" fill={PAINT} />
-      {/* Left-hand road edge curves outward at the bottom as slip road opens up */}
+      {/* Right-hand main-road edge — solid */}
+      <path d="M 178 0 L 178 200" stroke={PAINT} strokeWidth="4" fill="none" />
+
+      {/* Outer (kerbside) edge of the slip road — solid, curves in from
+          the bottom left up to meet the nearside lane at the top */}
       <path
-        d="M 20 0 L 20 70 Q 20 150 90 200"
-        fill="none"
+        d="M 22 200 C 22 150 42 90 96 0"
         stroke={PAINT}
         strokeWidth="4"
+        fill="none"
       />
-      {/* Normal lane divider between the two main-carriageway lanes:
-          long dashes, short gaps */}
-      {[0, 40, 80, 120, 160].map((y) => (
-        <rect key={`main-${y}`} x="130" y={y} width="4" height="28" fill={PAINT} />
-      ))}
-      {/* Merge line where the slip road joins the nearside lane:
-          SHORT dashes with LONG gaps, following the curve of the slip road */}
-      {[
-        { x: 80, y: 4, r: 0 },
-        { x: 80, y: 32, r: 0 },
-        { x: 80, y: 60, r: 0 },
-        { x: 80.5, y: 88, r: 6 },
-        { x: 82, y: 116, r: 14 },
-        { x: 86, y: 142, r: 24 },
-        { x: 94, y: 166, r: 36 },
-      ].map((d, i) => (
-        <rect
-          key={`merge-${i}`}
-          x={d.x}
-          y={d.y}
-          width="4"
-          height="10"
-          fill={PAINT}
-          transform={`rotate(${d.r} ${d.x + 2} ${d.y + 5})`}
-        />
-      ))}
-      {/* Straight-ahead arrow in the through-lane */}
-      <StraightArrow x={148} y={120} scale={0.75} />
+
+      {/* Long-dash lane divider between the two main-carriageway lanes */}
+      <path
+        d="M 138 -6 L 138 210"
+        stroke={PAINT}
+        strokeWidth="4"
+        fill="none"
+        strokeDasharray="26 14"
+      />
+
+      {/* Merge / give-way line — SHORT dashes with LONG gaps, following the
+          curve of the slip road just inside the outer edge */}
+      <path
+        d="M 90 200 C 60 150 78 90 108 0"
+        stroke={PAINT}
+        strokeWidth="4"
+        fill="none"
+        strokeDasharray="8 22"
+        strokeLinecap="butt"
+      />
+
+      {/* Straight-ahead arrow painted in the through lane */}
+      <StraightArrow x={158} y={110} scale={0.75} />
     </Frame>
   );
 }
