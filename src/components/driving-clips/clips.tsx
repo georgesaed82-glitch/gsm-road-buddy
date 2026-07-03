@@ -417,32 +417,40 @@ const smartMotorway: ClipDef = {
 
 // ─────────────────────────────────────────────────────────────
 // 7. Lane discipline on a dual carriageway.
-// Horizontal road, cars east. Ego lives in LANE 1 (top). Overtake goes DOWN into lane 2.
+// Two cars driving side-by-side. One correctly centred in lane 1, the other
+// straddling the lane divider (bad — marked with a red ✕). The straddling car
+// then corrects into the centre of lane 2. Teaches lane POSITIONING, not
+// overtaking.
 // ─────────────────────────────────────────────────────────────
 const laneDiscipline: ClipDef = {
   slug: "lane-discipline",
-  title: "Lane discipline on dual carriageways",
+  title: "Lane discipline & positioning",
   rule: "Rule 264",
-  summary: "Keep to the left-hand lane (lane 1). Only use lane 2 to overtake — then return.",
+  summary: "Sit centred in your lane. Straddling the lane divider is dangerous and a common test fault.",
   beats: [
-    { at: 0, label: "Drive in the left-hand lane by default", detail: "Rule 264 — this is lane 1 on any dual carriageway." },
-    { at: 0.3, label: "Slower vehicle ahead — mirror–signal–move out", detail: "Only overtake when there is a clear reason and it is safe." },
-    { at: 0.6, label: "Overtake and clear the vehicle safely", detail: "Do not linger in lane 2." },
-    { at: 0.85, label: "Return to lane 1 as soon as safe", detail: "Middle-lane hogging is a £100 fine and 3 penalty points." },
+    { at: 0, label: "Two cars driving side-by-side", detail: "Rule 264 — keep to the left-hand lane (lane 1) unless overtaking." },
+    { at: 0.22, label: "The right-hand car is STRADDLING the lane line", detail: "Sitting on the divider blocks other traffic and is a common test fault." },
+    { at: 0.5, label: "Correct: settle into the centre of your lane", detail: "Aim for the middle of the lane — you should see roughly equal road on either side of the bonnet." },
+    { at: 0.78, label: "Both cars now correctly positioned", detail: "Steady speed, centred in each lane, safe side-by-side spacing." },
   ],
   render: (t) => {
-    // Road y∈[130,310]. Lane 1 (top) centre y=170. Lane 2 (bottom) centre y=245. Divider y=220.
+    // Road y∈[130,310]. Lane 1 (top) centre y=170. Lane 2 (bottom) centre y=250. Divider y=220.
     const dashOffset = (t * 640 * 0.5) % 44;
-    const egoX = 40 + 560 * t;
-    // Lane change: down into lane 2 from 0.25→0.4, back up to lane 1 from 0.75→0.9.
-    let egoY = 170;
-    if (t > 0.25 && t < 0.4) egoY = 170 + ((t - 0.25) / 0.15) * 75;
-    else if (t >= 0.4 && t < 0.75) egoY = 245;
-    else if (t >= 0.75 && t < 0.9) egoY = 245 - ((t - 0.75) / 0.15) * 75;
-    else if (t >= 0.9) egoY = 170;
+    // Both cars scroll together to sell forward motion (about 60 px over the loop).
+    const forward = (t * 60) % 60;
+    const goodX = 200 + forward;
+    const badX = 260 + forward;
 
-    // Slow lorry in LANE 1, moving east slowly.
-    const lorryX = 260 + t * 60;
+    // "Good" car — always centred in lane 1 (y=170).
+    const goodY = 170;
+    // "Bad" car — straddles the divider (y=220) at first, then corrects to
+    // centre of lane 2 (y=250) between t=0.4 and t=0.55.
+    const correctT = Math.min(1, Math.max(0, (t - 0.4) / 0.15));
+    const badY = 220 + (250 - 220) * easeInOut(correctT);
+    const isStraddling = t < 0.55;
+
+    // ✕ marker + label pulse
+    const xPulse = 0.85 + 0.15 * Math.sin(t * Math.PI * 8);
 
     return (
       <svg viewBox={CLIP_VIEWBOX} className="absolute inset-0 h-full w-full">
@@ -456,17 +464,44 @@ const laneDiscipline: ClipDef = {
         {/* Outer edges */}
         <line x1="0" y1="130" x2="640" y2="130" stroke={PAINT} strokeWidth="2" />
         <line x1="0" y1="310" x2="640" y2="310" stroke={PAINT} strokeWidth="2" />
-        {/* Slow lorry (LANE 1) */}
-        <g transform={`translate(${lorryX} 170) rotate(90)`}>
-          <rect x="-10" y="-22" width="20" height="44" fill="#c9a84c" stroke="#0a0a0a" strokeWidth={0.6} rx="1" />
-          <rect x="-8" y="14" width="16" height="8" fill="#111" />
-        </g>
-        {/* Ego */}
-        <CarToken x={egoX} y={egoY} heading={90} color="#e5484d" indicator={t > 0.22 && t < 0.4 ? "right" : t > 0.72 && t < 0.9 ? "left" : null} />
+
+        {/* Good car (green outline for correct) */}
+        <CarToken x={goodX} y={goodY} heading={90} color="#3fa34d" />
+        {/* Bad / straddling car */}
+        <CarToken x={badX} y={badY} heading={90} color="#e5484d" />
+
+        {/* Straddling marker: red ✕ over the offending car and label */}
+        {isStraddling && (
+          <g opacity={xPulse}>
+            <line x1={badX - 18} y1={220 - 18} x2={badX + 18} y2={220 + 18} stroke="#ff3b30" strokeWidth="4" strokeLinecap="round" />
+            <line x1={badX + 18} y1={220 - 18} x2={badX - 18} y2={220 + 18} stroke="#ff3b30" strokeWidth="4" strokeLinecap="round" />
+            <rect x={badX + 26} y={205} width={110} height={22} fill="#ff3b30" rx={3} />
+            <text x={badX + 81} y={220} textAnchor="middle" fill="#fff" fontFamily="Arial" fontWeight="800" fontSize="12">STRADDLING</text>
+          </g>
+        )}
+
+        {/* Correct-position tick + label on the good car once we've reached
+            the "correct position" beat */}
+        {t > 0.45 && (
+          <g>
+            <circle cx={goodX} cy={goodY - 30} r="10" fill="#3fa34d" />
+            <path d={`M ${goodX - 5} ${goodY - 30} L ${goodX - 1} ${goodY - 26} L ${goodX + 6} ${goodY - 34}`} stroke="#fff" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            <rect x={goodX + 14} y={goodY - 41} width={90} height={20} fill="#3fa34d" rx={3} />
+            <text x={goodX + 59} y={goodY - 27} textAnchor="middle" fill="#fff" fontFamily="Arial" fontWeight="800" fontSize="11">CENTRED</text>
+          </g>
+        )}
+
+        {/* Once corrected, show a matching tick + label on the previously-bad car */}
+        {t > 0.6 && (
+          <g>
+            <circle cx={badX} cy={badY - 30} r="10" fill="#3fa34d" />
+            <path d={`M ${badX - 5} ${badY - 30} L ${badX - 1} ${badY - 26} L ${badX + 6} ${badY - 34}`} stroke="#fff" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        )}
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 15000,
 };
 
 // ─────────────────────────────────────────────────────────────
