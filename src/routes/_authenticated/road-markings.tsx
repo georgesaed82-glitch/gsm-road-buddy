@@ -209,7 +209,7 @@ function LaneLegend() {
         <ul id="road-markings-legend-body" className="mt-4 grid gap-4 sm:grid-cols-2">
           {items.map((it) => (
             <li key={it.title} className="flex gap-3">
-              <div className="h-14 w-14 shrink-0 overflow-hidden border border-border">
+              <div className="h-20 w-20 shrink-0 overflow-hidden rounded-sm border border-border bg-neutral-900">
                 {it.swatch}
               </div>
               <div>
