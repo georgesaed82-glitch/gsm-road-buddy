@@ -13,10 +13,10 @@ const topItems: Item[] = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/lessons", label: "Lessons & progress", icon: CalendarCheck },
   { to: "/payments", label: "Payments", icon: CreditCard },
+  { to: "/gsm-method", label: "GSM Driving Method", icon: Compass },
 ];
 
 const theoryItems: Item[] = [
-  { to: "/gsm-method", label: "GSM Driving Method", icon: Compass },
   { to: "/highway-code", label: "Highway Code", icon: BookOpen },
   { to: "/road-signs", label: "Road signs", icon: SignpostBig },
   { to: "/road-markings", label: "Road markings", icon: Milestone },
