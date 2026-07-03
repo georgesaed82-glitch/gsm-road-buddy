@@ -136,18 +136,32 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
 
   const current = order[i];
 
+  // Persist the attempt once the quiz completes.
+  useEffect(() => {
+    if (current || savedAttempt || log.length === 0) return;
+    saveAttempt({
+      kind: "signs",
+      label: `${order.length} signs`,
+      score: right,
+      total: order.length,
+      items: log,
+    });
+    setSavedAttempt(true);
+  }, [current, savedAttempt, log, order.length, right]);
+
+  const resetRun = (nextOrder: Sign[]) => {
+    setOrder(nextOrder);
+    setI(0);
+    setPicked(null);
+    setRight(0);
+    setWrong(0);
+    setMissed([]);
+    setLog([]);
+    setSavedAttempt(false);
+    setQ(buildSignOptions(nextOrder[0], pool));
+  };
+
   if (!current) {
-    // Persist the attempt once the quiz completes.
-    if (!savedAttempt && log.length > 0) {
-      saveAttempt({
-        kind: "signs",
-        label: `${order.length} signs`,
-        score: right,
-        total: order.length,
-        items: log,
-      });
-      setSavedAttempt(true);
-    }
     return (
       <div className="mt-8 border border-border bg-card p-6">
         <h3 className="font-display text-xl">Quiz complete</h3>
@@ -173,35 +187,14 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
           </div>
         )}
         <div className="mt-6 flex flex-wrap gap-3">
-          <Button
-            className="rounded-none"
-            onClick={() => {
-              const fresh = shuffle(pool);
-              setOrder(fresh);
-              setI(0);
-              setPicked(null);
-              setRight(0);
-              setWrong(0);
-              setMissed([]);
-              setQ(buildSignOptions(fresh[0], pool));
-            }}
-          >
+          <Button className="rounded-none" onClick={() => resetRun(shuffle(pool))}>
             Start again
           </Button>
           {missed.length > 0 && (
             <Button
               variant="outline"
               className="rounded-none"
-              onClick={() => {
-                const fresh = shuffle(missed);
-                setOrder(fresh);
-                setI(0);
-                setPicked(null);
-                setRight(0);
-                setWrong(0);
-                setMissed([]);
-                setQ(buildSignOptions(fresh[0], pool));
-              }}
+              onClick={() => resetRun(shuffle(missed))}
             >
               Practice missed ({missed.length}) →
             </Button>
