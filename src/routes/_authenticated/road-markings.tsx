@@ -31,6 +31,8 @@ function RoadMarkingsPage() {
 
       <LaneLegend />
 
+      <DualCarriagewayJoin />
+
       <div className="mt-10 space-y-14">
         {markingGroups.map((group) => {
           const items = roadMarkings.filter((m) => m.group === group.slug);
