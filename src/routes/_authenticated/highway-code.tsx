@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { CommonFailReasons } from "@/components/CommonFailReasons";
 import { MemoryTips } from "@/components/MemoryTips";
+import { TopicMiniQuiz } from "@/components/TopicMiniQuiz";
 
 export const Route = createFileRoute("/_authenticated/highway-code")({
   head: () => ({ meta: [{ title: "Highway Code · GSM" }] }),
@@ -167,6 +168,8 @@ function HighwayCodePage() {
                   </span>
                 </label>
               </div>
+
+              <TopicMiniQuiz slug={c.slug} topicTitle={c.title} />
             </div>
           );
         })}
