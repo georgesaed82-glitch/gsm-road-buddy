@@ -156,11 +156,11 @@ function HighwayCodePage() {
                 ))}
               </ul>
 
-              {georgesTips[c.slug] && (
-                <GeorgesTip title={georgesTips[c.slug].title}>
-                  {georgesTips[c.slug].body}
+              {georgesTips[c.slug]?.map((tip, i) => (
+                <GeorgesTip key={i} title={tip.title}>
+                  {tip.body}
                 </GeorgesTip>
-              )}
+              ))}
 
               <div className="mt-5 border-t border-border pt-3">
                 <label className="flex cursor-pointer items-center gap-2 text-sm">
