@@ -10,6 +10,8 @@ import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { CommonFailReasons } from "@/components/CommonFailReasons";
 import { MemoryTips } from "@/components/MemoryTips";
 import { TopicMiniQuiz } from "@/components/TopicMiniQuiz";
+import { GeorgesTip } from "@/components/GeorgesTip";
+import { georgesTips } from "@/data/georgesTips";
 
 export const Route = createFileRoute("/_authenticated/highway-code")({
   head: () => ({ meta: [{ title: "Highway Code · GSM" }] }),
@@ -148,6 +150,12 @@ function HighwayCodePage() {
                   </li>
                 ))}
               </ul>
+
+              {georgesTips[c.slug] && (
+                <GeorgesTip title={georgesTips[c.slug].title}>
+                  {georgesTips[c.slug].body}
+                </GeorgesTip>
+              )}
 
               <div className="mt-5 border-t border-border pt-3">
                 <label className="flex cursor-pointer items-center gap-2 text-sm">
