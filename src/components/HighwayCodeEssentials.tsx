@@ -2007,6 +2007,14 @@ function ZebraCrossing() {
         Also worth knowing: on a <strong>parallel crossing</strong> (zebra with a cycle lane alongside), cyclists have the same priority as pedestrians. A <strong>staggered</strong> crossing with a central island counts as <strong>two separate crossings</strong>.
       </div>
 
+      <GeorgesTip title="Zebra crossings">
+        Don't just look at the crossing itself — scan <strong>both pavements</strong>
+        before you arrive. A pedestrian walking briskly towards the kerb is
+        already a developing hazard. If you're unsure, <strong>cover the brake
+        early</strong>. Never wave people across — another driver may not have
+        seen them.
+      </GeorgesTip>
+
       {/* Second diagram — zebra with a central refuge island */}
       <div className="mt-8">
         <div className="text-sm font-semibold">Zebra crossing with a central island (refuge)</div>
