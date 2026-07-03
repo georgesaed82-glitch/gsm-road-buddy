@@ -832,7 +832,7 @@ const DualCarriagewayStudsSvg = forwardRef<SVGSVGElement>((_props, ref) => {
     <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-labelledby={`${titleId} ${descId}`}>
       <title id={titleId}>Top-down UK dual carriageway showing road stud colours</title>
       <desc id={descId}>
-        A bird's-eye view of a UK dual carriageway with the hard shoulder on the left and traffic flowing up the page. Red studs mark the left edge line between the hard shoulder and lane one. White studs mark the broken centre line between the two lanes. Amber studs mark the right edge line next to the central reservation. Green studs mark the main carriageway edge where a slip road joins from the bottom-left. Green and yellow studs are used for temporary layouts such as contraflows and roadworks.
+        A bird's-eye view of a UK dual carriageway with the hard shoulder on the left and traffic flowing up the page. Red studs mark the left edge line between the hard shoulder and the left-hand lane (lane 1). White studs mark the broken centre line between the two lanes. Amber studs mark the right edge line next to the central reservation. Green studs mark the main carriageway edge where a slip road joins from the bottom-left. Green and yellow studs are used for temporary layouts such as contraflows and roadworks.
       </desc>
       <defs>
         <linearGradient id="rs-tarmac2" x1="0" x2="1" y1="0" y2="0">
