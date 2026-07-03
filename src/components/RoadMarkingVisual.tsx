@@ -500,50 +500,71 @@ export function StraightAndRightLanes() {
 }
 
 export function MergeShortDashes() {
-  // Highway Code / DES illustration: a slip road curves in from the bottom
-  // left and joins the nearside lane of a two-lane main carriageway.
-  //   • Solid white line on the outer edge of the slip road (kerbside edge).
-  //   • Solid white line on the far-side (right) edge of the main road.
-  //   • Long-dash lane divider between the two main-carriageway lanes.
-  //   • Short dashes with long gaps ("give way") along the curve where the
-  //     slip road meets the nearside lane — rule 259.
-  //   • Straight-ahead arrow painted in the through (right-hand) lane.
+  // Highway Code / DES illustration of a slip road JOINING a main
+  // carriageway. Traffic flows UP the page.
+  //   • Solid white kerbside line down the left of the slip road, curving
+  //     up to become the nearside edge of the main carriageway.
+  //   • Solid white line down the right (offside) edge of the main road.
+  //   • Long broken lane line (long dash, short gap — diag. 1004/1042)
+  //     between the two through lanes of the main carriageway.
+  //   • Short broken line (short dash, long gap — diag. 1010) along the
+  //     merge, separating the acceleration lane from the through lane
+  //     until the slip road fully merges.
+  //   • Directional arrows painted in each lane.
   return (
     <Frame>
-      {/* Right-hand main-road edge — solid */}
-      <path d="M 178 0 L 178 200" stroke={PAINT} strokeWidth="4" fill="none" />
+      {/* Tarmac shading behind the markings for clarity */}
+      <rect x="0" y="0" width="200" height="200" fill="#2a2a2a" />
 
-      {/* Outer (kerbside) edge of the slip road — solid, curves in from
-          the bottom left up to meet the nearside lane at the top */}
+      {/* Grass verge to the left of the slip road (below the curve) */}
       <path
-        d="M 22 200 C 22 150 42 90 96 0"
-        stroke={PAINT}
-        strokeWidth="4"
-        fill="none"
+        d="M 0 200 L 0 0 L 78 0 C 40 70 20 130 18 200 Z"
+        fill="#3a5a2a"
+        opacity="0.55"
       />
 
-      {/* Long-dash lane divider between the two main-carriageway lanes */}
+      {/* Solid kerbside (left) edge — curves up from bottom-left and
+          becomes the nearside edge of the main carriageway at the top */}
       <path
-        d="M 138 -6 L 138 210"
+        d="M 20 200 C 22 150 40 90 82 0"
         stroke={PAINT}
         strokeWidth="4"
         fill="none"
-        strokeDasharray="26 14"
-      />
-
-      {/* Merge / give-way line — SHORT dashes with LONG gaps, following the
-          curve of the slip road just inside the outer edge */}
-      <path
-        d="M 90 200 C 60 150 78 90 108 0"
-        stroke={PAINT}
-        strokeWidth="4"
-        fill="none"
-        strokeDasharray="8 22"
         strokeLinecap="butt"
       />
 
-      {/* Straight-ahead arrow painted in the through lane */}
-      <StraightArrow x={158} y={110} scale={0.75} />
+      {/* Solid offside (right) edge of the main carriageway */}
+      <path d="M 180 0 L 180 200" stroke={PAINT} strokeWidth="4" fill="none" />
+
+      {/* Long broken lane line between the two through lanes
+          (long dash, short gap) */}
+      <path
+        d="M 140 -8 L 140 210"
+        stroke={PAINT}
+        strokeWidth="4"
+        fill="none"
+        strokeDasharray="30 10"
+      />
+
+      {/* Merge line — short dashes with long gaps, following the taper
+          of the acceleration lane and ending where the slip road fully
+          joins the nearside lane */}
+      <path
+        d="M 92 200 C 70 150 82 100 100 40"
+        stroke={PAINT}
+        strokeWidth="4"
+        fill="none"
+        strokeDasharray="10 18"
+        strokeLinecap="butt"
+      />
+
+      {/* Directional arrow in the through lane */}
+      <StraightArrow x={158} y={120} scale={0.7} />
+
+      {/* Directional arrow in the slip road, tilted with the curve */}
+      <g transform="translate(70 150) rotate(-22)">
+        <StraightArrow x={0} y={0} scale={0.6} />
+      </g>
     </Frame>
   );
 }
