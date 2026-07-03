@@ -108,19 +108,22 @@ function DashboardPage() {
   });
 
   const greeting = profile?.full_name?.split(" ")[0] ?? "there";
+  const displayName = sessionInfo?.email
+    ? sessionInfo.email
+    : profile?.full_name || greeting;
   const hoursRemaining = Math.max(0, (stats?.hoursPurchased ?? 0) - (stats?.completed ?? 0));
 
   return (
     <PortalShell
       eyebrow="Welcome back"
-      title={`Welcome, ${greeting}.`}
+      title={`Welcome, ${displayName}`}
       showCopyright
     >
-      {sessionInfo?.email && (
-        <p className="-mt-4 mb-6 text-sm text-muted-foreground">
-          Signed in as <span className="font-medium text-foreground">{sessionInfo.email}</span>
-        </p>
-      )}
+      <p className="-mt-4 mb-6 text-sm text-muted-foreground">
+        {sessionInfo?.email
+          ? <>Signed in with PIN as <span className="font-medium text-foreground">{sessionInfo.email}</span></>
+          : "You're using a shared access code — sign in with your PIN to save progress to your account."}
+      </p>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Lessons completed" value={String(stats?.completed ?? 0)} icon={CheckCircle2} />
         <StatCard label="Hours remaining" value={hoursRemaining.toFixed(1)} icon={Clock} accent />
