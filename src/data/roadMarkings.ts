@@ -16,9 +16,13 @@ import {
   BusLane,
   RoundaboutTriangles,
   KeepClear,
+  StraightAheadTwoLanes,
+  StraightAndRightLanes,
+  MergeShortDashes,
+  HatchedAreaSolid,
 } from "@/components/RoadMarkingVisual";
 
-export type MarkingGroup = "along" | "across" | "kerb" | "words";
+export type MarkingGroup = "along" | "across" | "kerb" | "words" | "lanes";
 
 export type RoadMarking = {
   id: string;
@@ -33,6 +37,7 @@ export const markingGroups: { slug: MarkingGroup; title: string; blurb: string }
   { slug: "across", title: "Lines across the road", blurb: "Stop lines, give-way triangles, zebra zig-zags and box junctions." },
   { slug: "kerb", title: "Kerb / waiting restrictions", blurb: "Yellow lines, red routes, bus and cycle lanes." },
   { slug: "words", title: "Words and arrows", blurb: "Roundabout give-way triangles, 'KEEP CLEAR' and lane arrows." },
+  { slug: "lanes", title: "Lane arrows, merges & hatched areas", blurb: "Direction arrows painted on the road, merging slip roads and diagonal-stripe areas." },
 ];
 
 export const roadMarkings: RoadMarking[] = [
@@ -168,5 +173,39 @@ export const roadMarkings: RoadMarking[] = [
     meaning:
       "Do not stop or park on the marked area, even briefly. Typically outside schools, at junction mouths and hospital entrances so access stays clear.",
     Visual: KeepClear,
+  },
+
+  // ── LANES / ARROWS / HATCH ────────────────────────────
+  {
+    id: "rm-lane-straight-two",
+    name: "Two lanes — both straight ahead",
+    group: "lanes",
+    meaning:
+      "Straight-ahead arrows painted in both lanes. Highway Code rule 137: 'You should drive in the left-hand lane. The right-hand lane is for overtaking or turning right.' Once past the vehicle you are overtaking, move back into the left lane as soon as it is safe.",
+    Visual: StraightAheadTwoLanes,
+  },
+  {
+    id: "rm-lane-straight-right",
+    name: "Left lane straight, right lane turns right",
+    group: "lanes",
+    meaning:
+      "The painted arrows show which lane leads where — a straight arrow in the left lane, a right-turn arrow in the right lane. Highway Code rule 133: 'Where signs or markings direct you into a particular lane, you should move into that lane as soon as it is safe to do so.' Get into the correct lane in good time and do not change at the last moment.",
+    Visual: StraightAndRightLanes,
+  },
+  {
+    id: "rm-merge-dashes",
+    name: "Joining / merging — short broken white line",
+    group: "lanes",
+    meaning:
+      "Short white dashes with long gaps mark where a slip road joins the main carriageway. The broken line means give way — Highway Code rule 259: 'You should give priority to traffic already on the motorway.' Adjust your speed to fit into the gaps on the main carriageway, and do not force other drivers to change lanes or slow down.",
+    Visual: MergeShortDashes,
+  },
+  {
+    id: "rm-hatch-solid",
+    name: "Hatched area — chevrons with solid white border",
+    group: "lanes",
+    meaning:
+      "White diagonal stripes or chevrons painted on the road, bordered by a solid white line. Highway Code rule 130 — Areas of white diagonal stripes or chevrons painted on the road: 'These are to separate traffic lanes or to protect traffic turning right.' 'If the area is marked with chevrons and bordered by solid white lines you MUST NOT enter it except in an emergency.' If the border is a broken white line you should not enter unless it is necessary and you can see it is safe.",
+    Visual: HatchedAreaSolid,
   },
 ];

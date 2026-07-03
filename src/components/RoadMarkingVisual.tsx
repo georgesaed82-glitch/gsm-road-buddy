@@ -415,3 +415,148 @@ export function KeepClear() {
     </Frame>
   );
 }
+
+// ── LANE ARROWS & SPECIAL AREAS ───────────────────────
+
+function StraightArrow({ x, y, scale = 1 }: { x: number; y: number; scale?: number }) {
+  // Long straight-ahead arrow painted on the road (elongated, DVSA style).
+  const s = scale;
+  const path = `
+    M ${x} ${y - 55 * s}
+    L ${x - 12 * s} ${y - 35 * s}
+    L ${x - 5 * s} ${y - 35 * s}
+    L ${x - 5 * s} ${y + 55 * s}
+    L ${x + 5 * s} ${y + 55 * s}
+    L ${x + 5 * s} ${y - 35 * s}
+    L ${x + 12 * s} ${y - 35 * s}
+    Z
+  `;
+  return <path d={path} fill={PAINT} />;
+}
+
+function StraightRightArrow({ x, y }: { x: number; y: number }) {
+  // Elongated arrow with both straight-ahead head and a right-turn head.
+  const path = `
+    M ${x} ${y - 55}
+    L ${x - 12} ${y - 35}
+    L ${x - 5} ${y - 35}
+    L ${x - 5} ${y + 55}
+    L ${x + 5} ${y + 55}
+    L ${x + 5} ${y - 8}
+    L ${x + 28} ${y - 8}
+    L ${x + 28} ${y - 2}
+    L ${x + 48} ${y - 14}
+    L ${x + 28} ${y - 26}
+    L ${x + 28} ${y - 20}
+    L ${x + 5} ${y - 20}
+    L ${x + 5} ${y - 35}
+    L ${x + 12} ${y - 35}
+    Z
+  `;
+  return <path d={path} fill={PAINT} />;
+}
+
+export function StraightAheadTwoLanes() {
+  // Two-lane carriageway, both lanes straight ahead. Left = normal driving,
+  // right = overtaking (Highway Code rule 137).
+  return (
+    <Frame>
+      {/* Edge lines */}
+      <rect x="16" y="0" width="4" height="200" fill={PAINT} />
+      <rect x="180" y="0" width="4" height="200" fill={PAINT} />
+      {/* Broken lane divider */}
+      {[0, 30, 60, 90, 120, 150, 180].map((y) => (
+        <rect key={y} x="98" y={y} width="4" height="16" fill={PAINT} />
+      ))}
+      {/* Straight arrows in each lane */}
+      <StraightArrow x={60} y={120} />
+      <StraightArrow x={140} y={120} />
+    </Frame>
+  );
+}
+
+export function StraightAndRightLanes() {
+  // Two-lane approach: left lane straight ahead, right lane straight or right.
+  return (
+    <Frame>
+      <rect x="16" y="0" width="4" height="200" fill={PAINT} />
+      <rect x="180" y="0" width="4" height="200" fill={PAINT} />
+      {[0, 30, 60, 90, 120, 150, 180].map((y) => (
+        <rect key={y} x="98" y={y} width="4" height="16" fill={PAINT} />
+      ))}
+      {/* Left lane: straight only */}
+      <StraightArrow x={60} y={130} />
+      {/* Right lane: right-turn arrow (head to the right) */}
+      <g>
+        {/* Shaft */}
+        <rect x="135" y="95" width="10" height="80" fill={PAINT} />
+        {/* Right-turn arm */}
+        <rect x="135" y="95" width="30" height="10" fill={PAINT} />
+        {/* Arrow head pointing right */}
+        <polygon points="160,85 180,100 160,115" fill={PAINT} />
+      </g>
+    </Frame>
+  );
+}
+
+export function MergeShortDashes() {
+  // Merging / lane-joining: short white dashes with wider gaps mark where a
+  // slip road joins the main carriageway (Traffic Signs Manual style).
+  return (
+    <Frame>
+      {/* Main-road edge & centre */}
+      <rect x="16" y="0" width="4" height="200" fill={PAINT} />
+      <rect x="180" y="0" width="4" height="200" fill={PAINT} />
+      {/* Centre broken line */}
+      {[0, 30, 60, 90, 120, 150, 180].map((y) => (
+        <rect key={y} x="98" y={y} width="4" height="16" fill={PAINT} />
+      ))}
+      {/* Slip-road joining from bottom-left — angled short dashes with big gaps */}
+      <g transform="rotate(-18 100 200)">
+        {[10, 40, 70, 100, 130, 160, 190].map((y) => (
+          <rect key={y} x="60" y={y} width="4" height="8" fill={PAINT} />
+        ))}
+      </g>
+      {/* Straight-ahead arrow in the through-lane */}
+      <StraightArrow x={140} y={120} scale={0.85} />
+    </Frame>
+  );
+}
+
+export function HatchedAreaSolid() {
+  // Chevrons bordered by solid white lines — MUST NOT enter except in an
+  // emergency (Highway Code rule 130).
+  return (
+    <Frame>
+      {/* Outer edge lines */}
+      <rect x="16" y="0" width="4" height="200" fill={PAINT} />
+      <rect x="180" y="0" width="4" height="200" fill={PAINT} />
+      {/* Solid border around the hatched island */}
+      <path
+        d="M 70 20 L 130 20 L 145 100 L 130 180 L 70 180 L 55 100 Z"
+        fill="none"
+        stroke={PAINT}
+        strokeWidth="4"
+      />
+      {/* Diagonal chevron paint inside */}
+      <g clipPath="url(#hatch-solid-clip)">
+        {[-40, -20, 0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200].map((y) => (
+          <line
+            key={y}
+            x1="40"
+            y1={y}
+            x2="160"
+            y2={y + 40}
+            stroke={PAINT}
+            strokeWidth="4"
+          />
+        ))}
+      </g>
+      <defs>
+        <clipPath id="hatch-solid-clip">
+          <path d="M 70 20 L 130 20 L 145 100 L 130 180 L 70 180 L 55 100 Z" />
+        </clipPath>
+      </defs>
+    </Frame>
+  );
+}
