@@ -79,7 +79,7 @@ function LaneLegend() {
   const items: { swatch: ReactNode; title: string; body: string }[] = [
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full" aria-hidden>
+        <svg viewBox="0 0 60 60" className="h-full w-full" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision" aria-hidden>
           {/* Tarmac */}
           <rect width="60" height="60" fill="#2b2b2e" />
           {/* Solid outer edges */}
@@ -98,7 +98,7 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full" aria-hidden>
+        <svg viewBox="0 0 60 60" className="h-full w-full" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision" aria-hidden>
           <rect width="60" height="60" fill="#2b2b2e" />
           <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
           <rect x="55" y="0" width="2" height="60" fill="#f8fafc" />
@@ -115,7 +115,7 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full" aria-hidden>
+        <svg viewBox="0 0 60 60" className="h-full w-full" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision" aria-hidden>
           {/* Tarmac + grass verge to the left of the slip road */}
           <rect width="60" height="60" fill="#2b2b2e" />
           <path d="M0 0 L18 0 C 10 22 6 42 4 60 L0 60 Z" fill="#3a5a2a" opacity="0.6" />
@@ -144,7 +144,7 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full" aria-hidden>
+        <svg viewBox="0 0 60 60" className="h-full w-full" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision" aria-hidden>
           <rect width="60" height="60" fill="#2b2b2e" />
           {/* Solid outer edges */}
           <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
