@@ -500,7 +500,6 @@ export function StraightAndRightLanes() {
 }
 
 export function MergeShortDashes() {
-export function MergeShortDashes() {
   // Highway Code / DES style: a slip road curves in from the left and joins
   // the main carriageway. The boundary between the slip road and the main
   // lane is a SHORT white dash with a LONG gap (give-way marking). The
