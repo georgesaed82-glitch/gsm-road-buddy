@@ -195,7 +195,7 @@ export function AIChatWidget() {
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-red-600 px-3 py-3 text-white sm:px-4">
             <div className="flex min-w-0 items-center gap-3">
               <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-white/30 bg-white shadow-sm">
-                <img src={gsmLogo.url} alt="GSM" className="h-full w-full object-cover" />
+                <img src={gsmLogo.url} alt="" aria-hidden="true" className="h-full w-full object-cover" />
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold leading-tight">GSM Assistant</p>
