@@ -245,7 +245,7 @@ function DualCarriagewayJoin() {
         <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
           <img
             src={dualCarriagewayAsset.url}
-            alt="Diagram: slip road joining a dual carriageway with hatched area separating the join-in lane and running lane"
+            alt="Illustration of a slip road joining a dual carriageway. Red cars travel along the join-in lane on the left, a chevron-hatched central area separates the slip road from the running lane, and further red vehicles continue on the main carriageway with green trees and grass verges on either side."
             className="h-auto w-full"
             loading="lazy"
           />
@@ -253,7 +253,7 @@ function DualCarriagewayJoin() {
         <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
           <img
             src={hatchedPhotoAsset.url}
-            alt="Real-world photo of a hatched area between a slip road and the running lane on a dual carriageway"
+            alt="Real UK road photograph looking ahead along a dual carriageway. A white chevron-hatched area painted with solid white borders separates the join-in lane on the left from the running lane on the right, with overhead direction gantries and street lighting visible in the distance."
             className="h-auto w-full"
             loading="lazy"
           />
