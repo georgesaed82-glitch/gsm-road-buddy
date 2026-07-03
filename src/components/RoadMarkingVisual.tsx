@@ -7,6 +7,7 @@
  *   - foreground text/paint uses currentColor
  */
 import type { ReactNode } from "react";
+import miniRoundaboutImg from "@/assets/mini-roundabout.jpg";
 
 const ROAD = "#3f3f46"; // slate/tarmac
 const PAINT = "#f8fafc"; // matte white
@@ -374,101 +375,16 @@ export function BusLane() {
 // ── WORDS / SPECIAL ──────────────────────────────────
 
 export function RoundaboutTriangles() {
-  // Highway Code style aerial diagram of a mini-roundabout: a crossroads with
-  // green verges, dashed centre lines on every approach, give-way triangles
-  // (shark's teeth) on all four entries, and a solid white painted disc with
-  // clockwise arrows sweeping around it.
-  const cx = 100;
-  const cy = 100;
-  const GRASS = "#4a7a44";
-  const GRASS_DARK = "#3d6538";
-  const ISLAND_R = 16;
-
-  // A single give-way triangle pointing "forward" (up). We rotate the group
-  // to place a row on each of the four approaches.
-  const Teeth = ({ transform }: { transform: string }) => (
-    <g transform={transform} fill={PAINT}>
-      {[-18, -6, 6, 18].map((x) => (
-        <polygon key={x} points={`${x - 4.5},0 ${x + 4.5},0 ${x},8`} />
-      ))}
-    </g>
-  );
-
+  // Aerial diagram rendered from a DVSA/Highway Code style reference image.
   return (
-    <Frame>
-      {/* Grass verges in the four corners */}
-      <g fill={GRASS}>
-        <rect x="0" y="0" width="70" height="70" />
-        <rect x="130" y="0" width="70" height="70" />
-        <rect x="0" y="130" width="70" height="70" />
-        <rect x="130" y="130" width="70" height="70" />
-      </g>
-      {/* Softer grass shading blob for a hand-drawn Highway Code feel */}
-      <g fill={GRASS_DARK} opacity="0.55">
-        <circle cx="18" cy="20" r="14" />
-        <circle cx="182" cy="22" r="12" />
-        <circle cx="20" cy="180" r="13" />
-        <circle cx="180" cy="182" r="15" />
-      </g>
-
-      {/* Round the four inner grass corners so the carriageway curves into the
-          junction naturally, like the Highway Code plate */}
-      <g fill={ROAD}>
-        <path d="M 70 0 L 70 70 A 18 18 0 0 0 88 52 L 88 0 Z" />
-        <path d="M 112 0 L 112 52 A 18 18 0 0 0 130 70 L 130 0 Z" />
-        <path d="M 70 200 L 70 130 A 18 18 0 0 1 88 148 L 88 200 Z" />
-        <path d="M 112 200 L 112 148 A 18 18 0 0 1 130 130 L 130 200 Z" />
-      </g>
-
-      {/* Kerb lines around the cross-shaped carriageway */}
-      <g stroke={KERB} strokeWidth="1.2" fill="none" opacity="0.55">
-        <path d="M 0 70 L 70 70 A 18 18 0 0 1 88 88 L 88 112 A 18 18 0 0 1 70 130 L 0 130" />
-        <path d="M 200 70 L 130 70 A 18 18 0 0 0 112 88 L 112 112 A 18 18 0 0 0 130 130 L 200 130" />
-        <path d="M 70 0 L 70 70 A 18 18 0 0 0 88 88 L 112 88 A 18 18 0 0 0 130 70 L 130 0" />
-        <path d="M 70 200 L 70 130 A 18 18 0 0 1 88 112 L 112 112 A 18 18 0 0 1 130 130 L 130 200" />
-      </g>
-
-      {/* Dashed white centre line on each approach */}
-      <g fill={PAINT}>
-        {[8, 26, 44].map((y) => (
-          <rect key={`n${y}`} x="98.5" y={y} width="3" height="9" />
-        ))}
-        {[148, 166, 184].map((y) => (
-          <rect key={`s${y}`} x="98.5" y={y} width="3" height="9" />
-        ))}
-        {[8, 26, 44].map((x) => (
-          <rect key={`w${x}`} x={x} y="98.5" width="9" height="3" />
-        ))}
-        {[148, 166, 184].map((x) => (
-          <rect key={`e${x}`} x={x} y="98.5" width="9" height="3" />
-        ))}
-      </g>
-
-      {/* Give-way shark's teeth on every approach, pointing toward the island */}
-      <Teeth transform={`translate(${cx} 62)`} />
-      <Teeth transform={`translate(138 ${cy}) rotate(90)`} />
-      <Teeth transform={`translate(${cx} 138) rotate(180)`} />
-      <Teeth transform={`translate(62 ${cy}) rotate(270)`} />
-
-      {/* Four clockwise directional arrows sweeping around the island */}
-      <g fill="none" stroke={PAINT} strokeWidth="2.6" strokeLinecap="butt">
-        <path d="M 100 74 A 26 26 0 0 1 126 100" />
-        <path d="M 126 100 A 26 26 0 0 1 100 126" />
-        <path d="M 100 126 A 26 26 0 0 1 74 100" />
-        <path d="M 74 100 A 26 26 0 0 1 100 74" />
-      </g>
-      <g fill={PAINT}>
-        {/* Arrow heads at the end of each quadrant sweep */}
-        <polygon points="122,96 132,100 122,104" />
-        <polygon points="104,122 100,132 96,122" />
-        <polygon points="78,104 68,100 78,96" />
-        <polygon points="96,78 100,68 104,78" />
-      </g>
-
-      {/* Solid white painted mini-roundabout disc */}
-      <circle cx={cx} cy={cy} r={ISLAND_R + 1} fill="#dfe3e6" />
-      <circle cx={cx} cy={cy} r={ISLAND_R} fill={PAINT} />
-    </Frame>
+    <img
+      src={miniRoundaboutImg}
+      alt="Mini-roundabout road marking (Highway Code diagram)"
+      loading="lazy"
+      width={1024}
+      height={1024}
+      className="block h-full w-full object-cover"
+    />
   );
 }
 
