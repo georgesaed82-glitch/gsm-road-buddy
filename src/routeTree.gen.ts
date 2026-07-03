@@ -37,6 +37,7 @@ import { Route as AuthenticatedMockTestsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
 import { Route as AuthenticatedHighwayCodeRouteImport } from './routes/_authenticated/highway-code'
 import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_authenticated/hazard-perception'
+import { Route as AuthenticatedDrivingClipsRouteImport } from './routes/_authenticated/driving-clips'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -194,6 +195,12 @@ const AuthenticatedHazardPerceptionRoute =
     path: '/hazard-perception',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDrivingClipsRoute =
+  AuthenticatedDrivingClipsRouteImport.update({
+    id: '/driving-clips',
+    path: '/driving-clips',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -281,6 +288,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/driving-clips': typeof AuthenticatedDrivingClipsRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
@@ -322,6 +330,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/driving-clips': typeof AuthenticatedDrivingClipsRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
@@ -366,6 +375,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/driving-clips': typeof AuthenticatedDrivingClipsRoute
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/_authenticated/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
@@ -410,6 +420,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
+    | '/driving-clips'
     | '/hazard-perception'
     | '/highway-code'
     | '/lessons'
@@ -451,6 +462,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/driving-clips'
     | '/hazard-perception'
     | '/highway-code'
     | '/lessons'
@@ -494,6 +506,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/driving-clips'
     | '/_authenticated/hazard-perception'
     | '/_authenticated/highway-code'
     | '/_authenticated/lessons'
@@ -741,6 +754,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHazardPerceptionRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/driving-clips': {
+      id: '/_authenticated/driving-clips'
+      path: '/driving-clips'
+      fullPath: '/driving-clips'
+      preLoaderRoute: typeof AuthenticatedDrivingClipsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -867,6 +887,7 @@ const AuthenticatedAdminRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDrivingClipsRoute: typeof AuthenticatedDrivingClipsRoute
   AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
   AuthenticatedHighwayCodeRoute: typeof AuthenticatedHighwayCodeRoute
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
@@ -886,6 +907,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDrivingClipsRoute: AuthenticatedDrivingClipsRoute,
   AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
   AuthenticatedHighwayCodeRoute: AuthenticatedHighwayCodeRoute,
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
