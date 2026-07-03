@@ -98,75 +98,12 @@ async function maybeSendAlert(
     userEmail: string | null;
   },
 ) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const nowIso = new Date().toISOString();
-  const cutoffIso = new Date(Date.now() - ALERT_THROTTLE_MINUTES * 60_000).toISOString();
-
-  const { data: state } = await supabaseAdmin
-    .from("error_alert_state")
-    .select("fingerprint,last_alert_at,count")
-    .eq("fingerprint", fingerprint)
-    .maybeSingle();
-
-  if (state && state.last_alert_at > cutoffIso) {
-    // Within throttle window — bump count silently.
-    await supabaseAdmin
-      .from("error_alert_state")
-      .update({ count: (state.count ?? 1) + 1 })
-      .eq("fingerprint", fingerprint);
-    return;
-  }
-
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const outlookKey = process.env.MICROSOFT_OUTLOOK_API_KEY;
-  if (!lovableKey || !outlookKey) return;
-
-  const subject = `[GSM alert] ${message.slice(0, 120)}`;
-  const rows = [
-    ["Route", ctx.route],
-    ["URL", ctx.url],
-    ["User", ctx.userEmail],
-    ["Mechanism", ctx.mechanism],
-  ]
-    .filter(([, v]) => v)
-    .map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#555;">${k}</td><td>${escapeHtml(String(v))}</td></tr>`) 
-    .join("");
-  const html = `
-    <div style="font-family:Arial,sans-serif;max-width:640px;">
-      <h2 style="margin:0 0 8px 0;color:#b91c1c;">Production error captured</h2>
-      <p style="margin:0 0 16px 0;color:#333;"><strong>${escapeHtml(message)}</strong></p>
-      <table style="border-collapse:collapse;margin-bottom:16px;">${rows}</table>
-      ${ctx.stack ? `<pre style="background:#f4f4f4;padding:12px;overflow:auto;font-size:12px;">${escapeHtml(ctx.stack.slice(0, 4000))}</pre>` : ""}
-      <p style="margin-top:24px;font-size:12px;color:#777;">
-        Further occurrences of this exact error will be suppressed for ${ALERT_THROTTLE_MINUTES} minutes to avoid inbox floods.
-        View all errors in your admin dashboard: Admin → Errors.
-      </p>
-    </div>`;
-
-  try {
-    await fetch("https://connector-gateway.lovable.dev/microsoft_outlook/me/sendMail", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": outlookKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: {
-          subject,
-          body: { contentType: "HTML", content: html },
-          toRecipients: [{ emailAddress: { address: ALERT_RECIPIENT } }],
-        },
-        saveToSentItems: false,
-      }),
-    });
-  } catch {
-    /* swallow — alert delivery is best effort */
-  }
-
-  await supabaseAdmin
-    .from("error_alert_state")
-    .upsert({ fingerprint, last_alert_at: nowIso, count: (state?.count ?? 0) + 1 });
+  // Email alerts disabled — errors are still recorded in error_logs for the
+  // Admin → Errors dashboard. Silence params to keep types happy.
+  void fingerprint;
+  void message;
+  void ctx;
+  return;
 }
 
 function escapeHtml(s: string) {
