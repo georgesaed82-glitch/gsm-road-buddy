@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { roadMarkings, markingGroups } from "@/data/roadMarkings";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
@@ -65,7 +66,7 @@ function RoadMarkingsPage() {
 }
 
 function LaneLegend() {
-  const items: { swatch: React.ReactNode; title: string; body: string }[] = [
+  const items: { swatch: ReactNode; title: string; body: string }[] = [
     {
       swatch: (
         <svg viewBox="0 0 60 60" className="h-full w-full">
