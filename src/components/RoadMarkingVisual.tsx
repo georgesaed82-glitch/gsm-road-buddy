@@ -500,63 +500,98 @@ export function StraightAndRightLanes() {
 }
 
 export function MergeShortDashes() {
-  // Merging / lane-joining: short white dashes with wider gaps mark where a
-  // slip road joins the main carriageway (Traffic Signs Manual style).
+export function MergeShortDashes() {
+  // Highway Code / DES style: a slip road curves in from the left and joins
+  // the main carriageway. The boundary between the slip road and the main
+  // lane is a SHORT white dash with a LONG gap (give-way marking). The
+  // main-carriageway lane line to its right is a normal long-dash line.
   return (
     <Frame>
-      {/* Main-road edge & centre */}
-      <rect x="16" y="0" width="4" height="200" fill={PAINT} />
+      {/* Right-hand road edge (solid) */}
       <rect x="180" y="0" width="4" height="200" fill={PAINT} />
-      {/* Centre broken line */}
-      {[0, 30, 60, 90, 120, 150, 180].map((y) => (
-        <rect key={y} x="98" y={y} width="4" height="16" fill={PAINT} />
+      {/* Left-hand road edge curves outward at the bottom as slip road opens up */}
+      <path
+        d="M 20 0 L 20 70 Q 20 150 90 200"
+        fill="none"
+        stroke={PAINT}
+        strokeWidth="4"
+      />
+      {/* Normal lane divider between the two main-carriageway lanes:
+          long dashes, short gaps */}
+      {[0, 40, 80, 120, 160].map((y) => (
+        <rect key={`main-${y}`} x="130" y={y} width="4" height="28" fill={PAINT} />
       ))}
-      {/* Slip-road joining from bottom-left — angled short dashes with big gaps */}
-      <g transform="rotate(-18 100 200)">
-        {[10, 40, 70, 100, 130, 160, 190].map((y) => (
-          <rect key={y} x="60" y={y} width="4" height="8" fill={PAINT} />
-        ))}
-      </g>
+      {/* Merge line where the slip road joins the nearside lane:
+          SHORT dashes with LONG gaps, following the curve of the slip road */}
+      {[
+        { x: 80, y: 4, r: 0 },
+        { x: 80, y: 32, r: 0 },
+        { x: 80, y: 60, r: 0 },
+        { x: 80.5, y: 88, r: 6 },
+        { x: 82, y: 116, r: 14 },
+        { x: 86, y: 142, r: 24 },
+        { x: 94, y: 166, r: 36 },
+      ].map((d, i) => (
+        <rect
+          key={`merge-${i}`}
+          x={d.x}
+          y={d.y}
+          width="4"
+          height="10"
+          fill={PAINT}
+          transform={`rotate(${d.r} ${d.x + 2} ${d.y + 5})`}
+        />
+      ))}
       {/* Straight-ahead arrow in the through-lane */}
-      <StraightArrow x={140} y={120} scale={0.85} />
+      <StraightArrow x={148} y={120} scale={0.75} />
     </Frame>
   );
 }
 
 export function HatchedAreaSolid() {
-  // Chevrons bordered by solid white lines — MUST NOT enter except in an
-  // emergency (Highway Code rule 130).
+  // Highway Code / DES illustration: a lozenge-shaped hatched island sits
+  // between two lanes of traffic. It is bordered by a SOLID white line
+  // (MUST NOT enter except in an emergency — rule 130) and filled with
+  // chevrons that POINT BACK against the direction of travel.
   return (
     <Frame>
-      {/* Outer edge lines */}
+      {/* Road edges */}
       <rect x="16" y="0" width="4" height="200" fill={PAINT} />
       <rect x="180" y="0" width="4" height="200" fill={PAINT} />
-      {/* Solid border around the hatched island */}
+      {/* Long-dash lane lines running past the island on both sides */}
+      {[0, 40, 80, 120, 160].map((y) => (
+        <g key={`ll-${y}`}>
+          <rect x="46" y={y} width="3" height="24" fill={PAINT} />
+          <rect x="151" y={y} width="3" height="24" fill={PAINT} />
+        </g>
+      ))}
+      {/* Solid border of the hatched island (lozenge) */}
       <path
-        d="M 70 20 L 130 20 L 145 100 L 130 180 L 70 180 L 55 100 Z"
+        d="M 100 20 L 128 55 L 128 145 L 100 180 L 72 145 L 72 55 Z"
         fill="none"
         stroke={PAINT}
         strokeWidth="4"
       />
-      {/* Diagonal chevron paint inside */}
+      {/* Chevrons pointing UP-back against the direction of travel */}
       <g clipPath="url(#hatch-solid-clip)">
-        {[-40, -20, 0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200].map((y) => (
-          <line
+        {[30, 50, 70, 90, 110, 130, 150, 170].map((y) => (
+          <polyline
             key={y}
-            x1="40"
-            y1={y}
-            x2="160"
-            y2={y + 40}
+            points={`72,${y + 18} 100,${y} 128,${y + 18}`}
+            fill="none"
             stroke={PAINT}
-            strokeWidth="4"
+            strokeWidth="3"
           />
         ))}
       </g>
       <defs>
         <clipPath id="hatch-solid-clip">
-          <path d="M 70 20 L 130 20 L 145 100 L 130 180 L 70 180 L 55 100 Z" />
+          <path d="M 100 20 L 128 55 L 128 145 L 100 180 L 72 145 L 72 55 Z" />
         </clipPath>
       </defs>
+      {/* Direction-of-travel arrows on each side */}
+      <StraightArrow x={28} y={90} scale={0.55} />
+      <StraightArrow x={158} y={90} scale={0.55} />
     </Frame>
   );
 }
