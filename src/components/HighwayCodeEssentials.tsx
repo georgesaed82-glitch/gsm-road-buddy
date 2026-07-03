@@ -1714,6 +1714,13 @@ function HierarchyOfRoadUsers() {
           <li>If braking suddenly would create an immediate danger to you or others, and no one has started crossing, continue cautiously.</li>
           <li>Never wave pedestrians across — let them decide. Other drivers may not see them.</li>
         </ol>
+
+        <GeorgesTip title="Turning at junctions">
+          Before you commit to any turn, take a proper look at the pavement
+          you're turning across — <strong>not just the road</strong>. On a busy
+          high street I always slow more than feels necessary; the extra second
+          buys you a decision if a pedestrian steps off.
+        </GeorgesTip>
       </div>
     </Panel>
   );
