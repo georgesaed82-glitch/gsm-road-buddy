@@ -16,43 +16,43 @@ export const georgesTips: Record<string, { title: string; body: string }> = {
     body: "At 60 mph you'll travel the length of a football pitch before you stop in the dry — and nearly two in the wet. Look further ahead than you think you need to.",
   },
   "hazard-awareness": {
-    title: "Scan, don't stare",
-    body: "Eyes moving — far, middle, near, mirrors. If your eyes are locked on the car in front, you're missing the child stepping out from between the parked vans.",
+    title: "Stretch your vision",
+    body: "Don't stare at the car in front. Keep scanning using your 15–70–15 method and ask yourself, 'What's the next hazard?' Good drivers anticipate — they don't just react.",
   },
   "vulnerable-road-users": {
-    title: "The Dutch reach",
-    body: "Open your door with your left hand. It turns your body and forces you to look over your shoulder — that's how you spot the cyclist you'd otherwise floor.",
+    title: "Expect the unexpected",
+    body: "Children can run, cyclists can move around potholes and pedestrians can change their minds. Slow down early and always leave yourself enough space to react.",
   },
   "other-vehicles": {
-    title: "Don't sit in a lorry's blind spot",
-    body: "If you can't see the driver's mirrors, they can't see you. Get past cleanly or drop right back — never linger alongside a HGV, especially on roundabouts.",
+    title: "Think for bigger vehicles",
+    body: "Lorries, buses and trams all need extra room. Stay out of blind spots, leave space and always look for other people's mistakes before they happen.",
   },
   "vehicle-handling": {
-    title: "Gears to go, brakes to slow",
-    body: "Brake first, change gear once. Coasting down to a junction in neutral gives you no drive and no control if you need to move off again.",
+    title: "Smooth driving is safe driving",
+    body: "Brake smoothly, steer smoothly and accelerate smoothly. Stretch your vision through bends and let the car flow instead of fighting it.",
   },
   "motorway-rules": {
-    title: "Lane 1 is the driving lane",
-    body: "Lanes 2 and 3 are for overtaking. Finish the overtake, indicate left, move back in. Sitting in lane 2 is a £100 fine and 3 points — and it wrecks the flow behind you.",
+    title: "Lane 1 is your driving lane",
+    body: "Use Lane 1 whenever it's clear. Overtake when needed, then move back left. Good motorway drivers keep traffic flowing safely and don't sit in the middle lane.",
   },
   "rules-of-the-road": {
-    title: "Read the road, not just the sign",
-    body: "White painted triangle on your side of the road = Give Way ahead. Start looking and easing off before you reach the line, not at it.",
+    title: "Plan to stop, look to go",
+    body: "Never drive right up to a hazard. Ease off early, stretch your vision and always be looking for a safe opportunity to keep the traffic moving.",
   },
   "road-conditions": {
-    title: "Shape tells you the message",
-    body: "Circles order, triangles warn, rectangles inform. If you can only see the shape through spray or low sun, you already know the type of message coming.",
+    title: "Use your 15–70–15 vision",
+    body: "Stretch your vision. Look 15% up for signs, 70% ahead where you're driving, and 15% down for road markings. The more you scan, the more you see.",
   },
   "essential-documents": {
-    title: "Keep photos on your phone",
-    body: "Snap your licence, insurance certificate and MOT. If you're pulled over, you've got seven days to produce them at a station — a photo shows willing on the roadside.",
+    title: "Stay organised",
+    body: "Keep your licence, insurance and MOT up to date. Five minutes checking today can save hours of stress and expensive problems later.",
   },
   incidents: {
-    title: "Protect, warn, help",
-    body: "Hazards on, engine off, out of the car if it's safe. Warn traffic before you go near the casualties — a second collision is what turns a bump into a tragedy.",
+    title: "Stay calm. Protect first.",
+    body: "Don't panic. Protect yourself first, warn other traffic, then help others if it's safe. A calm driver makes better decisions than a rushed one.",
   },
   "vehicle-loading": {
-    title: "Heavy stuff low and central",
-    body: "A loose roof-box or a dog on the back seat becomes a missile in a 30 mph stop. Strap it, box it, or put it in the boot.",
+    title: "Secure it before you move",
+    body: "Before you drive, ask yourself: 'If I had to brake hard now, where would this end up?' Keep heavy items low and central, secure everything properly, and never let luggage block your view.",
   },
 };
