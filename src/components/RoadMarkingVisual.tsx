@@ -108,9 +108,23 @@ export function EdgeLine() {
 // ── ACROSS THE ROAD ───────────────────────────────────
 
 export function GiveWayTriangle() {
-  // Two dashed lines + big inverted triangle painted on the road.
+  // Two dashed give-way lines + big inverted triangle painted on the road.
+  // Along the approach: a solid YELLOW line on the left edge (no-waiting)
+  // and a WHITE broken hazard-warning line on the right, both running from
+  // the bottom of the frame up to the give-way transverse marking.
   return (
     <Frame>
+      {/* Solid yellow line on the left edge, up to the give-way line */}
+      <rect x="14" y="94" width="6" height="106" fill={YELLOW} />
+
+      {/* White broken hazard-warning line on the right, up to the give-way line */}
+      <g>
+        {[94, 116, 138, 160, 182].map((y) => (
+          <rect key={y} x="180" y={y} width="6" height="14" fill={PAINT} />
+        ))}
+      </g>
+
+      {/* Give-way transverse: two rows of dashes */}
       <g>
         {[10, 40, 70, 100, 130, 160].map((x) => (
           <rect key={x} x={x} y="70" width="18" height="8" fill={PAINT} />
@@ -119,6 +133,8 @@ export function GiveWayTriangle() {
           <rect key={x + "b"} x={x} y="86" width="18" height="8" fill={PAINT} />
         ))}
       </g>
+
+      {/* Give-way inverted triangle */}
       <polygon points="60,120 140,120 100,180" fill={PAINT} />
     </Frame>
   );
@@ -127,6 +143,17 @@ export function GiveWayTriangle() {
 export function StopLine() {
   return (
     <Frame>
+      {/* Solid yellow line on the left edge, up to the stop line */}
+      <rect x="14" y="94" width="6" height="106" fill={YELLOW} />
+
+      {/* White broken hazard-warning line on the right, up to the stop line */}
+      <g>
+        {[94, 116, 138, 160, 182].map((y) => (
+          <rect key={y} x="180" y={y} width="6" height="14" fill={PAINT} />
+        ))}
+      </g>
+
+      {/* Transverse stop line — single solid white bar */}
       <rect x="10" y="80" width="180" height="14" fill={PAINT} />
       <text
         x="100"
