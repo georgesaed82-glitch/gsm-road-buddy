@@ -743,5 +743,140 @@ export function SignVisual({ variant, size = 160 }: { variant: SignVariant; size
         </div>
       );
     }
+    case "countdown-marker": {
+      const bg = variant.background === "primary" ? "#0e7c3a" : "#0033a0";
+      const bars = variant.distance === 300 ? 3 : variant.distance === 200 ? 2 : 1;
+      const w = px * 0.9;
+      const h = px * 1.1;
+      return (
+        <div
+          className="flex flex-col items-center justify-center gap-[6%] border-2 border-white text-white shadow-md"
+          style={{ width: w, height: h, background: bg, padding: "6% 8%" }}
+        >
+          {Array.from({ length: bars }).map((_, i) => (
+            <div
+              key={i}
+              style={{
+                width: "70%",
+                height: h * 0.11,
+                background: "#fff",
+                transform: "skewX(-28deg)",
+                borderRadius: 1,
+              }}
+            />
+          ))}
+          <div
+            className="mt-[8%] font-bold leading-none"
+            style={{ fontSize: px * 0.12, fontFamily: "Arial, sans-serif" }}
+          >
+            {variant.distance} yds
+          </div>
+        </div>
+      );
+    }
+    case "roundabout-ads": {
+      const bg =
+        variant.background === "motorway"
+          ? "#0033a0"
+          : variant.background === "primary"
+            ? "#0e7c3a"
+            : "#fff";
+      const fg = variant.background === "local" ? "#000" : "#fff";
+      const stroke = variant.background === "local" ? "#000" : "#fff";
+      const w = px * 2;
+      const h = px * 1.6;
+      const cx = 50;
+      const cy = 52;
+      const r = 14;
+      // fixed slot positions around the ring
+      const slots: Record<string, { x1: number; y1: number; x2: number; y2: number; tx: number; ty: number; anchor: "start" | "middle" | "end" }> = {
+        left: { x1: cx - r, y1: cy, x2: 8, y2: cy, tx: 6, ty: cy - 3, anchor: "start" },
+        "ahead-left": { x1: cx - r * 0.7, y1: cy - r * 0.7, x2: 20, y2: 18, tx: 18, ty: 15, anchor: "start" },
+        ahead: { x1: cx, y1: cy - r, x2: cx, y2: 10, tx: cx, ty: 8, anchor: "middle" },
+        "ahead-right": { x1: cx + r * 0.7, y1: cy - r * 0.7, x2: 80, y2: 18, tx: 82, ty: 15, anchor: "end" },
+        right: { x1: cx + r, y1: cy, x2: 92, y2: cy, tx: 94, ty: cy - 3, anchor: "end" },
+      };
+      return (
+        <div
+          className="flex items-center justify-center border-2 shadow-md"
+          style={{
+            width: w,
+            height: h,
+            background: bg,
+            borderColor: variant.background === "local" ? "#000" : "#fff",
+          }}
+        >
+          <svg width="94%" height="94%" viewBox="0 0 100 78" fontFamily="Arial, sans-serif">
+            {/* approach stub */}
+            <line x1={cx} y1={cy + r} x2={cx} y2={72} stroke={stroke} strokeWidth="4" strokeLinecap="round" />
+            {/* the ring */}
+            <circle cx={cx} cy={cy} r={r} fill="none" stroke={stroke} strokeWidth="4" />
+            {/* exit stubs + labels */}
+            {variant.exits.map((e, i) => {
+              const s = slots[e.angle];
+              if (!s) return null;
+              return (
+                <g key={i}>
+                  <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={stroke} strokeWidth="4" strokeLinecap="round" />
+                  <text
+                    x={s.tx}
+                    y={s.ty}
+                    fill={fg}
+                    fontSize="6"
+                    fontWeight="700"
+                    textAnchor={s.anchor}
+                  >
+                    {e.route ? `${e.route}  ${e.label}` : e.label}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+      );
+    }
+    case "route-lanes": {
+      const bg =
+        variant.background === "motorway"
+          ? "#0033a0"
+          : variant.background === "primary"
+            ? "#0e7c3a"
+            : "#fff";
+      const fg = variant.background === "local" ? "#000" : "#fff";
+      const w = px * 2;
+      const rowH = px * 0.36;
+      const arrowFor = (a: "up" | "up-left" | "up-right") => {
+        if (a === "up")
+          return "M50,6 L64,26 L56,26 L56,52 L44,52 L44,26 L36,26 Z";
+        if (a === "up-left")
+          return "M14,32 L36,18 L36,26 L60,26 L60,44 L36,44 L36,52 Z";
+        return "M86,32 L64,18 L64,26 L40,26 L40,44 L64,44 L64,52 Z";
+      };
+      return (
+        <div
+          className="flex flex-col border-2 shadow-md"
+          style={{
+            width: w,
+            background: bg,
+            borderColor: variant.background === "local" ? "#000" : "#fff",
+            padding: 6,
+            gap: 4,
+            fontFamily: "Arial, sans-serif",
+          }}
+        >
+          {variant.lanes.map((lane, i) => (
+            <div key={i} className="flex items-center" style={{ height: rowH, color: fg }}>
+              <svg width={rowH} height={rowH} viewBox="0 0 100 60">
+                <path d={arrowFor(lane.arrow)} fill={fg} />
+              </svg>
+              <div className="ml-2 flex-1 truncate font-bold" style={{ fontSize: px * 0.13 }}>
+                {lane.route ? `${lane.route}  ` : ""}
+                {lane.destination}
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
   }
 }
