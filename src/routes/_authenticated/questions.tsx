@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -12,6 +12,7 @@ import {
 import { CheckCircle2, XCircle, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import { saveAttempt, type QuizAttemptItem, type QuizKind } from "@/lib/quizAttempts";
 
 export const Route = createFileRoute("/_authenticated/questions")({
   head: () => ({ meta: [{ title: "Theory questions · GSM" }] }),
@@ -85,8 +86,22 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
   const [picked, setPicked] = useState<number | null>(null);
   const [right, setRight] = useState(0);
   const [wrong, setWrong] = useState(0);
+  const [log, setLog] = useState<QuizAttemptItem[]>([]);
+  const [savedAttempt, setSavedAttempt] = useState(false);
 
   const q = order[i];
+
+  useEffect(() => {
+    if (q || savedAttempt || log.length === 0) return;
+    saveAttempt({
+      kind: (`questions-${difficulty}` as QuizKind),
+      label: `${order.length} ${difficulty} questions`,
+      score: right,
+      total: order.length,
+      items: log,
+    });
+    setSavedAttempt(true);
+  }, [q, savedAttempt, log, difficulty, order.length, right]);
 
   if (!q) {
     return (
@@ -105,8 +120,21 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
   const onPick = (idx: number) => {
     if (picked !== null) return;
     setPicked(idx);
-    if (idx === q.correctIndex) setRight((n) => n + 1);
+    const isCorrect = idx === q.correctIndex;
+    if (isCorrect) setRight((n) => n + 1);
     else setWrong((n) => n + 1);
+    setLog((l) => [
+      ...l,
+      {
+        prompt: q.question,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        pickedIndex: idx,
+        correct: isCorrect,
+        explanation: q.explanation,
+        meta: q.category.replaceAll("-", " "),
+      },
+    ]);
   };
 
   return (
