@@ -85,9 +85,9 @@ function LaneLegend() {
           {/* Solid outer edges */}
           <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
           <rect x="55" y="0" width="2" height="60" fill="#f8fafc" />
-          {/* Long-dash centre line */}
-          {[0, 16, 32, 48].map((y) => (
-            <rect key={y} x="29" y={y} width="2" height="10" fill="#f8fafc" />
+          {/* Long broken lane line — Diagram 1004 (4m mark : 2m gap ≈ 2:1) */}
+          {[-2, 16, 34, 52].map((y) => (
+            <rect key={y} x="29" y={y} width="2" height="12" fill="#f8fafc" />
           ))}
           {/* Straight-ahead arrow in LEFT lane */}
           <path d="M18 14 L13 22 L16.4 22 L16.4 48 L19.6 48 L19.6 22 L23 22 Z" fill="#f8fafc" />
@@ -102,9 +102,9 @@ function LaneLegend() {
           <rect width="60" height="60" fill="#2b2b2e" />
           <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
           <rect x="55" y="0" width="2" height="60" fill="#f8fafc" />
-          {/* Long-dash centre line */}
-          {[0, 16, 32, 48].map((y) => (
-            <rect key={y} x="29" y={y} width="2" height="10" fill="#f8fafc" />
+          {/* Long broken lane line — Diagram 1004 (4:2 ratio) */}
+          {[-2, 16, 34, 52].map((y) => (
+            <rect key={y} x="29" y={y} width="2" height="12" fill="#f8fafc" />
           ))}
           {/* Straight-ahead arrow in RIGHT lane */}
           <path d="M42 14 L37 22 L40.4 22 L40.4 48 L43.6 48 L43.6 22 L47 22 Z" fill="#f8fafc" />
@@ -115,13 +115,28 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full">
-          <rect width="60" height="60" fill="#3f3f46" />
-          <g transform="rotate(-20 30 60)">
-            {[6, 18, 30, 42, 54].map((y) => (
-              <rect key={y} x="26" y={y} width="4" height="6" fill="#f8fafc" />
-            ))}
-          </g>
+        <svg viewBox="0 0 60 60" className="h-full w-full" aria-hidden>
+          {/* Tarmac + grass verge to the left of the slip road */}
+          <rect width="60" height="60" fill="#2b2b2e" />
+          <path d="M0 0 L18 0 C 10 22 6 42 4 60 L0 60 Z" fill="#3a5a2a" opacity="0.6" />
+          {/* Solid kerbside edge curving in */}
+          <path
+            d="M4 60 C 6 42 10 22 18 0"
+            stroke="#f8fafc"
+            strokeWidth="2"
+            fill="none"
+          />
+          {/* Give-way merge line — Diagram 1010 (short 1m mark : 5m gap ≈ 1:5) */}
+          <path
+            d="M14 60 C 16 42 20 22 28 0"
+            stroke="#f8fafc"
+            strokeWidth="2"
+            fill="none"
+            strokeDasharray="3 15"
+            strokeLinecap="butt"
+          />
+          {/* Straight-ahead arrow in the through lane */}
+          <path d="M42 14 L37 22 L40.4 22 L40.4 48 L43.6 48 L43.6 22 L47 22 Z" fill="#f8fafc" />
         </svg>
       ),
       title: "Joining / merging",
@@ -139,11 +154,11 @@ function LaneLegend() {
             d="M30 6 L44 20 L44 40 L30 54 L16 40 L16 20 Z"
             fill="none"
             stroke="#f8fafc"
-            strokeWidth="2"
+            strokeWidth="1.8"
           />
-          {/* Diagonal white stripes at 45° inside the island */}
+          {/* Diagonal chevron stripes — Diagram 1041, 45° across the island */}
           <g clipPath="url(#legend-hatch)">
-            {[-30, -22, -14, -6, 2, 10, 18, 26, 34, 42, 50, 58].map((v) => (
+            {[-36, -30, -24, -18, -12, -6, 0, 6, 12, 18, 24, 30, 36, 42, 48, 54].map((v) => (
               <line
                 key={v}
                 x1={v}
@@ -151,7 +166,7 @@ function LaneLegend() {
                 x2={v + 60}
                 y2={60}
                 stroke="#f8fafc"
-                strokeWidth="2"
+                strokeWidth="1.4"
               />
             ))}
           </g>
