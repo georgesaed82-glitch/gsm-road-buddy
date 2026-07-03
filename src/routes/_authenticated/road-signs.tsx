@@ -222,7 +222,7 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
         pickedIndex: idx,
         correct: isCorrect,
         explanation: current.meaning,
-        meta: current.group,
+        meta: current.category,
       },
     ]);
   };
