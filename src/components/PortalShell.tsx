@@ -54,7 +54,7 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
     return theoryActive;
   });
 
-  const practicalActive = practicalItems.some((i) => pathname === i.to || pathname.startsWith(i.to + "/"));
+  // (practicalActive not needed — active state is per-item on the link.)
 
   // Auto-open when navigating into a theory page, but don't force-close
   // when leaving — respect the user's explicit choice.
