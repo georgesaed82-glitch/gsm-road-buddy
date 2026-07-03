@@ -7,6 +7,7 @@ import { sampleTheoryQuestions, type TheoryQuestion } from "@/data/theory";
 import { CheckCircle2, XCircle, Clock, Trophy, Download, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { addMistakes } from "@/lib/mistakes";
+import { saveAttempt } from "@/lib/quizAttempts";
 
 const TEST_LENGTH = 50;
 const TEST_MINUTES = 60;
@@ -66,6 +67,32 @@ function MockRunner({ onRestart }: { onRestart: () => void }) {
       .map((q) => q.id);
     if (wrongIds.length) addMistakes(wrongIds);
   }, [done, order, answers]);
+
+  // Save the full attempt (questions, options, picks, correctness) so the
+  // learner can review it later from /my-attempts.
+  const [savedAttempt, setSavedAttempt] = useState(false);
+  useEffect(() => {
+    if (!done || savedAttempt) return;
+    saveAttempt({
+      kind: "mock",
+      label: `${TEST_LENGTH}-question mock`,
+      score: correctCount,
+      total: TEST_LENGTH,
+      items: order.map((q, idx) => {
+        const picked = answers[idx] ?? null;
+        return {
+          prompt: q.question,
+          options: q.options,
+          correctIndex: q.correctIndex,
+          pickedIndex: picked,
+          correct: picked === q.correctIndex,
+          explanation: q.explanation,
+          meta: q.category.replaceAll("-", " "),
+        };
+      }),
+    });
+    setSavedAttempt(true);
+  }, [done, savedAttempt, order, answers, correctCount]);
 
   if (done) {
     const pass = correctCount >= PASS_MARK;
