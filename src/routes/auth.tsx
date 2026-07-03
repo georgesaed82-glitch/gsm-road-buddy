@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Mail, Lock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { trackContactClick } from "@/lib/trackContactClick";
@@ -37,6 +38,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [remember, setRemember] = useState(false);
   const tracked = useRef(false);
   const verify = useServerFn(verifyPortalAccess);
   const runCaptchaConfig = useServerFn(getCaptchaConfig);
@@ -51,7 +53,19 @@ function AuthPage() {
     tracked.current = true;
     trackContactClick("portal_view", "learner-portal");
     runCaptchaConfig().then((c) => setSiteKey(c.siteKey)).catch(() => {});
-  }, [runCaptchaConfig]);
+    // Restore saved credentials for the learner portal
+    if (!isAdmin) {
+      try {
+        const raw = window.localStorage.getItem("gsm_remember_learner");
+        if (raw) {
+          const saved = JSON.parse(raw) as { email?: string; pin?: string };
+          if (saved.email) setEmail(saved.email);
+          if (saved.pin) setPassword(saved.pin);
+          setRemember(true);
+        }
+      } catch {}
+    }
+  }, [runCaptchaConfig, isAdmin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,6 +109,19 @@ function AuthPage() {
       if (isAdmin) {
         window.sessionStorage.setItem("admin_unlocked", "1");
         window.sessionStorage.setItem("admin_password", pw);
+      }
+      // Persist / clear the remembered learner credentials
+      if (!isAdmin) {
+        try {
+          if (remember) {
+            window.localStorage.setItem(
+              "gsm_remember_learner",
+              JSON.stringify({ email: emailValue, pin: pw }),
+            );
+          } else {
+            window.localStorage.removeItem("gsm_remember_learner");
+          }
+        } catch {}
       }
       // Subscription codes carry a student email — link the code login to
       // that Supabase account so progress persists across devices.
@@ -183,6 +210,16 @@ function AuthPage() {
                 </p>
                 <TurnstileWidget siteKey={siteKey} onToken={setCodeCaptchaToken} />
               </div>
+            )}
+            {!isAdmin && (
+              <label className="flex items-center gap-2 pt-1 text-sm text-muted-foreground">
+                <Checkbox
+                  checked={remember}
+                  onCheckedChange={(v) => setRemember(v === true)}
+                  disabled={submitting}
+                />
+                <span>Remember my email and PIN on this device</span>
+              </label>
             )}
           </form>
           <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left">
