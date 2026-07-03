@@ -141,14 +141,30 @@ export function StopLine() {
 }
 
 export function ZigZagCrossing() {
-  // Zig-zags approaching a zebra crossing.
-  const zig = "M10 60 L30 80 L50 60 L70 80 L90 60 L110 80 L130 60 L150 80 L170 60 L190 80";
+  // Zebra crossing: zig-zags on both approaches with alternating black/white
+  // stripes in the middle (Highway Code / Traffic Signs Manual style).
+  const zigTop = "M10 45 L30 65 L50 45 L70 65 L90 45 L110 65 L130 45 L150 65 L170 45 L190 65";
+  const zigBottom = "M10 155 L30 135 L50 155 L70 135 L90 155 L110 135 L130 155 L150 135 L170 155 L190 135";
   return (
     <Frame>
-      <path d={zig} fill="none" stroke={PAINT} strokeWidth="6" />
+      {/* Zig-zags on the near side */}
+      <path d={zigTop} fill="none" stroke={PAINT} strokeWidth="6" />
+      {/* Zig-zags on the far side */}
+      <path d={zigBottom} fill="none" stroke={PAINT} strokeWidth="6" />
+      {/* Alternating black/white zebra stripes */}
       <g>
-        {[10, 40, 70, 100, 130, 160].map((x) => (
-          <rect key={x} x={x} y="120" width="24" height="50" fill={PAINT} />
+        {[
+          { x: 12, fill: PAINT },
+          { x: 32, fill: ROAD },
+          { x: 52, fill: PAINT },
+          { x: 72, fill: ROAD },
+          { x: 92, fill: PAINT },
+          { x: 112, fill: ROAD },
+          { x: 132, fill: PAINT },
+          { x: 152, fill: ROAD },
+          { x: 172, fill: PAINT },
+        ].map((s, i) => (
+          <rect key={i} x={s.x} y="80" width="18" height="52" fill={s.fill} />
         ))}
       </g>
     </Frame>
