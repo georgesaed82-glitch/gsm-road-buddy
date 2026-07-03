@@ -8,6 +8,7 @@ export type QuizKind =
   | "mock"
   | "signs"
   | "markings"
+  | "topic"
   | "questions-easy"
   | "questions-medium"
   | "questions-hard";
@@ -98,6 +99,7 @@ export const kindLabels: Record<QuizKind, string> = {
   mock: "Mock test",
   signs: "Road signs",
   markings: "Road markings",
+  topic: "Topic mini-quiz",
   "questions-easy": "Theory questions · Easy",
   "questions-medium": "Theory questions · Medium",
   "questions-hard": "Theory questions · Hard",

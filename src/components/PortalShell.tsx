@@ -1,10 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown, Copyright, History } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown, Copyright, History, Film } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { PortalSearch } from "@/components/PortalSearch";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
 
@@ -25,7 +26,10 @@ const theoryItems: Item[] = [
   { to: "/my-attempts", label: "My attempts", icon: History },
 ];
 
-const hazardItem: Item = { to: "/hazard-perception", label: "Hazard perception", icon: Eye };
+const practicalItems: Item[] = [
+  { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
+  { to: "/driving-clips", label: "Driving clips", icon: Film },
+];
 
 const bottomItems: Item[] = [
   { to: "/profile", label: "Profile", icon: UserCircle2 },
@@ -50,7 +54,7 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
     return theoryActive;
   });
 
-  const hazardActive = pathname === hazardItem.to || pathname.startsWith(hazardItem.to + "/");
+  // (practicalActive not needed — active state is per-item on the link.)
 
   // Auto-open when navigating into a theory page, but don't force-close
   // when leaving — respect the user's explicit choice.
@@ -77,6 +81,9 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
           <div className="border-b border-border px-3 py-3">
             <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Learner portal</div>
             <div className="mt-1 font-display text-lg text-foreground">Your dashboard</div>
+          </div>
+          <div className="border-b border-border p-2">
+            <PortalSearch />
           </div>
           <nav className="mt-2 flex flex-col gap-0.5">
             {topItems.map((item) => {
@@ -144,23 +151,25 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
               </div>
             )}
 
-            {(() => {
-              const HazardIcon = hazardItem.icon;
+            {practicalItems.map((item) => {
+              const active = pathname === item.to;
+              const Icon = item.icon;
               return (
                 <Link
-                  to={hazardItem.to}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
-                hazardActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-              )}
-            >
-                  <HazardIcon className="h-4 w-4" />
-                  {hazardItem.label}
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
                 </Link>
               );
-            })()}
+            })}
 
             {bottomItems.map((item) => {
               const active = pathname === item.to;

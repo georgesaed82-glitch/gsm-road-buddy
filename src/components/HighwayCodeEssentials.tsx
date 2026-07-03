@@ -1,4 +1,5 @@
 import { forwardRef, useId, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactElement, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
+import { GeorgesTip } from "@/components/GeorgesTip";
 
 // ─────────────────────────────────────────────────────────────
 // Highway Code — visual essentials
@@ -6,9 +7,9 @@ import { forwardRef, useId, useRef, useState, type PointerEvent as ReactPointerE
 // Sections: Road studs · Stopping distances · Traffic light types
 // ─────────────────────────────────────────────────────────────
 
-function Panel({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
+function Panel({ id, title, subtitle, children }: { id?: string; title: string; subtitle?: string; children: ReactNode }) {
   return (
-    <section className="border border-border bg-card p-5 sm:p-6">
+    <section id={id} className="scroll-mt-24 border border-border bg-card p-5 sm:p-6">
       <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Essentials</div>
       <h3 className="mt-1 font-display text-2xl leading-tight">{title}</h3>
       {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
@@ -477,6 +478,7 @@ function RoadStuds() {
 
   return (
     <Panel
+      id="road-studs"
       title="Road stud colours (rule 132)"
       subtitle="Reflective studs mark lane edges — colour tells you what the line means."
     >
@@ -675,6 +677,7 @@ function VehicleSpeedLimits() {
 
   return (
     <Panel
+      id="speed-limits"
       title="Speed limits for different vehicles"
       subtitle="Rule 124. The national speed limit depends on the vehicle you're driving AND the type of road. A lower limit shown on a sign always overrides these figures."
     >
@@ -975,6 +978,7 @@ function StoppingDistances() {
   const max = 96; // 21+75
   return (
     <Panel
+      id="stopping-distances"
       title="Typical stopping distances (rule 126)"
       subtitle="Total stopping distance = thinking distance + braking distance. In wet weather double it; on ice it can be ten times greater."
     >
@@ -1092,6 +1096,7 @@ function CrossingIcon({ kind }: { kind: "pelican" | "puffin" | "toucan" }) {
 function TrafficLights() {
   return (
     <Panel
+      id="traffic-lights"
       title="Traffic lights & pedestrian crossings"
       subtitle="The signal sequence, the flashing amber phase, filter arrows, and what Pelican / Puffin / Toucan actually stand for."
     >
@@ -1623,6 +1628,7 @@ function GiveWayJunctionSvg() {
 function HierarchyOfRoadUsers() {
   return (
     <Panel
+      id="hierarchy"
       title="Hierarchy of Road Users"
       subtitle="Rules H1, H2 & H3 — introduced in the 2022 Highway Code update"
     >
@@ -1708,6 +1714,13 @@ function HierarchyOfRoadUsers() {
           <li>If braking suddenly would create an immediate danger to you or others, and no one has started crossing, continue cautiously.</li>
           <li>Never wave pedestrians across — let them decide. Other drivers may not see them.</li>
         </ol>
+
+        <GeorgesTip title="Turning at junctions">
+          Before you commit to any turn, take a proper look at the pavement
+          you're turning across — <strong>not just the road</strong>. On a busy
+          high street I always slow more than feels necessary; the extra second
+          buys you a decision if a pedestrian steps off.
+        </GeorgesTip>
       </div>
     </Panel>
   );
@@ -1961,6 +1974,7 @@ function ZebraSceneSvg() {
 function ZebraCrossing() {
   return (
     <Panel
+      id="zebra-crossings"
       title="Zebra crossings — pedestrians have priority"
       subtitle="Black-and-white stripes, flashing amber Belisha beacons, no signals. Rules 19, 195."
     >
@@ -1999,6 +2013,14 @@ function ZebraCrossing() {
       <div className="mt-4 border border-border bg-secondary/40 p-3 text-xs text-muted-foreground">
         Also worth knowing: on a <strong>parallel crossing</strong> (zebra with a cycle lane alongside), cyclists have the same priority as pedestrians. A <strong>staggered</strong> crossing with a central island counts as <strong>two separate crossings</strong>.
       </div>
+
+      <GeorgesTip title="Zebra crossings">
+        Don't just look at the crossing itself — scan <strong>both pavements</strong>
+        before you arrive. A pedestrian walking briskly towards the kerb is
+        already a developing hazard. If you're unsure, <strong>cover the brake
+        early</strong>. Never wave people across — another driver may not have
+        seen them.
+      </GeorgesTip>
 
       {/* Second diagram — zebra with a central refuge island */}
       <div className="mt-8">
@@ -2482,6 +2504,7 @@ function YellowBoxJunctionSvg() {
 function YellowBoxJunction() {
   return (
     <Panel
+      id="yellow-box"
       title="Yellow box junction — turning right"
       subtitle="Rule 174. Do not enter unless your exit is clear — one exception: turning right, blocked only by oncoming traffic."
     >
@@ -2608,6 +2631,7 @@ function OffsideTurnSvg() {
 function NearsideOffsideJunction() {
   return (
     <Panel
+      id="nearside-offside"
       title="Turning right at a crossroads — nearside vs offside"
       subtitle="Two vehicles turning right at the same signalised crossroads. Rules 176–181."
     >
@@ -2907,6 +2931,7 @@ function MajorMinorOffsideSvg() {
 function MoreRule181Scenarios() {
   return (
     <Panel
+      id="rule-181"
       title="More Rule 181 scenarios — compare the outcomes"
       subtitle="Same rule, different junctions. Approach angle and road type change which method actually works."
     >
@@ -3207,6 +3232,7 @@ function SmartMotorwayEndSvg() {
 function SmartMotorway() {
   return (
     <Panel
+      id="smart-motorway"
       title="Smart motorway gantry signs"
       subtitle="Rules 258 & 261. The signs above your lane tell you what to do — from that gantry, until the next one cancels them."
     >
