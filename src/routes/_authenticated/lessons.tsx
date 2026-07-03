@@ -227,9 +227,9 @@ function LessonsPage() {
         <section>
           {sessionInfo && !sessionInfo.signedIn && (
             <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
-              You're using a shared access code, so scores won't save to your account. Sign in with your
-              email + password on the <a href="/auth" className="font-medium underline">login page</a> to
-              track your personal progress.
+              You're using a shared access code, so scores won't save to your account.
+              Log in with your email + the PIN George gave you on the{' '}
+              <a href="/auth" className="font-medium underline">login page</a> to track your personal progress.
             </div>
           )}
           {sessionInfo?.signedIn && sessionInfo.email && (
