@@ -32,6 +32,7 @@ import { Route as AuthenticatedQuestionsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPoliceSignalsRouteImport } from './routes/_authenticated/police-signals'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
+import { Route as AuthenticatedMyAttemptsRouteImport } from './routes/_authenticated/my-attempts'
 import { Route as AuthenticatedMockTestsRouteImport } from './routes/_authenticated/mock-tests'
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
 import { Route as AuthenticatedHighwayCodeRouteImport } from './routes/_authenticated/highway-code'
@@ -166,6 +167,11 @@ const AuthenticatedPaymentsRoute = AuthenticatedPaymentsRouteImport.update({
   path: '/payments',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMyAttemptsRoute = AuthenticatedMyAttemptsRouteImport.update({
+  id: '/my-attempts',
+  path: '/my-attempts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMockTestsRoute = AuthenticatedMockTestsRouteImport.update({
   id: '/mock-tests',
   path: '/mock-tests',
@@ -279,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
   '/mock-tests': typeof AuthenticatedMockTestsRoute
+  '/my-attempts': typeof AuthenticatedMyAttemptsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/police-signals': typeof AuthenticatedPoliceSignalsRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -319,6 +326,7 @@ export interface FileRoutesByTo {
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
   '/mock-tests': typeof AuthenticatedMockTestsRoute
+  '/my-attempts': typeof AuthenticatedMyAttemptsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/police-signals': typeof AuthenticatedPoliceSignalsRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -362,6 +370,7 @@ export interface FileRoutesById {
   '/_authenticated/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
   '/_authenticated/mock-tests': typeof AuthenticatedMockTestsRoute
+  '/_authenticated/my-attempts': typeof AuthenticatedMyAttemptsRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/police-signals': typeof AuthenticatedPoliceSignalsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -405,6 +414,7 @@ export interface FileRouteTypes {
     | '/highway-code'
     | '/lessons'
     | '/mock-tests'
+    | '/my-attempts'
     | '/payments'
     | '/police-signals'
     | '/profile'
@@ -445,6 +455,7 @@ export interface FileRouteTypes {
     | '/highway-code'
     | '/lessons'
     | '/mock-tests'
+    | '/my-attempts'
     | '/payments'
     | '/police-signals'
     | '/profile'
@@ -487,6 +498,7 @@ export interface FileRouteTypes {
     | '/_authenticated/highway-code'
     | '/_authenticated/lessons'
     | '/_authenticated/mock-tests'
+    | '/_authenticated/my-attempts'
     | '/_authenticated/payments'
     | '/_authenticated/police-signals'
     | '/_authenticated/profile'
@@ -694,6 +706,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPaymentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/my-attempts': {
+      id: '/_authenticated/my-attempts'
+      path: '/my-attempts'
+      fullPath: '/my-attempts'
+      preLoaderRoute: typeof AuthenticatedMyAttemptsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/mock-tests': {
       id: '/_authenticated/mock-tests'
       path: '/mock-tests'
@@ -852,6 +871,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHighwayCodeRoute: typeof AuthenticatedHighwayCodeRoute
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
   AuthenticatedMockTestsRoute: typeof AuthenticatedMockTestsRoute
+  AuthenticatedMyAttemptsRoute: typeof AuthenticatedMyAttemptsRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedPoliceSignalsRoute: typeof AuthenticatedPoliceSignalsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
@@ -870,6 +890,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHighwayCodeRoute: AuthenticatedHighwayCodeRoute,
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
   AuthenticatedMockTestsRoute: AuthenticatedMockTestsRoute,
+  AuthenticatedMyAttemptsRoute: AuthenticatedMyAttemptsRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedPoliceSignalsRoute: AuthenticatedPoliceSignalsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
@@ -904,13 +925,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

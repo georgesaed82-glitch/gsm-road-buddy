@@ -16,6 +16,8 @@ import {
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import { useEffect } from "react";
+import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
 
 export const Route = createFileRoute("/_authenticated/road-signs")({
   head: () => ({ meta: [{ title: "Road signs · GSM" }] }),
@@ -129,8 +131,35 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
   const [wrong, setWrong] = useState(0);
   const [missed, setMissed] = useState<Sign[]>([]);
   const [q, setQ] = useState(() => buildSignOptions(order[0], pool));
+  const [log, setLog] = useState<QuizAttemptItem[]>([]);
+  const [savedAttempt, setSavedAttempt] = useState(false);
 
   const current = order[i];
+
+  // Persist the attempt once the quiz completes.
+  useEffect(() => {
+    if (current || savedAttempt || log.length === 0) return;
+    saveAttempt({
+      kind: "signs",
+      label: `${order.length} signs`,
+      score: right,
+      total: order.length,
+      items: log,
+    });
+    setSavedAttempt(true);
+  }, [current, savedAttempt, log, order.length, right]);
+
+  const resetRun = (nextOrder: Sign[]) => {
+    setOrder(nextOrder);
+    setI(0);
+    setPicked(null);
+    setRight(0);
+    setWrong(0);
+    setMissed([]);
+    setLog([]);
+    setSavedAttempt(false);
+    setQ(buildSignOptions(nextOrder[0], pool));
+  };
 
   if (!current) {
     return (
@@ -158,35 +187,14 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
           </div>
         )}
         <div className="mt-6 flex flex-wrap gap-3">
-          <Button
-            className="rounded-none"
-            onClick={() => {
-              const fresh = shuffle(pool);
-              setOrder(fresh);
-              setI(0);
-              setPicked(null);
-              setRight(0);
-              setWrong(0);
-              setMissed([]);
-              setQ(buildSignOptions(fresh[0], pool));
-            }}
-          >
+          <Button className="rounded-none" onClick={() => resetRun(shuffle(pool))}>
             Start again
           </Button>
           {missed.length > 0 && (
             <Button
               variant="outline"
               className="rounded-none"
-              onClick={() => {
-                const fresh = shuffle(missed);
-                setOrder(fresh);
-                setI(0);
-                setPicked(null);
-                setRight(0);
-                setWrong(0);
-                setMissed([]);
-                setQ(buildSignOptions(fresh[0], pool));
-              }}
+              onClick={() => resetRun(shuffle(missed))}
             >
               Practice missed ({missed.length}) →
             </Button>
@@ -199,11 +207,24 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
   const onPick = (idx: number) => {
     if (picked !== null) return;
     setPicked(idx);
-    if (idx === q.correctIndex) setRight((n) => n + 1);
+    const isCorrect = idx === q.correctIndex;
+    if (isCorrect) setRight((n) => n + 1);
     else {
       setWrong((n) => n + 1);
       setMissed((m) => [...m, current]);
     }
+    setLog((l) => [
+      ...l,
+      {
+        prompt: `What does this sign mean? (${current.name})`,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        pickedIndex: idx,
+        correct: isCorrect,
+        explanation: current.meaning,
+        meta: current.category,
+      },
+    ]);
   };
 
   const next = () => {

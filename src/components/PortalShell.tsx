@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown, Copyright } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown, Copyright, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -22,6 +22,7 @@ const theoryItems: Item[] = [
   { to: "/questions", label: "Questions", icon: HelpCircle },
   { to: "/mock-tests", label: "Mock tests", icon: ClipboardCheck },
   { to: "/review", label: "Review mistakes", icon: RotateCcw },
+  { to: "/my-attempts", label: "My attempts", icon: History },
 ];
 
 const hazardItem: Item = { to: "/hazard-perception", label: "Hazard perception", icon: Eye };

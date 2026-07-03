@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, XCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { roadMarkings, type RoadMarking } from "@/data/roadMarkings";
 import { cn } from "@/lib/utils";
+import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice();
@@ -30,6 +31,8 @@ export function MarkingsQuiz() {
   const [correct, setCorrect] = useState(0);
   const [missed, setMissed] = useState<RoadMarking[]>([]);
   const [finished, setFinished] = useState(false);
+  const [log, setLog] = useState<QuizAttemptItem[]>([]);
+  const [savedAttempt, setSavedAttempt] = useState(false);
 
   const current = pool[idx];
   const q = useMemo(
@@ -43,6 +46,8 @@ export function MarkingsQuiz() {
     setCorrect(0);
     setMissed([]);
     setFinished(false);
+    setLog([]);
+    setSavedAttempt(false);
   };
 
   const practiceMissed = () => {
@@ -57,7 +62,24 @@ export function MarkingsQuiz() {
     setCorrect(0);
     setMissed([]);
     setFinished(false);
+    setLog([]);
+    setSavedAttempt(false);
   };
+
+  // Save the attempt once the quiz is complete.
+  useEffect(() => {
+    const answered = correct + missed.length;
+    const done = finished || !pool[idx];
+    if (!done || savedAttempt || log.length === 0) return;
+    saveAttempt({
+      kind: "markings",
+      label: `${answered} road markings`,
+      score: correct,
+      total: answered,
+      items: log,
+    });
+    setSavedAttempt(true);
+  }, [finished, idx, pool, correct, missed.length, log, savedAttempt]);
 
   if (finished || !current || !q) {
     const answered = correct + missed.length;
@@ -117,8 +139,20 @@ export function MarkingsQuiz() {
   const pick = (i: number) => {
     if (answered) return;
     setChosen(i);
-    if (i === q.correctIndex) setCorrect((c) => c + 1);
+    const isCorrect = i === q.correctIndex;
+    if (isCorrect) setCorrect((c) => c + 1);
     else setMissed((m) => [...m, current]);
+    setLog((l) => [
+      ...l,
+      {
+        prompt: `What does this road marking mean? (${current.name})`,
+        options: q.options.map((o) => o.name),
+        correctIndex: q.correctIndex,
+        pickedIndex: i,
+        correct: isCorrect,
+        explanation: current.meaning,
+      },
+    ]);
   };
 
   const next = () => {
