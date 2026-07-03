@@ -15,10 +15,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 82,
     topics: ["Mirror checks", "Blind spots", "Distractions", "Tiredness"],
     keyPoints: [
-      "Mirror–Signal–Manoeuvre before every change of speed or direction.",
-      "Take a 15-minute break every 2 hours on long drives.",
-      "No phone in your hand — even at the lights. It's 6 points and £200.",
-      "Scan far, middle, near and check mirrors every 5–8 seconds.",
+      "Mirror–Signal–Manoeuvre (MSM) before every change of speed or direction (Rule 159).",
+      "Take a 15-minute break every 2 hours on long drives (Rule 91).",
+      "No hand-held phone — even at the lights. 6 points and £200 fine (Rule 149).",
+      "Scan far, middle, near and check mirrors every 5–8 seconds (Rules 161, 202).",
     ],
   },
   {
@@ -28,10 +28,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 71,
     topics: ["Following distance", "Priority", "Aggressive driving", "Emergency vehicles"],
     keyPoints: [
-      "Two-second rule on dry roads, four seconds when wet, ten in ice.",
-      "Never use your horn aggressively or between 11:30pm and 7am in built-up areas.",
-      "Move left and slow down for blue lights — don't brake hard or mount the kerb.",
-      "Let buses pull out from bus stops in 20/30mph zones.",
+      "Two-second rule on dry roads, four seconds when wet, ten in ice (Rule 126).",
+      "Never use your horn aggressively or between 11:30pm and 7am in built-up areas (Rule 112).",
+      "Move left and slow down for blue lights — do not brake hard or mount the kerb (Rule 219).",
+      "You should let buses pull out from bus stops in 20/30mph zones (Rule 223).",
     ],
   },
   {
@@ -41,8 +41,8 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 119,
     topics: ["Tyres", "Lights", "Fluids", "Eco driving", "Security"],
     keyPoints: [
-      "Minimum tyre tread depth is 1.6mm across the central ¾ of the tyre.",
-      "POWDERY check: Petrol, Oil, Water, Damage, Electrics, Rubber, Yourself.",
+      "Minimum tyre tread depth is 1.6mm across the central ¾ of the tyre (Rule 97, Reg. 27).",
+      "POWDERY check before every drive: Petrol, Oil, Water, Damage, Electrics, Rubber, Yourself.",
       "Smooth acceleration and early gear changes cut fuel by up to 15%.",
       "Always remove the key and lock the car — even on your own drive.",
     ],
@@ -54,10 +54,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 64,
     topics: ["Wet roads", "Snow & ice", "Fog", "Skid recovery"],
     keyPoints: [
-      "Stopping distances: 20mph = 12m, 30mph = 23m, 40mph = 36m, 50mph = 53m, 60mph = 73m, 70mph = 96m.",
-      "Wet roads double stopping distance. Ice multiplies it by ten.",
-      "In a skid, ease off the accelerator and steer gently into the skid.",
-      "Use dipped headlights in fog — fog lights only when visibility is under 100m.",
+      "Stopping distances (Rule 126): 20mph = 12m, 30mph = 23m, 40mph = 36m, 50mph = 53m, 60mph = 73m, 70mph = 96m.",
+      "Wet roads double stopping distance; ice multiplies it by up to ten (Rule 227).",
+      "In a skid, ease off the accelerator and steer gently into the skid (Rule 119).",
+      "Use dipped headlights in poor visibility — fog lights only when visibility is under 100m (Rules 114, 226).",
     ],
   },
   {
@@ -80,10 +80,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 88,
     topics: ["Crossings", "Schools", "Horses", "Mobility scooters"],
     keyPoints: [
-      "Give cyclists at least 1.5m of space at up to 30mph, more at higher speeds.",
-      "Pass horses at no more than 10mph and leave at least 2m. Never sound the horn.",
-      "Stop completely at zebra crossings when someone is waiting.",
-      "Children, elderly and disabled pedestrians may take longer to cross — wait patiently.",
+      "Give cyclists at least 1.5m at up to 30mph, more at higher speeds (Rule 163).",
+      "Pass horses at no more than 10mph and leave at least 2m. Never sound the horn (Rule 215).",
+      "Approach zebra crossings prepared to stop and normally give way to pedestrians waiting to cross (Rules H2, 195).",
+      "Children, older and disabled pedestrians may take longer to cross — wait patiently (Rules 205, 207).",
     ],
   },
   {
@@ -93,10 +93,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 42,
     topics: ["Blind spots on HGVs", "Bus lanes", "Tram tracks"],
     keyPoints: [
-      "Stay out of HGV blind spots — if you can't see the driver's mirrors, they can't see you.",
-      "Give long vehicles extra room when they're turning — they swing out.",
-      "Don't drive in bus lanes during their hours of operation.",
-      "Trams have priority and can't steer around you.",
+      "Stay out of HGV blind spots — if you can't see the driver's mirrors, they can't see you (Rule 221).",
+      "Give long vehicles extra room when they're turning — they swing out (Rule 221).",
+      "Do not drive in bus lanes during their hours of operation (Rule 141).",
+      "Trams have priority and can't steer around you (Rules 300–307).",
     ],
   },
   {
@@ -106,10 +106,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 78,
     topics: ["Night driving", "Country roads", "Wet & ice", "Wind"],
     keyPoints: [
-      "Use dipped headlights in poor daytime visibility.",
-      "On unlit roads, use full beam but dip for oncoming traffic and when following.",
-      "Slow down before a bend, accelerate gently out of it.",
-      "High winds: grip the wheel firmly, especially passing high-sided vehicles.",
+      "Use dipped headlights in poor daytime visibility (Rule 226).",
+      "On unlit roads, use full beam but dip for oncoming traffic and when following (Rule 115).",
+      "Slow down before a bend, accelerate gently out of it (Rule 125).",
+      "High winds: grip the wheel firmly, especially passing high-sided vehicles (Rule 232).",
     ],
   },
   {
@@ -119,10 +119,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 95,
     topics: ["Joining & leaving", "Lane discipline", "Smart motorways", "Breakdowns"],
     keyPoints: [
-      "Match the speed of motorway traffic before joining from the slip road.",
-      "Keep left unless overtaking. Middle-lane hogging is a £100 fine and 3 points.",
-      "Red X means lane closed — do not drive in it.",
-      "If you break down, get behind the barrier and call 999 if you can't reach a refuge area.",
+      "Match the speed of main-carriageway traffic before joining from the slip road (Rule 259).",
+      "Keep to the left-hand lane (lane 1) unless overtaking. Middle-lane hogging is a £100 fine and 3 points (Rule 264).",
+      "Red X means lane closed — you must not drive in it (Rule 258).",
+      "If you break down on a smart motorway, exit to an emergency refuge area if possible; otherwise get behind the barrier on the left and call 999 (Rules 274–278).",
     ],
   },
   {
@@ -132,10 +132,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 112,
     topics: ["Speed limits", "Junctions", "Overtaking", "Parking"],
     keyPoints: [
-      "Default limits: 30 in built-up, 60 single carriageway, 70 dual & motorway.",
-      "Never overtake on the approach to a junction, bend, brow of a hill or zebra.",
-      "Don't park within 10m of a junction or on zig-zag lines.",
-      "At a roundabout, give priority to traffic coming from your right.",
+      "Default limits: 30mph in built-up, 60mph single carriageway, 70mph dual carriageway & motorway (Rule 124).",
+      "Do not overtake on the approach to a junction, bend, brow of a hill or crossing (Rule 167).",
+      "Do not park within 10m of a junction or on zig-zag lines (Rules 243, 240).",
+      "At a roundabout, give way to traffic coming from your immediate right unless signs or markings say otherwise (Rule 185).",
     ],
   },
   {
@@ -145,10 +145,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 156,
     topics: ["Triangle signs", "Circle signs", "Markings", "Variable signs"],
     keyPoints: [
-      "Circles give orders. Triangles warn. Rectangles inform.",
-      "Red circle = prohibition. Blue circle = mandatory action.",
-      "Solid white line in the middle of the road = do not cross to overtake.",
-      "Yellow box junction — only enter if your exit is clear.",
+      "Circles give orders. Triangles warn. Rectangles inform. Octagon = STOP. Downward triangle = GIVE WAY.",
+      "Red circle / red ring = prohibition. Blue circle = mandatory action.",
+      "Solid white line in the middle of the road: you must not cross or straddle it except to turn, pass a stationary vehicle or overtake a cyclist/horse/road-works vehicle under 10mph (Rule 129).",
+      "Yellow box junction — you must not enter unless your exit is clear (Rule 174).",
     ],
   },
   {
@@ -158,10 +158,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 49,
     topics: ["Licence categories", "MOT", "Insurance", "VED"],
     keyPoints: [
-      "You must hold a valid licence, insurance and (if over 3 years) MOT to drive.",
-      "Tell DVLA within 7 days if you change address or have a notifiable medical condition.",
-      "New drivers can lose their licence at 6 penalty points in the first 2 years.",
-      "Always carry your licence, or produce it at a station within 7 days.",
+      "You must hold a valid licence, insurance and (if the vehicle is over 3 years old) an MOT to drive.",
+      "Tell DVLA if you change address or develop a notifiable medical condition — some notifications are legal requirements.",
+      "Under the New Drivers Act, your licence is revoked at 6 penalty points in the first 2 years after passing.",
+      "If a police officer asks and you don't have your licence with you, you have 7 days to produce it at a station.",
     ],
   },
   {
@@ -171,10 +171,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 67,
     topics: ["First aid", "Fire", "Breakdowns", "Tunnels"],
     keyPoints: [
-      "At a crash: stop, warn other traffic (hazards, triangle 45m back), call 999.",
+      "At a crash: stop, warn other traffic (hazards, warning triangle at least 45m back — never on a motorway), call 999 (Rule 283).",
       "DR ABC — Danger, Response, Airway, Breathing, Circulation.",
-      "Don't move a casualty unless they're in immediate danger.",
-      "In a tunnel breakdown: switch off engine, use emergency phone, never reverse.",
+      "Do not move a casualty unless they are in immediate danger (Rule 283).",
+      "In a tunnel breakdown: switch off engine, switch on hazard lights, use the emergency phone, never reverse (Rules 126, 128).",
     ],
   },
   {
@@ -184,10 +184,10 @@ export const theoryCategories: TheoryCategory[] = [
     totalQuestions: 38,
     topics: ["Passengers", "Roof loads", "Towing", "Child seats"],
     keyPoints: [
-      "Children under 12 or under 135cm must use an appropriate child restraint.",
-      "You're responsible for any passenger under 14 wearing their seatbelt.",
+      "Children under 12 years or under 135cm must use an appropriate child restraint (Rule 100).",
+      "You are responsible for any passenger under 14 wearing their seatbelt (Rule 99).",
       "Distribute roof loads evenly and check straps after the first few miles.",
-      "Towing changes your stopping distance and the speed limits that apply to you.",
+      "Towing changes your stopping distance and the speed limits that apply to you (Rule 98).",
     ],
   },
 ];

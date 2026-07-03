@@ -484,7 +484,7 @@ function RoadStuds() {
         <DualCarriagewayStudsSvg ref={svgRef} />
       </ZoomPan>
       <p className="sr-only">
-        Text description of the road studs diagram: a top-down view of a UK dual carriageway with the hard shoulder on the left and traffic flowing up the page. From left to right the layout is: grass verge, hard shoulder, lane one, lane two, central reservation, opposite carriageway, and grass verge. Red reflective studs mark the left edge line between the hard shoulder and lane one. White studs mark the broken centre line between the two lanes. Amber studs mark the right edge line next to the central reservation. Green studs mark the main carriageway edge where a slip road joins from the bottom-left. Green and yellow studs mark temporary road layouts such as contraflows and roadworks. Use the zoom in, zoom out and reset buttons to enlarge the diagram.
+        Text description of the road studs diagram: a top-down view of a UK dual carriageway with the hard shoulder on the left and traffic flowing up the page. From left to right the layout is: grass verge, hard shoulder, left-hand lane (lane 1), right-hand lane (lane 2), central reservation, opposite carriageway, and grass verge. Red reflective studs mark the left edge line between the hard shoulder and the left-hand lane (lane 1). White studs mark the broken centre line between the two lanes. Amber studs mark the right edge line next to the central reservation. Green studs mark the main carriageway edge where a slip road joins from the bottom-left. Green and yellow studs mark temporary road layouts such as contraflows and roadworks. Use the zoom in, zoom out and reset buttons to enlarge the diagram.
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         <button
@@ -832,7 +832,7 @@ const DualCarriagewayStudsSvg = forwardRef<SVGSVGElement>((_props, ref) => {
     <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-labelledby={`${titleId} ${descId}`}>
       <title id={titleId}>Top-down UK dual carriageway showing road stud colours</title>
       <desc id={descId}>
-        A bird's-eye view of a UK dual carriageway with the hard shoulder on the left and traffic flowing up the page. Red studs mark the left edge line between the hard shoulder and lane one. White studs mark the broken centre line between the two lanes. Amber studs mark the right edge line next to the central reservation. Green studs mark the main carriageway edge where a slip road joins from the bottom-left. Green and yellow studs are used for temporary layouts such as contraflows and roadworks.
+        A bird's-eye view of a UK dual carriageway with the hard shoulder on the left and traffic flowing up the page. Red studs mark the left edge line between the hard shoulder and the left-hand lane (lane 1). White studs mark the broken centre line between the two lanes. Amber studs mark the right edge line next to the central reservation. Green studs mark the main carriageway edge where a slip road joins from the bottom-left. Green and yellow studs are used for temporary layouts such as contraflows and roadworks.
       </desc>
       <defs>
         <linearGradient id="rs-tarmac2" x1="0" x2="1" y1="0" y2="0">
@@ -1229,6 +1229,7 @@ function TrafficLights() {
 export function HighwayCodeEssentials() {
   return (
     <div className="grid gap-6">
+      <MustShouldLegend />
       <RoadStuds />
       <HierarchyOfRoadUsers />
       <StoppingDistances />
@@ -1240,6 +1241,50 @@ export function HighwayCodeEssentials() {
       <SmartMotorway />
       <VehicleSpeedLimits />
     </div>
+  );
+}
+
+// ── MUST vs SHOULD legend ─────────────────────────────────────────
+// The Highway Code uses MUST / MUST NOT for legal requirements and
+// SHOULD / SHOULD NOT (or "do" / "do not") for strong guidance that is
+// not itself a legal offence. Learners routinely confuse the two, so
+// this legend sits at the top of the Highway Code page.
+function MustShouldLegend() {
+  return (
+    <section className="border border-border bg-card p-5 sm:p-6">
+      <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Before you read on</div>
+      <h3 className="mt-1 font-display text-2xl leading-tight">MUST vs SHOULD — read the wording carefully</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        The Highway Code uses two very different tones. Getting the difference
+        right is what separates a competent learner driver from a nervous one.
+      </p>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className="border border-destructive/60 bg-destructive/5 p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-destructive">MUST / MUST NOT</div>
+          <p className="mt-2 text-sm">
+            A <strong>legal requirement</strong>. Breaking it is an offence — you
+            can be fined, get penalty points, be disqualified or, in serious
+            cases, prosecuted. Examples: stopping at a red light, wearing a
+            seatbelt, not using a hand-held phone.
+          </p>
+        </div>
+        <div className="border border-primary/50 bg-primary/5 p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-primary">SHOULD / SHOULD NOT</div>
+          <p className="mt-2 text-sm">
+            <strong>Strong guidance</strong>, not a specific offence in itself —
+            but ignoring it can still be used in court to establish liability
+            (e.g. careless or dangerous driving). Examples: giving way to
+            pedestrians waiting to cross at a junction (Rule H2), leaving a
+            safe following distance (Rule 126).
+          </p>
+        </div>
+      </div>
+      <p className="mt-3 text-xs text-muted-foreground">
+        Throughout this portal we try to use the same wording as the Highway
+        Code. If you see <strong>MUST</strong> it is law; if you see
+        <strong> should</strong> it is guidance you are expected to follow.
+      </p>
+    </section>
   );
 }
 
@@ -1638,19 +1683,20 @@ function HierarchyOfRoadUsers() {
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="border border-border bg-emerald-50 p-3 text-sm dark:bg-emerald-950/30">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-emerald-800 dark:text-emerald-300">You should stop</div>
+            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-emerald-800 dark:text-emerald-300">You should give way</div>
             If a pedestrian is <strong>crossing</strong>, or is clearly
             <strong> waiting to cross</strong>, and stopping is <strong>safe</strong>
             (nothing close behind you, no risk of being rear-ended), you
-            <strong> must give way</strong> under Rule H2. Stop <em>before</em> the
-            give-way line, make eye contact, and let them finish crossing.
+            <strong> should give way</strong> under Rule H2 (guidance, not a
+            legal MUST). Stop <em>before</em> the give-way line and let them
+            finish crossing — do not wave them across.
           </div>
           <div className="border border-border bg-amber-50 p-3 text-sm dark:bg-amber-950/30">
             <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-300">You don't have to stop</div>
-            If stopping would <strong>cause an accident</strong> — for example a
-            vehicle is right behind you and braking hard would cause a
-            collision — and the pedestrian <strong>has not yet started</strong>
-            to cross, you are not obliged to stop. Safety of everyone comes
+            If <strong>braking suddenly would create an immediate danger</strong>
+            to you or other road users — for example a vehicle is right behind
+            you — and the pedestrian <strong>has not begun crossing</strong>,
+            continue <strong>cautiously</strong>. Defensive driving comes
             first; judgement, not blind rule-following.
           </div>
         </div>
@@ -1659,7 +1705,7 @@ function HierarchyOfRoadUsers() {
           <li><strong>Mirrors — Signal — Position — Speed — Look (MSPSL)</strong> on approach.</li>
           <li>Scan the pavement on both sides <em>before</em> you commit to the turn.</li>
           <li>If a pedestrian is crossing or waiting, and it is safe, <strong>stop and give way</strong>.</li>
-          <li>If stopping would cause a rear-end collision and no one has started crossing, proceed with caution.</li>
+          <li>If braking suddenly would create an immediate danger to you or others, and no one has started crossing, continue cautiously.</li>
           <li>Never wave pedestrians across — let them decide. Other drivers may not see them.</li>
         </ol>
       </div>
