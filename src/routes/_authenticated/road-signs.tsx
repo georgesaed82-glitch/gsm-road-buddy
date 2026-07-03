@@ -127,6 +127,7 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
   const [picked, setPicked] = useState<number | null>(null);
   const [right, setRight] = useState(0);
   const [wrong, setWrong] = useState(0);
+  const [missed, setMissed] = useState<Sign[]>([]);
   const [q, setQ] = useState(() => buildSignOptions(order[0], pool));
 
   const current = order[i];
@@ -138,20 +139,59 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
         <p className="mt-2 text-sm text-muted-foreground">
           You scored <b>{right}</b> right and <b>{wrong}</b> wrong out of {order.length}.
         </p>
-        <Button
-          className="mt-4 rounded-none"
-          onClick={() => {
-            const fresh = shuffle(pool);
-            setOrder(fresh);
-            setI(0);
-            setPicked(null);
-            setRight(0);
-            setWrong(0);
-            setQ(buildSignOptions(fresh[0], pool));
-          }}
-        >
-          Start again
-        </Button>
+        {missed.length > 0 && (
+          <div className="mt-6 border-t border-border pt-6">
+            <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Review missed signs ({missed.length})
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {missed.map((s) => (
+                <div key={s.id} className="flex gap-3 border border-border p-3">
+                  <div className="shrink-0"><OfficialSignImage sign={s} variant="thumb" /></div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium">{s.name}</div>
+                    <p className="mt-1 text-xs text-muted-foreground">{s.meaning}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button
+            className="rounded-none"
+            onClick={() => {
+              const fresh = shuffle(pool);
+              setOrder(fresh);
+              setI(0);
+              setPicked(null);
+              setRight(0);
+              setWrong(0);
+              setMissed([]);
+              setQ(buildSignOptions(fresh[0], pool));
+            }}
+          >
+            Start again
+          </Button>
+          {missed.length > 0 && (
+            <Button
+              variant="outline"
+              className="rounded-none"
+              onClick={() => {
+                const fresh = shuffle(missed);
+                setOrder(fresh);
+                setI(0);
+                setPicked(null);
+                setRight(0);
+                setWrong(0);
+                setMissed([]);
+                setQ(buildSignOptions(fresh[0], pool));
+              }}
+            >
+              Practice missed ({missed.length}) →
+            </Button>
+          )}
+        </div>
       </div>
     );
   }
@@ -160,7 +200,10 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
     if (picked !== null) return;
     setPicked(idx);
     if (idx === q.correctIndex) setRight((n) => n + 1);
-    else setWrong((n) => n + 1);
+    else {
+      setWrong((n) => n + 1);
+      setMissed((m) => [...m, current]);
+    }
   };
 
   const next = () => {
