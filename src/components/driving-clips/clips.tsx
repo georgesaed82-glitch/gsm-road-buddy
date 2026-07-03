@@ -1,8 +1,12 @@
 import { CarToken, CLIP_VIEWBOX, segment, easeInOut, type ClipBeat } from "./ClipShell";
 import type { ReactNode } from "react";
 
-// Each clip exports: title, rule (Highway Code reference), beats (caption
-// timeline), render(t) -> <svg>, and durationMs.
+// UK top-down driving clips. Coordinate rules (screen y grows downward):
+//  - Horizontal road, ego heading east (90°): drive in the TOP half.
+//  - Horizontal road, oncoming heading west (270°): drive in the BOTTOM half.
+//  - Vertical road, ego heading north (0°): drive in the LEFT half.
+//  - Vertical road, oncoming heading south (180°): drive in the RIGHT half.
+//  - Roundabouts circulate CLOCKWISE (map view).
 export type ClipDef = {
   slug: string;
   title: string;
@@ -13,9 +17,7 @@ export type ClipDef = {
   durationMs?: number;
 };
 
-// Shared shortcuts.
 const PAINT = "#f5f5f0";
-const TARMAC = "#3a3a3d";
 const GRASS = "#3d6a2f";
 
 function RoadDefs() {
@@ -31,37 +33,49 @@ function RoadDefs() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 1. Turning right at a junction
+// 1. Turning right at a junction (UK)
+// Vertical major road x∈[280,400], centre x=340. Side road east.
 // ─────────────────────────────────────────────────────────────
 const turningRight: ClipDef = {
   slug: "turning-right",
   title: "Turning right at a junction",
   rule: "Rules 179–181",
-  summary: "Approach, position, wait for a safe gap, turn into the correct lane.",
+  summary: "Approach in the left lane, position just left of centre, wait, then turn into the left-hand lane of the new road.",
   beats: [
     { at: 0, label: "Mirror–Signal–Manoeuvre on approach", detail: "Check interior + right-hand mirror. Signal right in good time. Reduce speed." },
-    { at: 0.25, label: "Position just left of the centre line", detail: "Rule 179 — position gives space for traffic behind to pass on your left." },
-    { at: 0.5, label: "Wait — give way to oncoming traffic", detail: "Only turn when there is a safe gap. Do not creep into oncoming traffic's path." },
+    { at: 0.25, label: "Position just left of the centre line", detail: "Rule 179 — position lets traffic behind pass on your left." },
+    { at: 0.5, label: "Wait — give way to oncoming traffic", detail: "Only turn when there is a safe gap. Do not creep into the oncoming lane." },
     { at: 0.75, label: "Turn into the left-hand lane of the new road", detail: "Don't cut the corner. Straighten up, cancel the signal, mirror again." },
   ],
   render: (t) => {
-    // Car approaches from bottom heading up, stops near the junction centre,
-    // waits, then turns right (rotates -90°) and drives off to the right.
-    const stageApproach = Math.min(1, t / 0.25);
+    // Approach: heading 0 (north), in LEFT half (x=310) then drift toward centre-position (x=332).
+    const approachT = Math.min(1, t / 0.25);
     const y0 = 360;
-    const y1 = 210; // where car pauses before turn
-    const carY = y0 + (y1 - y0) * easeInOut(stageApproach);
+    const y1 = 220; // pause point near junction (just before the side road)
+    const carY_approach = y0 + (y1 - y0) * easeInOut(approachT);
+    const carX_approach = 310 + (332 - 310) * easeInOut(approachT);
 
-    // Waiting phase 0.25..0.5 — no movement, just an oncoming car passing.
-    // Turn phase 0.5..0.85 — arc through 90° right turn
+    // Waiting 0.25..0.5 — static at (332, 220).
+    // Turn 0.5..0.85 — arc through 90° right (heading 0 → 90). Pivot near (340, 210).
     const turnT = Math.min(1, Math.max(0, (t - 0.5) / 0.35));
-    const angle = -90 * easeInOut(turnT); // rotates so heading -90 = east
-    // After turn, drive right off screen 0.85..1
-    const exitT = Math.min(1, Math.max(0, (t - 0.85) / 0.15));
-    const cx = 340 + turnT * 20 + exitT * 260;
-    const cy = y1 - turnT * 20;
+    const angle = 90 * easeInOut(turnT);
+    // Arc centre near (355, 200) with radius ~22 so car exits into the top lane of the side road.
+    const arcCX = 348;
+    const arcCY = 200;
+    const arcR = 22;
+    const arcTheta = Math.PI + (Math.PI / 2) * easeInOut(turnT); // π (west of arc centre) → 3π/2 (north of arc centre)
+    const turningX = arcCX + arcR * Math.cos(arcTheta);
+    const turningY = arcCY + arcR * Math.sin(arcTheta);
 
-    // Oncoming car comes down the opposite side during wait
+    // Exit 0.85..1: drive east along top lane of side road (y≈200).
+    const exitT = Math.min(1, Math.max(0, (t - 0.85) / 0.15));
+    const exitX = arcCX + arcR + (640 - (arcCX + arcR)) * easeInOut(exitT);
+
+    const cx = t < 0.25 ? carX_approach : t < 0.5 ? 332 : t < 0.85 ? turningX : exitX;
+    const cy = t < 0.25 ? carY_approach : t < 0.5 ? 220 : t < 0.85 ? turningY : 200;
+    const heading = t < 0.5 ? 0 : t < 0.85 ? angle : 90;
+
+    // Oncoming car heading south (180°) in RIGHT half of vertical road (x≈370).
     const oncomingT = Math.min(1, Math.max(0, (t - 0.28) / 0.22));
     const oncomingY = -30 + 430 * oncomingT;
 
@@ -71,21 +85,21 @@ const turningRight: ClipDef = {
         <rect width="640" height="360" fill={GRASS} />
         {/* Vertical major road */}
         <rect x="280" y="0" width="120" height="360" fill="url(#tarmac-g)" />
-        {/* Horizontal minor road (destination) */}
+        {/* Horizontal side road (destination) — extends east */}
         <rect x="400" y="180" width="240" height="80" fill="url(#tarmac-g)" />
         {/* Centre lines */}
         <line x1="340" y1="0" x2="340" y2="180" stroke={PAINT} strokeWidth="2" strokeDasharray="18 14" />
         <line x1="340" y1="260" x2="340" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="18 14" />
         <line x1="400" y1="220" x2="640" y2="220" stroke={PAINT} strokeWidth="2" strokeDasharray="18 14" />
-        {/* Give way lines on side road entrance */}
+        {/* Give-way markings on side road entry */}
         <path d="M 400 180 L 400 260" stroke={PAINT} strokeWidth="2.5" strokeDasharray="8 6" />
-        {/* Oncoming car — going down (heading 180°) */}
-        {t > 0.28 && t < 0.55 && <CarToken x={365} y={oncomingY} heading={180} color="#4a90e2" />}
-        {/* Ego car */}
+        {/* Oncoming — RIGHT half of vertical road */}
+        {t > 0.28 && t < 0.55 && <CarToken x={370} y={oncomingY} heading={180} color="#4a90e2" />}
+        {/* Ego */}
         <CarToken
-          x={cx < 340 && cy > y1 ? 325 : cx}
+          x={cx}
           y={cy}
-          heading={angle}
+          heading={heading}
           color="#e5484d"
           indicator={t < 0.5 ? "right" : null}
         />
@@ -96,27 +110,26 @@ const turningRight: ClipDef = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// 2. Meeting oncoming traffic on a narrow road
+// 2. Meeting oncoming traffic (parked cars on your side)
+// Horizontal road y∈[130,250], centre y=190. Ego east → TOP lane.
 // ─────────────────────────────────────────────────────────────
 const meetingTraffic: ClipDef = {
   slug: "meeting-traffic",
   title: "Meeting oncoming traffic on a narrow road",
   rule: "Rules 155–156",
-  summary: "Parked cars on your side. Wait in a safe gap and give way to oncoming traffic.",
+  summary: "Parked cars on your side of the road — give way to oncoming traffic before you go through the gap.",
   beats: [
     { at: 0, label: "Scan ahead for oncoming traffic", detail: "Parked cars on your side of the road obstruct your lane." },
-    { at: 0.25, label: "Pull in behind a parked car and wait", detail: "Rule 155 — give priority to oncoming traffic when the obstruction is on your side." },
-    { at: 0.55, label: "Oncoming car passes — thank the driver", detail: "A brief acknowledgement is polite, never a wave that lets pedestrians step out." },
-    { at: 0.75, label: "Move off when the road is clear", detail: "Mirror, indicate right briefly, look for pedestrians before pulling out." },
+    { at: 0.25, label: "Slow and hold back behind a parked car", detail: "Rule 155 — give priority when the obstruction is on your side." },
+    { at: 0.55, label: "Oncoming car passes — hold your position", detail: "A brief thank-you nod is polite. Never wave — another driver may not see the pedestrian." },
+    { at: 0.75, label: "Move off when the road is clear", detail: "Mirror, signal briefly, check for pedestrians before pulling out." },
   ],
   render: (t) => {
-    // Ego car (red) starts from left, pulls into a gap, waits, then moves off.
+    // Ego east → TOP lane (y=160). Parked cars along TOP kerb (y=145).
+    // Oncoming west → BOTTOM lane (y=220).
     const approach = Math.min(1, t / 0.25);
-    const wait = Math.min(1, Math.max(0, (t - 0.55) / 0.2));
     const exit = Math.min(1, Math.max(0, (t - 0.75) / 0.25));
-    const egoX =
-      50 + 180 * easeInOut(approach) + 0 * (1 - wait) + 320 * easeInOut(exit);
-    // Oncoming (blue) moves right-to-left across full width
+    const egoX = 40 + 150 * easeInOut(approach) + 450 * easeInOut(exit);
     const oncomingT = Math.min(1, Math.max(0, (t - 0.3) / 0.3));
     const oncomingX = 700 - 750 * oncomingT;
 
@@ -126,16 +139,14 @@ const meetingTraffic: ClipDef = {
         <rect width="640" height="360" fill={GRASS} />
         <rect x="0" y="130" width="640" height="120" fill="url(#tarmac-g)" />
         <line x1="0" y1="190" x2="640" y2="190" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
-        {/* Parked cars on the near side (bottom lane) */}
-        {[100, 260, 420].map((x) => (
-          <g key={x}>
-            <CarToken x={x} y={225} heading={90} color="#7c7c85" scale={0.9} />
-          </g>
+        {/* Parked cars along TOP kerb (ego's side) — heading east */}
+        {[240, 400, 560].map((x) => (
+          <CarToken key={x} x={x} y={148} heading={90} color="#7c7c85" scale={0.9} />
         ))}
-        {/* Ego car */}
-        <CarToken x={egoX} y={205} heading={90} color="#e5484d" indicator={t > 0.7 && t < 0.85 ? "right" : null} />
-        {/* Oncoming car (top lane) */}
-        {t > 0.3 && t < 0.62 && <CarToken x={oncomingX} y={165} heading={270} color="#4a90e2" />}
+        {/* Ego — TOP lane */}
+        <CarToken x={egoX} y={172} heading={90} color="#e5484d" indicator={t > 0.7 && t < 0.85 ? "right" : null} />
+        {/* Oncoming — BOTTOM lane, heading west */}
+        {t > 0.3 && t < 0.62 && <CarToken x={oncomingX} y={215} heading={270} color="#4a90e2" />}
       </svg>
     );
   },
@@ -143,7 +154,7 @@ const meetingTraffic: ClipDef = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// 3. Zebra crossings
+// 3. Zebra crossing — ego heading east, TOP lane.
 // ─────────────────────────────────────────────────────────────
 const zebra: ClipDef = {
   slug: "zebra",
@@ -152,23 +163,20 @@ const zebra: ClipDef = {
   summary: "Approach prepared to stop and normally give way to pedestrians waiting to cross.",
   beats: [
     { at: 0, label: "See the Belisha beacons", detail: "Yellow flashing globes are your first cue a zebra is ahead." },
-    { at: 0.25, label: "Scan both pavements — pedestrian waiting", detail: "Rule H2 — approach prepared to stop and normally give way to anyone waiting to cross." },
-    { at: 0.5, label: "Stop before the zig-zags", detail: "Do not stop on the crossing itself. Never overtake or park on the zig-zag lines (Rule 191)." },
-    { at: 0.8, label: "Wait until they have finished crossing", detail: "Then move off smoothly. Never wave pedestrians across — another driver may not see them." },
+    { at: 0.25, label: "Scan both pavements — pedestrian waiting", detail: "Rule H2 — approach prepared to stop and normally give way to anyone waiting." },
+    { at: 0.5, label: "Stop before the zig-zags", detail: "Never stop on the crossing itself. No overtaking or parking on the zig-zags (Rule 191)." },
+    { at: 0.8, label: "Wait until they have finished crossing", detail: "Move off smoothly. Never wave pedestrians across — another driver may not see them." },
   ],
   render: (t) => {
-    // Car approaches from the left, stops at zebra 0..0.5, then moves off 0.75..1
-    const approachEnd = 240;
-    const start = 40;
+    // Ego in TOP lane at y=160. Approaches, stops before zig-zags, waits, moves off.
+    const stopX = 300; // stop line before zebra
     const approach = Math.min(1, t / 0.5);
     const move = Math.min(1, Math.max(0, (t - 0.75) / 0.25));
-    const carX = start + (approachEnd - start) * easeInOut(approach) + (640 - approachEnd) * easeInOut(move);
+    const carX = 40 + (stopX - 40) * easeInOut(approach) + (640 - stopX) * easeInOut(move);
 
-    // Pedestrian: waits on the pavement then walks across during stop
+    // Pedestrian walks from bottom pavement (y=250) up across the crossing.
     const pedT = Math.min(1, Math.max(0, (t - 0.35) / 0.45));
-    const pedY = 240 + (120 - 240) * pedT; // from bottom pavement up
-
-    // Belisha beacons flash
+    const pedY = 250 + (110 - 250) * pedT;
     const flash = Math.sin(t * Math.PI * 40) > 0 ? 1 : 0.4;
 
     return (
@@ -188,7 +196,7 @@ const zebra: ClipDef = {
         {[0, 1, 2, 3, 4, 5].map((i) => (
           <rect key={i} x={330 + i * 18} y={120} width={10} height={120} fill={PAINT} />
         ))}
-        {/* Belisha beacon poles */}
+        {/* Belisha beacons */}
         <line x1="325" y1="110" x2="325" y2="88" stroke="#333" strokeWidth="2" />
         <circle cx="325" cy="82" r="8" fill="#ffb020" opacity={flash} />
         <line x1="425" y1="250" x2="425" y2="272" stroke="#333" strokeWidth="2" />
@@ -200,8 +208,8 @@ const zebra: ClipDef = {
             <rect x={-4} y={-2} width={8} height={12} fill="#2e7cff" />
           </g>
         )}
-        {/* Ego car */}
-        <CarToken x={carX} y={200} heading={90} color="#e5484d" />
+        {/* Ego — TOP lane */}
+        <CarToken x={carX} y={155} heading={90} color="#e5484d" />
       </svg>
     );
   },
@@ -209,44 +217,45 @@ const zebra: ClipDef = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// 4. Spiral (multi-lane) roundabouts
+// 4. Spiral roundabout — UK clockwise circulation.
+// Approach from south, exit north (straight-on / 2nd exit).
 // ─────────────────────────────────────────────────────────────
 const spiralRoundabout: ClipDef = {
   slug: "spiral-roundabout",
   title: "Spiral / multi-lane roundabouts",
   rule: "Rules 184–190",
-  summary: "Choose the right lane on approach; follow the spiral markings around; signal to exit.",
+  summary: "Choose the right lane on approach, give way to the right, follow the spiral markings round, signal to exit.",
   beats: [
-    { at: 0, label: "Choose your lane on approach", detail: "Turning right or going more than half-way? Right-hand lane. Turning left or first exit? Left-hand lane." },
+    { at: 0, label: "Choose your lane on approach", detail: "Turning right or more than half way? Right-hand lane. Turning left or first exit? Left-hand lane." },
     { at: 0.25, label: "Give way to traffic from the right", detail: "Rule 185 — unless signs or markings say otherwise." },
     { at: 0.5, label: "Follow the spiral markings round", detail: "Lanes drop away in the correct order — do not change lanes across a solid white spiral." },
     { at: 0.8, label: "Signal left as you pass the exit before yours", detail: "Check the mirror on the exit side, straighten up and go." },
   ],
   render: (t) => {
-    // Car travels from south to a north exit via a roundabout.
-    // Path: south approach → onto roundabout (right lane) → around → exit north.
-    const cx = 320, cy = 180;
-    let x = 320, y = 340, heading = 0;
+    const cx = 320, cy = 180, r = 88;
+    // Approach: heading 0 (north), LEFT half of vertical road (x≈305), from y=345 to y=cy+r+ish.
+    let x = 305, y = 345, heading = 0;
+
     if (t < 0.2) {
-      // approach from south
-      y = 340 - (340 - 260) * easeInOut(t / 0.2);
+      const k = easeInOut(t / 0.2);
+      x = 305;
+      y = 345 + (cy + r - 345) * k;
       heading = 0;
     } else if (t < 0.85) {
-      // circle around
-      const k = (t - 0.2) / 0.65;
-      const startAngle = Math.PI; // due south of centre
-      const endAngle = Math.PI - Math.PI * 1.5 * easeInOut(k); // sweep 270° clockwise
-      const r = 90;
-      x = cx + r * Math.sin(endAngle);
-      y = cy + r * Math.cos(endAngle);
-      heading = ((-endAngle * 180) / Math.PI) + 90;
+      // On ring, clockwise sweep from south (θ=0) → west (θ=-π/2) → north (θ=-π).
+      const k = easeInOut((t - 0.2) / 0.65);
+      const theta = -Math.PI * k;
+      x = cx + r * Math.sin(theta);
+      y = cy + r * Math.cos(theta);
+      // Tangent direction (car nose points along direction of travel).
+      const dx = r * Math.cos(theta) * -Math.PI; // d/dk of sin(θ) with θ=-πk
+      const dy = -r * Math.sin(theta) * -Math.PI;
+      heading = (Math.atan2(dx, -dy) * 180) / Math.PI;
     } else {
-      // exit north
-      const k = (t - 0.85) / 0.15;
-      x = cx - 90;
-      // Exit going west actually — but for simplicity exit north:
-      x = cx;
-      y = 90 - 90 * k;
+      // Exit north on LEFT half.
+      const k = easeInOut((t - 0.85) / 0.15);
+      x = 305;
+      y = (cy - r) - (cy - r) * k;
       heading = 0;
     }
 
@@ -254,21 +263,26 @@ const spiralRoundabout: ClipDef = {
       <svg viewBox={CLIP_VIEWBOX} className="absolute inset-0 h-full w-full">
         <RoadDefs />
         <rect width="640" height="360" fill={GRASS} />
-        {/* Four road arms */}
+        {/* Four arms */}
         <rect x="270" y="0" width="100" height="360" fill="url(#tarmac-g)" />
         <rect x="0" y="140" width="640" height="80" fill="url(#tarmac-g)" />
         {/* Roundabout ring */}
-        <circle cx="320" cy="180" r="120" fill="url(#tarmac-g)" />
-        <circle cx="320" cy="180" r="35" fill={GRASS} stroke={PAINT} strokeWidth="2" />
-        {/* Lane divisions on ring (dashed) */}
-        <circle cx="320" cy="180" r="80" fill="none" stroke={PAINT} strokeWidth="1.5" strokeDasharray="10 8" />
-        {/* Give way triangles at each entry */}
+        <circle cx={cx} cy={cy} r={120} fill="url(#tarmac-g)" />
+        <circle cx={cx} cy={cy} r={35} fill={GRASS} stroke={PAINT} strokeWidth="2" />
+        {/* Lane division on ring */}
+        <circle cx={cx} cy={cy} r={78} fill="none" stroke={PAINT} strokeWidth="1.5" strokeDasharray="10 8" />
+        {/* Give-way marks at each entry */}
         <path d="M 285 275 L 355 275" stroke={PAINT} strokeWidth="2" strokeDasharray="6 5" />
         <path d="M 285 85 L 355 85" stroke={PAINT} strokeWidth="2" strokeDasharray="6 5" />
         <path d="M 415 155 L 415 205" stroke={PAINT} strokeWidth="2" strokeDasharray="6 5" />
         <path d="M 225 155 L 225 205" stroke={PAINT} strokeWidth="2" strokeDasharray="6 5" />
-        {/* Ego car */}
-        <CarToken x={x} y={y} heading={heading} color="#e5484d" indicator={t > 0.7 && t < 0.9 ? "left" : t < 0.2 ? "right" : null} />
+        {/* Centre lines on arms */}
+        <line x1="320" y1="0" x2="320" y2="60" stroke={PAINT} strokeWidth="2" strokeDasharray="16 12" />
+        <line x1="320" y1="300" x2="320" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="16 12" />
+        <line x1="0" y1="180" x2="200" y2="180" stroke={PAINT} strokeWidth="2" strokeDasharray="16 12" />
+        <line x1="440" y1="180" x2="640" y2="180" stroke={PAINT} strokeWidth="2" strokeDasharray="16 12" />
+        {/* Ego */}
+        <CarToken x={x} y={y} heading={heading} color="#e5484d" indicator={t > 0.62 && t < 0.86 ? "left" : t < 0.2 ? "left" : null} />
       </svg>
     );
   },
@@ -276,27 +290,35 @@ const spiralRoundabout: ClipDef = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// 5. Yellow box junctions
+// 5. Yellow box junction — ego east, TOP lane. Blocker in TOP lane past the box.
 // ─────────────────────────────────────────────────────────────
 const yellowBox: ClipDef = {
   slug: "yellow-box",
   title: "Yellow box junctions",
   rule: "Rule 174",
-  summary: "You must not enter unless your exit is clear — one exception applies when turning right.",
+  summary: "You must not enter unless your exit is clear — one exception when turning right.",
   beats: [
-    { at: 0, label: "Check the exit before entering", detail: "Rule 174 — you must not enter the box unless your exit is clear." },
-    { at: 0.3, label: "Exit is blocked — wait behind the box", detail: "Blocking the yellow box is an enforceable offence in many places (£70+ fine)." },
+    { at: 0, label: "Check the exit before entering", detail: "Rule 174 — do not enter unless your exit is clear." },
+    { at: 0.3, label: "Exit is blocked — wait behind the box", detail: "Blocking a yellow box is enforceable (£70+ fine in many areas)." },
     { at: 0.55, label: "Exit clears — now proceed", detail: "Only enter once you can drive right through without stopping in the box." },
     { at: 0.8, label: "Turning right? One exception applies", detail: "You MAY enter and wait in the box if the only thing blocking your exit is oncoming traffic." },
   ],
   render: (t) => {
-    // Ego stops before box while another car sits blocking; then blocker leaves,
-    // ego proceeds.
-    const move = t < 0.25 ? easeInOut(t / 0.25) * 0.6 : t < 0.55 ? 0.6 : 0.6 + easeInOut((t - 0.55) / 0.45) * 1.2;
-    const egoX = 40 + move * 320;
-    // Blocking car sits in exit until 0.5, then moves out
+    // Ego TOP lane y=160. Approach → stop before box (x=260) → proceed once blocker clears.
+    const preStopEnd = 0.25;
+    const holdEnd = 0.55;
+    let egoX: number;
+    if (t < preStopEnd) {
+      egoX = 40 + (260 - 40) * easeInOut(t / preStopEnd);
+    } else if (t < holdEnd) {
+      egoX = 260;
+    } else {
+      egoX = 260 + (640 - 260) * easeInOut((t - holdEnd) / (1 - holdEnd));
+    }
+
+    // Blocker in TOP lane past the box (at x=420). Moves east and off screen from 0.45.
     const blockT = Math.min(1, Math.max(0, (t - 0.45) / 0.15));
-    const blockerX = 400 + 300 * easeInOut(blockT);
+    const blockerX = 420 + 260 * easeInOut(blockT);
 
     return (
       <svg viewBox={CLIP_VIEWBOX} className="absolute inset-0 h-full w-full">
@@ -307,13 +329,15 @@ const yellowBox: ClipDef = {
         {/* Yellow box */}
         <rect x="280" y="130" width="120" height="120" fill="none" stroke="#f5c518" strokeWidth="3" />
         <path d="M 280 130 L 400 250 M 280 250 L 400 130 M 280 190 L 400 190 M 340 130 L 340 250" stroke="#f5c518" strokeWidth="1.5" />
-        {/* Lane lines */}
+        {/* Lane centre lines */}
         <line x1="0" y1="190" x2="280" y2="190" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
         <line x1="400" y1="190" x2="640" y2="190" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
-        {/* Blocker */}
-        {t < 0.6 && <CarToken x={blockerX} y={205} heading={90} color="#7c7c85" />}
-        {/* Ego */}
-        <CarToken x={egoX} y={205} heading={90} color="#e5484d" />
+        <line x1="340" y1="0" x2="340" y2="130" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
+        <line x1="340" y1="250" x2="340" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
+        {/* Blocker — TOP lane */}
+        {t < 0.62 && <CarToken x={blockerX} y={160} heading={90} color="#7c7c85" />}
+        {/* Ego — TOP lane */}
+        <CarToken x={egoX} y={160} heading={90} color="#e5484d" />
       </svg>
     );
   },
@@ -321,50 +345,70 @@ const yellowBox: ClipDef = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// 6. Smart motorways
+// 6. Smart motorway — vertical layout, cars heading north.
+// Three lanes + hard shoulder on the far LEFT. Red X closes the right (fast) lane.
 // ─────────────────────────────────────────────────────────────
 const smartMotorway: ClipDef = {
   slug: "smart-motorway",
   title: "Smart motorways (all-lane running)",
   rule: "Rules 258, 269, 274–278",
-  summary: "Obey the gantry — variable limits, red X closed lanes, refuge areas for breakdowns.",
+  summary: "Obey the overhead gantry — variable limits, red X closed lanes, refuge areas for breakdowns.",
   beats: [
     { at: 0, label: "Read the overhead gantry", detail: "Variable speed limits above your lane are mandatory (Rule 258)." },
-    { at: 0.3, label: "Red X above a lane — do not drive in it", detail: "The lane is closed. Move out safely." },
+    { at: 0.3, label: "Red X above a lane — do not drive in it", detail: "The lane is closed. Move out safely well before you reach it." },
     { at: 0.6, label: "50 mph — enforced by ANPR cameras", detail: "Match the displayed limit; do not undershoot dramatically either." },
     { at: 0.85, label: "Break down? Reach a refuge area if possible", detail: "If not, get behind the barrier on the left and call 999 (Rules 274–278)." },
   ],
   render: (t) => {
-    // Three-lane motorway. Ego in middle lane; another car in right lane
-    // moves out of the closed (red X) lane on the far right.
-    const speed = t * 640;
-    const dashOffset = (speed * 0.5) % 40;
-    // Red X moves gantry to the right-hand lane
+    // Vertical motorway. Lanes:
+    //  Hard shoulder x=80..140
+    //  Lane 1 (left)  x=140..220
+    //  Lane 2 (mid)   x=220..300
+    //  Lane 3 (right, closed by Red X) x=300..380
+    const dashOffset = (t * 640 * 0.6) % 40;
+    // Ego stays in lane 2 (middle) at x=260, scrolling illusion via dashed lines.
+    // A blue car starts in lane 3 (x=340) and merges LEFT into lane 2 by t=0.6.
+    const blueX = segment(t, [
+      [0, 340],
+      [0.3, 340],
+      [0.6, 260],
+      [1, 260],
+    ]);
+    // Simulate downward scroll of the road: cars stay put on screen, road lines move.
     return (
       <svg viewBox={CLIP_VIEWBOX} className="absolute inset-0 h-full w-full">
         <RoadDefs />
         <rect width="640" height="360" fill={GRASS} />
-        <rect x="0" y="80" width="640" height="240" fill="url(#tarmac-g)" />
-        {/* Lane lines */}
-        <line x1="0" y1="160" x2="640" y2="160" stroke={PAINT} strokeWidth="2" strokeDasharray={`20 20`} strokeDashoffset={-dashOffset} />
-        <line x1="0" y1="240" x2="640" y2="240" stroke={PAINT} strokeWidth="2" strokeDasharray={`20 20`} strokeDashoffset={-dashOffset} />
-        <line x1="0" y1="80" x2="640" y2="80" stroke={PAINT} strokeWidth="2" />
-        <line x1="0" y1="320" x2="640" y2="320" stroke={PAINT} strokeWidth="2" />
-        {/* Gantry across the top */}
-        <rect x="0" y="30" width="640" height="30" fill="#111" />
-        <rect x="60" y="35" width="100" height="20" fill="#000" stroke="#333" />
-        <text x="110" y="52" textAnchor="middle" fill="#ffb020" fontFamily="monospace" fontWeight="700" fontSize="16">50</text>
-        <rect x="270" y="35" width="100" height="20" fill="#000" stroke="#333" />
-        <text x="320" y="52" textAnchor="middle" fill="#ffb020" fontFamily="monospace" fontWeight="700" fontSize="16">50</text>
-        <rect x="480" y="35" width="100" height="20" fill="#000" stroke="#333" />
-        <text x="530" y="52" textAnchor="middle" fill="#e5484d" fontFamily="monospace" fontWeight="900" fontSize="18">✕</text>
-        {/* Ego in centre lane */}
-        <CarToken x={320} y={200} heading={0} color="#e5484d" />
-        {/* Another car moving from right lane (closed) into centre */}
-        <CarToken x={segment(t, [[0, 530], [0.3, 530], [0.6, 320], [1, 320]])} y={segment(t, [[0, 280], [0.3, 280], [0.6, 200], [1, 200]])} heading={0} color="#4a90e2" indicator={t < 0.6 ? "left" : null} />
-        {/* Refuge area on right */}
-        <rect x="580" y="80" width="60" height="80" fill="#f5a300" opacity="0.35" />
-        <text x="610" y="130" textAnchor="middle" fill={PAINT} fontFamily="Arial" fontSize="10" fontWeight="700">SOS</text>
+        {/* Carriageway */}
+        <rect x="80" y="0" width="300" height="360" fill="url(#tarmac-g)" />
+        {/* Hard shoulder (solid line inner edge) */}
+        <line x1="140" y1="0" x2="140" y2="360" stroke={PAINT} strokeWidth="2" />
+        {/* Lane dividers */}
+        <line x1="220" y1="0" x2="220" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="20 20" strokeDashoffset={-dashOffset} />
+        <line x1="300" y1="0" x2="300" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="20 20" strokeDashoffset={-dashOffset} />
+        {/* Outer edges */}
+        <line x1="80" y1="0" x2="80" y2="360" stroke={PAINT} strokeWidth="2" />
+        <line x1="380" y1="0" x2="380" y2="360" stroke={PAINT} strokeWidth="2" />
+        {/* Emergency refuge on hard shoulder */}
+        <rect x="80" y="200" width="60" height="90" fill="#f5a300" opacity="0.35" />
+        <text x="110" y="250" textAnchor="middle" fill={PAINT} fontFamily="Arial" fontSize="10" fontWeight="700">SOS</text>
+        {/* Gantry across all lanes near the top */}
+        <rect x="80" y="30" width="300" height="34" fill="#111" />
+        <line x1="80" y1="30" x2="380" y2="30" stroke="#555" strokeWidth="1" />
+        {/* Signs per lane */}
+        <rect x="150" y="36" width="60" height="22" fill="#000" stroke="#333" />
+        <text x="180" y="53" textAnchor="middle" fill="#ffb020" fontFamily="monospace" fontWeight="700" fontSize="16">50</text>
+        <rect x="230" y="36" width="60" height="22" fill="#000" stroke="#333" />
+        <text x="260" y="53" textAnchor="middle" fill="#ffb020" fontFamily="monospace" fontWeight="700" fontSize="16">50</text>
+        <rect x="310" y="36" width="60" height="22" fill="#000" stroke="#333" />
+        <text x="340" y="55" textAnchor="middle" fill="#e5484d" fontFamily="monospace" fontWeight="900" fontSize="22">✕</text>
+        {/* Gantry posts */}
+        <rect x="76" y="30" width="6" height="120" fill="#222" />
+        <rect x="378" y="30" width="6" height="120" fill="#222" />
+        {/* Ego — lane 2 (middle) */}
+        <CarToken x={260} y={230} heading={0} color="#e5484d" />
+        {/* Blue car — starts lane 3 (closed), merges left into lane 2 */}
+        <CarToken x={blueX} y={170} heading={0} color="#4a90e2" indicator={t < 0.6 ? "left" : null} />
       </svg>
     );
   },
@@ -372,7 +416,8 @@ const smartMotorway: ClipDef = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// 7. Lane discipline on dual carriageways
+// 7. Lane discipline on a dual carriageway.
+// Horizontal road, cars east. Ego lives in LANE 1 (top). Overtake goes DOWN into lane 2.
 // ─────────────────────────────────────────────────────────────
 const laneDiscipline: ClipDef = {
   slug: "lane-discipline",
@@ -386,33 +431,35 @@ const laneDiscipline: ClipDef = {
     { at: 0.85, label: "Return to lane 1 as soon as safe", detail: "Middle-lane hogging is a £100 fine and 3 penalty points." },
   ],
   render: (t) => {
-    // Two-lane road, ego overtakes a slow lorry.
-    const dashOffset = (t * 640 * 0.5) % 40;
-    // Ego x moves left-to-right; y switches from lane1 (240) to lane2 (170) then back
+    // Road y∈[130,310]. Lane 1 (top) centre y=170. Lane 2 (bottom) centre y=245. Divider y=220.
+    const dashOffset = (t * 640 * 0.5) % 44;
     const egoX = 40 + 560 * t;
-    let egoY = 240;
-    if (t > 0.25 && t < 0.4) egoY = 240 - ((t - 0.25) / 0.15) * 70;
-    else if (t >= 0.4 && t < 0.75) egoY = 170;
-    else if (t >= 0.75 && t < 0.9) egoY = 170 + ((t - 0.75) / 0.15) * 70;
+    // Lane change: down into lane 2 from 0.25→0.4, back up to lane 1 from 0.75→0.9.
+    let egoY = 170;
+    if (t > 0.25 && t < 0.4) egoY = 170 + ((t - 0.25) / 0.15) * 75;
+    else if (t >= 0.4 && t < 0.75) egoY = 245;
+    else if (t >= 0.75 && t < 0.9) egoY = 245 - ((t - 0.75) / 0.15) * 75;
+    else if (t >= 0.9) egoY = 170;
 
-    // Slow lorry in lane 1
+    // Slow lorry in LANE 1, moving east slowly.
     const lorryX = 260 + t * 60;
 
     return (
       <svg viewBox={CLIP_VIEWBOX} className="absolute inset-0 h-full w-full">
         <RoadDefs />
         <rect width="640" height="360" fill={GRASS} />
-        <rect x="0" y="130" width="640" height="180" fill="url(#tarmac-g)" />
-        {/* Central reservation (top edge) */}
+        {/* Central reservation above the carriageway */}
         <rect x="0" y="110" width="640" height="20" fill={GRASS} />
+        <rect x="0" y="130" width="640" height="180" fill="url(#tarmac-g)" />
         {/* Lane divider */}
-        <line x1="0" y1="205" x2="640" y2="205" stroke={PAINT} strokeWidth="2" strokeDasharray={`24 20`} strokeDashoffset={-dashOffset} />
+        <line x1="0" y1="220" x2="640" y2="220" stroke={PAINT} strokeWidth="2" strokeDasharray="24 20" strokeDashoffset={-dashOffset} />
+        {/* Outer edges */}
         <line x1="0" y1="130" x2="640" y2="130" stroke={PAINT} strokeWidth="2" />
         <line x1="0" y1="310" x2="640" y2="310" stroke={PAINT} strokeWidth="2" />
-        {/* Lorry */}
-        <g transform={`translate(${lorryX} 240)`}>
+        {/* Slow lorry (LANE 1) */}
+        <g transform={`translate(${lorryX} 170) rotate(90)`}>
           <rect x="-10" y="-22" width="20" height="44" fill="#c9a84c" stroke="#0a0a0a" strokeWidth={0.6} rx="1" />
-          <rect x="-8" y="-22" width="16" height="8" fill="#111" />
+          <rect x="-8" y="14" width="16" height="8" fill="#111" />
         </g>
         {/* Ego */}
         <CarToken x={egoX} y={egoY} heading={90} color="#e5484d" indicator={t > 0.22 && t < 0.4 ? "right" : t > 0.72 && t < 0.9 ? "left" : null} />
@@ -423,70 +470,71 @@ const laneDiscipline: ClipDef = {
 };
 
 // ─────────────────────────────────────────────────────────────
-// 8. Dual carriageway slip road joining
+// 8. Joining a dual carriageway from a slip road.
+// Main carriageway horizontal, cars east. Slip road joins from the LEFT (screen top).
 // ─────────────────────────────────────────────────────────────
 const slipRoadJoin: ClipDef = {
   slug: "slip-road-join",
   title: "Joining a dual carriageway from a slip road",
   rule: "Rule 259",
-  summary: "Build up speed to match traffic on the main carriageway, then merge safely into the left-hand lane.",
+  summary: "Build up speed on the slip road, then merge safely into the left-hand lane (lane 1).",
   beats: [
     { at: 0, label: "Build up speed on the slip road", detail: "Match the speed of traffic already on the main carriageway (Rule 259)." },
-    { at: 0.3, label: "Mirror check + shoulder look for a gap", detail: "The mirrors won't cover the blind spot to your right — look over your shoulder." },
+    { at: 0.3, label: "Mirror check + shoulder look for a gap", detail: "Mirrors won't cover the blind spot to your right — look over your shoulder." },
     { at: 0.6, label: "Signal right, merge into the left-hand lane", detail: "Merge on a diagonal — do not stop at the end of the slip road unless forced." },
-    { at: 0.85, label: "Cancel signal, settle into lane 1", detail: "Give any traffic already there priority — you are joining their road." },
+    { at: 0.85, label: "Cancel signal, settle into lane 1", detail: "Give traffic already there priority — you are joining their road." },
   ],
   render: (t) => {
-    // Slip road curves from bottom-right up to merge with main carriageway
-    // travelling left-to-right along the top.
-    // Ego path: from (60, 340) along slip road up to (400, 210) then along
-    // main carriageway (lane 1) to right edge.
-    let x, y, heading;
+    // Main carriageway y∈[140,280]. Lane 1 top (centre y=175), lane 2 bottom (centre y=245).
+    // Slip road enters from top-left, curving down to merge into lane 1 at ~(400,175).
+    let x: number, y: number, heading: number;
     if (t < 0.6) {
       const k = easeInOut(t / 0.6);
-      // Parametric curve along slip road
-      const p0 = { x: 60, y: 340 };
-      const p1 = { x: 220, y: 320 };
-      const p2 = { x: 380, y: 220 };
-      // Quadratic bezier
-      const bx = (1 - k) * (1 - k) * p0.x + 2 * (1 - k) * k * p1.x + k * k * p2.x;
-      const by = (1 - k) * (1 - k) * p0.y + 2 * (1 - k) * k * p1.y + k * k * p2.y;
-      x = bx;
-      y = by;
-      // heading approx: tangent direction
+      // Quadratic bezier from (60, 20) via control (240, 40) to end (400, 175).
+      const p0 = { x: 60, y: 20 };
+      const p1 = { x: 240, y: 40 };
+      const p2 = { x: 400, y: 175 };
+      x = (1 - k) * (1 - k) * p0.x + 2 * (1 - k) * k * p1.x + k * k * p2.x;
+      y = (1 - k) * (1 - k) * p0.y + 2 * (1 - k) * k * p1.y + k * k * p2.y;
       const dx = 2 * (1 - k) * (p1.x - p0.x) + 2 * k * (p2.x - p1.x);
       const dy = 2 * (1 - k) * (p1.y - p0.y) + 2 * k * (p2.y - p1.y);
-      heading = (Math.atan2(dy, dx) * 180) / Math.PI - 90 + 90 + 90;
-      // Convert (dx, dy) direction to heading (0 = up)
       heading = (Math.atan2(dx, -dy) * 180) / Math.PI;
     } else {
       const k = easeInOut((t - 0.6) / 0.4);
-      x = 380 + 260 * k;
-      y = 210;
+      x = 400 + 240 * k;
+      y = 175;
       heading = 90;
     }
 
-    // Other car already on the main carriageway
+    // Another car already in lane 2 (fast lane) heading east.
     const otherX = -60 + t * 760;
+    // Traffic already in lane 1 (leading the ego in) at a steady pace.
+    const laneOneX = 220 + t * 380;
 
     return (
       <svg viewBox={CLIP_VIEWBOX} className="absolute inset-0 h-full w-full">
         <RoadDefs />
         <rect width="640" height="360" fill={GRASS} />
-        {/* Main carriageway (horizontal) */}
+        {/* Slip road (top-left, curving down into carriageway) */}
+        <path
+          d="M 0 0 L 240 0 Q 340 20 400 140 L 400 175 L 0 175 Z"
+          fill="url(#tarmac-g)"
+        />
+        {/* Main carriageway */}
         <rect x="0" y="140" width="640" height="140" fill="url(#tarmac-g)" />
-        {/* Lane divider */}
+        {/* Slip-road hatched merge zone edge */}
+        <path d="M 240 0 Q 340 20 400 140" stroke={PAINT} strokeWidth="2" strokeDasharray="10 8" fill="none" />
+        {/* Lane divider on main carriageway */}
         <line x1="0" y1="210" x2="640" y2="210" stroke={PAINT} strokeWidth="2" strokeDasharray="20 18" />
-        <line x1="0" y1="140" x2="640" y2="140" stroke={PAINT} strokeWidth="2" />
+        {/* Outer edges */}
+        <line x1="400" y1="140" x2="640" y2="140" stroke={PAINT} strokeWidth="2" />
         <line x1="0" y1="280" x2="640" y2="280" stroke={PAINT} strokeWidth="2" />
-        {/* Slip road */}
-        <path d="M 20 360 L 200 340 Q 320 300 400 260 L 400 280 Q 320 320 220 350 L 40 360 Z" fill="url(#tarmac-g)" />
-        {/* Chevron edge line */}
-        <path d="M 200 340 Q 320 300 400 260" stroke={PAINT} strokeWidth="2" strokeDasharray="10 8" fill="none" />
-        {/* Other traffic on main carriageway */}
+        {/* Traffic in lane 2 (bottom) */}
         <CarToken x={otherX} y={245} heading={90} color="#4a90e2" />
+        {/* Traffic already in lane 1 ahead */}
+        <CarToken x={laneOneX} y={175} heading={90} color="#7c7c85" />
         {/* Ego */}
-        <CarToken x={x} y={y} heading={heading} color="#e5484d" indicator={t > 0.45 && t < 0.75 ? "right" : null} />
+        <CarToken x={x} y={y} heading={heading} color="#e5484d" indicator={t > 0.4 && t < 0.85 ? "right" : null} />
       </svg>
     );
   },
