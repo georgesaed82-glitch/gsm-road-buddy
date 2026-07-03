@@ -177,19 +177,5 @@ export function CarToken({
   );
 }
 
-// Common road textures. Callers put children on top.
-export function TarmacBackground({ children }: { children?: ReactNode }) {
-  return (
-    <svg viewBox="0 0 640 360" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <linearGradient id="clip-tarmac" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3a3a3d" />
-          <stop offset="0.5" stopColor="#2b2b2e" />
-          <stop offset="1" stopColor="#3a3a3d" />
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="640" height="360" fill="#3d6a2f" />
-      {children}
-    </svg>
-  );
-}
+// Standard SVG viewport used by clip scenes.
+export const CLIP_VIEWBOX = "0 0 640 360";
