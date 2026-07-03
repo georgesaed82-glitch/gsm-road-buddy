@@ -391,6 +391,9 @@ export function RoundaboutTriangles() {
 export function KeepClear() {
   return (
     <Frame>
+      {/* Solid transverse stop-style lines top and bottom */}
+      <rect x="30" y="50" width="140" height="6" fill={PAINT} />
+      <rect x="30" y="144" width="140" height="6" fill={PAINT} />
       <text
         x="100"
         y="90"
