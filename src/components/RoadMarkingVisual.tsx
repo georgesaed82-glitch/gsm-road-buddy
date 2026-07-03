@@ -406,7 +406,7 @@ export function RoundaboutTriangles() {
   return (
     <img
       src={miniRoundaboutImg}
-      alt="Mini-roundabout road marking (Highway Code diagram)"
+      alt="Aerial diagram of a UK mini-roundabout: a solid white painted circle at the centre of a small crossroads, with give-way (shark's teeth) triangle markings on every approach and directional arrows around the ring."
       loading="lazy"
       width={1024}
       height={1024}
