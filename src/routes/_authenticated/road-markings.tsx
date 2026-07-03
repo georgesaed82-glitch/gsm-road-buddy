@@ -4,6 +4,8 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { roadMarkings, markingGroups } from "@/data/roadMarkings";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import dualCarriagewayAsset from "@/assets/dual-carriageway-join.jpeg.asset.json";
+import hatchedPhotoAsset from "@/assets/hatched-area-photo.jpeg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/road-markings")({
   head: () => ({
@@ -235,115 +237,33 @@ function DualCarriagewayJoin() {
         </h2>
       </div>
 
-      <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_1.4fr] lg:items-start">
-        <div className="space-y-3 text-sm text-muted-foreground">
-          <p>
-            When joining a dual carriageway, use the <span className="font-medium text-foreground">join-in lane</span> to build up your speed and match the speed of the traffic already using the road.
-          </p>
-          <p>
-            Look for a safe gap in the traffic, move into the running lane and continue without slowing down.
-          </p>
-          <p>
-            The <span className="font-medium text-foreground">hatched area</span> is there to keep traffic apart. You <span className="font-semibold text-foreground">must not</span> drive or stop on the hatch.
-          </p>
-        </div>
+      <p className="mt-3 max-w-3xl text-sm text-muted-foreground">
+        When joining a dual carriageway, use the join-in lane to build up your speed and match the traffic already on the road. Look for a safe gap, move into the running lane and continue without slowing down. The hatched area is there to keep traffic apart — you must not drive or stop on the hatch.
+      </p>
 
-        <div className="overflow-hidden rounded-sm border border-border bg-neutral-900">
-          <svg
-            viewBox="0 0 600 340"
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
+          <img
+            src={dualCarriagewayAsset.url}
+            alt="Highway Code diagram: slip road joining a dual carriageway with hatched area separating join-in lane and running lane"
             className="h-auto w-full"
-            preserveAspectRatio="xMidYMid meet"
-            shapeRendering="geometricPrecision"
-            aria-label="Diagram of a slip road joining a dual carriageway with a triangular hatched island"
-          >
-            {/* Grass verges */}
-            <rect width="600" height="340" fill="#3a5a2a" />
-            {/* Main carriageway tarmac */}
-            <path d="M0 90 L600 60 L600 250 L0 260 Z" fill="#2b2b2e" />
-            {/* Slip road tarmac curving in from bottom-left */}
-            <path d="M0 340 L0 260 C 120 250 220 240 300 210 L360 190 L360 250 L120 340 Z" fill="#2b2b2e" />
-
-            {/* Solid outer edges */}
-            <path d="M0 90 L600 60" stroke="#f8fafc" strokeWidth="2" fill="none" />
-            <path d="M0 260 L600 250" stroke="#f8fafc" strokeWidth="2" fill="none" opacity="0" />
-            <path d="M0 260 C 120 250 220 240 300 210" stroke="#f8fafc" strokeWidth="2" fill="none" />
-            <path d="M360 250 L600 250" stroke="#f8fafc" strokeWidth="2" fill="none" />
-
-            {/* Long broken lane divider on the main carriageway (between 2 running lanes) */}
-            {[40, 130, 220, 310, 400, 490].map((x) => (
-              <rect key={x} x={x} y={143 - (x * 0.05)} width="34" height="3" fill="#f8fafc" transform={`rotate(${-2.8} ${x + 17} ${145})`} />
-            ))}
-
-            {/* Short broken merge line separating join-in lane from running lane */}
-            <path
-              d="M300 210 L360 190"
-              stroke="#f8fafc"
-              strokeWidth="3"
-              fill="none"
-              strokeDasharray="6 14"
-            />
-
-            {/* Triangular hatched island */}
-            <g>
-              <path
-                d="M360 190 L470 175 L470 235 Z"
-                fill="none"
-                stroke="#f8fafc"
-                strokeWidth="2.5"
-              />
-              <defs>
-                <clipPath id="dc-hatch">
-                  <path d="M360 190 L470 175 L470 235 Z" />
-                </clipPath>
-              </defs>
-              <g clipPath="url(#dc-hatch)">
-                {Array.from({ length: 14 }).map((_, i) => {
-                  const off = 340 + i * 14;
-                  return (
-                    <line
-                      key={i}
-                      x1={off}
-                      y1={140}
-                      x2={off - 90}
-                      y2={260}
-                      stroke="#f8fafc"
-                      strokeWidth="2"
-                    />
-                  );
-                })}
-              </g>
-            </g>
-
-            {/* Green direction arrows on join-in lane */}
-            {[
-              { x: 90, y: 305, r: -8 },
-              { x: 180, y: 285, r: -12 },
-              { x: 260, y: 250, r: -20 },
-              { x: 320, y: 215, r: -25 },
-            ].map((a, i) => (
-              <g key={i} transform={`translate(${a.x} ${a.y}) rotate(${a.r})`}>
-                <path d="M0 0 L-6 10 L-2 10 L-2 22 L2 22 L2 10 L6 10 Z" fill="#22c55e" transform="scale(1.4) rotate(180)" />
-              </g>
-            ))}
-            {/* Green arrows in running lane going straight */}
-            {[400, 480, 550].map((x) => (
-              <g key={x} transform={`translate(${x} 145) rotate(-3)`}>
-                <path d="M0 -14 L-6 -4 L-2 -4 L-2 10 L2 10 L2 -4 L6 -4 Z" fill="#22c55e" transform="scale(1.4)" />
-              </g>
-            ))}
-
-            {/* Labels */}
-            <g fontFamily="Arial, sans-serif" fill="#f8fafc">
-              <text x="150" y="240" fontSize="13" fontWeight="700">Join-in lane</text>
-              <text x="150" y="256" fontSize="10" opacity="0.85">Build up speed to match the</text>
-              <text x="150" y="268" fontSize="10" opacity="0.85">traffic on the dual carriageway.</text>
-
-              <text x="380" y="270" fontSize="13" fontWeight="700">Hatched area</text>
-              <text x="380" y="286" fontSize="10" opacity="0.85">Do not drive or stop on</text>
-              <text x="380" y="298" fontSize="10" opacity="0.85">the hatch marked area.</text>
-            </g>
-          </svg>
-        </div>
+            loading="lazy"
+          />
+          <figcaption className="border-t border-border bg-card p-3 text-xs text-muted-foreground">
+            Highway Code / Driving Essential Skills diagram — join-in lane and hatched area.
+          </figcaption>
+        </figure>
+        <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
+          <img
+            src={hatchedPhotoAsset.url}
+            alt="Real-world photo of a hatched area between the slip road and running lane on a UK dual carriageway"
+            className="h-auto w-full"
+            loading="lazy"
+          />
+          <figcaption className="border-t border-border bg-card p-3 text-xs text-muted-foreground">
+            Same layout on the road — solid-bordered hatched island separating the join-in lane from the running lane.
+          </figcaption>
+        </figure>
       </div>
 
       <div className="mt-5 rounded-sm border border-primary/40 bg-primary/5 p-4">
