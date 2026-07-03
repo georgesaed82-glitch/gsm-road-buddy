@@ -4,6 +4,8 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { roadMarkings, markingGroups } from "@/data/roadMarkings";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import { MarkingsQuiz } from "@/components/MarkingsQuiz";
+import { cn } from "@/lib/utils";
 import dualCarriagewayAsset from "@/assets/dual-carriageway-join.jpeg.asset.json";
 import hatchedPhotoAsset from "@/assets/hatched-area-photo.jpeg.asset.json";
 
@@ -18,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/road-markings")({
 });
 
 function RoadMarkingsPage() {
+  const [mode, setMode] = useState<"learn" | "quiz">("learn");
   return (
     <PortalShell eyebrow="Highway Code" title="Road markings">
       <p className="max-w-2xl text-muted-foreground">
@@ -31,6 +34,31 @@ function RoadMarkingsPage() {
         urls={["/road-markings"]}
       />
 
+      <div className="mt-8 flex gap-2 border-b border-border">
+        <button
+          onClick={() => setMode("learn")}
+          className={cn(
+            "-mb-px border-b-2 px-4 py-2 text-sm transition-colors",
+            mode === "learn" ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+          )}
+        >
+          Learn
+        </button>
+        <button
+          onClick={() => setMode("quiz")}
+          className={cn(
+            "-mb-px border-b-2 px-4 py-2 text-sm transition-colors",
+            mode === "quiz" ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+          )}
+        >
+          Quiz
+        </button>
+      </div>
+
+      {mode === "quiz" ? (
+        <MarkingsQuiz />
+      ) : (
+        <>
       <LaneLegend />
 
       <DualCarriagewayJoin />
@@ -66,6 +94,8 @@ function RoadMarkingsPage() {
           );
         })}
       </div>
+        </>
+      )}
     </PortalShell>
   );
 }
