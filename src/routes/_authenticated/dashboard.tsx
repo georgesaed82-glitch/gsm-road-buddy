@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, Award, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, Award, ArrowUpRight, CheckCircle2, CloudCheck, CloudOff, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Overview · GSM Learner Portal" }] }),
@@ -14,7 +16,50 @@ function formatGBP(pence: number) {
   return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(pence / 100);
 }
 
+const skillMilestones = [
+  { key: "cockpit", name: "Cockpit drill & controls" },
+  { key: "move_stop", name: "Moving off & stopping" },
+  { key: "junctions", name: "Junctions (left & right)" },
+  { key: "roundabouts", name: "Roundabouts" },
+  { key: "bay_park", name: "Bay parking" },
+  { key: "parallel", name: "Parallel parking" },
+  { key: "pull_right", name: "Pull up on the right" },
+  { key: "forward_bay", name: "Forward bay park" },
+  { key: "independent", name: "Independent driving" },
+  { key: "mock_test", name: "Mock test routes" },
+];
+
+const LOCAL_RATINGS_KEY = "gsm.skillRatings.v1";
+
+function loadLocalRatings(): Record<string, number> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem(LOCAL_RATINGS_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveLocalRating(key: string, rating: number) {
+  if (typeof window === "undefined") return;
+  try {
+    const obj = loadLocalRatings();
+    obj[key] = rating;
+    window.localStorage.setItem(LOCAL_RATINGS_KEY, JSON.stringify(obj));
+  } catch { /* ignore */ }
+}
+
 function DashboardPage() {
+  const { data: sessionInfo } = useQuery({
+    queryKey: ["auth-session"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      return { email: data.user?.email ?? null, id: data.user?.id ?? null, signedIn: !!data.user };
+    },
+    staleTime: 30_000,
+  });
+
   const { data: profile } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
@@ -66,13 +111,24 @@ function DashboardPage() {
   const hoursRemaining = Math.max(0, (stats?.hoursPurchased ?? 0) - (stats?.completed ?? 0));
 
   return (
-    <PortalShell eyebrow="Welcome back" title={`Hello, ${greeting}.`} showCopyright>
+    <PortalShell
+      eyebrow="Welcome back"
+      title={`Welcome, ${greeting}.`}
+      showCopyright
+    >
+      {sessionInfo?.email && (
+        <p className="-mt-4 mb-6 text-sm text-muted-foreground">
+          Signed in as <span className="font-medium text-foreground">{sessionInfo.email}</span>
+        </p>
+      )}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Lessons completed" value={String(stats?.completed ?? 0)} icon={CheckCircle2} />
         <StatCard label="Hours remaining" value={hoursRemaining.toFixed(1)} icon={Clock} accent />
         <StatCard label="Theory accuracy" value={`${stats?.theoryAccuracy ?? 0}%`} icon={Award} />
         <StatCard label="Total paid" value={formatGBP(stats?.spent ?? 0)} icon={Calendar} />
       </div>
+
+      <MarkProgressSection signedIn={!!sessionInfo?.signedIn} userId={sessionInfo?.id ?? null} />
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <section className="border border-border bg-card">
