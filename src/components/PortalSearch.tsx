@@ -13,6 +13,7 @@ import { theoryCategories } from "@/data/theory";
 import { signs } from "@/data/signs";
 import { roadMarkings } from "@/data/roadMarkings";
 import { policeSignals } from "@/data/policeSignals";
+import { drivingClips } from "@/components/driving-clips/clips";
 
 // Static index of Highway Code essentials sections. Each `id` matches the
 // anchor `id` added to the corresponding <Panel> in HighwayCodeEssentials.
@@ -89,6 +90,10 @@ export function PortalSearch() {
     for (const p of policeSignals) {
       const sc = scoreMatch(`${p.name} ${p.meaning}`, q);
       if (sc > 0) hits.push({ href: `/police-signals?q=${encodeURIComponent(p.name)}`, title: p.name, snippet: p.meaning, group: "Arm signals", score: sc });
+    }
+    for (const c of drivingClips) {
+      const sc = scoreMatch(`${c.title} ${c.rule} ${c.summary} ${c.beats.map((b) => b.label + " " + b.detail).join(" ")}`, q);
+      if (sc > 0) hits.push({ href: `/driving-clips#${c.slug}`, title: c.title, snippet: c.summary, group: "Driving clips", score: sc });
     }
 
     hits.sort((a, b) => b.score - a.score);
