@@ -512,39 +512,44 @@ const slipRoadJoin: ClipDef = {
   slug: "slip-road-join",
   title: "Joining a dual carriageway from a slip road",
   rule: "Rule 259",
-  summary: "Build up speed on the slip road, then merge safely into the left-hand lane (lane 1).",
+  summary: "Build up speed on the slip road, match the traffic already in lane 1, and slot into a safe gap — ideally in front of the following car, not braking into it.",
   beats: [
-    { at: 0, label: "Build up speed on the slip road", detail: "Match the speed of traffic already on the main carriageway (Rule 259)." },
-    { at: 0.3, label: "Mirror check + shoulder look for a gap", detail: "Mirrors won't cover the blind spot to your right — look over your shoulder." },
-    { at: 0.6, label: "Signal right, merge into the left-hand lane", detail: "Merge on a diagonal — do not stop at the end of the slip road unless forced." },
-    { at: 0.85, label: "Cancel signal, settle into lane 1", detail: "Give traffic already there priority — you are joining their road." },
+    { at: 0, label: "Build up speed on the slip road", detail: "Accelerate along the slip road so you can match the speed of traffic already in lane 1 (Rule 259)." },
+    { at: 0.25, label: "Mirror + shoulder check for a gap", detail: "A car is following behind in lane 1 — glance over your right shoulder as well as the mirrors." },
+    { at: 0.5, label: "Match speed, signal right, slot in ahead of it", detail: "Aim to slide into the gap in front of the following car — do NOT drift in and force them to brake." },
+    { at: 0.8, label: "Cancel signal, settle into lane 1", detail: "You are now safely in lane 1, at traffic speed, with the following car behind you." },
   ],
   render: (t) => {
     // Main carriageway y∈[140,280]. Lane 1 top (centre y=175), lane 2 bottom (centre y=245).
-    // Slip road enters from top-left, curving down to merge into lane 1 at ~(400,175).
+    // Slip road enters from top-left, curving down to merge into lane 1.
+    // Ego covers slip road (accelerating) between t=0..0.55, then merges into
+    // lane 1 and settles in front of a following (blue) car.
     let x: number, y: number, heading: number;
-    if (t < 0.6) {
-      const k = easeInOut(t / 0.6);
-      // Quadratic bezier from (60, 20) via control (240, 40) to end (400, 175).
-      const p0 = { x: 60, y: 20 };
-      const p1 = { x: 240, y: 40 };
-      const p2 = { x: 400, y: 175 };
+    const mergeEnd = 0.55;
+    if (t < mergeEnd) {
+      // Accelerating along the slip road — cubic ease-in so speed BUILDS.
+      const k = Math.pow(t / mergeEnd, 1.4);
+      const p0 = { x: 40, y: 20 };
+      const p1 = { x: 260, y: 40 };
+      const p2 = { x: 420, y: 175 };
       x = (1 - k) * (1 - k) * p0.x + 2 * (1 - k) * k * p1.x + k * k * p2.x;
       y = (1 - k) * (1 - k) * p0.y + 2 * (1 - k) * k * p1.y + k * k * p2.y;
       const dx = 2 * (1 - k) * (p1.x - p0.x) + 2 * k * (p2.x - p1.x);
       const dy = 2 * (1 - k) * (p1.y - p0.y) + 2 * k * (p2.y - p1.y);
       heading = (Math.atan2(dx, -dy) * 180) / Math.PI;
     } else {
-      const k = easeInOut((t - 0.6) / 0.4);
-      x = 400 + 240 * k;
+      const k = easeInOut((t - mergeEnd) / (1 - mergeEnd));
+      x = 420 + 220 * k;
       y = 175;
       heading = 90;
     }
 
-    // Another car already in lane 2 (fast lane) heading east.
-    const otherX = -60 + t * 760;
-    // Traffic already in lane 1 (leading the ego in) at a steady pace.
-    const laneOneX = 220 + t * 380;
+    // Following car already in LANE 1 — starts well behind, drives at a steady
+    // speed. Ego builds up speed and merges in FRONT of it. By the end of the
+    // clip the ego is clearly ahead of this car.
+    const followerX = -80 + t * 560;
+    // Faster traffic in lane 2 (overtaking lane) passing on the right.
+    const fastX = -120 + t * 900;
 
     return (
       <svg viewBox={CLIP_VIEWBOX} className="absolute inset-0 h-full w-full">
@@ -552,24 +557,50 @@ const slipRoadJoin: ClipDef = {
         <rect width="640" height="360" fill={GRASS} />
         {/* Slip road (top-left, curving down into carriageway) */}
         <path
-          d="M 0 0 L 240 0 Q 340 20 400 140 L 400 175 L 0 175 Z"
+          d="M 0 0 L 260 0 Q 360 20 420 140 L 420 175 L 0 175 Z"
           fill="url(#tarmac-g)"
         />
         {/* Main carriageway */}
         <rect x="0" y="140" width="640" height="140" fill="url(#tarmac-g)" />
-        {/* Slip-road hatched merge zone edge */}
-        <path d="M 240 0 Q 340 20 400 140" stroke={PAINT} strokeWidth="2" strokeDasharray="10 8" fill="none" />
+        {/* Slip-road outer edge (solid) */}
+        <path d="M 260 0 Q 360 20 420 140" stroke={PAINT} strokeWidth="2" fill="none" />
+        {/* Joining markings — short broken white line ("joining studs") on the
+            merge between slip road and lane 1 */}
+        <line x1="0" y1="140" x2="420" y2="140" stroke={PAINT} strokeWidth="2" strokeDasharray="8 8" />
+        {/* Chevron arrows pointing into lane 1 on the merge zone */}
+        {[80, 160, 240, 320].map((cx) => (
+          <path
+            key={cx}
+            d={`M ${cx - 12} 118 L ${cx} 130 L ${cx + 12} 118`}
+            stroke={PAINT}
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        ))}
         {/* Lane divider on main carriageway */}
         <line x1="0" y1="210" x2="640" y2="210" stroke={PAINT} strokeWidth="2" strokeDasharray="20 18" />
         {/* Outer edges */}
-        <line x1="400" y1="140" x2="640" y2="140" stroke={PAINT} strokeWidth="2" />
+        <line x1="420" y1="140" x2="640" y2="140" stroke={PAINT} strokeWidth="2" />
         <line x1="0" y1="280" x2="640" y2="280" stroke={PAINT} strokeWidth="2" />
-        {/* Traffic in lane 2 (bottom) */}
-        <CarToken x={otherX} y={245} heading={90} color="#4a90e2" />
-        {/* Traffic already in lane 1 ahead */}
-        <CarToken x={laneOneX} y={175} heading={90} color="#7c7c85" />
+
+        {/* Following car ALREADY in lane 1 (behind ego at merge). Ego slots
+            in front of it. */}
+        <CarToken x={followerX} y={175} heading={90} color="#4a90e2" />
+        {/* Faster traffic in lane 2 */}
+        <CarToken x={fastX} y={245} heading={90} color="#7c7c85" />
+
         {/* Ego */}
         <CarToken x={x} y={y} heading={heading} color="#e5484d" indicator={t > 0.4 && t < 0.85 ? "right" : null} />
+
+        {/* Speed cue: "MATCH SPEED" badge during the merge */}
+        {t > 0.35 && t < 0.7 && (
+          <g>
+            <rect x="220" y="300" width="200" height="26" fill="#111" opacity="0.85" rx={4} />
+            <text x="320" y="318" textAnchor="middle" fill="#ffb020" fontFamily="Arial" fontWeight="800" fontSize="13">MATCH SPEED · SLOT IN AHEAD</text>
+          </g>
+        )}
       </svg>
     );
   },
