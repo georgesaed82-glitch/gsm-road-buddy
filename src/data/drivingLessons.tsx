@@ -1855,7 +1855,6 @@ const planStopLookGo: Lesson = {
   render: PlanStopLookGoScene,
 };
 
-export const drivingLessons: Lesson[] = [
 // ─────────────────────────────────────────────────────────────
 // Lesson · Roundabouts (turning right — 3rd exit)
 // ─────────────────────────────────────────────────────────────
