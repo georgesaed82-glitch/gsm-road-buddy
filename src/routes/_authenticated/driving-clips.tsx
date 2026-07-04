@@ -5,6 +5,7 @@ import { PortalShell } from "@/components/PortalShell";
 import { ClipShell } from "@/components/driving-clips/ClipShell";
 import { drivingClips } from "@/components/driving-clips/clips";
 import { drivingLessons } from "@/data/drivingLessons";
+import { LessonPreview } from "@/components/driving-clips/LessonPreview";
 
 export const Route = createFileRoute("/_authenticated/driving-clips")({
   head: () => ({
@@ -27,32 +28,35 @@ function DrivingClipsPage() {
       </p>
 
       {drivingLessons.length > 0 && (
-        <div className="mt-8 rounded-xl border-2 border-accent bg-accent/5 p-5">
+        <section className="mt-8">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-accent">
-            <Sparkles className="h-4 w-4" /> Full GSM lessons
+            <Sparkles className="h-4 w-4" /> Full GSM lessons — {drivingLessons.length} animated
           </div>
-          <p className="mt-2 text-sm text-muted-foreground">
-            New format: Objective → THINK → Rule → Why → George Explains → Mistakes → Tips → Takeaway.
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+            Every clip plays below. Tap any card to open the full lesson with George Explains, common mistakes, GSM tips and the interactive question.
           </p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
             {drivingLessons.map((l) => (
               <Link
                 key={l.slug}
                 to="/driving-clips/$slug"
                 params={{ slug: l.slug }}
-                className="group flex items-center justify-between gap-2 rounded-md border border-border bg-card p-3 text-sm transition-colors hover:border-accent"
+                className="group block overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-accent"
               >
-                <span>
-                  <span className="block font-display text-base">{l.title}</span>
-                  <span className="block text-[11px] uppercase tracking-wider text-muted-foreground">
-                    {l.rule ?? l.category}
-                  </span>
-                </span>
-                <span className="text-accent group-hover:translate-x-0.5 transition-transform">→</span>
+                <LessonPreview render={l.render} durationMs={l.durationMs} />
+                <div className="flex items-start justify-between gap-2 p-3">
+                  <div>
+                    <div className="font-display text-base leading-tight">{l.title}</div>
+                    <div className="mt-1 text-[11px] uppercase tracking-wider text-muted-foreground">
+                      {l.rule ?? l.category}
+                    </div>
+                  </div>
+                  <span className="text-accent transition-transform group-hover:translate-x-0.5">→</span>
+                </div>
               </Link>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
