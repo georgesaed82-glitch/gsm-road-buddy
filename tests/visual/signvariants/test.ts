@@ -104,7 +104,7 @@ async function main() {
     for (const v of VARIANTS) {
       const sel = `[data-testid="variant-${v}"]`;
       const el = page.locator(sel);
-      const wrapper = el.locator("> div").first;
+      const wrapper = el.locator("> div").first();
       const wbox = await wrapper.boundingBox();
       if (!wbox) {
         failures.push(`[${viewName}/${v}] no wrapper box`);
