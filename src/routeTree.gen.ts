@@ -42,6 +42,7 @@ import { Route as AuthenticatedDrivingClipsRouteImport } from './routes/_authent
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedDrivingClipsSlugRouteImport } from './routes/_authenticated/driving-clips.$slug'
 import { Route as AuthenticatedAdminTrafficRouteImport } from './routes/_authenticated/admin.traffic'
 import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_authenticated/admin.pwa-installs'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
@@ -222,6 +223,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedDrivingClipsSlugRoute =
+  AuthenticatedDrivingClipsSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AuthenticatedDrivingClipsRoute,
+  } as any)
 const AuthenticatedAdminTrafficRoute =
   AuthenticatedAdminTrafficRouteImport.update({
     id: '/traffic',
@@ -294,7 +301,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/driving-clips': typeof AuthenticatedDrivingClipsRoute
+  '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/gsm-method': typeof AuthenticatedGsmMethodRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
@@ -323,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
+  '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -337,7 +345,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/driving-clips': typeof AuthenticatedDrivingClipsRoute
+  '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/gsm-method': typeof AuthenticatedGsmMethodRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
@@ -366,6 +374,7 @@ export interface FileRoutesByTo {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
+  '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -383,7 +392,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/driving-clips': typeof AuthenticatedDrivingClipsRoute
+  '/_authenticated/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/_authenticated/gsm-method': typeof AuthenticatedGsmMethodRoute
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/_authenticated/highway-code': typeof AuthenticatedHighwayCodeRoute
@@ -412,6 +421,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/_authenticated/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/_authenticated/admin/traffic': typeof AuthenticatedAdminTrafficRoute
+  '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -458,6 +468,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/pwa-installs'
     | '/admin/traffic'
+    | '/driving-clips/$slug'
     | '/admin/'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
@@ -501,6 +512,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/pwa-installs'
     | '/admin/traffic'
+    | '/driving-clips/$slug'
     | '/admin'
     | '/lovable/email/queue/process'
   id:
@@ -546,6 +558,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/hazard-videos'
     | '/_authenticated/admin/pwa-installs'
     | '/_authenticated/admin/traffic'
+    | '/_authenticated/driving-clips/$slug'
     | '/_authenticated/admin/'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
@@ -801,6 +814,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/driving-clips/$slug': {
+      id: '/_authenticated/driving-clips/$slug'
+      path: '/$slug'
+      fullPath: '/driving-clips/$slug'
+      preLoaderRoute: typeof AuthenticatedDrivingClipsSlugRouteImport
+      parentRoute: typeof AuthenticatedDrivingClipsRoute
+    }
     '/_authenticated/admin/traffic': {
       id: '/_authenticated/admin/traffic'
       path: '/traffic'
@@ -903,10 +923,24 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedDrivingClipsRouteChildren {
+  AuthenticatedDrivingClipsSlugRoute: typeof AuthenticatedDrivingClipsSlugRoute
+}
+
+const AuthenticatedDrivingClipsRouteChildren: AuthenticatedDrivingClipsRouteChildren =
+  {
+    AuthenticatedDrivingClipsSlugRoute: AuthenticatedDrivingClipsSlugRoute,
+  }
+
+const AuthenticatedDrivingClipsRouteWithChildren =
+  AuthenticatedDrivingClipsRoute._addFileChildren(
+    AuthenticatedDrivingClipsRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedDrivingClipsRoute: typeof AuthenticatedDrivingClipsRoute
+  AuthenticatedDrivingClipsRoute: typeof AuthenticatedDrivingClipsRouteWithChildren
   AuthenticatedGsmMethodRoute: typeof AuthenticatedGsmMethodRoute
   AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
   AuthenticatedHighwayCodeRoute: typeof AuthenticatedHighwayCodeRoute
@@ -927,7 +961,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedDrivingClipsRoute: AuthenticatedDrivingClipsRoute,
+  AuthenticatedDrivingClipsRoute: AuthenticatedDrivingClipsRouteWithChildren,
   AuthenticatedGsmMethodRoute: AuthenticatedGsmMethodRoute,
   AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
   AuthenticatedHighwayCodeRoute: AuthenticatedHighwayCodeRoute,
