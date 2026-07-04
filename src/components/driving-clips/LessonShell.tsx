@@ -294,14 +294,35 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-red-500">
           <AlertTriangle className="h-4 w-4" /> Common mistakes
         </div>
-        <ul className="mt-3 space-y-2 text-sm">
-          {lesson.commonMistakes.map((m, i) => (
-            <li key={i} className="flex gap-2 leading-relaxed">
-              <span className="text-red-500">✕</span>
-              <span>{m}</span>
-            </li>
-          ))}
-        </ul>
+        {lesson.mistakes && lesson.mistakes.length > 0 ? (
+          <ol className="mt-3 space-y-4 text-sm">
+            {lesson.mistakes.map((m, i) => (
+              <li key={i} className="rounded-lg border border-border/60 bg-background/40 p-3">
+                <div className="flex gap-2 leading-relaxed">
+                  <span className="mt-0.5 text-red-500">✕</span>
+                  <span><span className="text-[10px] uppercase tracking-wider text-red-500 mr-2">Wrong</span>{m.wrong}</span>
+                </div>
+                <div className="mt-2 flex gap-2 leading-relaxed text-muted-foreground">
+                  <span className="mt-0.5 text-accent">↳</span>
+                  <span><span className="text-[10px] uppercase tracking-wider text-accent mr-2">Why it's wrong</span>{m.why}</span>
+                </div>
+                <div className="mt-2 flex gap-2 leading-relaxed">
+                  <span className="mt-0.5 text-emerald-600">✓</span>
+                  <span><span className="text-[10px] uppercase tracking-wider text-emerald-600 mr-2">Correct</span>{m.right}</span>
+                </div>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <ul className="mt-3 space-y-2 text-sm">
+            {lesson.commonMistakes.map((m, i) => (
+              <li key={i} className="flex gap-2 leading-relaxed">
+                <span className="text-red-500">✕</span>
+                <span>{m}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* 9. GSM TIPS */}
