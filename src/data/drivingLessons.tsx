@@ -1226,8 +1226,18 @@ const laneMerging: Lesson = {
   ],
   why: (
     <>
-      <p>Most merge incidents are caused by one of two drivers: the one who leaves it too late, or the one who refuses to let anyone in.</p>
-      <p>A smooth merge is a shared act. Signal, match speed, take the gap.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Most merge incidents come from one of two drivers: the one who leaves it too late, or the one who refuses to let anyone in. A smooth merge is a <strong>shared act</strong> — signal, match speed, take the gap. It keeps the traffic flowing for everyone behind you.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Slip-road joins onto dual carriageways or motorways, lanes closing at roadworks, and any "merge in turn" signage. The rule is the same — early planning, matched speed, taking your turn cleanly.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Look far ahead — spot the merge early, plan the gap.</li>
+        <li>Mirrors — check the lane you're joining well before the point of no return.</li>
+        <li>Signal in good time so the other driver can plan too.</li>
+        <li>Match the speed of the traffic — do not join slower than the flow.</li>
+        <li>Take the gap smoothly, thank the driver, then settle at a proper following distance.</li>
+      </ol>
     </>
   ),
   georgeExplains:
