@@ -107,8 +107,8 @@ function AuthPage() {
       }
       window.sessionStorage.setItem("portal_unlocked", "1");
       if (isAdmin) {
-        window.sessionStorage.setItem("admin_unlocked", "1");
-        window.sessionStorage.setItem("admin_password", pw);
+        window.localStorage.setItem("admin_unlocked", "1");
+        window.localStorage.setItem("admin_password", pw);
       }
       // Persist / clear the remembered learner credentials
       if (!isAdmin) {
