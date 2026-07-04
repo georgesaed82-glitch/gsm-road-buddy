@@ -1,5 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { ClipShell } from "@/components/driving-clips/ClipShell";
@@ -11,13 +10,22 @@ export const Route = createFileRoute("/_authenticated/driving-clips")({
   head: () => ({
     meta: [
       { title: "Animated driving clips · GSM" },
-      { name: "description", content: "Short animated diagrams for common UK driving scenarios — turning right, roundabouts, zebra crossings, smart motorways and more." },
+      {
+        name: "description",
+        content:
+          "Short animated diagrams for common UK driving scenarios — turning right, roundabouts, zebra crossings, smart motorways and more.",
+      },
     ],
   }),
   component: DrivingClipsPage,
 });
 
 function DrivingClipsPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isLesson = pathname.startsWith("/driving-clips/") && pathname !== "/driving-clips/";
+
+  if (isLesson) return <Outlet />;
+
   return (
     <PortalShell eyebrow="Practical" title="Animated driving clips">
       <p className="max-w-2xl text-sm text-muted-foreground">
@@ -36,19 +44,19 @@ function DrivingClipsPage() {
             Every clip plays below. Tap any card to open the full lesson with George Explains, common mistakes, GSM tips and the interactive question.
           </p>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {drivingLessons.map((l) => (
+            {drivingLessons.map((lesson) => (
               <Link
-                key={l.slug}
+                key={lesson.slug}
                 to="/driving-clips/$slug"
-                params={{ slug: l.slug }}
+                params={{ slug: lesson.slug }}
                 className="group block overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-accent"
               >
-                <LessonPreview render={l.render} durationMs={l.durationMs} />
+                <LessonPreview render={lesson.render} durationMs={lesson.durationMs} />
                 <div className="flex items-start justify-between gap-2 p-3">
                   <div>
-                    <div className="font-display text-base leading-tight">{l.title}</div>
+                    <div className="font-display text-base leading-tight">{lesson.title}</div>
                     <div className="mt-1 text-[11px] uppercase tracking-wider text-muted-foreground">
-                      {l.rule ?? l.category}
+                      {lesson.rule ?? lesson.category}
                     </div>
                   </div>
                   <span className="text-accent transition-transform group-hover:translate-x-0.5">→</span>
@@ -66,6 +74,7 @@ function DrivingClipsPage() {
               title={clip.title}
               rule={clip.rule}
               beats={clip.beats}
+              explanation={clip.explanation}
               render={clip.render}
               durationMs={clip.durationMs}
             />

@@ -150,6 +150,9 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
             <div className="absolute left-3 top-3 rounded-md bg-black/55 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/85">
               UK · Left-hand traffic
             </div>
+            <div className="absolute right-0 top-1/2 hidden -translate-y-1/2 rounded-l-md bg-black/55 px-1.5 py-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85 [writing-mode:vertical-rl] sm:block">
+              GSM
+            </div>
             <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-md bg-black/55 px-2 py-1">
               <span className="inline-block h-2 w-2 rounded-full bg-accent" />
               <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85">
@@ -266,9 +269,13 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
         </ul>
       </div>
 
-      {/* 6. WHY */}
-      <Section icon={<Lightbulb className="h-4 w-4" />} eyebrow="Why?" tone="default">
-        <div className="prose-sm space-y-3 text-sm leading-relaxed">{lesson.why}</div>
+      {/* 6. WHAT / WHEN / WHY / STEPS */}
+      <Section icon={<Lightbulb className="h-4 w-4" />} eyebrow="What / when / why / steps" tone="default">
+        <div className="prose-sm space-y-3 text-sm leading-relaxed">
+          <p className="font-semibold uppercase tracking-wider text-accent text-xs">What we're doing</p>
+          <p>{lesson.objective}</p>
+          {lesson.why}
+        </div>
       </Section>
 
       {/* 7. GEORGE EXPLAINS */}

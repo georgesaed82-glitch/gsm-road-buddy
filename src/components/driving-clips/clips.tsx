@@ -1,4 +1,4 @@
-import { CarToken, CLIP_VIEWBOX, segment, easeInOut, type ClipBeat } from "./ClipShell";
+import { CarToken, CLIP_VIEWBOX, segment, easeInOut, type ClipBeat, type ClipExplanation } from "./ClipShell";
 import type { ReactNode } from "react";
 
 // UK top-down driving clips. Coordinate rules (screen y grows downward):
@@ -12,6 +12,7 @@ export type ClipDef = {
   title: string;
   rule: string;
   summary: string;
+  explanation: ClipExplanation;
   beats: ClipBeat[];
   render: (t: number) => ReactNode;
   durationMs?: number;
@@ -41,6 +42,18 @@ const turningRight: ClipDef = {
   title: "Turning right at a junction",
   rule: "Rules 179–181",
   summary: "Approach in the left lane, position just left of centre, wait, then turn into the left-hand lane of the new road.",
+  explanation: {
+    what: "We are turning right from a major road into a side road while staying on the correct UK side of the road.",
+    when: "Use this whenever you need to turn right across oncoming traffic at a junction.",
+    why: "Positioning correctly tells other drivers what you intend to do, keeps you out of the oncoming lane, and gives you time to judge a safe gap.",
+    steps: [
+      "Check interior mirror, right mirror, then signal right in good time.",
+      "Move to a safe right-turn position just left of the centre line.",
+      "Slow down and give way to oncoming traffic and pedestrians crossing the side road.",
+      "Turn only when the gap is safe, without cutting the corner.",
+      "Enter the left-hand lane of the new road, straighten, cancel the signal and check mirrors.",
+    ],
+  },
   beats: [
     { at: 0, label: "Mirror–Signal–Manoeuvre on approach", detail: "Check interior + right-hand mirror. Signal right in good time. Reduce speed." },
     { at: 0.25, label: "Position just left of the centre line", detail: "Rule 179 — position lets traffic behind pass on your left." },
@@ -118,6 +131,18 @@ const meetingTraffic: ClipDef = {
   title: "Meeting oncoming traffic on a narrow road",
   rule: "Rules 155–156",
   summary: "Parked cars on your side of the road — give way to oncoming traffic before you go through the gap.",
+  explanation: {
+    what: "We are dealing with parked vehicles that narrow our lane while another vehicle is coming towards us.",
+    when: "Use this on narrow streets whenever the obstruction is on your side and there may not be room for both vehicles.",
+    why: "If the blockage is on your side, pushing through can force the oncoming driver to brake or swerve. Holding back keeps priority clear and traffic calm.",
+    steps: [
+      "Stretch your vision and spot the parked vehicles early.",
+      "Check mirrors, ease off, and decide whether the gap is wide enough.",
+      "If oncoming traffic is close, hold back before the obstruction.",
+      "Let the oncoming vehicle pass while keeping the wheels straight.",
+      "When the route is clear, check mirrors, move out smoothly, and rejoin your lane.",
+    ],
+  },
   beats: [
     { at: 0, label: "Scan ahead for oncoming traffic", detail: "Parked cars on your side of the road obstruct your lane." },
     { at: 0.25, label: "Slow and hold back behind a parked car", detail: "Rule 155 — give priority when the obstruction is on your side." },
@@ -161,6 +186,18 @@ const zebra: ClipDef = {
   title: "Zebra crossings",
   rule: "Rules H2, 19, 195",
   summary: "Approach prepared to stop and normally give way to pedestrians waiting to cross.",
+  explanation: {
+    what: "We are approaching a zebra crossing, reading both pavements, and stopping for pedestrians when needed.",
+    when: "Use this every time you see Belisha beacons, zig-zag markings, or people near a zebra crossing.",
+    why: "Pedestrians are vulnerable and may step out once they believe you have seen them. Early planning prevents harsh braking and protects the crossing area.",
+    steps: [
+      "Identify the crossing early from the beacons, zig-zags and road markings.",
+      "Check mirrors and ease off so you are prepared to stop.",
+      "Scan both pavements and the crossing from left to right.",
+      "Stop before the crossing if someone is waiting or already crossing.",
+      "Move off only when the crossing is fully clear and your mirrors confirm it is safe.",
+    ],
+  },
   beats: [
     { at: 0, label: "See the Belisha beacons", detail: "Yellow flashing globes are your first cue a zebra is ahead." },
     { at: 0.25, label: "Scan both pavements — pedestrian waiting", detail: "Rule H2 — approach prepared to stop and normally give way to anyone waiting." },
@@ -225,6 +262,18 @@ const spiralRoundabout: ClipDef = {
   title: "Spiral / multi-lane roundabouts",
   rule: "Rules 184–190",
   summary: "Choose the right lane on approach, give way to the right, follow the spiral markings round, signal to exit.",
+  explanation: {
+    what: "We are using a multi-lane UK roundabout by choosing the correct lane, giving way to the right, and following the marked path.",
+    when: "Use this at spiral or multi-lane roundabouts where lane arrows and road markings guide each exit.",
+    why: "Roundabouts work when drivers are predictable. Correct lane choice and signalling stop last-second swerves and protect traffic beside you.",
+    steps: [
+      "Read signs and lane arrows before the roundabout — choose your lane early.",
+      "Slow down, check mirrors, and signal if your exit requires it.",
+      "Give way to traffic from the right unless signs or lights say otherwise.",
+      "Follow the spiral markings; do not cut across lanes.",
+      "Signal left after the exit before yours, check mirrors, and leave into the correct lane.",
+    ],
+  },
   beats: [
     { at: 0, label: "Choose your lane on approach", detail: "Turning right or more than half way? Right-hand lane. Turning left or first exit? Left-hand lane." },
     { at: 0.25, label: "Give way to traffic from the right", detail: "Rule 185 — unless signs or markings say otherwise." },
@@ -297,6 +346,18 @@ const yellowBox: ClipDef = {
   title: "Yellow box junctions",
   rule: "Rule 174",
   summary: "You must not enter unless your exit is clear — one exception when turning right.",
+  explanation: {
+    what: "We are approaching a yellow box junction and checking whether our exit is clear before entering.",
+    when: "Use this at every yellow box, especially in queues, traffic lights, and busy junctions.",
+    why: "Entering without a clear exit blocks cross traffic and can create gridlock. Waiting behind the box keeps the junction working.",
+    steps: [
+      "Look beyond the yellow box before your front wheels enter it.",
+      "Ask: can I drive all the way through without stopping inside the box?",
+      "If the exit is blocked, stop before the box even if the light is green.",
+      "Move only once the exit space is genuinely available.",
+      "Remember the exception: when turning right, you may wait in the box if only oncoming traffic blocks you.",
+    ],
+  },
   beats: [
     { at: 0, label: "Check the exit before entering", detail: "Rule 174 — do not enter unless your exit is clear." },
     { at: 0.3, label: "Exit is blocked — wait behind the box", detail: "Blocking a yellow box is enforceable (£70+ fine in many areas)." },
@@ -353,6 +414,18 @@ const smartMotorway: ClipDef = {
   title: "Smart motorways (all-lane running)",
   rule: "Rules 258, 269, 274–278",
   summary: "Obey the overhead gantry — variable limits, red X closed lanes, refuge areas for breakdowns.",
+  explanation: {
+    what: "We are reading smart motorway signs, obeying lane closures, and matching the displayed speed limit.",
+    when: "Use this on motorways with overhead gantries, variable speed limits, red X lane closures, or no permanent hard shoulder.",
+    why: "The signs respond to incidents ahead. Ignoring a red X or speed limit can put you into a closed lane where people, debris, or emergency services may be present.",
+    steps: [
+      "Look well ahead at the gantry above your lane.",
+      "Match the mandatory speed shown above your lane.",
+      "If you see a red X, leave that lane safely as soon as possible.",
+      "Keep left unless overtaking and maintain a safe following gap.",
+      "If you break down, reach a refuge area if possible; if not, get behind the barrier and call for help.",
+    ],
+  },
   beats: [
     { at: 0, label: "Read the overhead gantry", detail: "Variable speed limits above your lane are mandatory (Rule 258)." },
     { at: 0.3, label: "Red X above a lane — do not drive in it", detail: "The lane is closed. Move out safely well before you reach it." },
@@ -427,6 +500,18 @@ const laneDiscipline: ClipDef = {
   title: "Lane discipline & positioning",
   rule: "Rule 264",
   summary: "Sit centred in your lane. Straddling the lane divider is dangerous and a common test fault.",
+  explanation: {
+    what: "We are keeping the car centred in its lane on a dual carriageway and avoiding lane straddling.",
+    when: "Use this on any multi-lane road, especially when traffic is beside you or you are preparing to overtake.",
+    why: "A car on the lane line takes space from both lanes. Centred positioning makes your path predictable and gives other drivers safe clearance.",
+    steps: [
+      "Look far ahead, not down at the lane line beside the car.",
+      "Keep equal space either side of the vehicle within your lane.",
+      "Hold a steady steering line and avoid drifting onto dashed markings.",
+      "If you need to change lane, use mirrors, signal, shoulder check, then move once.",
+      "Settle back into the centre of the new lane and keep left unless overtaking.",
+    ],
+  },
   beats: [
     { at: 0, label: "Two cars driving side-by-side", detail: "Rule 264 — keep to the left-hand lane (lane 1) unless overtaking." },
     { at: 0.22, label: "The right-hand car is STRADDLING the lane line", detail: "Sitting on the divider blocks other traffic and is a common test fault." },
@@ -513,6 +598,18 @@ const slipRoadJoin: ClipDef = {
   title: "Joining a dual carriageway from a slip road",
   rule: "Rule 259",
   summary: "Build up speed on the slip road, match the traffic already in lane 1, and slot into a safe gap — ideally in front of the following car, not braking into it.",
+  explanation: {
+    what: "We are joining a dual carriageway from a slip road by matching traffic speed and merging into a safe gap.",
+    when: "Use this whenever a slip road joins a faster road such as a dual carriageway or motorway.",
+    why: "Joining too slowly or forcing a gap makes traffic brake behind you. Matching the flow lets you merge smoothly and safely.",
+    steps: [
+      "Use the slip road to build speed — do not crawl to the merge point.",
+      "Check mirrors and look over the right shoulder for vehicles in lane 1.",
+      "Identify a safe gap early using BGL: blockers, gap, look for opportunity.",
+      "Signal right when it helps others understand your plan.",
+      "Match speed, slot into the gap smoothly, cancel the signal and hold lane 1.",
+    ],
+  },
   beats: [
     { at: 0, label: "Build up speed on the slip road", detail: "Accelerate along the slip road so you can match the speed of traffic already in lane 1 (Rule 259)." },
     { at: 0.25, label: "Mirror + shoulder check for a gap", detail: "A car is following behind in lane 1 — glance over your right shoulder as well as the mirrors." },
