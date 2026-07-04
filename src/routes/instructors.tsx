@@ -125,7 +125,7 @@ function InstructorsPage() {
                     </span>
                   </div>
                   <Button asChild className="mt-5 w-full">
-                    <Link to="/booking">Book with {instructor.name.split(" ")[0]}</Link>
+                    <Link to="/contact">Book with {instructor.name.split(" ")[0]}</Link>
                   </Button>
                 </CardContent>
               </Card>

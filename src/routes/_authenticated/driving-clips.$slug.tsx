@@ -34,7 +34,7 @@ function LessonPage() {
   return (
     <PortalShell eyebrow="Practical" title={lesson.title}>
       <Link
-        to="/driving-clips/"
+        to="/driving-clips"
         className="mb-6 inline-flex items-center gap-1 text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
       >
         <ChevronLeft className="h-4 w-4" /> All animated lessons
