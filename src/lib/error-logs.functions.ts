@@ -177,13 +177,20 @@ export const clearResolvedErrors = createServerFn({ method: "POST" })
     if (!(await verifyAdminPasswordServer(data.password))) {
       throw new Error("Unauthorized");
     }
-    const days = Math.min(365, Math.max(1, data.olderThanDays ?? 30));
-    const cutoff = new Date(Date.now() - days * 86_400_000).toISOString();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error, count } = await supabaseAdmin
-      .from("error_logs")
-      .delete({ count: "exact" })
-      .lt("created_at", cutoff);
+    const requested = data.olderThanDays;
+    // 0 (or negative) means "clear all". Otherwise cap at 365 days.
+    const clearAll = requested === undefined ? false : requested <= 0;
+    let query = supabaseAdmin.from("error_logs").delete({ count: "exact" });
+    if (!clearAll) {
+      const days = Math.min(365, Math.max(1, requested ?? 30));
+      const cutoff = new Date(Date.now() - days * 86_400_000).toISOString();
+      query = query.lt("created_at", cutoff);
+    } else {
+      // Supabase requires a filter on delete; match every row.
+      query = query.not("id", "is", null);
+    }
+    const { error, count } = await query;
     if (error) throw new Error(error.message);
     return { deleted: count ?? 0 };
   });

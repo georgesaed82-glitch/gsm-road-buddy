@@ -39,12 +39,23 @@ function AdminErrorsPage() {
   });
 
   const clearMut = useMutation({
-    mutationFn: () => clearOld({ data: { password, olderThanDays: 30 } }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin", "error-logs"] });
-      qc.invalidateQueries({ queryKey: ["admin", "error-stats"] });
+    mutationFn: (olderThanDays: number) =>
+      clearOld({ data: { password, olderThanDays } }),
+    onSuccess: async () => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["admin", "error-logs"] }),
+        qc.invalidateQueries({ queryKey: ["admin", "error-stats"] }),
+      ]);
+      await Promise.all([logs.refetch(), stats.refetch()]);
+      setActiveFp(null);
     },
   });
+
+  const handleClear = (olderThanDays: number, confirmMessage?: string) => {
+    if (clearMut.isPending) return;
+    if (confirmMessage && !window.confirm(confirmMessage)) return;
+    clearMut.mutate(olderThanDays);
+  };
 
   const [activeFp, setActiveFp] = useState<string | null>(null);
   const grouped = stats.data?.grouped ?? [];
@@ -79,13 +90,29 @@ function AdminErrorsPage() {
             >
               <RefreshCw className="h-4 w-4" /> Refresh
             </button>
-            <button
-              onClick={() => clearMut.mutate()}
+            <ClearButton
+              onClick={() => handleClear(30)}
               disabled={clearMut.isPending}
-              className="inline-flex items-center gap-2 rounded-md border border-destructive/40 bg-background px-3 py-1.5 text-sm text-destructive hover:bg-destructive/10"
-            >
-              <Trash2 className="h-4 w-4" /> Clear &gt; 30d
-            </button>
+              label="Clear > 30d"
+            />
+            <ClearButton
+              onClick={() => handleClear(7)}
+              disabled={clearMut.isPending}
+              label="Clear > 7d"
+            />
+            <ClearButton
+              onClick={() => handleClear(1)}
+              disabled={clearMut.isPending}
+              label="Clear > 24h"
+            />
+            <ClearButton
+              onClick={() =>
+                handleClear(0, "Are you sure you want to clear all error logs?")
+              }
+              disabled={clearMut.isPending}
+              label="Clear all"
+              emphatic
+            />
           </div>
         </div>
 
@@ -171,6 +198,29 @@ function StatCard({ label, value, small }: { label: string; value: string | numb
       <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{label}</div>
       <div className={small ? "mt-1 text-sm text-foreground" : "mt-1 font-display text-2xl text-foreground"}>{value}</div>
     </div>
+  );
+}
+
+function ClearButton({
+  onClick,
+  disabled,
+  label,
+  emphatic,
+}: {
+  onClick: () => void;
+  disabled?: boolean;
+  label: string;
+  emphatic?: boolean;
+}) {
+  const base =
+    "inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm disabled:opacity-50";
+  const style = emphatic
+    ? "border-destructive bg-destructive/10 text-destructive hover:bg-destructive/20"
+    : "border-destructive/40 bg-background text-destructive hover:bg-destructive/10";
+  return (
+    <button onClick={onClick} disabled={disabled} className={`${base} ${style}`}>
+      <Trash2 className="h-4 w-4" /> {label}
+    </button>
   );
 }
 
