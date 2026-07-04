@@ -271,7 +271,11 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
 
       {/* 6. WHAT / WHEN / WHY / STEPS */}
       <Section icon={<Lightbulb className="h-4 w-4" />} eyebrow="What / when / why / steps" tone="default">
-        <div className="prose-sm space-y-3 text-sm leading-relaxed">{lesson.why}</div>
+        <div className="prose-sm space-y-3 text-sm leading-relaxed">
+          <p className="font-semibold uppercase tracking-wider text-accent text-xs">What we're doing</p>
+          <p>{lesson.objective}</p>
+          {lesson.why}
+        </div>
       </Section>
 
       {/* 7. GEORGE EXPLAINS */}
