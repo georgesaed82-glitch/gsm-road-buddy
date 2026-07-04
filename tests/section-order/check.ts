@@ -45,7 +45,9 @@ interface SectionLabel {
   top: number;
 }
 
-async function collectLabels(page: Awaited<ReturnType<Browser["newPage"]>>): Promise<SectionLabel[]> {
+async function collectLabels(
+  page: Awaited<ReturnType<Browser["newPage"]>>,
+): Promise<SectionLabel[]> {
   return await page.evaluate(() => {
     const sections = Array.from(document.querySelectorAll("section"));
     return sections
@@ -64,10 +66,7 @@ function matchOrder(labels: SectionLabel[]) {
   let idx = 0;
   const matched: [string, string][] = [];
   for (const label of labels) {
-    if (
-      idx < EXPECTED.length &&
-      label.text.toLowerCase().includes(EXPECTED[idx].toLowerCase())
-    ) {
+    if (idx < EXPECTED.length && label.text.toLowerCase().includes(EXPECTED[idx].toLowerCase())) {
       matched.push([EXPECTED[idx], label.text]);
       idx += 1;
     }
@@ -111,9 +110,7 @@ async function main() {
     if (!ok) {
       const missing = EXPECTED.slice(matched.length);
       console.log(`  ✗ missing/out-of-order: ${missing}`);
-      console.log(
-        `  visible section labels: ${labelsSorted.map((l) => l.text.slice(0, 50))}`
-      );
+      console.log(`  visible section labels: ${labelsSorted.map((l) => l.text.slice(0, 50))}`);
       failures.push(name);
     }
     await ctx.close();
