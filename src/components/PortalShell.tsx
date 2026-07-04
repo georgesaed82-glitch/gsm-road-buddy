@@ -44,28 +44,28 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
 
   const theoryPaths = theoryItems.map((i) => i.to);
   const theoryActive = theoryPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
-  // Persist the Theory group's open/closed state across sessions.
-  // Default: open when on a theory page, otherwise fall back to the saved
-  // preference (open by default on first visit).
-  const [theoryOpen, setTheoryOpen] = useState<boolean>(() => {
-    if (typeof window === "undefined") return theoryActive;
-    const saved = window.localStorage.getItem("gsm.portal.theoryOpen");
-    if (saved === "1") return true;
-    if (saved === "0") return false;
-    return theoryActive;
-  });
 
-  // Collapse-on-select behaviour:
-  // - Clicking a Theory sub-topic collapses the Theory group so the page
-  //   below fills the viewport with content instead of a long menu.
-  // - Clicking "Overview" re-opens the Theory group.
-  // We intentionally do NOT auto-open when landing on a theory page —
-  // that would fight the user's tap-to-collapse action.
+  // Whole-menu collapse:
+  // - When collapsed, sidebar shows only the search, Overview, and Sign out.
+  // - Clicking any topic (not Overview) collapses the menu so the page
+  //   below fills the viewport with content.
+  // - Clicking Overview re-opens the whole menu.
+  const [menuOpen, setMenuOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    const saved = window.localStorage.getItem("gsm.portal.menuOpen");
+    return saved === null ? true : saved === "1";
+  });
+  const [theoryOpen, setTheoryOpen] = useState<boolean>(theoryActive);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    window.localStorage.setItem("gsm.portal.theoryOpen", theoryOpen ? "1" : "0");
-  }, [theoryOpen]);
+    window.localStorage.setItem("gsm.portal.menuOpen", menuOpen ? "1" : "0");
+  }, [menuOpen]);
+
+  const collapseMenu = () => {
+    setMenuOpen(false);
+    setTheoryOpen(false);
+  };
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
@@ -87,6 +87,8 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
           </div>
           <nav className="mt-2 flex flex-col gap-0.5">
             {topItems.map((item) => {
+              const isOverview = item.to === "/dashboard";
+              if (!menuOpen && !isOverview) return null;
               const active = pathname === item.to;
               const Icon = item.icon;
               return (
@@ -94,9 +96,12 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                   key={item.to}
                   to={item.to}
                   onClick={() => {
-                    // Pressing "Overview" re-opens the Theory group.
-                    // Other top items leave the current state alone.
-                    if (item.to === "/dashboard") setTheoryOpen(true);
+                    if (isOverview) {
+                      setMenuOpen(true);
+                      setTheoryOpen(true);
+                    } else {
+                      collapseMenu();
+                    }
                   }}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
@@ -111,7 +116,7 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
               );
             })}
 
-            <button
+            {menuOpen && <button
               type="button"
               onClick={() => setTheoryOpen((v) => !v)}
               aria-expanded={theoryOpen}
@@ -131,8 +136,8 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                   theoryOpen ? "rotate-180" : "rotate-0",
                 )}
               />
-            </button>
-            {theoryOpen && (
+            </button>}
+            {menuOpen && theoryOpen && (
               <div id="portal-theory-group" className="flex flex-col gap-0.5 pl-3 border-l border-border ml-4">
                 {theoryItems.map((item) => {
                   const active = pathname === item.to;
@@ -141,7 +146,7 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                     <Link
                       key={item.to}
                       to={item.to}
-                      onClick={() => setTheoryOpen(false)}
+                      onClick={collapseMenu}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
                         active
@@ -157,13 +162,14 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
               </div>
             )}
 
-            {practicalItems.map((item) => {
+            {menuOpen && practicalItems.map((item) => {
               const active = pathname === item.to;
               const Icon = item.icon;
               return (
                 <Link
                   key={item.to}
                   to={item.to}
+                  onClick={collapseMenu}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
                     active
@@ -177,13 +183,14 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
               );
             })}
 
-            {bottomItems.map((item) => {
+            {menuOpen && bottomItems.map((item) => {
               const active = pathname === item.to;
               const Icon = item.icon;
               return (
                 <Link
                   key={item.to}
                   to={item.to}
+                  onClick={collapseMenu}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
                     active
@@ -197,9 +204,10 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
               );
             })}
           </nav>
-          {isAdmin && (
+          {menuOpen && isAdmin && (
             <Link
               to="/admin"
+              onClick={collapseMenu}
               className="mt-2 flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-accent transition-colors hover:text-foreground"
             >
               <ShieldCheck className="h-4 w-4" /> Admin portal
