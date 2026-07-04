@@ -1658,6 +1658,33 @@ const closedJunction: Lesson = {
     "Missing cyclists and motorbikes hidden behind parked cars",
     "Pulling out on hope because 'nothing was coming last time'",
   ],
+  mistakes: [
+    {
+      wrong: "Rolling through the give-way line without a full stop.",
+      why: "At a closed junction your eyes can't see past the hedge until the car has stopped — a rolling car commits you before you've seen anything.",
+      right: "Come to a complete stop AT the line first, then creep forward slowly to a second stop where your eyes clear the view.",
+    },
+    {
+      wrong: "Creeping out too far, too fast — the bonnet ends up in the main road.",
+      why: "A fast creep uses road space you haven't checked yet. If a car is close, you can't retreat and you've forced them to brake.",
+      right: "Creep in inches, not feet. Cover the brake. Move only as fast as your view is opening.",
+    },
+    {
+      wrong: "Only looking the way you're turning (usually right).",
+      why: "Cars come from BOTH directions on a two-way road. Cyclists and motorbikes on your left are the ones that get hit.",
+      right: "Right → Left → Right again, every time. Two clean looks each way before you commit.",
+    },
+    {
+      wrong: "Missing a bike hidden behind a parked car or a van.",
+      why: "Bikes are narrow. A single glance past a parked van can hide a whole cyclist. Motorbikes appear from nowhere at 40mph.",
+      right: "Move your head, not just your eyes. Look AROUND the blocker before you go — treat every gap as a possible bike.",
+    },
+    {
+      wrong: "Pulling out on hope — 'nothing was coming last time'.",
+      why: "Hope isn't observation. If you haven't SEEN the gap, it doesn't exist. Junction collisions come from assumed gaps, not real ones.",
+      right: "One clear decision, on a gap you can actually see. If you're not sure — you wait.",
+    },
+  ],
   gsmTips: [
     "Closed junction = full stop, every time — no exceptions",
     "Your EYES need to see, not the front of your bonnet",
