@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote, ArrowRight } from "lucide-react";
+import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote, ArrowRight, ChevronDown } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
@@ -245,7 +245,12 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
       </div>
 
       {/* 4. THE GSM FORMULA — THINK */}
-      <Section icon={<Sparkles className="h-4 w-4" />} eyebrow="The GSM formula" tone="accent">
+      <Collapse
+        icon={<Sparkles className="h-4 w-4" />}
+        eyebrow="The GSM formula"
+        tone="accent"
+        title="THINK — before you act"
+      >
         <div className="font-display text-2xl tracking-wide">THINK</div>
         <p className="mt-1 text-sm text-muted-foreground">Before you act — ask yourself:</p>
         <ol className="mt-4 space-y-2">
@@ -256,13 +261,16 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
             </li>
           ))}
         </ol>
-      </Section>
+      </Collapse>
 
       {/* 5. THE RULE */}
-      <div className="rounded-xl border-2 border-accent bg-accent/5 p-5 shadow-sm">
-        <div className="text-[11px] uppercase tracking-[0.2em] text-accent">The rule</div>
-        <p className="mt-2 font-display text-xl leading-snug">{lesson.ruleHeadline}</p>
-        <ul className="mt-3 space-y-1.5 text-sm">
+      <Collapse
+        icon={<Target className="h-4 w-4" />}
+        eyebrow="The rule"
+        tone="rule"
+        title={lesson.ruleHeadline}
+      >
+        <ul className="space-y-1.5 text-sm">
           {lesson.ruleBullets.map((b, i) => (
             <li key={i} className="flex gap-2">
               <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
@@ -270,32 +278,41 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
             </li>
           ))}
         </ul>
-      </div>
+      </Collapse>
 
       {/* 6. WHAT / WHEN / WHY / STEPS */}
-      <Section icon={<Lightbulb className="h-4 w-4" />} eyebrow="What / when / why / steps" tone="default">
+      <Collapse
+        icon={<Lightbulb className="h-4 w-4" />}
+        eyebrow="What / when / why / steps"
+        tone="default"
+        title="What, when and why"
+      >
         <div className="prose-sm space-y-3 text-sm leading-relaxed">
           <p className="font-semibold uppercase tracking-wider text-accent text-xs">What we're doing</p>
           <p>{lesson.objective}</p>
           {lesson.why}
         </div>
-      </Section>
+      </Collapse>
 
       {/* 7. GEORGE EXPLAINS */}
-      <div className="rounded-xl border-l-4 border-accent bg-card p-5 shadow-sm">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-accent">
-          <Quote className="h-4 w-4" /> George explains
-        </div>
-        <p className="mt-2 text-sm italic leading-relaxed">{lesson.georgeExplains}</p>
-      </div>
+      <Collapse
+        icon={<Quote className="h-4 w-4" />}
+        eyebrow="George explains"
+        tone="george"
+        title="George explains"
+      >
+        <p className="text-sm italic leading-relaxed">{lesson.georgeExplains}</p>
+      </Collapse>
 
       {/* 8. COMMON MISTAKES */}
-      <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5 shadow-sm">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-red-500">
-          <AlertTriangle className="h-4 w-4" /> Common mistakes
-        </div>
+      <Collapse
+        icon={<AlertTriangle className="h-4 w-4" />}
+        eyebrow="Common mistakes"
+        tone="warn"
+        title="Common mistakes"
+      >
         {lesson.mistakes && lesson.mistakes.length > 0 ? (
-          <ol className="mt-3 space-y-4 text-sm">
+          <ol className="space-y-4 text-sm">
             {lesson.mistakes.map((m, i) => (
               <li key={i} className="rounded-lg border border-border/60 bg-background/40 p-3">
                 <div className="flex gap-2 leading-relaxed">
@@ -314,7 +331,7 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
             ))}
           </ol>
         ) : (
-          <ul className="mt-3 space-y-2 text-sm">
+          <ul className="space-y-2 text-sm">
             {lesson.commonMistakes.map((m, i) => (
               <li key={i} className="flex gap-2 leading-relaxed">
                 <span className="text-red-500">✕</span>
@@ -323,14 +340,16 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
             ))}
           </ul>
         )}
-      </div>
+      </Collapse>
 
       {/* 9. GSM TIPS */}
-      <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 shadow-sm">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-emerald-600">
-          <CheckCircle2 className="h-4 w-4" /> George's Tip
-        </div>
-        <ul className="mt-3 space-y-2 text-sm">
+      <Collapse
+        icon={<CheckCircle2 className="h-4 w-4" />}
+        eyebrow="George's Tip"
+        tone="tip"
+        title="George's tips"
+      >
+        <ul className="space-y-2 text-sm">
           {lesson.gsmTips.map((tp, i) => (
             <li key={i} className="flex gap-2 leading-relaxed">
               <span className="text-emerald-600">✓</span>
@@ -338,7 +357,7 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
             </li>
           ))}
         </ul>
-      </div>
+      </Collapse>
 
       {/* 10. KEY TAKEAWAY */}
       <div className="rounded-xl bg-foreground p-5 text-background shadow-md">
@@ -387,6 +406,50 @@ function Section({
       </div>
       <div className="mt-3">{children}</div>
     </section>
+  );
+}
+
+function Collapse({
+  eyebrow,
+  icon,
+  tone,
+  title,
+  children,
+}: {
+  eyebrow: string;
+  icon: ReactNode;
+  tone: "default" | "accent" | "rule" | "george" | "warn" | "tip";
+  title: string;
+  children: ReactNode;
+}) {
+  const wrap = cn(
+    "group rounded-xl border shadow-sm overflow-hidden",
+    tone === "accent" && "border-accent/40 bg-accent/5",
+    tone === "rule" && "border-2 border-accent bg-accent/5",
+    tone === "george" && "border-l-4 border-accent bg-card",
+    tone === "warn" && "border-red-500/30 bg-red-500/5",
+    tone === "tip" && "border-emerald-500/30 bg-emerald-500/5",
+    tone === "default" && "border-border bg-card",
+  );
+  const eyebrowTone =
+    tone === "warn"
+      ? "text-red-500"
+      : tone === "tip"
+        ? "text-emerald-600"
+        : "text-accent";
+  return (
+    <details className={wrap}>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
+        <div className="min-w-0">
+          <div className={cn("flex items-center gap-2 text-[11px] uppercase tracking-[0.2em]", eyebrowTone)}>
+            {icon} {eyebrow}
+          </div>
+          <div className="mt-1 font-display text-base leading-snug">{title}</div>
+        </div>
+        <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="px-5 pb-5">{children}</div>
+    </details>
   );
 }
 
