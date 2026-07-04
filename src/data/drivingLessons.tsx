@@ -891,8 +891,18 @@ const goingDownhill: Lesson = {
   ],
   why: (
     <>
-      <p>Gravity accelerates you downhill — the steeper the hill, the harder it pulls. If you don't control your speed, you arrive at the bottom too fast for the junction, bend or queue that's waiting for you.</p>
-      <p>Engine braking (lower gear) does most of the work quietly. The foot brake is there to fine-tune, not to fight the whole hill.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Gravity <em>accelerates</em> you downhill. If you don't manage speed you arrive at the bottom too fast for the junction, bend or queue that's waiting. Engine braking (lower gear) does the quiet work; the foot brake is only for fine-tuning — not for fighting the whole hill.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Any descent — steep country lanes, motorway drops, town hills into a junction. The steeper the hill and the closer the hazard at the bottom, the earlier the gear must come down.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Change down BEFORE the descent — let the engine hold you back.</li>
+        <li>Keep both hands on the wheel — never coast in neutral.</li>
+        <li>Use the foot brake gently and progressively to trim speed.</li>
+        <li>Leave a bigger gap in front — stopping distances are longer downhill.</li>
+        <li>Plan for whatever is at the bottom — junction, bend, queue — before you get there.</li>
+      </ol>
     </>
   ),
   georgeExplains:
