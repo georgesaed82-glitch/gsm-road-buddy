@@ -1522,10 +1522,10 @@ function ClosedJunctionScene(t: number) {
       <VisibilityCone x={320} y={egoY - 4} angle={180} spread={22} length={90} color="#dc2626" opacity={0.32} />
       <VisibilityCone x={320} y={egoY - 4} angle={0} spread={22} length={90} color="#dc2626" opacity={0.32} />
 
-      {/* Big STOP line label — reinforce that this is a plan-to-stop junction */}
-      <rect x={282} y={218} width={76} height={8} fill="#c8102e" opacity={0.85} />
-      <text x={320} y={225} textAnchor="middle" fontSize={7} fill="#fff" fontWeight={800} fontFamily="sans-serif">
-        STOP · LOOK · GO
+      {/* Solid red STOP line — a closed junction is a MUST-STOP junction */}
+      <rect x={282} y={216} width={76} height={10} fill="#c8102e" opacity={0.95} />
+      <text x={320} y={224} textAnchor="middle" fontSize={8} fill="#fff" fontWeight={900} fontFamily="sans-serif" letterSpacing={1.5}>
+        STOP
       </text>
 
       {/* Ego */}
@@ -1538,12 +1538,12 @@ function ClosedJunctionScene(t: number) {
         <rect x={12} y={12} width={210} height={54} rx={6} fill="#000" opacity={0.72} />
         <text x={22} y={30} fontSize={11} fill="#fca5a5" fontFamily="sans-serif" fontWeight={800}>CLOSED JUNCTION</text>
         <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">Limited visibility</text>
-        <text x={22} y={60} fontSize={10} fill="#fca5a5" fontFamily="sans-serif">Plan to Stop · Look to Go</text>
+        <text x={22} y={60} fontSize={10} fill="#fca5a5" fontFamily="sans-serif" fontWeight={800}>YOU MUST STOP</text>
       </g>
 
       <Hud
         label="PHASE"
-        value={t < 0.35 ? "Approach — brake early" : t < 0.55 ? "STOP at give-way" : t < 0.82 ? "Creep — eyes past the hedge" : "GO — safe gap found"}
+        value={t < 0.35 ? "Approach — brake early" : t < 0.55 ? "MUST STOP at give-way" : t < 0.82 ? "Creep — eyes past the hedge" : "GO — safe gap found"}
         tone={t < 0.82 ? "warn" : "good"}
       />
     </svg>
