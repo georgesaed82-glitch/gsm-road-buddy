@@ -93,6 +93,11 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                 <Link
                   key={item.to}
                   to={item.to}
+                  onClick={() => {
+                    // Pressing "Overview" re-opens the Theory group.
+                    // Other top items leave the current state alone.
+                    if (item.to === "/dashboard") setTheoryOpen(true);
+                  }}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
                     active
@@ -136,6 +141,7 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                     <Link
                       key={item.to}
                       to={item.to}
+                      onClick={() => setTheoryOpen(false)}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
                         active
