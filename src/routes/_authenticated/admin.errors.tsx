@@ -201,6 +201,29 @@ function StatCard({ label, value, small }: { label: string; value: string | numb
   );
 }
 
+function ClearButton({
+  onClick,
+  disabled,
+  label,
+  emphatic,
+}: {
+  onClick: () => void;
+  disabled?: boolean;
+  label: string;
+  emphatic?: boolean;
+}) {
+  const base =
+    "inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm disabled:opacity-50";
+  const style = emphatic
+    ? "border-destructive bg-destructive/10 text-destructive hover:bg-destructive/20"
+    : "border-destructive/40 bg-background text-destructive hover:bg-destructive/10";
+  return (
+    <button onClick={onClick} disabled={disabled} className={`${base} ${style}`}>
+      <Trash2 className="h-4 w-4" /> {label}
+    </button>
+  );
+}
+
 function ErrorRow({ row }: { row: ErrorLogRow }) {
   const [open, setOpen] = useState(false);
   return (
