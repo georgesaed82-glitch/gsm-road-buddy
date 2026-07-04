@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, XCircle, RotateCcw, ArrowRight, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { homeTheoryQuestions, type TheoryQ } from "@/data/homeTheoryQuiz";
@@ -20,7 +20,13 @@ function buildSet(): TheoryQ[] {
 }
 
 export function HomeTheoryQuiz() {
-  const [set, setSet] = useState<TheoryQ[]>(buildSet);
+  // Deterministic SSR slice; shuffle after mount to avoid hydration mismatch.
+  const [set, setSet] = useState<TheoryQ[]>(() =>
+    homeTheoryQuestions.slice(0, QUIZ_LENGTH),
+  );
+  useEffect(() => {
+    setSet(buildSet());
+  }, []);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [score, setScore] = useState(0);
