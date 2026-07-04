@@ -2104,8 +2104,18 @@ const stretchVision: Lesson = {
   ],
   why: (
     <>
-      <p>Drivers who stare just over the bonnet are always reacting. Drivers who stretch their vision are always planning.</p>
-      <p>The eyes lead the car. Look further, drive smoother.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Drivers who stare just over the bonnet are always <em>reacting</em>. Drivers who stretch their vision are always <em>planning</em>. The eyes lead the car — look further, drive smoother, brake less, save fuel, stay calmer.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Constantly — town, country and dual carriageway. Especially on approach to junctions, roundabouts, bends, brows and traffic queues. If your eyes are close to the car, your reaction time already is too.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Lift your eyes to the furthest point you can see down the road.</li>
+        <li>Scan back towards the car in a natural sweep — near, mid, far, mirrors.</li>
+        <li>Read brake lights, indicators and body language of drivers well ahead.</li>
+        <li>Ask "what's changing?" before it changes — position, gear, gap.</li>
+        <li>If you're braking hard, your eyes were too close — stretch them further next time.</li>
+      </ol>
     </>
   ),
   georgeExplains:
