@@ -29,6 +29,8 @@ export const Route = createFileRoute("/_authenticated/driving-clips/$slug")({
 function LessonPage() {
   const { slug } = Route.useParams();
   const lesson = getLesson(slug)!;
+  const idx = drivingLessons.findIndex((l) => l.slug === slug);
+  const nextLesson = idx >= 0 && idx < drivingLessons.length - 1 ? drivingLessons[idx + 1] : null;
   return (
     <PortalShell eyebrow="Practical" title={lesson.title}>
       <Link
@@ -37,7 +39,10 @@ function LessonPage() {
       >
         <ChevronLeft className="h-4 w-4" /> All animated lessons
       </Link>
-      <LessonShell lesson={lesson} />
+      <LessonShell
+        lesson={lesson}
+        next={nextLesson ? { slug: nextLesson.slug, title: nextLesson.title } : null}
+      />
     </PortalShell>
   );
 }
