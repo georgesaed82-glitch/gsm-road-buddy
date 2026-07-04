@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { ClipShell } from "@/components/driving-clips/ClipShell";
@@ -21,8 +21,8 @@ export const Route = createFileRoute("/_authenticated/driving-clips")({
 });
 
 function DrivingClipsLayout() {
-  const matchRoute = useMatchRoute();
-  const isLesson = Boolean(matchRoute({ to: "/driving-clips/$slug", fuzzy: false }));
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isLesson = pathname.startsWith("/driving-clips/") && pathname !== "/driving-clips/";
 
   if (isLesson) return <Outlet />;
 
