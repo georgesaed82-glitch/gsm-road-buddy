@@ -1630,7 +1630,7 @@ const closedJunction: Lesson = {
     "Parked cars + hedges + fences = view is blocked — the junction is closed",
     "At a closed junction you MUST STOP fully — every time, no rolling",
     "Once stopped, creep forward inch by inch until your eyes clear the obstruction",
-    "Look BOTH ways twice — vehicles, cyclists, motorbikes, pedestrians",
+    "Look right, left, right again — three checks minimum, every time",
     "Only go when you know it is safe — never on hope",
   ],
   why: (
@@ -1672,7 +1672,7 @@ const closedJunction: Lesson = {
     {
       wrong: "Only looking the way you're turning (usually right).",
       why: "Cars come from BOTH directions on a two-way road. Cyclists and motorbikes on your left are the ones that get hit.",
-      right: "Right → Left → Right again, every time. Two clean looks each way before you commit.",
+      right: "Right → Left → Right again, every time. Three clean checks minimum before you commit.",
     },
     {
       wrong: "Missing a bike hidden behind a parked car or a van.",
@@ -1799,7 +1799,7 @@ const openJunction: Lesson = {
       <ol className="list-decimal space-y-1 pl-5">
         <li>Read the junction early — parked cars? hedges? walls? Nothing? Good.</li>
         <li>Mirrors, signal, position — full routine, same as any junction.</li>
-        <li>Look RIGHT and LEFT well before the give-way line, then look again.</li>
+        <li>Look RIGHT, LEFT, then RIGHT again well before the give-way line — three checks minimum.</li>
         <li>If visibility stays open and the road is clear, ease off — do not brake harshly — and coast through in the correct gear.</li>
         <li>If anything closes the view or a vehicle appears, stop at the line and treat it as a closed junction.</li>
       </ol>
@@ -1844,7 +1844,7 @@ const openJunction: Lesson = {
   gsmTips: [
     "Open visibility = you can coast through, no need to stop",
     "LOOK first, LINE second — decide early",
-    "Two clean looks each way even when it seems clear",
+    "Three clean checks minimum — right, left, right — even when it seems clear",
     "Smooth throttle beats braking hard",
     "The moment the view closes — you stop",
   ],
@@ -1853,7 +1853,7 @@ const openJunction: Lesson = {
   durationMs: 14000,
   captions: [
     { at: 0, label: "Approaching an OPEN junction", detail: "Wide view, no parked cars, houses set well back." },
-    { at: 0.35, label: "Look early — both ways, twice", detail: "Green cones — I can already see both directions." },
+    { at: 0.35, label: "Look early — right, left, right", detail: "Three checks minimum — green cones, I can already see both directions." },
     { at: 0.7, label: "Visibility open — coast through", detail: "Main road is clear, adjust speed and continue smoothly." },
   ],
   questions: [
