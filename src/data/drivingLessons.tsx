@@ -215,7 +215,7 @@ const speedAdjustment: Lesson = {
   render: SpeedAdjustmentScene,
 };
 
-// (twoSecondRule is defined below and appended to the exported array.)
+// The exported list is declared after both lessons are defined (see end of file).
 
 // ─────────────────────────────────────────────────────────────
 // Lesson 2 · The 2-Second Rule
@@ -437,8 +437,7 @@ const twoSecondRule: Lesson = {
   render: TwoSecondRuleScene,
 };
 
-// Re-export the list with the new lesson appended.
-drivingLessons.push(twoSecondRule);
+export const drivingLessons: Lesson[] = [speedAdjustment, twoSecondRule];
 
 export function getLesson(slug: string): Lesson | undefined {
   return drivingLessons.find((l) => l.slug === slug);
