@@ -82,7 +82,16 @@ async def main():
             page = await ctx.new_page()
             await page.goto(BASE_URL, wait_until="domcontentloaded")
             # let hydration + lazy sections settle
-            await page.wait_for_selector("footer", timeout=10000)
+            await page.wait_for_selector("footer", timeout=30000)
+            try:
+                await page.wait_for_load_state("networkidle", timeout=15000)
+            except Exception:
+                pass
+            # scroll to bottom to trigger any viewport-lazy sections, then back to top
+            await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            await page.wait_for_timeout(500)
+            await page.evaluate("window.scrollTo(0, 0)")
+            await page.wait_for_timeout(200)
             labels = await collect_labels(page)
             # sort by vertical position (defensive — visual order is what matters)
             labels_sorted = sorted(labels, key=lambda l: l["top"])
