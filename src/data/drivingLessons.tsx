@@ -1856,6 +1856,230 @@ const planStopLookGo: Lesson = {
 };
 
 export const drivingLessons: Lesson[] = [
+// ─────────────────────────────────────────────────────────────
+// Lesson · Roundabouts (turning right — 3rd exit)
+// ─────────────────────────────────────────────────────────────
+function RoundaboutScene(t: number) {
+  // Top-down 4-arm roundabout. Ego enters from south (6 o'clock),
+  // turning right → exits west (9 o'clock). Signals right on approach,
+  // gives way to traffic from the right, joins, signals left before exit.
+  const cx = 320;
+  const cy = 180;
+  const rOuter = 78;
+  const rInner = 34;
+  const rPath = 56; // radius of ego's driving line around the island
+
+  // Traffic from the right (from east arm) circulating — has priority.
+  // It passes across the ego's entry between t=0.15 and t=0.32.
+  const otherAngle = -Math.PI * 0.05 + t * Math.PI * 1.8; // sweeps around
+  const otherX = cx + Math.cos(otherAngle) * rPath;
+  const otherY = cy + Math.sin(otherAngle) * rPath;
+  const otherHeading = (otherAngle * 180) / Math.PI + 90;
+
+  // Ego phases:
+  //  0.00–0.20  approach south arm, signal right, brake
+  //  0.20–0.32  wait at give-way line (traffic from right passing)
+  //  0.32–0.75  circulate anticlockwise from 6 o'clock → 9 o'clock (right turn)
+  //  0.75–1.00  exit west, cancel signal, accelerate away
+  let egoX = cx;
+  let egoY = 0;
+  let heading = -90; // pointing north on approach
+  let braking = false;
+  let indicator: "left" | "right" | null = null;
+
+  if (t < 0.2) {
+    const k = t / 0.2;
+    egoY = 340 - (340 - (cy + rPath + 8)) * easeInOut(k);
+    heading = -90;
+    braking = true;
+    indicator = "right";
+  } else if (t < 0.32) {
+    egoY = cy + rPath + 8;
+    heading = -90;
+    braking = true;
+    indicator = "right";
+  } else if (t < 0.75) {
+    // Circulate from angle π/2 (south, 6 o'clock) round to π (west, 9 o'clock)
+    // Anticlockwise for a right turn in UK → angle decreases from π/2 through 0, -π/2, to -π? No.
+    // UK roundabouts are clockwise (traffic flows clockwise viewed top-down).
+    // Entering from south heading north, right-turn exit is west.
+    // Clockwise means: south → west → north → east.
+    // So angle sweeps from π/2 (bottom) → π (left) via increasing angle? Let's use:
+    // start angle a0 = Math.PI/2 (bottom), end angle a1 = Math.PI (left) going clockwise
+    // In screen coords y-down, clockwise on-screen = angle increasing.
+    const k = (t - 0.32) / 0.43;
+    const a = Math.PI / 2 + easeInOut(k) * (Math.PI / 2); // π/2 → π
+    egoX = cx + Math.cos(a) * rPath;
+    egoY = cy + Math.sin(a) * rPath;
+    heading = (a * 180) / Math.PI + 90; // tangent
+    indicator = k > 0.55 ? "left" : "right"; // signal left before exit
+  } else {
+    const k = (t - 0.75) / 0.25;
+    egoX = cx - rPath - (rPath + 40) * k;
+    egoY = cy;
+    heading = 180;
+    indicator = null;
+  }
+
+  const phase =
+    t < 0.2
+      ? "APPROACH · signal right"
+      : t < 0.32
+      ? "GIVE WAY · traffic from right"
+      : t < 0.6
+      ? "CIRCULATE · stay in lane"
+      : t < 0.75
+      ? "SIGNAL LEFT before exit"
+      : "EXIT · cancel signal";
+
+  return (
+    <svg viewBox="0 0 640 360" className="h-full w-full">
+      <Sky id="sky-rb" />
+      <rect x={0} y={0} width={640} height={360} fill={GRASS} />
+      {/* Four arms of the roundabout */}
+      {/* south arm */}
+      <rect x={cx - 40} y={cy + rInner} width={80} height={200} fill="#2b2b2e" />
+      {/* north arm */}
+      <rect x={cx - 40} y={0} width={80} height={cy - rInner} fill="#2b2b2e" />
+      {/* east arm */}
+      <rect x={cx + rInner} y={cy - 40} width={640} height={80} fill="#2b2b2e" />
+      {/* west arm */}
+      <rect x={0} y={cy - 40} width={cx - rInner} height={80} fill="#2b2b2e" />
+      {/* Roundabout ring */}
+      <circle cx={cx} cy={cy} r={rOuter} fill="#2b2b2e" />
+      {/* Central island (grass) */}
+      <circle cx={cx} cy={cy} r={rInner} fill={GRASS} stroke={PAINT} strokeWidth={1.2} />
+      {/* Lane divider on the ring */}
+      <circle cx={cx} cy={cy} r={(rOuter + rInner) / 2} fill="none" stroke={PAINT} strokeWidth={1} strokeDasharray="4 6" opacity={0.6} />
+      {/* Give-way dashed lines at each entry */}
+      {/* south entry */}
+      <line x1={cx - 40} y1={cy + rOuter + 2} x2={cx + 40} y2={cy + rOuter + 2} stroke={PAINT} strokeWidth={2} strokeDasharray="6 4" />
+      {/* west entry */}
+      <line x1={cx - rOuter - 2} y1={cy - 40} x2={cx - rOuter - 2} y2={cy + 40} stroke={PAINT} strokeWidth={2} strokeDasharray="6 4" />
+      {/* east entry */}
+      <line x1={cx + rOuter + 2} y1={cy - 40} x2={cx + rOuter + 2} y2={cy + 40} stroke={PAINT} strokeWidth={2} strokeDasharray="6 4" />
+      {/* north entry */}
+      <line x1={cx - 40} y1={cy - rOuter - 2} x2={cx + 40} y2={cy - rOuter - 2} stroke={PAINT} strokeWidth={2} strokeDasharray="6 4" />
+      {/* Centre lines on arms */}
+      <line x1={cx} y1={cy + rOuter + 6} x2={cx} y2={360} stroke={PAINT} strokeWidth={1} strokeDasharray="8 8" />
+      <line x1={cx} y1={0} x2={cx} y2={cy - rOuter - 6} stroke={PAINT} strokeWidth={1} strokeDasharray="8 8" />
+      <line x1={cx + rOuter + 6} y1={cy} x2={640} y2={cy} stroke={PAINT} strokeWidth={1} strokeDasharray="8 8" />
+      <line x1={0} y1={cy} x2={cx - rOuter - 6} y2={cy} stroke={PAINT} strokeWidth={1} strokeDasharray="8 8" />
+
+      {/* Direction arrows on the ring (clockwise) */}
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = (i / 8) * Math.PI * 2 + t * 0.5;
+        const ax = cx + Math.cos(a) * ((rOuter + rInner) / 2);
+        const ay = cy + Math.sin(a) * ((rOuter + rInner) / 2);
+        const rot = (a * 180) / Math.PI + 90;
+        return (
+          <g key={i} transform={`translate(${ax} ${ay}) rotate(${rot})`} opacity={0.55}>
+            <polygon points="0,-4 3,3 -3,3" fill={PAINT} />
+          </g>
+        );
+      })}
+
+      {/* Other car circulating (priority from the right) */}
+      <g transform={`translate(${otherX} ${otherY}) rotate(${otherHeading})`}>
+        <Car2 x={0} y={0} color="#c8102e" />
+      </g>
+
+      {/* Ego car */}
+      <g transform={`translate(${egoX} ${egoY}) rotate(${heading + 90})`}>
+        <Car2 x={0} y={0} color="#2f6bf0" braking={braking} indicator={indicator} />
+      </g>
+
+      {/* Exit labels */}
+      <text x={cx} y={30} textAnchor="middle" fontSize={10} fill="#fff" opacity={0.7} fontFamily="sans-serif">2nd exit — straight on</text>
+      <text x={20} y={cy - 46} fontSize={10} fill="#fff" opacity={0.85} fontFamily="sans-serif">3rd exit — your exit</text>
+      <text x={620} y={cy - 46} textAnchor="end" fontSize={10} fill="#fff" opacity={0.7} fontFamily="sans-serif">1st exit — left</text>
+
+      <Hud label="PHASE" value={phase} tone={t < 0.32 ? "warn" : t > 0.75 ? "good" : "info"} />
+    </svg>
+  );
+}
+
+const roundabouts: Lesson = {
+  slug: "roundabouts",
+  title: "Roundabouts — look to go",
+  category: "Highway Code • Junctions",
+  rule: "Rules 184–190",
+  objective:
+    "Learn the GSM roundabout routine: signal right for a right exit, give way to traffic from the right, circulate in lane, then signal left before your exit.",
+  think: [
+    "Which exit do I want — and which lane does it need?",
+    "What signal do I need on approach, and when do I cancel it?",
+    "Is there traffic already on the roundabout from my right?",
+    "Am I looking through the roundabout, not just at it?",
+    "When will I signal left to tell everyone I'm leaving?",
+  ],
+  ruleHeadline: "Give way to traffic from your right. Right exit = signal right, then signal left before you leave.",
+  ruleBullets: [
+    "APPROACH — mirrors, signal, correct lane, brake early",
+    "GIVE WAY — to traffic already on the roundabout (from your right)",
+    "TURNING RIGHT (past 12 o'clock) — signal right on approach, right lane",
+    "STRAIGHT ON — usually left lane, no signal on approach",
+    "SIGNAL LEFT after the exit before yours",
+    "EXIT smoothly, cancel signal, mirrors and check speed",
+  ],
+  why: (
+    <>
+      <p>Roundabouts fail for two reasons: drivers don't signal their intentions, and they don't look far enough right to spot priority traffic.</p>
+      <p>Signal right for a right exit so nobody guesses. Signal left before the exit so the driver waiting at the next arm knows you're leaving and can move off safely.</p>
+    </>
+  ),
+  georgeExplains:
+    "Right exit — past twelve o'clock — you signal right on approach and stay in the right lane. As you go round, look for the exit before yours. When you pass it, that's your cue — signal left. That left signal tells the driver waiting on the next arm you're coming off. It keeps the whole roundabout flowing. Give way to your right, signal your intentions, and look through the roundabout, not at it.",
+  commonMistakes: [
+    "No signal on approach — nobody knows what you're doing",
+    "Forgetting to signal left before your exit",
+    "Stopping at the give-way line when the roundabout is clear",
+    "Straight on but sitting in the right lane (or vice versa)",
+    "Looking at the roundabout instead of through it to your exit",
+  ],
+  gsmTips: [
+    "Past 12 o'clock = signal right",
+    "Signal left after the exit before yours",
+    "Give way to traffic from the right",
+    "Look through the roundabout, not at it",
+    "Stay in your lane all the way round",
+  ],
+  keyTakeaway:
+    "Right exit: signal right, give way to the right, signal left before leaving — every roundabout, every time.",
+  durationMs: 16000,
+  captions: [
+    { at: 0, label: "APPROACH — signal right", detail: "Right exit needs a right signal on approach." },
+    { at: 0.22, label: "GIVE WAY — traffic from the right", detail: "The red car has priority. Wait for a safe gap." },
+    { at: 0.4, label: "CIRCULATE — stay in lane", detail: "Right lane all the way round." },
+    { at: 0.5, label: "Decision point", detail: "When exactly do you switch from right to left signal?" },
+    { at: 0.62, label: "SIGNAL LEFT before your exit", detail: "As you pass the exit before yours, change to a left signal." },
+    { at: 0.8, label: "EXIT — cancel signal", detail: "Smooth exit, mirrors, back up to a safe cruise speed." },
+  ],
+  questions: [
+    {
+      at: 0.5,
+      prompt: "You're taking the 3rd exit at a 4-arm roundabout (a right turn). When should you switch from a right signal to a left signal?",
+      options: [
+        {
+          label: "Right as you enter the roundabout",
+          explain: "Too early — a left signal on entry tells the driver on your right you're taking the first exit. You'll confuse them.",
+        },
+        {
+          label: "As you pass the exit before yours",
+          correct: true,
+          explain: "Correct. Once you're past the exit before yours, change to a left signal so the driver on the next arm knows you're leaving.",
+        },
+        {
+          label: "Only after you've left the roundabout",
+          explain: "Too late — nobody on the roundabout or waiting at your exit knows you're coming off.",
+        },
+      ],
+    },
+  ],
+  render: RoundaboutScene,
+};
+
+export const drivingLessons: Lesson[] = [
   speedAdjustment,
   twoSecondRule,
   zebraCrossing,
