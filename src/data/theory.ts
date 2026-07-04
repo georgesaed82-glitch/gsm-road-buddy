@@ -174,7 +174,7 @@ export const theoryCategories: TheoryCategory[] = [
       "At a crash: stop, warn other traffic (hazards, warning triangle at least 45m back — never on a motorway), call 999 (Rule 283).",
       "DR ABC — Danger, Response, Airway, Breathing, Circulation.",
       "Do not move a casualty unless they are in immediate danger (Rule 283).",
-      "In a tunnel breakdown: switch off engine, switch on hazard lights, use the emergency phone, never reverse (Rules 126, 128).",
+      "In a tunnel breakdown: switch off the engine, switch on hazard lights, use the emergency phone, never reverse (Highway Code — Tunnels).",
     ],
   },
   {

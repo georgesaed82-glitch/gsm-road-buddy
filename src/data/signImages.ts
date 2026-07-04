@@ -19,7 +19,9 @@ export const officialSignImages: Record<string, string> = {
   "w-two-way": "/__l5e/assets-v1/9927d4f4-99f4-4b97-9b7f-97ed062a14c0/UK_traffic_sign_521.svg",
   "w-school": "/__l5e/assets-v1/2b93c7b1-fcfd-4732-8a4a-7603c1ac83d6/UK_traffic_sign_545.svg",
   "w-pedestrians": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
-  "w-cyclists": "/__l5e/assets-v1/4f280b61-729b-47ae-a216-58478f477c4a/UK_traffic_sign_950.svg",
+  // "w-cyclists" — removed: diagram 950 is the blue mandatory "cycle route
+  // recommended" sign, not the red-triangle warning. Falls back to the
+  // locally-drawn cyclists-in-triangle pictogram.
   "w-horse": "/__l5e/assets-v1/02e1af99-77c8-4b5d-899f-cdb204414d93/UK_traffic_sign_550.1.svg",
   "w-wild": "/__l5e/assets-v1/9af3afb8-2a0d-4994-81c2-625d9c064389/UK_traffic_sign_551.svg",
   "w-cattle": "/__l5e/assets-v1/273626b6-049c-4249-bf6a-ebac57635c93/UK_traffic_sign_548.svg",
