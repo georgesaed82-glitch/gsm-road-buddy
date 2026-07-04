@@ -150,17 +150,18 @@ const speedAdjustment: Lesson = {
   ],
   why: (
     <>
-      <p>
-        The speed limit is the <strong>maximum legal speed in ideal conditions</strong> — it is not
-        the speed you must drive at.
-      </p>
-      <p>If traffic is travelling slower than the limit… follow the traffic.</p>
-      <p>If visibility is poor… reduce your speed.</p>
-      <p>If you are approaching a hazard… reduce your speed.</p>
-      <p>
-        The aim is to always leave yourself enough time to <strong>think</strong>,{" "}
-        <strong>react</strong> and <strong>stop</strong> safely.
-      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>The speed limit is the <strong>maximum legal speed in ideal conditions</strong> — not a target. Driving to the conditions is what actually keeps you (and everyone around you) safe. Rain, spray, low sun, heavy traffic, roadworks or a queue ahead all shorten the safe speed long before the number on the sign does.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every time the road ahead changes: weather, visibility, traffic flow, a hazard you can see coming, or a vehicle in front travelling slower than the limit. If in doubt, the answer is always to ease off first and reassess.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Look far ahead — read the road, weather and traffic well before you get there.</li>
+        <li>Match your speed to the slowest safe factor (flow, visibility, hazards).</li>
+        <li>Keep the two-second gap — bigger in rain, spray or poor light.</li>
+        <li>Adjust smoothly on the throttle — brakes are for correction, not planning.</li>
+        <li>Only return to the limit once conditions genuinely allow it.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -384,18 +385,18 @@ const twoSecondRule: Lesson = {
   ],
   why: (
     <>
-      <p>
-        Most rear-end collisions happen because the driver behind was too close to stop in time.
-        The gap in front of you is <strong>your thinking time and your braking distance</strong>.
-      </p>
-      <p>
-        In the dry, a good driver leaves at least 2 seconds. In the wet, tyres grip less and stopping
-        distances double — so the gap must double too.
-      </p>
-      <p>
-        A bigger gap also means you see more of the road ahead. You spot brake lights, hazards and
-        junctions earlier — which means smoother, calmer driving.
-      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>The gap in front of you is your <strong>thinking time and braking distance</strong>. Most rear-end shunts happen because the driver behind was simply too close to react. A proper gap also lets you <em>see</em> more — brake lights, hazards and junctions arrive early, so the whole drive gets smoother.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every single time you are following another vehicle — town, country or dual carriageway. Two seconds in the dry, four in the wet, more still in ice, spray or behind a large vehicle you can't see past.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Pick a fixed point (sign, drain, lamp post) as the car in front passes it.</li>
+        <li>Count "only a fool breaks the two-second rule" — you should finish after your car passes it.</li>
+        <li>If you finish before, you're too close — ease off, don't brake.</li>
+        <li>In rain, spray or low grip, double it: count it twice.</li>
+        <li>If a car cuts in, drop back and rebuild the gap — don't fight for it.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -606,18 +607,18 @@ const zebraCrossing: Lesson = {
   ],
   why: (
     <>
-      <p>
-        A zebra crossing gives pedestrians <strong>priority</strong>. If someone is on it — or clearly
-        about to step on — you MUST stop. This is not a courtesy, it's the law.
-      </p>
-      <p>
-        The zig-zag lines are your early warning. They exist so you have time to <em>see</em>, <em>slow</em>{" "}
-        and <em>stop</em> — not so you can carry on at full speed and brake hard at the last second.
-      </p>
-      <p>
-        A smooth, early stop keeps the driver behind safe too. Late, heavy braking is how rear-end
-        collisions and pedestrian near-misses happen.
-      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>A zebra crossing gives pedestrians <strong>priority</strong> — it's the law, not a courtesy. The beacons and zig-zags exist so you have room to <em>see</em>, <em>slow</em> and <em>stop</em> smoothly. Late, heavy braking is how pedestrians get hit and how the driver behind rear-ends you.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>The moment you spot the beacons or the zig-zag lines — day or night, wet or dry. If anyone is on the crossing, or clearly about to step on, you MUST stop.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>See the beacons — ease off the accelerator, cover the brake.</li>
+        <li>Scan the pavements, not just the stripes — who's walking towards it?</li>
+        <li>Slow early and progressively — brake lights warn the driver behind.</li>
+        <li>Stop before the give-way line if anyone is on or approaching the crossing.</li>
+        <li>Wait until the crossing is completely clear — never wave people across.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -782,8 +783,18 @@ const goingUphill: Lesson = {
   ],
   why: (
     <>
-      <p>Gravity is constantly trying to slow you down on a hill. If you wait until the speedo has already dropped, you're playing catch-up.</p>
-      <p>Smooth early acceleration keeps the car in the right gear, keeps you at a safe following distance, and stops you being an obstacle for the driver behind.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Gravity is constantly pulling your speed down on an uphill. If you wait for the speedo to sag you're already playing catch-up — the engine strains, you drop out of the flow, and the driver behind starts to close in.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Any noticeable incline — motorway climbs, country lane rises, even a gentle town gradient. The steeper the hill, the earlier you plan.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Read the hill early — decide the gear before you get to it.</li>
+        <li>Feed in more accelerator on the approach, not once the speed has dropped.</li>
+        <li>If the engine strains, change down — smooth power, no jerk.</li>
+        <li>Keep to the left, keep the gap ahead, don't crawl and hold up traffic.</li>
+        <li>Ease off before the crest — the view opens suddenly, and something may be waiting.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -880,8 +891,18 @@ const goingDownhill: Lesson = {
   ],
   why: (
     <>
-      <p>Gravity accelerates you downhill — the steeper the hill, the harder it pulls. If you don't control your speed, you arrive at the bottom too fast for the junction, bend or queue that's waiting for you.</p>
-      <p>Engine braking (lower gear) does most of the work quietly. The foot brake is there to fine-tune, not to fight the whole hill.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Gravity <em>accelerates</em> you downhill. If you don't manage speed you arrive at the bottom too fast for the junction, bend or queue that's waiting. Engine braking (lower gear) does the quiet work; the foot brake is only for fine-tuning — not for fighting the whole hill.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Any descent — steep country lanes, motorway drops, town hills into a junction. The steeper the hill and the closer the hazard at the bottom, the earlier the gear must come down.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Change down BEFORE the descent — let the engine hold you back.</li>
+        <li>Keep both hands on the wheel — never coast in neutral.</li>
+        <li>Use the foot brake gently and progressively to trim speed.</li>
+        <li>Leave a bigger gap in front — stopping distances are longer downhill.</li>
+        <li>Plan for whatever is at the bottom — junction, bend, queue — before you get there.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -984,8 +1005,18 @@ const meetingTraffic: Lesson = {
   ],
   why: (
     <>
-      <p>The narrower the gap, the less time you have to react to a door opening, a child running out, or a wobble from the oncoming car.</p>
-      <p>Speed is only safe if the gap can absorb a mistake — yours or someone else's.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>The narrower the gap, the less time you have to react to an opening door, a child running out, or a wobble from the oncoming car. Speed is only safe if the gap can absorb a mistake — yours or theirs. <strong>Less space = less speed.</strong></p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Any time parked cars, skips, works or a narrow lane squeeze the road — especially when another vehicle is coming the other way. If the obstruction is on <em>your</em> side, priority is <em>theirs</em>.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Scan the row ahead — find the pinch point early.</li>
+        <li>If the obstruction is on your side, be ready to give way.</li>
+        <li>Match your speed to the SMALLEST gap you'll pass through.</li>
+        <li>Watch the parked cars too — cover the brake for doors and pedestrians.</li>
+        <li>Make eye contact with the oncoming driver — read their intent, don't guess.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -1088,8 +1119,18 @@ const laneDiscipline: Lesson = {
   ],
   why: (
     <>
-      <p>Middle-lane hogging is one of the biggest causes of frustration and dangerous overtaking on UK dual carriageways.</p>
-      <p>The left lane is your lane, whatever speed you're doing. Overtake, return, repeat.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Middle-lane hogging is one of the biggest causes of frustration and dangerous overtaking on UK dual carriageways. The left lane is <strong>your lane</strong>, whatever your speed — the other lanes exist purely to overtake and return.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>All the time on a dual carriageway or motorway: default to the left. Move out only to overtake something slower, then move back once you've passed and there's a clear gap.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Mirrors — check well before you move.</li>
+        <li>Signal right in good time — don't drift silently across.</li>
+        <li>Move out only when there's a clear, safe gap.</li>
+        <li>Overtake decisively — no lingering alongside.</li>
+        <li>Once you can see the whole car you've passed in your interior mirror, signal left and return to the left lane.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -1185,8 +1226,18 @@ const laneMerging: Lesson = {
   ],
   why: (
     <>
-      <p>Most merge incidents are caused by one of two drivers: the one who leaves it too late, or the one who refuses to let anyone in.</p>
-      <p>A smooth merge is a shared act. Signal, match speed, take the gap.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Most merge incidents come from one of two drivers: the one who leaves it too late, or the one who refuses to let anyone in. A smooth merge is a <strong>shared act</strong> — signal, match speed, take the gap. It keeps the traffic flowing for everyone behind you.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Slip-road joins onto dual carriageways or motorways, lanes closing at roadworks, and any "merge in turn" signage. The rule is the same — early planning, matched speed, taking your turn cleanly.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Look far ahead — spot the merge early, plan the gap.</li>
+        <li>Mirrors — check the lane you're joining well before the point of no return.</li>
+        <li>Signal in good time so the other driver can plan too.</li>
+        <li>Match the speed of the traffic — do not join slower than the flow.</li>
+        <li>Take the gap smoothly, thank the driver, then settle at a proper following distance.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -1295,8 +1346,18 @@ const keepingJunctionsClear: Lesson = {
   ],
   why: (
     <>
-      <p>Blocking a junction seizes the whole road. One car in a yellow box can stop dozens of others.</p>
-      <p>What we do for others, they do for us. Keeping junctions clear is how UK traffic flows.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Blocking a junction seizes the whole road. One car sat in a yellow box can stop dozens of others — including emergency vehicles. What we do for others, they do for us: keeping junctions clear is how UK traffic actually flows.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every junction with a queue on the other side — yellow-box junctions, T-junctions, mini-roundabouts, staggered crossroads. If your exit isn't clear, you don't enter.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Look at your <em>exit</em>, not just the light or the give-way.</li>
+        <li>Ask: "Is there a full car's length of clear road for me on the other side?"</li>
+        <li>If not, stop before the junction — even on a green light.</li>
+        <li>Wait for the queue to move enough to fit you, then go.</li>
+        <li>Never edge in "just to make progress" — you'll strand yourself in the box.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -1812,8 +1873,18 @@ const overtaking: Lesson = {
   ],
   why: (
     <>
-      <p>Most overtakes gain you less than 30 seconds over an average journey. The cost of getting one wrong is a head-on collision.</p>
-      <p>Slightly slower traffic is not a reason to overtake — significantly slower traffic on a long, clear stretch is.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Most overtakes save you less than 30 seconds over an entire journey. The cost of getting one wrong is a head-on collision. Slightly slower traffic is <em>not</em> a reason to overtake — significantly slower traffic on a long, clear, legal stretch is.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Only when it is necessary, legal and safe: a clearly slower vehicle, a long clear view ahead, no solid white lines, no bends, brows, junctions, crossings or oncoming traffic within the overtake and its recovery.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Ask: do I actually NEED to overtake, or am I just impatient?</li>
+        <li>Position back a little — improve your view past the vehicle in front.</li>
+        <li>Mirrors, signal, look — commit only when the view is <em>fully</em> clear.</li>
+        <li>Overtake briskly using the power you have — no lingering alongside.</li>
+        <li>See the whole car in your interior mirror, signal left, return smoothly to the left.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -1912,8 +1983,18 @@ const blindSpots: Lesson = {
   ],
   why: (
     <>
-      <p>Every car has areas the mirrors don't show — behind the door pillars, over the shoulder. Another vehicle in that region is invisible to you.</p>
-      <p>Two drivers sitting alongside each other are both in each other's blind spots. Whoever changes lane first without a shoulder check causes the collision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Every car has areas the mirrors don't show — behind the door pillars, over the shoulder. A cyclist, motorbike or car sitting there is <strong>invisible</strong> to you. Whoever changes lane first without a shoulder check is the one who causes the collision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Before <em>every</em> lane change, pull-away, merge, overtake, and before opening the door when parked. Especially on dual carriageways, at slip-roads and around cyclists.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Mirrors first — interior, then the door mirror for the side you're moving.</li>
+        <li>Signal in good time to warn others of your intent.</li>
+        <li>Quick shoulder check on the moving side — that's your blind-spot look.</li>
+        <li>Only when the mirror AND the shoulder check are clean, move smoothly.</li>
+        <li>Never rely on the other driver seeing you — always assume you're invisible in theirs too.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -2023,8 +2104,18 @@ const stretchVision: Lesson = {
   ],
   why: (
     <>
-      <p>Drivers who stare just over the bonnet are always reacting. Drivers who stretch their vision are always planning.</p>
-      <p>The eyes lead the car. Look further, drive smoother.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Drivers who stare just over the bonnet are always <em>reacting</em>. Drivers who stretch their vision are always <em>planning</em>. The eyes lead the car — look further, drive smoother, brake less, save fuel, stay calmer.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Constantly — town, country and dual carriageway. Especially on approach to junctions, roundabouts, bends, brows and traffic queues. If your eyes are close to the car, your reaction time already is too.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Lift your eyes to the furthest point you can see down the road.</li>
+        <li>Scan back towards the car in a natural sweep — near, mid, far, mirrors.</li>
+        <li>Read brake lights, indicators and body language of drivers well ahead.</li>
+        <li>Ask "what's changing?" before it changes — position, gear, gap.</li>
+        <li>If you're braking hard, your eyes were too close — stretch them further next time.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -2131,8 +2222,18 @@ const planStopLookGo: Lesson = {
   ],
   why: (
     <>
-      <p>Half of all junction incidents come from a driver who was moving too fast to actually observe, or who observed but never decided.</p>
-      <p>Planning to stop gives you the time to observe. Looking to go turns observation into a clean decision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Half of all junction incidents come from a driver who was going too fast to actually observe — or who observed but never decided. <strong>Plan to Stop</strong> buys you the time to see. <strong>Look to Go</strong> turns that seeing into a clean decision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every give-way, T-junction, mini-roundabout, unmarked crossroad and blind emerge. If the view is closed, you stop. If the view is open, you still plan as if you might stop — then let the road decide.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li><strong>Plan</strong> — mirrors, signal, position, gear, brakes covered.</li>
+        <li><strong>Stop</strong> — arrive slowly enough that stopping is easy, not a rescue.</li>
+        <li><strong>Look</strong> — right, left, right again. Blockers, gap, opportunity (BGL).</li>
+        <li><strong>Go</strong> — only when the gap is genuine, not on hope.</li>
+        <li>If anything changes mid-look — a cyclist, a fast car, a closing van — re-stop and start again.</li>
+      </ol>
     </>
   ),
   georgeExplains:
@@ -2418,8 +2519,18 @@ const roundabouts: Lesson = {
   ],
   why: (
     <>
-      <p>Roundabouts fail for two reasons: drivers don't signal their intentions, and they don't look far enough right to spot priority traffic.</p>
-      <p>Signal right for a right exit so nobody guesses. Signal left before the exit so the driver waiting at the next arm knows you're leaving and can move off safely.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Roundabouts fail for two reasons: drivers don't <strong>signal</strong> their intentions, and they don't look far enough <strong>right</strong> to spot priority traffic. Clear signals + proper right-look = every other driver can plan around you safely.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every roundabout — mini, standard, or large multi-lane. The formula never changes: <strong>Plan → Stop → Look → Go</strong>, using <strong>BGL</strong> (Blockers, Gap, Look for opportunity) at the give-way.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li><strong>Plan</strong> — mirrors, signal (right for right exit, none for straight ahead, left for left), correct lane, correct gear.</li>
+        <li><strong>Stop</strong> — arrive slow enough that stopping is easy at the give-way line.</li>
+        <li><strong>Look</strong> — hard right. BGL: what's <em>blocking</em> my view, where's the <em>gap</em>, look for <em>opportunity</em>.</li>
+        <li><strong>Go</strong> — take a genuine gap; never bully your way in.</li>
+        <li>Signal <strong>left</strong> as you pass the exit before yours so the driver waiting can move.</li>
+      </ol>
     </>
   ),
   georgeExplains:
