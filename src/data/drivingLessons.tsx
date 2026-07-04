@@ -1336,49 +1336,403 @@ const keepingJunctionsClear: Lesson = {
 // ─────────────────────────────────────────────────────────────
 // Lesson · Open vs Closed junctions
 // ─────────────────────────────────────────────────────────────
-function OpenClosedScene(t: number) {
-  // Two side-by-side scenes — left panel open, right panel closed.
-  // Ego cycles between panels.
-  const showLeft = t < 0.5;
-  const carP = (showLeft ? t / 0.5 : (t - 0.5) / 0.5);
-  const cx = showLeft ? 100 + carP * 90 : 420 + carP * 90;
+// ─────────────────────────────────────────────────────────────
+// Shared UK T-junction bits used by open + closed junction lessons
+// ─────────────────────────────────────────────────────────────
+function UkTJunctionBase({ children }: { children?: React.ReactNode }) {
+  // Main road horizontal (2-way, drive-on-left), side road coming up from the
+  // south (ego arm). Ego sits mid-side-road, looking north.
+  return (
+    <>
+      {/* Verges */}
+      <rect x={0} y={0} width={640} height={360} fill={GRASS} />
+      {/* Main road */}
+      <rect x={0} y={140} width={640} height={80} fill="#2b2b2e" />
+      {/* Side road (ego arm) */}
+      <rect x={280} y={220} width={80} height={140} fill="#2b2b2e" />
+      {/* Main road edge lines */}
+      <line x1={0} y1={140} x2={640} y2={140} stroke={PAINT} strokeWidth={1.5} />
+      <line x1={0} y1={220} x2={280} y2={220} stroke={PAINT} strokeWidth={1.5} />
+      <line x1={360} y1={220} x2={640} y2={220} stroke={PAINT} strokeWidth={1.5} />
+      {/* Centre line on main road (broken white) */}
+      {Array.from({ length: 20 }).map((_, i) => (
+        <rect key={i} x={i * 32 + 4} y={179} width={16} height={3} fill={PAINT} />
+      ))}
+      {/* Side road centre line */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <rect key={i} x={319} y={230 + i * 22} width={3} height={12} fill={PAINT} />
+      ))}
+      {/* UK give-way (double-broken) line at mouth of side road */}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <rect key={`gw1-${i}`} x={282 + i * 6.5} y={222} width={4} height={3} fill={PAINT} />
+      ))}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <rect key={`gw2-${i}`} x={282 + i * 6.5} y={228} width={4} height={3} fill={PAINT} />
+      ))}
+      {children}
+    </>
+  );
+}
+
+// UK style hedge — rounded, textured green.
+function Hedge({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={h} rx={6} fill="#2f5a26" />
+      {Array.from({ length: Math.max(3, Math.floor(w / 10)) }).map((_, i) => (
+        <circle key={i} cx={x + 6 + i * 10} cy={y + 4} r={5} fill="#3d6a2f" />
+      ))}
+      {Array.from({ length: Math.max(3, Math.floor(w / 10)) }).map((_, i) => (
+        <circle key={`b${i}`} cx={x + 10 + i * 10} cy={y + h - 4} r={4} fill="#254a1c" opacity={0.7} />
+      ))}
+    </g>
+  );
+}
+
+// Small UK terraced-style house block seen top-down.
+function House({ x, y, w = 40, h = 44 }: { x: number; y: number; w?: number; h?: number }) {
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={h} fill="#8a5a3b" stroke="#3a2a1a" strokeWidth={0.6} />
+      <rect x={x + 4} y={y + 4} width={w - 8} height={h - 8} fill="#a86b45" />
+      <rect x={x + w / 2 - 4} y={y + h - 12} width={8} height={12} fill="#3a2a1a" />
+    </g>
+  );
+}
+
+// Compact top-down parked car (slightly duller than the ego car).
+function ParkedCar({ x, y, color = "#6b6b70" }: { x: number; y: number; color?: string }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <rect x={-12} y={-7} width={24} height={14} rx={3} fill={color} stroke="#111" strokeWidth={0.5} />
+      <rect x={-7} y={-5} width={4} height={10} rx={1} fill="#111" opacity={0.6} />
+      <rect x={3} y={-5} width={4} height={10} rx={1} fill="#111" opacity={0.6} />
+    </g>
+  );
+}
+
+// Small tree canopy (top-down)
+function Tree({ x, y, r = 12 }: { x: number; y: number; r?: number }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill="#274a1e" />
+      <circle cx={x - r / 3} cy={y - r / 3} r={r * 0.55} fill="#3a6a2c" />
+    </g>
+  );
+}
+
+// Visibility cone — a triangle fanning from a point.
+// color: red for blocked, green for clear.
+function VisibilityCone({
+  x,
+  y,
+  angle,
+  spread = 45,
+  length = 260,
+  color,
+  opacity = 0.28,
+}: {
+  x: number;
+  y: number;
+  angle: number; // 0 = east, 180 = west (degrees)
+  spread?: number;
+  length?: number;
+  color: string;
+  opacity?: number;
+}) {
+  const a1 = ((angle - spread / 2) * Math.PI) / 180;
+  const a2 = ((angle + spread / 2) * Math.PI) / 180;
+  const p1 = [x + Math.cos(a1) * length, y + Math.sin(a1) * length];
+  const p2 = [x + Math.cos(a2) * length, y + Math.sin(a2) * length];
+  return (
+    <polygon
+      points={`${x},${y} ${p1[0]},${p1[1]} ${p2[0]},${p2[1]}`}
+      fill={color}
+      opacity={opacity}
+    />
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Lesson · Closed junction
+// ─────────────────────────────────────────────────────────────
+function ClosedJunctionScene(t: number) {
+  // Ego creeps up the side road from y=340 toward the give-way line at y=222.
+  // Approach → stop at give-way → creep forward → then finally go.
+  let egoY: number;
+  let braking = false;
+  if (t < 0.35) {
+    egoY = 340 - (340 - 245) * easeInOut(t / 0.35);
+    braking = t > 0.15;
+  } else if (t < 0.55) {
+    egoY = 245; // fully stopped at give-way
+    braking = true;
+  } else if (t < 0.82) {
+    egoY = 245 - (245 - 215) * easeInOut((t - 0.55) / 0.27); // creep past hedges
+    braking = true;
+  } else {
+    egoY = 215 - (t - 0.82) * 380; // go
+  }
+
+  // Sight-lines blocked by the tall hedges — draw red cones that visually
+  // clip against the hedge blocks (kept short + narrow so it reads as blocked).
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
-      <Sky id="sky-oc" />
-      {/* Left panel — open junction */}
-      <rect x={0} y={0} width={320} height={360} fill={showLeft ? "#141416" : "#0d0d0f"} />
-      <text x={20} y={30} fontSize={12} fontFamily="sans-serif" fill="#f5f5f0" fontWeight={700}>OPEN · good visibility</text>
-      {/* Main road horizontal, side road up */}
-      <rect x={0} y={200} width={320} height={50} fill="#2b2b2e" />
-      <rect x={140} y={60} width={40} height={140} fill="#2b2b2e" />
-      <line x1={140} y1={200} x2={180} y2={200} stroke={PAINT} strokeDasharray="3 3" strokeWidth={1.2} />
-      {/* Ego on side road, approaching junction */}
-      {showLeft && <g transform={`translate(160 ${200 - (1 - carP) * 100}) rotate(180)`}><Car2 x={0} y={0} color="#2f6bf0" /></g>}
-      <text x={20} y={340} fontSize={11} fill="#22c55e" fontFamily="sans-serif">Continue — no stop needed</text>
+      <UkTJunctionBase />
 
-      {/* Right panel — closed junction */}
-      <rect x={320} y={0} width={320} height={360} fill={!showLeft ? "#141416" : "#0d0d0f"} />
-      <text x={340} y={30} fontSize={12} fontFamily="sans-serif" fill="#f5f5f0" fontWeight={700}>CLOSED · hedge blocks view</text>
-      <rect x={320} y={200} width={320} height={50} fill="#2b2b2e" />
-      <rect x={460} y={60} width={40} height={140} fill="#2b2b2e" />
-      {/* Hedges obstructing view */}
-      <rect x={400} y={140} width={60} height={60} fill={GRASS} />
-      <rect x={500} y={140} width={60} height={60} fill={GRASS} />
-      <line x1={460} y1={200} x2={500} y2={200} stroke={PAINT} strokeWidth={1.4} />
-      {!showLeft && (
-        <>
-          <g transform={`translate(480 ${200 - (1 - carP) * 100}) rotate(180)`}><Car2 x={0} y={0} color="#2f6bf0" braking={carP > 0.5} /></g>
-          <circle cx={480} cy={195} r={22} fill="none" stroke="#f59e0b" strokeWidth={1.5} opacity={0.6}>
-            <animate attributeName="r" values="18;26;18" dur="1.4s" repeatCount="indefinite" />
-          </circle>
-        </>
-      )}
-      <text x={340} y={340} fontSize={11} fill="#f59e0b" fontFamily="sans-serif">Slow · Look · Proceed safely</text>
-      {/* Divider */}
-      <line x1={320} y1={0} x2={320} y2={360} stroke="#2a2a2c" strokeWidth={1} />
+      {/* Houses set back either side */}
+      <House x={20} y={30} w={90} h={70} />
+      <House x={140} y={40} w={80} h={60} />
+      <House x={420} y={30} w={90} h={70} />
+      <House x={540} y={40} w={80} h={60} />
+
+      {/* Tall hedges either side of the side road entrance — the whole point */}
+      <Hedge x={200} y={230} w={80} h={26} />
+      <Hedge x={360} y={230} w={80} h={26} />
+      <Hedge x={210} y={200} w={70} h={26} />
+      <Hedge x={360} y={200} w={70} h={26} />
+
+      {/* Trees */}
+      <Tree x={240} y={110} />
+      <Tree x={400} y={110} />
+      <Tree x={140} y={280} r={10} />
+      <Tree x={500} y={280} r={10} />
+
+      {/* Parked cars along the main road both sides — killing the view */}
+      <ParkedCar x={130} y={155} />
+      <ParkedCar x={175} y={155} />
+      <ParkedCar x={220} y={155} />
+      <ParkedCar x={420} y={155} />
+      <ParkedCar x={465} y={155} />
+      <ParkedCar x={510} y={155} />
+      <ParkedCar x={130} y={205} />
+      <ParkedCar x={175} y={205} />
+      <ParkedCar x={220} y={205} />
+      <ParkedCar x={420} y={205} />
+      <ParkedCar x={465} y={205} />
+      <ParkedCar x={510} y={205} />
+
+      {/* Fences / walls close to kerb */}
+      <rect x={20} y={110} width={100} height={4} fill="#6b4a2a" />
+      <rect x={520} y={110} width={100} height={4} fill="#6b4a2a" />
+
+      {/* Red visibility cones — blocked view left + right from ego eye position */}
+      <VisibilityCone x={320} y={egoY - 4} angle={180} spread={22} length={90} color="#dc2626" opacity={0.32} />
+      <VisibilityCone x={320} y={egoY - 4} angle={0} spread={22} length={90} color="#dc2626" opacity={0.32} />
+
+      {/* Big STOP line label — reinforce that this is a plan-to-stop junction */}
+      <rect x={282} y={218} width={76} height={8} fill="#c8102e" opacity={0.85} />
+      <text x={320} y={225} textAnchor="middle" fontSize={7} fill="#fff" fontWeight={800} fontFamily="sans-serif">
+        STOP · LOOK · GO
+      </text>
+
+      {/* Ego */}
+      <g transform={`translate(320 ${egoY}) rotate(-90)`}>
+        <Car2 x={0} y={0} color="#2f6bf0" braking={braking} indicator={null} />
+      </g>
+
+      {/* Header labels */}
+      <g>
+        <rect x={12} y={12} width={210} height={54} rx={6} fill="#000" opacity={0.72} />
+        <text x={22} y={30} fontSize={11} fill="#fca5a5" fontFamily="sans-serif" fontWeight={800}>CLOSED JUNCTION</text>
+        <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">Limited visibility</text>
+        <text x={22} y={60} fontSize={10} fill="#fca5a5" fontFamily="sans-serif">Plan to Stop · Look to Go</text>
+      </g>
+
+      <Hud
+        label="PHASE"
+        value={t < 0.35 ? "Approach — brake early" : t < 0.55 ? "STOP at give-way" : t < 0.82 ? "Creep — eyes past the hedge" : "GO — safe gap found"}
+        tone={t < 0.82 ? "warn" : "good"}
+      />
     </svg>
   );
 }
+
+const closedJunction: Lesson = {
+  slug: "closed-junction",
+  title: "Closed junction — plan to stop",
+  category: "Highway Code • Junctions",
+  rule: "Rules 170–171",
+  objective:
+    "Recognise a closed junction — where parked cars, hedges, walls or trees block your view — and use the Plan to Stop, Look to Go routine to leave safely.",
+  think: [
+    "What is blocking my view — parked cars, hedges, walls, trees?",
+    "Can I see left AND right from the give-way line? If no — I must creep.",
+    "Where do my eyes clear the hedge line?",
+    "Have I stopped fully — or am I already rolling?",
+    "If a car came now, could I still stop?",
+  ],
+  ruleHeadline: "I cannot see — so I stop, then I creep, then I go.",
+  ruleBullets: [
+    "Parked cars + hedges + fences = view is blocked",
+    "Stop fully at the give-way line — not roll through",
+    "Creep forward inch by inch until your eyes are past the obstruction",
+    "Look BOTH ways twice — vehicles, cyclists, motorbikes, pedestrians",
+    "Only go when you know it is safe",
+  ],
+  why: (
+    <>
+      <p>A closed junction is the most common place a new driver has a serious collision. You cannot borrow the priority of a road you cannot see.</p>
+      <p>The red cones in the diagram show exactly how much of the main road you cannot see from the give-way line. Everything hiding behind those cones — cyclists, motorbikes, cars — will arrive before you can react.</p>
+      <p>The fix is simple and safe: stop fully, then creep forward until your eyes clear the hedge. Then and only then do you make a decision.</p>
+    </>
+  ),
+  georgeExplains:
+    "Look at all the stuff in your way — parked cars, tall hedges, trees, garden fences right up to the kerb. From behind the give-way line you cannot see left, you cannot see right. So we do not guess. We plan to stop. We stop. And now we creep. Inch by inch. The car creeps forward until your eyes — not the front of your car, your eyes — get past that hedge. Now you can see. Now, and only now, do you decide to go.",
+  commonMistakes: [
+    "Rolling through the give-way line without a proper stop",
+    "Creeping too far too fast — car nose into moving traffic",
+    "Only looking one way (usually the way you're turning)",
+    "Missing cyclists and motorbikes hidden behind parked cars",
+    "Pulling out on hope because 'nothing was coming last time'",
+  ],
+  gsmTips: [
+    "Plan to Stop, Look to Go — every closed junction, every time",
+    "Your EYES need to see, not the front of your bonnet",
+    "Two full looks each way — a cyclist can appear in the gap between them",
+    "If in doubt, stay stopped — the queue behind can wait",
+    "Roof of the car opposite? Perfect creep marker",
+  ],
+  keyTakeaway:
+    "If you cannot see, you cannot go. Stop fully, creep until your eyes clear the hedge, then decide.",
+  durationMs: 15000,
+  captions: [
+    { at: 0, label: "Approaching — I can already see this is closed", detail: "Parked cars both sides, tall hedges, houses close to the road." },
+    { at: 0.35, label: "STOP at the give-way line", detail: "Full stop. Handbrake if I need it. I don't yet know it's safe." },
+    { at: 0.55, label: "Creep — inch forward", detail: "Move only until my eyes get past the hedge line." },
+    { at: 0.82, label: "GO — safe gap confirmed", detail: "Only now does the car move properly onto the main road." },
+  ],
+  questions: [
+    {
+      at: 0.55,
+      prompt: "You've stopped at a closed junction but you still can't see. What do you do next?",
+      options: [
+        { label: "Pull out slowly and hope oncoming drivers see you", explain: "No. Never pull out on hope — you cannot see cyclists, motorbikes or a fast approaching car." },
+        { label: "Creep forward inch by inch until your eyes clear the hedge, then decide", correct: true, explain: "Correct. That is Plan to Stop, Look to Go — creep, look properly, then commit." },
+        { label: "Move over to the wrong side of the road to see better", explain: "Dangerous — you'd be blocking oncoming traffic and still not have priority." },
+      ],
+    },
+  ],
+  render: ClosedJunctionScene,
+};
+
+// ─────────────────────────────────────────────────────────────
+// Lesson · Open junction
+// ─────────────────────────────────────────────────────────────
+function OpenJunctionScene(t: number) {
+  // Ego glides up the side road — no need to stop, only to check + adjust speed.
+  const egoY = 340 - easeInOut(Math.min(1, t / 0.8)) * (340 - 200);
+  const braking = t < 0.55; // scrubbing speed on approach but not fully stopping
+  return (
+    <svg viewBox="0 0 640 360" className="h-full w-full">
+      <UkTJunctionBase />
+
+      {/* Wide-open verges — houses set well back */}
+      <House x={30} y={20} w={70} h={40} />
+      <House x={540} y={20} w={70} h={40} />
+
+      {/* Only very low hedges, well back from the kerb — clear sightlines */}
+      <Hedge x={180} y={244} w={80} h={10} />
+      <Hedge x={380} y={244} w={80} h={10} />
+
+      {/* Occasional trees but nowhere near the junction mouth */}
+      <Tree x={90} y={90} r={10} />
+      <Tree x={560} y={90} r={10} />
+      <Tree x={120} y={300} r={8} />
+      <Tree x={520} y={300} r={8} />
+
+      {/* Green visibility cones — sweeping unobstructed left + right */}
+      <VisibilityCone x={320} y={egoY - 4} angle={180} spread={38} length={300} color="#16a34a" opacity={0.22} />
+      <VisibilityCone x={320} y={egoY - 4} angle={0} spread={38} length={300} color="#16a34a" opacity={0.22} />
+
+      {/* Ego */}
+      <g transform={`translate(320 ${egoY}) rotate(-90)`}>
+        <Car2 x={0} y={0} color="#2f6bf0" braking={braking} indicator={null} />
+      </g>
+
+      {/* Header labels */}
+      <g>
+        <rect x={12} y={12} width={210} height={54} rx={6} fill="#000" opacity={0.72} />
+        <text x={22} y={30} fontSize={11} fill="#86efac" fontFamily="sans-serif" fontWeight={800}>OPEN JUNCTION</text>
+        <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">Good visibility</text>
+        <text x={22} y={60} fontSize={10} fill="#86efac" fontFamily="sans-serif">Proceed if safe</text>
+      </g>
+
+      <Hud
+        label="PHASE"
+        value={t < 0.5 ? "Approach — look early both ways" : t < 0.85 ? "Decision made early — flow through" : "Emerging"}
+        tone="good"
+      />
+    </svg>
+  );
+}
+
+const openJunction: Lesson = {
+  slug: "open-junction",
+  title: "Open junction — decide early",
+  category: "Highway Code • Junctions",
+  rule: "Rules 170–171",
+  objective:
+    "Recognise an open junction — where the view is wide and clear — and make your decision early so you flow through smoothly instead of stopping unnecessarily.",
+  think: [
+    "Can I see cleanly in both directions well before the give-way line?",
+    "Is the main road actually clear right now?",
+    "Do I still need to slow down — or just adjust my speed?",
+    "Am I still doing full mirror-signal-position checks?",
+    "Would I be embarrassed to stop here for no reason?",
+  ],
+  ruleHeadline: "Open junction — Plan to Stop, Look to Go — but the LOOK happens early.",
+  ruleBullets: [
+    "No parked cars, no tall hedges — visibility is wide",
+    "Look left and right well before the give-way line",
+    "Decide early — either commit to going, or plan to stop",
+    "Adjust speed smoothly — don't slam brakes just because it's a junction",
+    "Still give way to any traffic that has priority",
+  ],
+  why: (
+    <>
+      <p>Open junctions are where good drivers save fuel, brakes and time — and where nervous drivers hesitate unnecessarily.</p>
+      <p>The green cones show a wide, unblocked view. That means the LOOK stage can happen earlier — so the decision to go or to stop is already made long before your bumper reaches the give-way line.</p>
+      <p>Same routine, same rule (Plan to Stop, Look to Go) — the only difference is that here you've earned the right to flow.</p>
+    </>
+  ),
+  georgeExplains:
+    "Same routine — Plan to Stop, Look to Go — but here I can see clearly. No parked cars, no big hedges, houses set well back. So my LOOK happens early. I check left and right long before I reach the line, and if it's clear, I keep the car flowing. If it isn't, I still plan to stop. That's the whole point — the plan is always to stop, the visibility just tells me how early I can decide to go.",
+  commonMistakes: [
+    "Stopping unnecessarily and holding up traffic behind you",
+    "Only looking once, right at the line — too late to plan",
+    "Assuming 'open' means you don't have to give way",
+    "Rolling through when there's actually oncoming traffic",
+    "Not scanning far enough down the main road",
+  ],
+  gsmTips: [
+    "LOOK first, LINE second — decide early",
+    "Open = flow, but you still give way",
+    "Two clean looks each way even when it seems clear",
+    "Smooth throttle beats braking hard",
+    "Every junction is Plan to Stop, Look to Go",
+  ],
+  keyTakeaway:
+    "Open junctions reward early observation — same rule as a closed junction, but the LOOK lets you flow.",
+  durationMs: 14000,
+  captions: [
+    { at: 0, label: "Approaching an OPEN junction", detail: "Wide view, no parked cars, houses set well back." },
+    { at: 0.35, label: "LOOK happens early", detail: "Green cones — I can already see both directions." },
+    { at: 0.7, label: "Decision made — flow through", detail: "Main road is clear, adjust speed and continue smoothly." },
+  ],
+  questions: [
+    {
+      at: 0.5,
+      prompt: "You approach an open junction. The view is wide, the main road is empty. Should you still stop?",
+      options: [
+        { label: "Yes — every give-way means a full stop", explain: "No. Give-way means give priority. If the road is clearly empty and you looked properly, you can flow." },
+        { label: "No — decide early, adjust speed, flow if it's genuinely safe", correct: true, explain: "Correct. Same rule as a closed junction — Plan to Stop, Look to Go — but the wide view lets you make the decision to go earlier." },
+        { label: "No — accelerate through without looking", explain: "Never. Open doesn't mean skip the look. It means the look can happen earlier." },
+      ],
+    },
+  ],
+  render: OpenJunctionScene,
+};
 
 const openVsClosed: Lesson = {
   slug: "open-vs-closed-junction",
