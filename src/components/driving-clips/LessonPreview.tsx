@@ -27,8 +27,12 @@ export function LessonPreview({
   }, [durationMs]);
 
   return (
-    <div className="aspect-video w-full overflow-hidden rounded-md bg-black">
+    <div className="relative aspect-video w-full overflow-hidden rounded-md bg-black">
       {render(t)}
+      <div className="pointer-events-none absolute right-2 bottom-2 flex items-center gap-1 rounded bg-black/55 px-1.5 py-0.5">
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
+        <span className="text-[8px] font-semibold uppercase tracking-[0.2em] text-white/85">GSM</span>
+      </div>
     </div>
   );
 }

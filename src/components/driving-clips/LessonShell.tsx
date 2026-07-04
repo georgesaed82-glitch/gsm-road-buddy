@@ -145,6 +145,18 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
         </div>
         <div className="relative w-full overflow-hidden bg-[#1a1a1c]" style={{ aspectRatio: "16/9" }}>
           {lesson.render(t)}
+          {/* Consistent GSM brand + UK convention overlay across every clip */}
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute left-3 top-3 rounded-md bg-black/55 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/85">
+              UK · Left-hand traffic
+            </div>
+            <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-md bg-black/55 px-2 py-1">
+              <span className="inline-block h-2 w-2 rounded-full bg-accent" />
+              <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85">
+                GSM Driving School
+              </span>
+            </div>
+          </div>
           {q && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
               <div className="w-full max-w-md rounded-xl border border-border bg-card p-5 text-left shadow-lg">
