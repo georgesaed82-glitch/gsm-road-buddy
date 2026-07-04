@@ -2519,8 +2519,18 @@ const roundabouts: Lesson = {
   ],
   why: (
     <>
-      <p>Roundabouts fail for two reasons: drivers don't signal their intentions, and they don't look far enough right to spot priority traffic.</p>
-      <p>Signal right for a right exit so nobody guesses. Signal left before the exit so the driver waiting at the next arm knows you're leaving and can move off safely.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Roundabouts fail for two reasons: drivers don't <strong>signal</strong> their intentions, and they don't look far enough <strong>right</strong> to spot priority traffic. Clear signals + proper right-look = every other driver can plan around you safely.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every roundabout — mini, standard, or large multi-lane. The formula never changes: <strong>Plan → Stop → Look → Go</strong>, using <strong>BGL</strong> (Blockers, Gap, Look for opportunity) at the give-way.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li><strong>Plan</strong> — mirrors, signal (right for right exit, none for straight ahead, left for left), correct lane, correct gear.</li>
+        <li><strong>Stop</strong> — arrive slow enough that stopping is easy at the give-way line.</li>
+        <li><strong>Look</strong> — hard right. BGL: what's <em>blocking</em> my view, where's the <em>gap</em>, look for <em>opportunity</em>.</li>
+        <li><strong>Go</strong> — take a genuine gap; never bully your way in.</li>
+        <li>Signal <strong>left</strong> as you pass the exit before yours so the driver waiting can move.</li>
+      </ol>
     </>
   ),
   georgeExplains:
