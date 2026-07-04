@@ -607,18 +607,18 @@ const zebraCrossing: Lesson = {
   ],
   why: (
     <>
-      <p>
-        A zebra crossing gives pedestrians <strong>priority</strong>. If someone is on it — or clearly
-        about to step on — you MUST stop. This is not a courtesy, it's the law.
-      </p>
-      <p>
-        The zig-zag lines are your early warning. They exist so you have time to <em>see</em>, <em>slow</em>{" "}
-        and <em>stop</em> — not so you can carry on at full speed and brake hard at the last second.
-      </p>
-      <p>
-        A smooth, early stop keeps the driver behind safe too. Late, heavy braking is how rear-end
-        collisions and pedestrian near-misses happen.
-      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>A zebra crossing gives pedestrians <strong>priority</strong> — it's the law, not a courtesy. The beacons and zig-zags exist so you have room to <em>see</em>, <em>slow</em> and <em>stop</em> smoothly. Late, heavy braking is how pedestrians get hit and how the driver behind rear-ends you.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>The moment you spot the beacons or the zig-zag lines — day or night, wet or dry. If anyone is on the crossing, or clearly about to step on, you MUST stop.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>See the beacons — ease off the accelerator, cover the brake.</li>
+        <li>Scan the pavements, not just the stripes — who's walking towards it?</li>
+        <li>Slow early and progressively — brake lights warn the driver behind.</li>
+        <li>Stop before the give-way line if anyone is on or approaching the crossing.</li>
+        <li>Wait until the crossing is completely clear — never wave people across.</li>
+      </ol>
     </>
   ),
   georgeExplains:
