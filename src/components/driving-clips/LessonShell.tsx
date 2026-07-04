@@ -20,6 +20,8 @@ export type LessonQuestion = {
 
 export type LessonCaption = { at: number; label: string; detail?: string };
 
+export type LessonMistake = { wrong: string; why: string; right: string };
+
 export type Lesson = {
   slug: string;
   title: string;
@@ -32,6 +34,7 @@ export type Lesson = {
   why: ReactNode;
   georgeExplains: string;
   commonMistakes: string[];
+  mistakes?: LessonMistake[]; // optional richer wrong → why → right
   gsmTips: string[];
   keyTakeaway: string;
   durationMs?: number;
