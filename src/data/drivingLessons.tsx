@@ -1658,6 +1658,33 @@ const closedJunction: Lesson = {
     "Missing cyclists and motorbikes hidden behind parked cars",
     "Pulling out on hope because 'nothing was coming last time'",
   ],
+  mistakes: [
+    {
+      wrong: "Rolling through the give-way line without a full stop.",
+      why: "At a closed junction your eyes can't see past the hedge until the car has stopped — a rolling car commits you before you've seen anything.",
+      right: "Come to a complete stop AT the line first, then creep forward slowly to a second stop where your eyes clear the view.",
+    },
+    {
+      wrong: "Creeping out too far, too fast — the bonnet ends up in the main road.",
+      why: "A fast creep uses road space you haven't checked yet. If a car is close, you can't retreat and you've forced them to brake.",
+      right: "Creep in inches, not feet. Cover the brake. Move only as fast as your view is opening.",
+    },
+    {
+      wrong: "Only looking the way you're turning (usually right).",
+      why: "Cars come from BOTH directions on a two-way road. Cyclists and motorbikes on your left are the ones that get hit.",
+      right: "Right → Left → Right again, every time. Two clean looks each way before you commit.",
+    },
+    {
+      wrong: "Missing a bike hidden behind a parked car or a van.",
+      why: "Bikes are narrow. A single glance past a parked van can hide a whole cyclist. Motorbikes appear from nowhere at 40mph.",
+      right: "Move your head, not just your eyes. Look AROUND the blocker before you go — treat every gap as a possible bike.",
+    },
+    {
+      wrong: "Pulling out on hope — 'nothing was coming last time'.",
+      why: "Hope isn't observation. If you haven't SEEN the gap, it doesn't exist. Junction collisions come from assumed gaps, not real ones.",
+      right: "One clear decision, on a gap you can actually see. If you're not sure — you wait.",
+    },
+  ],
   gsmTips: [
     "Closed junction = full stop, every time — no exceptions",
     "Your EYES need to see, not the front of your bonnet",
@@ -1786,6 +1813,33 @@ const openJunction: Lesson = {
     "Assuming 'open' means you don't have to give way",
     "Coasting through when the view has quietly closed (van, bend, rain)",
     "Not scanning far enough down the main road",
+  ],
+  mistakes: [
+    {
+      wrong: "Stopping dead at every give-way even when the view is wide open.",
+      why: "Unnecessary stops break traffic flow, invite rear-end shunts and teach you to react instead of plan.",
+      right: "Look far, look early. If the road is genuinely clear, keep coasting — smooth beats stopped.",
+    },
+    {
+      wrong: "Looking once, right at the line — trying to decide at the last second.",
+      why: "By the time you're at the line you've already run out of room to coast. Late looking becomes braking.",
+      right: "Start scanning 5–6 car lengths before the give-way. Decide early — the line is where you act, not think.",
+    },
+    {
+      wrong: "Treating 'open junction' as 'main road' and not giving way.",
+      why: "Open only means you can SEE — it doesn't remove the priority. Traffic on the main road still comes first.",
+      right: "You still give way. Coasting is only allowed when there's genuinely no one to give way to.",
+    },
+    {
+      wrong: "Coasting through when the view has closed — parked van, bend, heavy rain.",
+      why: "Conditions change. A junction that was open yesterday can be closed today. Coasting on habit is how it goes wrong.",
+      right: "Re-read the view every time. The moment it closes — treat it as a closed junction and stop.",
+    },
+    {
+      wrong: "Only scanning the near lane — missing the fast car in the far lane.",
+      why: "A car 100m away at 50mph reaches you in about 4 seconds. If you only scanned 50m, you never saw them.",
+      right: "Look as far as your eyes will stretch. If you can see the road bend or vanishing point, use it.",
+    },
   ],
   gsmTips: [
     "Open visibility = you can coast through, no need to stop",
@@ -2126,6 +2180,28 @@ const stretchVision: Lesson = {
     "Not scanning low enough to spot cyclists at the kerb",
     "Locking eyes on one hazard and losing the wider picture",
   ],
+  mistakes: [
+    {
+      wrong: "Staring at the bonnet of the car in front — 'chasing the bonnet'.",
+      why: "You react to their brake lights instead of the road. You brake late, follow too close and miss everything happening 100m ahead.",
+      right: "Look THROUGH and OVER the car in front. Use their windows if you can. Your eyes should live where they'll be in 8 seconds, not now.",
+    },
+    {
+      wrong: "Never lifting your gaze to signs and traffic lights.",
+      why: "You get surprised by red lights, missed turns and speed limits. Late information means late braking or a missed exit.",
+      right: "15% of your scan goes HIGH. Read every sign and light before you're under it — plan the phase, plan the lane.",
+    },
+    {
+      wrong: "Never dropping your gaze to the kerb and lane markings.",
+      why: "Cyclists sit at the kerb. Speed humps, wet paint and drain covers live low. Miss them and you swerve at the last second.",
+      right: "15% goes LOW. Sweep the kerb, the give-way lines, the paint. Once per scan, then eyes back up and forward.",
+    },
+    {
+      wrong: "Locking eyes on one hazard — a cyclist, a bus, a pedestrian — until they're gone.",
+      why: "Tunnel vision means everything else moves without you seeing it. The next hazard is already forming while you stare at the last one.",
+      right: "Note the hazard, keep the eyes moving. Come back to it — don't camp on it.",
+    },
+  ],
   gsmTips: [
     "15% high, 70% ahead, 15% low",
     "Eyes moving, not staring",
@@ -2243,6 +2319,28 @@ const planStopLookGo: Lesson = {
     "Looking without seeing — a glance is not a check",
     "Creeping out on hope instead of a clear decision",
     "Stopping unnecessarily at open junctions",
+  ],
+  mistakes: [
+    {
+      wrong: "Arriving at the junction still doing 25mph.",
+      why: "You've given yourself no time to observe. You'll either brake hard at the line or roll out on hope.",
+      right: "Off the gas early, let the car slow itself, cover the brake. Arrive slow enough that stopping is easy.",
+    },
+    {
+      wrong: "A quick glance either way — 'looking' without actually seeing.",
+      why: "Your eyes moved, but your brain didn't process. That's why drivers say 'I looked but I didn't see them'.",
+      right: "Two clean looks each way. Say out loud what you see — 'red car, gap, cyclist'. Naming forces seeing.",
+    },
+    {
+      wrong: "Creeping out because the driver behind is impatient.",
+      why: "Their impatience isn't your problem — a collision is. You commit to gaps that don't exist.",
+      right: "Ignore the pressure behind. Make one clear decision on the actual road, not the mirror.",
+    },
+    {
+      wrong: "Stopping at an open junction that plainly doesn't need it.",
+      why: "Unnecessary stops break flow, confuse other drivers and encourage rear-end shunts.",
+      right: "Open view + clear road = coast through. Plan to stop — but only stop if the road tells you to.",
+    },
   ],
   gsmTips: [
     "SLOW · OBSERVE · SEE · DECIDE · PROCEED",
