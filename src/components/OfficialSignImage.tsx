@@ -28,6 +28,8 @@ type OfficialSignImageProps = {
   variant?: SignImageVariant;
   /** Escape hatch — overrides `variant`. Prefer `variant` in new code. */
   size?: number;
+  /** Test/dev escape hatch for stable local image fixtures. */
+  imageSrc?: string;
   /** Visual tests can opt out of lazy loading so browsers render before screenshots. */
   loading?: "eager" | "lazy";
 };
@@ -44,9 +46,15 @@ type OfficialSignImageProps = {
  *   SignVisual pictograms), so scaling is resolution-independent and stays
  *   crisp on high-DPR mobile screens.
  */
-export function OfficialSignImage({ sign, variant = "detail", size, loading = "lazy" }: OfficialSignImageProps) {
+export function OfficialSignImage({
+  sign,
+  variant = "detail",
+  size,
+  imageSrc,
+  loading = "lazy",
+}: OfficialSignImageProps) {
   const resolvedSize = size ?? SIGN_IMAGE_SIZES[variant];
-  const src = officialSignImageFor(sign.id);
+  const src = imageSrc ?? officialSignImageFor(sign.id);
   const [errored, setErrored] = useState(false);
 
   const wrapperStyle: CSSProperties = {
