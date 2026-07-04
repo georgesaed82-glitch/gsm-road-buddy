@@ -2153,6 +2153,7 @@ const planStopLookGo: Lesson = {
 // Lesson · Roundabouts (turning right — 3rd exit)
 // ─────────────────────────────────────────────────────────────
 function RoundaboutScene(t: number) {
+  // top-level scene begins
   // Top-down 4-arm roundabout. Ego enters from south (6 o'clock),
   // turning right → exits west (9 o'clock). Signals right on approach,
   // gives way to traffic from the right, joins, signals left before exit.
