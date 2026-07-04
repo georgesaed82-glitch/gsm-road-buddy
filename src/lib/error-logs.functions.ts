@@ -120,7 +120,7 @@ export const listErrorLogs = createServerFn({ method: "POST" })
   .inputValidator((d: { password: string; days?: number; limit?: number }) => d)
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer(data.password))) {
-      throw new Response("Unauthorized", { status: 401 });
+      throw new Error("Unauthorized");
     }
     const days = Math.min(90, Math.max(1, data.days ?? 7));
     const limit = Math.min(500, Math.max(10, data.limit ?? 200));
@@ -144,7 +144,7 @@ export const getErrorStats = createServerFn({ method: "POST" })
   .inputValidator((d: { password: string; days?: number }) => d)
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer(data.password))) {
-      throw new Response("Unauthorized", { status: 401 });
+      throw new Error("Unauthorized");
     }
     const days = Math.min(90, Math.max(1, data.days ?? 7));
     const since = new Date(Date.now() - days * 86_400_000).toISOString();
@@ -175,7 +175,7 @@ export const clearResolvedErrors = createServerFn({ method: "POST" })
   .inputValidator((d: { password: string; olderThanDays?: number }) => d)
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer(data.password))) {
-      throw new Response("Unauthorized", { status: 401 });
+      throw new Error("Unauthorized");
     }
     const days = Math.min(365, Math.max(1, data.olderThanDays ?? 30));
     const cutoff = new Date(Date.now() - days * 86_400_000).toISOString();

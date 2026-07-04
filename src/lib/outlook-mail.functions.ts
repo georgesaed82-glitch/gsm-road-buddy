@@ -15,7 +15,7 @@ export const sendOutlookMail = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer(data.password))) {
-      throw new Response("Unauthorized", { status: 401 });
+      throw new Error("Unauthorized");
     }
     const lovableKey = process.env.LOVABLE_API_KEY;
     const outlookKey = process.env.MICROSOFT_OUTLOOK_API_KEY;

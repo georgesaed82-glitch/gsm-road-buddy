@@ -40,7 +40,7 @@ export function classifyReferrer(ref: string | null | undefined): string {
 
 async function adminClient(password: string) {
   if (!(await verifyAdminPasswordServer(password))) {
-    throw new Response("Unauthorized", { status: 401 });
+    throw new Error("Unauthorized");
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
@@ -320,7 +320,7 @@ export const getContactClicks = createServerFn({ method: "POST" })
       .select("id,package,channel,page,created_at")
       .order("created_at", { ascending: false })
       .limit(500);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     return (rows ?? []) as ContactClickRow[];
   });
 
@@ -353,7 +353,7 @@ export const getPwaEvents = createServerFn({ method: "POST" })
       .select("id,event,platform,user_agent,session_id,created_at")
       .order("created_at", { ascending: false })
       .limit(2000);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     const list = (rows ?? []) as PwaEventRow[];
 
     const totals: Record<string, number> = {};
@@ -390,7 +390,7 @@ export const listAdminAlertSubscribers = createServerFn({ method: "POST" })
       .from("admin_alert_subscribers")
       .select("id,email,created_at")
       .order("created_at", { ascending: false });
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     return (rows ?? []) as AdminAlertSubscriber[];
   });
 
@@ -400,12 +400,12 @@ export const subscribeAdminAlert = createServerFn({ method: "POST" })
     const supabase = await adminClient(data.password);
     const email = data.email.trim().toLowerCase();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      throw new Response("Invalid email", { status: 400 });
+      throw new Error("Invalid email");
     }
     const { error } = await supabase
       .from("admin_alert_subscribers")
       .upsert({ email }, { onConflict: "email" });
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     return { ok: true };
   });
 
@@ -414,7 +414,7 @@ export const unsubscribeAdminAlert = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const supabase = await adminClient(data.password);
     const { error } = await supabase.from("admin_alert_subscribers").delete().eq("id", data.id);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     return { ok: true };
   });
 
@@ -469,7 +469,7 @@ export const exportAdminCsv = createServerFn({ method: "POST" })
         .select("id,full_name,created_at")
         .gte("created_at", sinceIso)
         .order("created_at", { ascending: false });
-      if (error) throw new Response(error.message, { status: 500 });
+      if (error) throw new Error(error.message);
       const byDay: Record<string, number> = {};
       for (let i = range - 1; i >= 0; i--) {
         const d = new Date(toDate);
@@ -487,7 +487,7 @@ export const exportAdminCsv = createServerFn({ method: "POST" })
         .from("theory_progress")
         .select("user_id,created_at")
         .gte("created_at", sinceIso);
-      if (error) throw new Response(error.message, { status: 500 });
+      if (error) throw new Error(error.message);
       const byDay: Record<string, Set<string>> = {};
       for (let i = range - 1; i >= 0; i--) {
         const d = new Date(toDate);
@@ -545,7 +545,7 @@ export const exportAdminCsv = createServerFn({ method: "POST" })
         .select("id,package,channel,page,created_at")
         .gte("created_at", sinceIso)
         .order("created_at", { ascending: false });
-      if (error) throw new Response(error.message, { status: 500 });
+      if (error) throw new Error(error.message);
       columns = ["timestamp", "channel", "package", "page", "id"];
       rows = (clicks ?? []).map((c: any) => [c.created_at, c.channel, c.package, c.page, c.id]);
     }
@@ -601,7 +601,7 @@ export const getSectionBreakdown = createServerFn({ method: "POST" })
       .gte("created_at", sinceIso)
       .order("created_at", { ascending: false })
       .limit(20000);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
 
     type Row = { path: string; platform: string | null; session_id: string | null; user_agent: string | null; referrer: string | null; created_at: string };
     const list = (rows ?? []) as Row[];
@@ -712,7 +712,7 @@ export const getTrafficStats = createServerFn({ method: "POST" })
       .gte("created_at", sinceIso)
       .order("created_at", { ascending: false })
       .limit(20000);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
 
     type Row = { path: string; platform: string | null; session_id: string | null; user_agent: string | null; referrer: string | null; created_at: string };
     const list = (rows ?? []) as Row[];
