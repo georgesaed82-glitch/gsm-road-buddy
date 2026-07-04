@@ -1734,67 +1734,7 @@ const openJunction: Lesson = {
   render: OpenJunctionScene,
 };
 
-const openVsClosed: Lesson = {
-  slug: "open-vs-closed-junction",
-  title: "Open vs closed junctions",
-  category: "Highway Code • Practical Driving Skills",
-  rule: "Rules 170–171",
-  objective: "Learn to read whether a junction is open (good visibility) or closed (restricted view) and adjust your approach.",
-  think: [
-    "Can I see clearly in both directions from the give-way line?",
-    "Is there a hedge, wall, parked car or building blocking my view?",
-    "How far can I creep before I can actually see?",
-    "What's my get-out plan if a car appears?",
-    "Am I giving myself enough time and space?",
-  ],
-  ruleHeadline: "Open junction — flow. Closed junction — creep and peep.",
-  ruleBullets: [
-    "Open (broken lines, wide view) → continue if clear, no need to stop",
-    "Closed (hedge, wall, poor view) → stop, creep forward, look, then go",
-    "Never pull out relying on hope",
-    "Solid stop line = you MUST stop, whatever the visibility",
-    "If in doubt, treat it as closed",
-  ],
-  why: (
-    <>
-      <p>Every junction sits somewhere on a spectrum from "wide open" to "totally blind". Reading which one you're at decides whether you flow or you creep.</p>
-      <p>Guessing at a closed junction is the fastest route to a T-bone collision.</p>
-    </>
-  ),
-  georgeExplains:
-    "See how the left one gives you a proper view? Broken lines, no hedge, you can see the traffic — no need to stop, just adjust and go. Right one? Hedge in the way. You cannot see, so you creep — inch forward until your eyes can see past the hedge. Then and only then, you go.",
-  commonMistakes: [
-    "Treating every junction the same",
-    "Stopping unnecessarily at a wide-open give-way",
-    "Flying out of a closed junction without creeping",
-    "Not creeping far enough to actually see",
-  ],
-  gsmTips: [
-    "Read the view before the road markings",
-    "Open = flow, closed = creep",
-    "Solid line = MUST stop",
-    "If in doubt, treat as closed",
-  ],
-  keyTakeaway: "Open junctions flow, closed junctions creep — always match your approach to the visibility.",
-  durationMs: 14000,
-  captions: [
-    { at: 0, label: "OPEN junction — good visibility", detail: "Broken lines, wide view. Continue if clear." },
-    { at: 0.5, label: "CLOSED junction — restricted view", detail: "Hedge blocks the view. Slow — look — proceed." },
-    { at: 0.75, label: "Creep and peep", detail: "Inch forward until you can actually see past the hedge." },
-  ],
-  questions: [
-    {
-      at: 0.5,
-      prompt: "You approach a give-way junction where hedges block your view of the main road. What should you do?",
-      options: [
-        { label: "Speed up to get out quickly before a car comes", explain: "No. Never pull out of a closed junction on hope — that's how T-bones happen." },
-        { label: "Creep forward until you can see clearly, then go", correct: true, explain: "Correct. A closed junction is a 'creep and peep' — inch forward until your eyes are past the obstruction, then join when it's safe." },
-        { label: "Stop, then pull straight out — priority is priority", explain: "You have to give way — but you also can't see. Priority means nothing if you can't see who has it." },
-      ],
-    },
-  ],
-  render: OpenClosedScene,
-};
+// (Removed: replaced by the standalone closed-junction and open-junction lessons above.)
 
 // ─────────────────────────────────────────────────────────────
 // Lesson · Overtaking
