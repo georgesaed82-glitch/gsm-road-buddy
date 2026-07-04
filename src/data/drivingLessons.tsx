@@ -215,7 +215,7 @@ const speedAdjustment: Lesson = {
   render: SpeedAdjustmentScene,
 };
 
-export const drivingLessons: Lesson[] = [speedAdjustment];
+// (twoSecondRule is defined below and appended to the exported array.)
 
 // ─────────────────────────────────────────────────────────────
 // Lesson 2 · The 2-Second Rule
