@@ -1742,12 +1742,14 @@ const openJunction: Lesson = {
 // Lesson · Overtaking
 // ─────────────────────────────────────────────────────────────
 function OvertakingScene(t: number) {
-  const roadY = 200;
+  // UK left-hand traffic — ego + lead sit in the left (bottom) lane, overtake
+  // moves briefly into the right (top) lane and then returns left.
+  const roadY = 218;
   const leadSpeed = t < 0.5 ? 35 : 25;
   const leadX = 100 + t * (t < 0.5 ? 320 : 200);
   const shouldOvertake = t >= 0.5;
   const egoX = shouldOvertake ? leadX - 60 + (t - 0.5) * 400 : leadX - 40;
-  const egoY = shouldOvertake && t > 0.65 && t < 0.9 ? 175 : 200;
+  const egoY = shouldOvertake && t > 0.65 && t < 0.9 ? 182 : 218;
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
       <Sky id="sky-ov" />
