@@ -93,7 +93,7 @@ function AdminsPage() {
           ) : (
             <ul className="divide-y divide-border">
               {admins.map((a) => {
-                const isMe = me?.id === a.user_id;
+                const isMe = false;
                 return (
                   <li key={a.user_id} className="flex items-center justify-between gap-3 py-3 text-sm">
                     <div className="min-w-0">
