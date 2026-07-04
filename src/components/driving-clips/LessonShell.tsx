@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote } from "lucide-react";
+import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 // ─────────────────────────────────────────────────────────────
@@ -39,7 +40,7 @@ export type Lesson = {
   render: (t: number) => ReactNode;
 };
 
-export function LessonShell({ lesson }: { lesson: Lesson }) {
+export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: string; title: string } | null }) {
   const durationMs = lesson.durationMs ?? 14000;
   const [playing, setPlaying] = useState(true);
   const [t, setT] = useState(0);
@@ -284,7 +285,7 @@ export function LessonShell({ lesson }: { lesson: Lesson }) {
       {/* 9. GSM TIPS */}
       <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 shadow-sm">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-emerald-600">
-          <CheckCircle2 className="h-4 w-4" /> GSM tips
+          <CheckCircle2 className="h-4 w-4" /> George's Tip
         </div>
         <ul className="mt-3 space-y-2 text-sm">
           {lesson.gsmTips.map((tp, i) => (
@@ -301,6 +302,21 @@ export function LessonShell({ lesson }: { lesson: Lesson }) {
         <div className="text-[11px] uppercase tracking-[0.25em] opacity-70">Key takeaway</div>
         <p className="mt-2 font-display text-lg leading-snug">{lesson.keyTakeaway}</p>
       </div>
+
+      {/* 11. NEXT LESSON */}
+      {next && (
+        <Link
+          to="/driving-clips/$slug"
+          params={{ slug: next.slug }}
+          className="group flex items-center justify-between gap-4 rounded-xl border border-accent/40 bg-accent/5 p-5 shadow-sm transition-colors hover:border-accent hover:bg-accent/10"
+        >
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Next lesson</div>
+            <div className="mt-1 font-display text-lg leading-snug">{next.title}</div>
+          </div>
+          <ArrowRight className="h-5 w-5 shrink-0 text-accent transition-transform group-hover:translate-x-1" />
+        </Link>
+      )}
     </article>
   );
 }
