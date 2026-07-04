@@ -226,7 +226,8 @@ const speedAdjustment: Lesson = {
 // and the safe gap requirement doubles to 4 seconds.
 // ─────────────────────────────────────────────────────────────
 function TwoSecondRuleScene(t: number) {
-  const roadY = 200;
+  // UK left-hand traffic — cars in the left (bottom) lane.
+  const roadY = 218;
   const leadSpeedPxPerT = 340;
   const leadX = 140 + t * leadSpeedPxPerT;
 
