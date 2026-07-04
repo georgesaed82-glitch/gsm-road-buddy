@@ -1,23 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { verifyAdminPasswordServer } from "./portal-access.functions";
 
-async function assertAdmin(supabase: any, userId: string) {
-  const { data, error } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .eq("role", "admin")
-    .maybeSingle();
-  if (error || !data) throw new Error("Forbidden");
+async function requireAdmin(password: string) {
+  if (!(await verifyAdminPasswordServer(password))) {
+    throw new Error("Unauthorized");
+  }
 }
 
 export type AdminRow = { user_id: string; email: string; full_name: string | null; created_at: string };
 
-export const listAdmins = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<AdminRow[]> => {
-    await assertAdmin(context.supabase, context.userId);
+export const listAdmins = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ password: z.string() }).parse(d))
+  .handler(async ({ data }): Promise<AdminRow[]> => {
+    await requireAdmin(data.password);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: roles, error: rolesErr } = await supabaseAdmin
@@ -38,10 +34,9 @@ export const listAdmins = createServerFn({ method: "GET" })
   });
 
 export const addAdmin = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ email: z.string().trim().toLowerCase().email().max(255) }).parse(d))
-  .handler(async ({ data: input, context }) => {
-    await assertAdmin(context.supabase, context.userId);
+  .inputValidator((d) => z.object({ email: z.string().trim().toLowerCase().email().max(255), password: z.string() }).parse(d))
+  .handler(async ({ data: input }) => {
+    await requireAdmin(input.password);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Page through users to find matching email (Auth Admin API has no direct lookup).
@@ -63,11 +58,9 @@ export const addAdmin = createServerFn({ method: "POST" })
   });
 
 export const removeAdmin = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ user_id: z.string().uuid() }).parse(d))
-  .handler(async ({ data: input, context }) => {
-    await assertAdmin(context.supabase, context.userId);
-    if (input.user_id === context.userId) throw new Error("You can't remove your own admin access.");
+  .inputValidator((d) => z.object({ user_id: z.string().uuid(), password: z.string() }).parse(d))
+  .handler(async ({ data: input }) => {
+    await requireAdmin(input.password);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { count } = await supabaseAdmin
