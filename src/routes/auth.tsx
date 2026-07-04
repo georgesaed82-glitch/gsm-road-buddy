@@ -203,14 +203,14 @@ function AuthPage() {
                 {submitting ? "..." : "Enter"}
               </Button>
             </div>
-            {codeCaptchaRequired && siteKey && (
+            {codeCaptchaRequired && siteKey ? (
               <div className="pt-2">
                 <p className="mb-1 text-xs text-muted-foreground">
                   Please confirm you're not a bot:
                 </p>
                 <TurnstileWidget siteKey={siteKey} onToken={setCodeCaptchaToken} />
               </div>
-            )}
+            ) : null}
             {!isAdmin && (
               <label className="flex items-center gap-2 pt-1 text-sm text-muted-foreground">
                 <Checkbox
