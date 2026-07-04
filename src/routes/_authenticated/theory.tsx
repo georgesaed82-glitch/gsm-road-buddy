@@ -13,9 +13,9 @@ import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
 export const Route = createFileRoute("/_authenticated/theory")({
   head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
-  validateSearch: (search: Record<string, unknown>) => ({
-    category: typeof search.category === "string" ? search.category : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { category?: string } => {
+    return typeof search.category === "string" ? { category: search.category } : {};
+  },
   component: TheoryPage,
 });
 
