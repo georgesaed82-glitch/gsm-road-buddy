@@ -138,7 +138,7 @@ function Home() {
                 </Link>
               </Button>
               <Button asChild size="lg" className="h-12 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90">
-                <Link to="/#download-app" className="inline-flex items-center gap-2">
+                <Link to="/" hash="download-app" className="inline-flex items-center gap-2">
                   Download the App
                   <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -415,7 +415,7 @@ function Home() {
               </a>
             </Button>
             <Button asChild size="lg" variant="outline" className="h-14 rounded-none border-accent-foreground/30 bg-transparent px-8 text-accent-foreground hover:bg-accent-foreground hover:text-accent">
-              <Link to="/#download-app" className="inline-flex items-center gap-3">
+              <Link to="/" hash="download-app" className="inline-flex items-center gap-3">
                 <Download className="h-5 w-5" />
                 Download the App
               </Link>
