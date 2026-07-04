@@ -1346,8 +1346,18 @@ const keepingJunctionsClear: Lesson = {
   ],
   why: (
     <>
-      <p>Blocking a junction seizes the whole road. One car in a yellow box can stop dozens of others.</p>
-      <p>What we do for others, they do for us. Keeping junctions clear is how UK traffic flows.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Blocking a junction seizes the whole road. One car sat in a yellow box can stop dozens of others — including emergency vehicles. What we do for others, they do for us: keeping junctions clear is how UK traffic actually flows.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every junction with a queue on the other side — yellow-box junctions, T-junctions, mini-roundabouts, staggered crossroads. If your exit isn't clear, you don't enter.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Look at your <em>exit</em>, not just the light or the give-way.</li>
+        <li>Ask: "Is there a full car's length of clear road for me on the other side?"</li>
+        <li>If not, stop before the junction — even on a green light.</li>
+        <li>Wait for the queue to move enough to fit you, then go.</li>
+        <li>Never edge in "just to make progress" — you'll strand yourself in the box.</li>
+      </ol>
     </>
   ),
   georgeExplains:
