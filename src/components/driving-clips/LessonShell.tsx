@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote, ArrowRight } from "lucide-react";
+import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote, ArrowRight, ChevronDown } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
