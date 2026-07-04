@@ -1983,8 +1983,18 @@ const blindSpots: Lesson = {
   ],
   why: (
     <>
-      <p>Every car has areas the mirrors don't show — behind the door pillars, over the shoulder. Another vehicle in that region is invisible to you.</p>
-      <p>Two drivers sitting alongside each other are both in each other's blind spots. Whoever changes lane first without a shoulder check causes the collision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Every car has areas the mirrors don't show — behind the door pillars, over the shoulder. A cyclist, motorbike or car sitting there is <strong>invisible</strong> to you. Whoever changes lane first without a shoulder check is the one who causes the collision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Before <em>every</em> lane change, pull-away, merge, overtake, and before opening the door when parked. Especially on dual carriageways, at slip-roads and around cyclists.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Mirrors first — interior, then the door mirror for the side you're moving.</li>
+        <li>Signal in good time to warn others of your intent.</li>
+        <li>Quick shoulder check on the moving side — that's your blind-spot look.</li>
+        <li>Only when the mirror AND the shoulder check are clean, move smoothly.</li>
+        <li>Never rely on the other driver seeing you — always assume you're invisible in theirs too.</li>
+      </ol>
     </>
   ),
   georgeExplains:
