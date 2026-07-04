@@ -47,12 +47,31 @@ async function timed<T>(fn: () => Promise<T>): Promise<{ value: T; ms: number }>
 export const runDiagnostics = createServerFn({ method: "POST" })
   .inputValidator((data: { password: string }) => data)
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) {
-      throw new Response("Unauthorized", { status: 401 });
+    const results: CheckResult[] = [];
+    try {
+      if (!(await verifyAdminPasswordServer(data.password))) {
+        return { results: [], ranAt: new Date().toISOString(), origin: "", error: "Unauthorized" };
+      }
+    } catch (e) {
+      return {
+        results: [],
+        ranAt: new Date().toISOString(),
+        origin: "",
+        error: e instanceof Error ? e.message : "password verify failed",
+      };
     }
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const results: CheckResult[] = [];
+    let supabaseAdmin: typeof import("@/integrations/supabase/client.server")["supabaseAdmin"];
+    try {
+      ({ supabaseAdmin } = await import("@/integrations/supabase/client.server"));
+    } catch (e) {
+      return {
+        results,
+        ranAt: new Date().toISOString(),
+        origin: "",
+        error: e instanceof Error ? e.message : "admin client unavailable",
+      };
+    }
 
     // Origin (for display only; we no longer self-fetch — Cloudflare Workers
     // returning 500 on same-zone subrequest fan-out was the real "fetch failed").

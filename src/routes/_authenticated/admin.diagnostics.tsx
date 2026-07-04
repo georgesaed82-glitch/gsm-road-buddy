@@ -67,6 +67,12 @@ function DiagnosticsPage() {
         </div>
       )}
 
+      {mut.data?.error && (
+        <div className="mb-4 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+          {mut.data.error}
+        </div>
+      )}
+
       {results.length > 0 && (
         <div className="mb-6 grid grid-cols-3 gap-3">
           <SummaryCard label="Passing" value={totals.ok || 0} tone="ok" />
