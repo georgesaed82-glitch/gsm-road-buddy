@@ -66,6 +66,7 @@ function DrivingClipsPage() {
               title={clip.title}
               rule={clip.rule}
               beats={clip.beats}
+                explanation={clip.explanation}
               render={clip.render}
               durationMs={clip.durationMs}
             />
