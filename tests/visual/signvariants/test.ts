@@ -89,15 +89,16 @@ function diffImages(aPath: string, bPath: string, outPath: string): DiffResult {
 async function gridImageStates(page: Page) {
   return page.$$eval(GRID_IMAGE_SELECTOR, (imgs) =>
     imgs.map((img, index) => {
+      const image = img as HTMLImageElement;
       const rect = img.getBoundingClientRect();
       const style = window.getComputedStyle(img);
       return {
         index,
-        src: img.currentSrc || img.src,
-        alt: img.alt,
-        complete: img.complete,
-        naturalWidth: img.naturalWidth,
-        naturalHeight: img.naturalHeight,
+        src: image.currentSrc || image.src,
+        alt: image.alt,
+        complete: image.complete,
+        naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
         renderedWidth: rect.width,
         renderedHeight: rect.height,
         visible: rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden",
