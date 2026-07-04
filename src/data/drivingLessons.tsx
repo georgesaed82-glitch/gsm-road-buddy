@@ -2386,12 +2386,12 @@ const roundabouts: Lesson = {
   ],
   ruleHeadline: "Give way to traffic from your right. Right exit = signal right, then signal left before you leave.",
   ruleBullets: [
-    "APPROACH — mirrors, signal, correct lane, brake early",
-    "GIVE WAY — to traffic already on the roundabout (from your right)",
-    "TURNING RIGHT (past 12 o'clock) — signal right on approach, right lane",
-    "STRAIGHT ON — usually left lane, no signal on approach",
-    "SIGNAL LEFT after the exit before yours",
-    "EXIT smoothly, cancel signal, mirrors and check speed",
+    "PLAN — mirrors, signal, correct lane, brake early",
+    "STOP — only if you have to; give way to traffic from your right",
+    "LOOK — use BGL: Blockers, Gap, Look for opportunity",
+    "GO — commit smoothly once safe, legal and clear",
+    "Right exit (past 12 o'clock) = signal right, right lane",
+    "Signal LEFT as you pass the exit before yours",
   ],
   why: (
     <>
@@ -2409,11 +2409,11 @@ const roundabouts: Lesson = {
     "Looking at the roundabout instead of through it to your exit",
   ],
   gsmTips: [
-    "Past 12 o'clock = signal right",
-    "Signal left after the exit before yours",
-    "Give way to traffic from the right",
+    "PLAN · STOP · LOOK · GO — every roundabout, every time",
+    "LOOK = BGL — Blockers, Gap, Look for opportunity",
+    "Past 12 o'clock = signal right on approach",
+    "Signal left as you pass the exit before yours",
     "Look through the roundabout, not at it",
-    "Stay in your lane all the way round",
   ],
   keyTakeaway:
     "Right exit: signal right, give way to the right, signal left before leaving — every roundabout, every time.",
