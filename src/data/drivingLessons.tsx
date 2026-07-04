@@ -1005,8 +1005,18 @@ const meetingTraffic: Lesson = {
   ],
   why: (
     <>
-      <p>The narrower the gap, the less time you have to react to a door opening, a child running out, or a wobble from the oncoming car.</p>
-      <p>Speed is only safe if the gap can absorb a mistake — yours or someone else's.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>The narrower the gap, the less time you have to react to an opening door, a child running out, or a wobble from the oncoming car. Speed is only safe if the gap can absorb a mistake — yours or theirs. <strong>Less space = less speed.</strong></p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Any time parked cars, skips, works or a narrow lane squeeze the road — especially when another vehicle is coming the other way. If the obstruction is on <em>your</em> side, priority is <em>theirs</em>.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Scan the row ahead — find the pinch point early.</li>
+        <li>If the obstruction is on your side, be ready to give way.</li>
+        <li>Match your speed to the SMALLEST gap you'll pass through.</li>
+        <li>Watch the parked cars too — cover the brake for doors and pedestrians.</li>
+        <li>Make eye contact with the oncoming driver — read their intent, don't guess.</li>
+      </ol>
     </>
   ),
   georgeExplains:
