@@ -23,7 +23,9 @@ export const officialSignImages: Record<string, string> = {
   "w-horse": "/__l5e/assets-v1/02e1af99-77c8-4b5d-899f-cdb204414d93/UK_traffic_sign_550.1.svg",
   "w-wild": "/__l5e/assets-v1/9af3afb8-2a0d-4994-81c2-625d9c064389/UK_traffic_sign_551.svg",
   "w-cattle": "/__l5e/assets-v1/273626b6-049c-4249-bf6a-ebac57635c93/UK_traffic_sign_548.svg",
-  "w-elderly": "/__l5e/assets-v1/f307fd10-6f0c-4001-9eca-c00ab1e15a6f/UK_traffic_sign_544.svg",
+  // "w-elderly" — removed: previous mapping (diagram 544) is a pedestrian-crossing
+  // warning, not the "frail / elderly pedestrians likely to cross" sign. Falls back
+  // to the locally-drawn SignVisual pictogram until a verified DfT SVG is added.
   "w-roadworks": "/__l5e/assets-v1/9d8d91ed-7cc6-442e-9cae-a1d953cd954a/UK_traffic_sign_7001.svg",
   "w-signals": "/__l5e/assets-v1/e943ec19-92cd-436e-bd68-e9e99117eb55/UK_traffic_sign_543.svg",
   "w-level": "/__l5e/assets-v1/a8a719a7-5e4f-42c3-a851-d80cad938afd/UK_traffic_sign_771.svg",
@@ -63,12 +65,10 @@ export const officialSignImages: Record<string, string> = {
   "m-cycle": "/__l5e/assets-v1/be04b32f-0939-4c6e-9847-705147ea5a33/UK_traffic_sign_955.svg",
   "i-parking": "/__l5e/assets-v1/31179ec5-68ef-467f-8fe0-56968f6df385/UK_traffic_sign_801.svg",
   "i-hospital": "/__l5e/assets-v1/50cae835-1777-4671-ba52-145d12b24677/UK_traffic_sign_827.2–V1.svg",
-  "c-zebra": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
-  "c-crossing-ahead": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
-  "c-pelican": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
-  "c-puffin": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
-  "c-toucan": "/__l5e/assets-v1/25c70e1c-a6a8-483c-a661-079a81d90da1/UK_traffic_sign_544.2.svg",
-  "c-pegasus": "https://commons.wikimedia.org/wiki/Special:FilePath/UK_traffic_sign_550.1.svg",
+  // Crossings (c-*) — removed placeholder mappings. Zebra/pelican/puffin/toucan/
+  // pegasus are the crossings themselves, not the red-triangle warning sign, so
+  // they render from the purpose-built SignVisual variants (zebra-crossing,
+  // signal-crossing, etc.) rather than a mis-labelled triangle.
   "t-red": "/__l5e/assets-v1/5f9941fa-6b61-497a-b5ee-b3a4eb679d79/Traffic_lights_red.svg",
   "t-red-amber": "/__l5e/assets-v1/5857526d-92b4-4060-8d58-54614e49c641/Traffic_lights_red-yellow.svg",
   "t-amber": "/__l5e/assets-v1/d63e6eca-058d-4d34-819f-3e88d61882bc/Traffic_lights_yellow.svg",

@@ -1,48 +1,40 @@
-# GSM Driving School — Full Lesson Revision Plan
+## What you're seeing
 
-The lesson shell already renders every section you listed (Objective, GSM Formula, Rule, What/When/Why/How, George Explains, Common Mistakes, GSM Tips, Interactive Question, Key Takeaway, Next Lesson). What's inconsistent is the **per-lesson content** and the **animation quality**. Rewriting all 16 lessons + animations in one pass is a huge job, so I'll do it in ordered batches you can review between.
+The screenshot shows the "Elderly / frail pedestrians" answer paired with a sign that's actually **Pedestrians in road ahead** (TSRGD diagram 544). The correct elderly-people warning is diagram 544.1 (two hunched figures with a stick). So the `w-elderly` → `w-pedestrians` image mapping is swapped, and several crossing signs (zebra/pelican/puffin) are all reusing the same pedestrians image as a placeholder. This is the root cause of what you were shown, and it's the kind of thing I need to sweep out everywhere.
 
-## Scope
+## Scope of the audit
 
-Every one of the 16 lessons will be rewritten to the same GSM standard:
+Four data files drive every quiz, sign card and lesson. I'll audit each against GOV.UK "Know your traffic signs" + the current Highway Code (2022 revision) + DVSA theory bank language:
 
-1. **What are we doing?** — plain-English manoeuvre description
-2. **When do we use it?** — real UK situations
-3. **Why do we do it?** — safety reasoning, not Highway Code recitation
-4. **How do we do it?** — numbered steps
-5. **George Explains** — natural, teaching-voice paragraph
-6. **GSM Formula** — the memorable pattern (Plan→Stop→Look→Go, BGL, 15-70-15, Less Space = Less Speed, etc.)
-7. **Common Mistakes** — wrong method → why wrong → correct method
-8. **Animated Demonstration** — polished UK road + smoother car motion
-9. **Interactive Question** — decision point with reveal
-10. **Key Takeaway** — one memorable sentence
+1. **`src/data/signs.ts`** — 60+ signs. Verify every `name`, `meaning`, `category`, and TSRGD-correct wording.
+2. **`src/data/signImages.ts`** — Verify every sign id maps to the correct DfT SVG (this is where the elderly/pedestrians swap lives; also `c-zebra`, `c-pelican`, `c-puffin` all currently point at the pedestrians sign and need real artwork).
+3. **`src/data/theory.ts` + `src/data/topicQuizzes.ts` + `src/data/homeTheoryQuiz.ts`** — Every question: correct answer, distractors, explanation wording, rule references. Check figures (stopping distances, speed limits, alcohol limits, fines/points, tyre tread 1.6mm, MOT age 3 yrs, etc.) match the current Highway Code and DVSA bank.
+4. **`src/data/roadMarkings.ts` + `src/data/policeSignals.ts` + `src/data/drivingLessons.tsx`** — Rule references (e.g. Rule 170 give-way, Rule 103 signals), observation wording, and any legal claims.
 
-## Animation upgrades (applied to every clip)
+## How I'll work
 
-- Eased steering/acceleration/braking curves (no linear motion)
-- Working indicators + brake lights synced to actions
-- Rotating wheels, soft ground shadows
-- UK road kit per environment: kerbs, pavements, lamp posts, parked cars, houses (urban); hedges, verges, bends (rural); crash barriers, central reservation (dual carriageway)
-- Consistent GSM overlay + "UK · Left-hand traffic" tag (already in place)
+- **Verify against primary sources only**: GOV.UK Highway Code, "Know your traffic signs" PDF, DVSA Safe Driving for Life. No Wikipedia guesses.
+- **Fix as I go** in one branch of edits per file, so each change is reviewable.
+- **Replace missing sign artwork** (zebra, pelican, puffin, toucan variants) with the correct DfT SVGs from Wikimedia Commons (OGL, already how the rest are sourced) rather than reusing the pedestrians sign.
+- **Add a short "source" comment** at the top of `signs.ts` and `signImages.ts` pointing at the exact GOV.UK page each entry came from, so future changes stay tied to the standard.
+- **Run the existing `signs.quiz.test.ts`** after edits, and add a smoke test that asserts every quiz answer's sign id has a matching image.
+- **Deliver a written summary** of every correction made (old vs new) so you can spot-check.
 
-## Delivery order (batches, ~3-4 lessons per turn)
+## What I will NOT touch
 
-```text
-Batch 1  Plan to Stop – Look to Go   Stretch Your Vision   Closed Junction   Open Junction
-Batch 2  Turning Right (roundabouts) Roundabouts           Meeting Traffic   Speed Adjustment
-Batch 3  Two-Second Rule             Zebra Crossing        Going Uphill      Going Downhill
-Batch 4  Dual Carriageway Discipline Lane Merging          Keeping Junctions Clear
-Batch 5  Overtaking                  Blind Spots            + animation polish sweep
-```
+- The quiz engine, UI, LessonShell, routes — content only.
+- Anything outside these data files unless a wording change forces it.
 
-Each batch: I rewrite the lesson objects (copy + GSM formula + wrong/right mistakes + interactive question) and upgrade that lesson's SVG render function. After each batch you can preview and tell me what to tighten before I move on — that way credits aren't spent redoing work you'd change anyway.
+## Technical details
 
-## Technical notes
+- Sign SVGs are already CDN-mirrored under `/__l5e/assets-v1/…`. New ones will be uploaded via the assets pipeline the same way, not hot-linked to Wikimedia at runtime.
+- Attribution ("Crown copyright, OGL v3.0, via Wikimedia Commons") stays on the road-signs page — no change needed.
+- Because this is content-only, no migrations, no auth, no schema changes.
 
-- All edits stay in `src/data/drivingLessons.tsx` and (for animation polish) reusable helpers I'll add to `src/components/driving-clips/`.
-- Shared easing + UK road kit helpers (`easeInOut`, `<UkKerb/>`, `<ParkedCar/>`, `<LampPost/>`, `<Hedgerow/>`, `<CrashBarrier/>`) go into a new `src/components/driving-clips/uk-kit.tsx` so every lesson uses the same visual language.
-- No shell changes needed — the structure is already correct.
+## Estimated size
 
-## What I need from you
+Roughly 40-60 line-level corrections across the four data files, plus 6-10 new sign SVGs. One test file update. No user-facing UI change beyond the correct content appearing.
 
-Confirm the batch order above (or reorder) and I'll start Batch 1 immediately.
+## Before I start — one confirmation
+
+This will change wording on questions you may have memorised. If you'd rather I do it in stages (signs first, then theory questions, then lessons) so you can review each batch, say so; otherwise I'll do the full sweep in one pass and give you the change list at the end.
