@@ -1,5 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { ClipShell } from "@/components/driving-clips/ClipShell";
@@ -18,6 +17,12 @@ export const Route = createFileRoute("/_authenticated/driving-clips")({
 });
 
 function DrivingClipsPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+
+  if (pathname !== "/driving-clips") {
+    return <Outlet />;
+  }
+
   return (
     <PortalShell eyebrow="Practical" title="Animated driving clips">
       <p className="max-w-2xl text-sm text-muted-foreground">
