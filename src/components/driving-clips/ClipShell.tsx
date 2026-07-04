@@ -7,12 +7,19 @@ import { cn } from "@/lib/utils";
 // render function that takes a normalised progress value (t in 0..1) and
 // returns an SVG scene. Beats give the caption timeline underneath.
 export type ClipBeat = { at: number; label: string; detail: string };
+export type ClipExplanation = {
+  what: string;
+  when: string;
+  why: string;
+  steps: string[];
+};
 
 export function ClipShell({
   title,
   rule,
   aspect = "16/9",
   beats,
+  explanation,
   render,
   durationMs = 12000,
 }: {
@@ -20,6 +27,7 @@ export function ClipShell({
   rule: string;
   aspect?: string;
   beats: ClipBeat[];
+  explanation?: ClipExplanation;
   render: (t: number) => ReactNode;
   durationMs?: number;
 }) {
@@ -88,6 +96,20 @@ export function ClipShell({
 
       <div className="relative w-full overflow-hidden bg-[#1a1a1c]" style={{ aspectRatio: aspect }}>
         {render(t)}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-3 top-3 rounded-md bg-black/55 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/85">
+            UK · Left-hand traffic
+          </div>
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 rounded-l-md bg-black/55 px-1.5 py-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85 [writing-mode:vertical-rl]">
+            GSM
+          </div>
+          <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-md bg-black/55 px-2 py-1">
+            <span className="inline-block h-2 w-2 rounded-full bg-accent" />
+            <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85">
+              GSM Driving School
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Scrub bar */}
@@ -118,7 +140,36 @@ export function ClipShell({
             </li>
           ))}
         </ol>
+
+        <div className="mt-4 space-y-4 border-t border-border pt-4 text-sm leading-relaxed">
+          <TeachingBlock label="What we're doing">
+            {explanation?.what ?? beats[0]?.detail}
+          </TeachingBlock>
+          <TeachingBlock label="When we're doing it">
+            {explanation?.when ?? "Use this routine whenever this road layout or hazard develops ahead of you."}
+          </TeachingBlock>
+          <TeachingBlock label="Why we're doing it">
+            {explanation?.why ?? "We do it to keep the car predictable, protect vulnerable road users, and keep traffic flowing without forcing anyone else to brake or swerve."}
+          </TeachingBlock>
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">How we do it — step by step</div>
+            <ol className="mt-2 list-decimal space-y-1 pl-5 text-muted-foreground">
+              {(explanation?.steps ?? beats.map((b) => b.label)).map((step, i) => (
+                <li key={i}>{step}</li>
+              ))}
+            </ol>
+          </div>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function TeachingBlock({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div>
+      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">{label}</div>
+      <p className="mt-1 text-muted-foreground">{children}</p>
     </div>
   );
 }
