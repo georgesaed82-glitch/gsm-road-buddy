@@ -47,9 +47,6 @@ async function timed<T>(fn: () => Promise<T>): Promise<{ value: T; ms: number }>
 export const runDiagnostics = createServerFn({ method: "POST" })
   .inputValidator((data: { password: string }) => data)
   .handler(async ({ data }) => {
-    if (data.password === "__probe__") {
-      return { results: [] as CheckResult[], ranAt: new Date().toISOString(), origin: "probe" };
-    }
     if (!(await verifyAdminPasswordServer(data.password))) {
       throw new Response("Unauthorized", { status: 401 });
     }
@@ -200,8 +197,5 @@ export const runDiagnostics = createServerFn({ method: "POST" })
       });
     }
 
-    // Round-trip through JSON to strip anything non-serializable that leaked
-    // in from third-party SDK responses (Seroval otherwise fails step 3).
-    const safe = JSON.parse(JSON.stringify(results)) as CheckResult[];
-    return { results: safe, ranAt: new Date().toISOString(), origin };
+    return { results, ranAt: new Date().toISOString(), origin };
   });
