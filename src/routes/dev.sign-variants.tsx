@@ -26,7 +26,7 @@ function DevSignVariants() {
             data-expected-size={SIGN_IMAGE_SIZES[v]}
             className="flex flex-col items-center gap-2"
           >
-            <OfficialSignImage sign={sample} variant={v} />
+            <OfficialSignImage sign={sample} variant={v} loading="eager" />
             <div className="text-xs text-gray-600">
               {v} · {SIGN_IMAGE_SIZES[v]}px
             </div>

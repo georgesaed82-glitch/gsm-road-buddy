@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { SignVisual } from "@/components/SignVisual";
 import { officialSignImageFor } from "@/data/signImages";
 import type { Sign } from "@/data/signs";
@@ -28,6 +28,8 @@ type OfficialSignImageProps = {
   variant?: SignImageVariant;
   /** Escape hatch — overrides `variant`. Prefer `variant` in new code. */
   size?: number;
+  /** Visual tests can opt out of lazy loading so browsers render before screenshots. */
+  loading?: "eager" | "lazy";
 };
 
 /**
@@ -42,12 +44,12 @@ type OfficialSignImageProps = {
  *   SignVisual pictograms), so scaling is resolution-independent and stays
  *   crisp on high-DPR mobile screens.
  */
-export function OfficialSignImage({ sign, variant = "detail", size }: OfficialSignImageProps) {
+export function OfficialSignImage({ sign, variant = "detail", size, loading = "lazy" }: OfficialSignImageProps) {
   const resolvedSize = size ?? SIGN_IMAGE_SIZES[variant];
   const src = officialSignImageFor(sign.id);
   const [errored, setErrored] = useState(false);
 
-  const wrapperStyle: React.CSSProperties = {
+  const wrapperStyle: CSSProperties = {
     width: resolvedSize,
     maxWidth: "100%",
     aspectRatio: "1 / 1",
@@ -68,7 +70,7 @@ export function OfficialSignImage({ sign, variant = "detail", size }: OfficialSi
         alt={sign.name}
         width={resolvedSize}
         height={resolvedSize}
-        loading="lazy"
+        loading={loading}
         decoding="async"
         onError={() => setErrored(true)}
         style={{
