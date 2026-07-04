@@ -1814,6 +1814,33 @@ const openJunction: Lesson = {
     "Coasting through when the view has quietly closed (van, bend, rain)",
     "Not scanning far enough down the main road",
   ],
+  mistakes: [
+    {
+      wrong: "Stopping dead at every give-way even when the view is wide open.",
+      why: "Unnecessary stops break traffic flow, invite rear-end shunts and teach you to react instead of plan.",
+      right: "Look far, look early. If the road is genuinely clear, keep coasting — smooth beats stopped.",
+    },
+    {
+      wrong: "Looking once, right at the line — trying to decide at the last second.",
+      why: "By the time you're at the line you've already run out of room to coast. Late looking becomes braking.",
+      right: "Start scanning 5–6 car lengths before the give-way. Decide early — the line is where you act, not think.",
+    },
+    {
+      wrong: "Treating 'open junction' as 'main road' and not giving way.",
+      why: "Open only means you can SEE — it doesn't remove the priority. Traffic on the main road still comes first.",
+      right: "You still give way. Coasting is only allowed when there's genuinely no one to give way to.",
+    },
+    {
+      wrong: "Coasting through when the view has closed — parked van, bend, heavy rain.",
+      why: "Conditions change. A junction that was open yesterday can be closed today. Coasting on habit is how it goes wrong.",
+      right: "Re-read the view every time. The moment it closes — treat it as a closed junction and stop.",
+    },
+    {
+      wrong: "Only scanning the near lane — missing the fast car in the far lane.",
+      why: "A car 100m away at 50mph reaches you in about 4 seconds. If you only scanned 50m, you never saw them.",
+      right: "Look as far as your eyes will stretch. If you can see the road bend or vanishing point, use it.",
+    },
+  ],
   gsmTips: [
     "Open visibility = you can coast through, no need to stop",
     "LOOK first, LINE second — decide early",
