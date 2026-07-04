@@ -1870,6 +1870,7 @@ export const drivingLessons: Lesson[] = [
   blindSpots,
   stretchVision,
   planStopLookGo,
+  roundabouts,
 ];
 
 export function getLesson(slug: string): Lesson | undefined {
