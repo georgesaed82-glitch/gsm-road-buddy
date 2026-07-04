@@ -54,37 +54,52 @@ export const runDiagnostics = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const results: CheckResult[] = [];
 
-    // Origin for route checks
-    const { getRequest } = await import("@tanstack/react-start/server");
-    const req = getRequest();
-    const origin = new URL(req.url).origin;
+    // Origin (for display only; we no longer self-fetch — Cloudflare Workers
+    // returning 500 on same-zone subrequest fan-out was the real "fetch failed").
+    let origin = "";
+    try {
+      const { getRequest } = await import("@tanstack/react-start/server");
+      origin = new URL(getRequest().url).origin;
+    } catch {
+      /* noop */
+    }
 
-    // Routes
-    await Promise.all(
-      ROUTES.map(async (path) => {
-        try {
-          const { value: res, ms } = await timed(() =>
-            fetch(origin + path, { method: "GET", redirect: "manual" }),
-          );
-          const ok = res.status >= 200 && res.status < 400;
-          results.push({
-            name: path,
-            category: "Route",
-            status: ok ? "ok" : "fail",
-            detail: `HTTP ${res.status}`,
-            ms,
-          });
-        } catch (e) {
-          results.push({
-            name: path,
-            category: "Route",
-            status: "fail",
-            detail: e instanceof Error ? e.message : "fetch failed",
-            ms: 0,
-          });
-        }
-      }),
-    );
+    // Routes: verify each path is registered in the generated route tree
+    // instead of self-fetching. This is deterministic, avoids subrequest
+    // loops, and catches the actual failure mode (a missing/renamed route).
+    try {
+      const { routeTree } = await import("@/routeTree.gen");
+      const registered = new Set<string>();
+      const walk = (node: unknown) => {
+        const n = node as { path?: string; fullPath?: string; children?: Record<string, unknown> | unknown[] };
+        if (n?.fullPath) registered.add(n.fullPath);
+        if (n?.path) registered.add(n.path);
+        const kids = n?.children;
+        if (Array.isArray(kids)) kids.forEach(walk);
+        else if (kids && typeof kids === "object") Object.values(kids).forEach(walk);
+      };
+      walk(routeTree as unknown);
+      for (const path of ROUTES) {
+        const ok = registered.has(path);
+        results.push({
+          name: path,
+          category: "Route",
+          status: ok ? "ok" : "fail",
+          detail: ok ? "registered" : "not found in route tree",
+          ms: 0,
+        });
+      }
+    } catch (e) {
+      for (const path of ROUTES) {
+        results.push({
+          name: path,
+          category: "Route",
+          status: "fail",
+          detail: e instanceof Error ? e.message : "route tree unavailable",
+          ms: 0,
+        });
+      }
+    }
 
     // Tables
     for (const table of TABLES) {
