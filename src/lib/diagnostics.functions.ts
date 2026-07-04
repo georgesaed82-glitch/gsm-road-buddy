@@ -47,11 +47,11 @@ async function timed<T>(fn: () => Promise<T>): Promise<{ value: T; ms: number }>
 export const runDiagnostics = createServerFn({ method: "POST" })
   .inputValidator((data: { password: string }) => data)
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) {
-      throw new Response("Unauthorized", { status: 401 });
-    }
     if (data.password === "__probe__") {
       return { results: [] as CheckResult[], ranAt: new Date().toISOString(), origin: "probe" };
+    }
+    if (!(await verifyAdminPasswordServer(data.password))) {
+      throw new Response("Unauthorized", { status: 401 });
     }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
