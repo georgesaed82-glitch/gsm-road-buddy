@@ -2320,6 +2320,28 @@ const planStopLookGo: Lesson = {
     "Creeping out on hope instead of a clear decision",
     "Stopping unnecessarily at open junctions",
   ],
+  mistakes: [
+    {
+      wrong: "Arriving at the junction still doing 25mph.",
+      why: "You've given yourself no time to observe. You'll either brake hard at the line or roll out on hope.",
+      right: "Off the gas early, let the car slow itself, cover the brake. Arrive slow enough that stopping is easy.",
+    },
+    {
+      wrong: "A quick glance either way — 'looking' without actually seeing.",
+      why: "Your eyes moved, but your brain didn't process. That's why drivers say 'I looked but I didn't see them'.",
+      right: "Two clean looks each way. Say out loud what you see — 'red car, gap, cyclist'. Naming forces seeing.",
+    },
+    {
+      wrong: "Creeping out because the driver behind is impatient.",
+      why: "Their impatience isn't your problem — a collision is. You commit to gaps that don't exist.",
+      right: "Ignore the pressure behind. Make one clear decision on the actual road, not the mirror.",
+    },
+    {
+      wrong: "Stopping at an open junction that plainly doesn't need it.",
+      why: "Unnecessary stops break flow, confuse other drivers and encourage rear-end shunts.",
+      right: "Open view + clear road = coast through. Plan to stop — but only stop if the road tells you to.",
+    },
+  ],
   gsmTips: [
     "SLOW · OBSERVE · SEE · DECIDE · PROCEED",
     "Plan to stop — then decide whether to go",
