@@ -17,7 +17,8 @@ function easeInOut(t: number) {
 function SpeedAdjustmentScene(t: number) {
   // Ego car speed profile: cruise → close on slow car → drop to match → follow.
   // Slow lead car cruises at ~35mph the whole time.
-  const roadY = 200;
+  // UK left-hand traffic — both cars sit in the left (bottom) lane.
+  const roadY = 218;
   const leadX = 120 + t * 340; // slow car moves steadily right
 
   // Ego catches up quickly then matches lead speed after t≈0.45.
