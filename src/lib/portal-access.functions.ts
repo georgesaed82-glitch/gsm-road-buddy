@@ -32,7 +32,7 @@ export async function verifyAdminPasswordServer(password: string): Promise<boole
 
 async function requireAdmin(password: string) {
   if (!(await verifyAdminPasswordServer(password))) {
-    throw new Response("Unauthorized", { status: 401 });
+    throw new Error("Unauthorized");
   }
   return admin();
 }
@@ -264,7 +264,7 @@ export const listAccessCodes = createServerFn({ method: "POST" })
       .from("portal_access_codes")
       .select("id,code,kind,email,label,expires_at,revoked,created_at,use_count,last_used_at")
       .order("created_at", { ascending: false });
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     const now = Date.now();
     return (rows ?? []).map((r: any) => ({
       ...r,
@@ -294,7 +294,7 @@ export const listAccessUses = createServerFn({ method: "POST" })
       .eq("code_id", data.codeId)
       .order("used_at", { ascending: false })
       .limit(limit);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     return (rows ?? []) as AccessUse[];
   });
 
@@ -314,8 +314,8 @@ export const exportAccessUsesCsv = createServerFn({ method: "POST" })
       .select("id,code,kind,email,label,expires_at,revoked,created_at,use_count,last_used_at")
       .eq("id", data.codeId)
       .maybeSingle();
-    if (codeErr) throw new Response(codeErr.message, { status: 500 });
-    if (!codeRow) throw new Response("Code not found", { status: 404 });
+    if (codeErr) throw new Error(codeErr.message);
+    if (!codeRow) throw new Error("Code not found");
 
     const { data: rows, error } = await supabase
       .from("portal_access_uses")
@@ -323,7 +323,7 @@ export const exportAccessUsesCsv = createServerFn({ method: "POST" })
       .eq("code_id", data.codeId)
       .order("used_at", { ascending: false })
       .limit(5000);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
 
     const generatedAt = new Date().toISOString();
     const meta = [
@@ -366,7 +366,7 @@ export const exportAccessUsesCsv = createServerFn({ method: "POST" })
 function validateCode(code: string) {
   const trimmed = (code || "").trim();
   if (trimmed.length < 4 || trimmed.length > 64) {
-    throw new Response("Code must be 4-64 characters", { status: 400 });
+    throw new Error("Code must be 4-64 characters");
   }
   return trimmed;
 }
@@ -384,7 +384,7 @@ export const setMasterPassword = createServerFn({ method: "POST" })
       .eq("code", newCode)
       .maybeSingle();
     if (dup && !(dup.kind === data.kind && dup.revoked)) {
-      throw new Response("That code is already in use. Choose another.", { status: 400 });
+      throw new Error("That code is already in use. Choose another.");
     }
 
     // Revoke any existing active master code of this kind
@@ -399,7 +399,7 @@ export const setMasterPassword = createServerFn({ method: "POST" })
       kind: data.kind,
       label: data.kind === "admin" ? "Admin master password" : "Learner master password",
     });
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     return { ok: true, newCode };
   });
 
@@ -417,7 +417,7 @@ export const createSubscriptionCode = createServerFn({ method: "POST" })
     const supabase = await requireAdmin(data.password);
     const email = (data.email || "").trim().toLowerCase();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      throw new Response("Invalid email", { status: 400 });
+      throw new Error("Invalid email");
     }
     const days = Math.min(365, Math.max(1, Math.floor(data.days || 30)));
     const expires_at = new Date(Date.now() + days * 86400_000).toISOString();
@@ -447,7 +447,7 @@ export const createSubscriptionCode = createServerFn({ method: "POST" })
       })
       .select("id,code,email,expires_at")
       .single();
-    if (error) throw new Response(error.message, { status: 400 });
+    if (error) throw new Error(error.message);
     return inserted;
   });
 
@@ -459,7 +459,7 @@ export const revokeAccessCode = createServerFn({ method: "POST" })
       .from("portal_access_codes")
       .update({ revoked: true })
       .eq("id", data.id);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     return { ok: true };
   });
 
@@ -468,6 +468,6 @@ export const deleteAccessCode = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const supabase = await requireAdmin(data.password);
     const { error } = await supabase.from("portal_access_codes").delete().eq("id", data.id);
-    if (error) throw new Response(error.message, { status: 500 });
+    if (error) throw new Error(error.message);
     return { ok: true };
   });

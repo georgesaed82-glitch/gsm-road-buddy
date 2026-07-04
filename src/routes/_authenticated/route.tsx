@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_authenticated")({
     if (typeof window === "undefined") return;
 
     if (isAdminRoute) {
-      const unlocked = window.sessionStorage.getItem("admin_unlocked") === "1";
+      const unlocked = window.localStorage.getItem("admin_unlocked") === "1";
       if (!unlocked) throw redirect({ to: "/auth", search: { admin: 1 } });
       return;
     }

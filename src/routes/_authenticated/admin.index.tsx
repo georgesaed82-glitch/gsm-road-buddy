@@ -98,8 +98,8 @@ function AdminOverviewPage() {
     const status = (error as any)?.status ?? (error as any)?.response?.status;
     if (status === 401) {
       if (typeof window !== "undefined") {
-        window.sessionStorage.removeItem("admin_unlocked");
-        window.sessionStorage.removeItem("admin_password");
+        window.localStorage.removeItem("admin_unlocked");
+        window.localStorage.removeItem("admin_password");
       }
       navigate({ to: "/auth", search: { admin: 1 } });
     }
