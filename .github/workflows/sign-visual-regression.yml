@@ -53,6 +53,12 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: bun tests/visual/signvariants/test.ts
+      - name: Ensure visual artifacts exist
+        if: failure()
+        run: |
+          mkdir -p tests/visual/signvariants/current tests/visual/signvariants/diff
+          touch tests/visual/signvariants/current/.artifact-placeholder
+          touch tests/visual/signvariants/diff/.artifact-placeholder
       - name: Upload diffs on failure
         if: failure()
         uses: actions/upload-artifact@v4

@@ -25,6 +25,8 @@ const ROOT = resolve(__dirname, ".");
 const BASE = resolve(ROOT, "baseline", BROWSER);
 const CUR = resolve(ROOT, "current", BROWSER);
 const DIFF = resolve(ROOT, "diff", BROWSER);
+const FIXTURE_SVG_PATH = resolve(__dirname, "../../../public/sign-variant-fixture.svg");
+const FIXTURE_SVG = readFileSync(FIXTURE_SVG_PATH);
 
 for (const p of [BASE, CUR, DIFF]) {
   mkdirSync(p, { recursive: true });
@@ -87,21 +89,17 @@ function diffImages(aPath: string, bPath: string, outPath: string): DiffResult {
 }
 
 async function gridImageStates(page: Page) {
-  return page.$$eval(GRID_IMAGE_SELECTOR, (imgs) =>
+  return page.locator(GRID_IMAGE_SELECTOR).evaluateAll((imgs) =>
     imgs.map((img, index) => {
       const image = img as HTMLImageElement;
-      const rect = img.getBoundingClientRect();
-      const style = window.getComputedStyle(img);
+      const el = img as HTMLElement;
       return {
         index,
-        src: image.currentSrc || image.src,
-        alt: image.alt,
+        src: image.src,
         complete: image.complete,
         naturalWidth: image.naturalWidth,
         naturalHeight: image.naturalHeight,
-        renderedWidth: rect.width,
-        renderedHeight: rect.height,
-        visible: rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden",
+        visible: !!(el.offsetWidth || el.offsetHeight),
       };
     }),
   );
@@ -116,22 +114,22 @@ async function waitForGridImages(page: Page, viewName: string) {
   const images = page.locator(GRID_IMAGE_SELECTOR);
   await images.first().waitFor({ state: "visible", timeout: 30000 });
 
+  const imageStatus = await gridImageStates(page);
+  console.log("Variant image status:", imageStatus);
+
   try {
     await page.waitForFunction(
-      (selector) => {
-        const imgs = Array.from(document.querySelectorAll<HTMLImageElement>(selector));
-        const visibleImgs = imgs.filter((img) => {
-          const rect = img.getBoundingClientRect();
-          const style = window.getComputedStyle(img);
-          return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
-        });
+      () => {
+        const imgs = Array.from(document.querySelectorAll('[data-testid="variant-grid"] img'))
+          .filter((img) => {
+            const el = img as HTMLElement;
+            return !!(el.offsetWidth || el.offsetHeight);
+          }) as HTMLImageElement[];
 
-        return (
-          visibleImgs.length > 0 &&
-          visibleImgs.every((img) => img.complete && img.naturalWidth > 0 && img.naturalHeight > 0)
+        return imgs.length > 0 && imgs.every((img) =>
+          img.complete && img.naturalWidth > 0 && img.naturalHeight > 0,
         );
       },
-      GRID_IMAGE_SELECTOR,
       { timeout: 30000 },
     );
   } catch (err) {
@@ -155,6 +153,13 @@ async function main() {
       deviceScaleFactor: 1,
     });
     const page = await ctx.newPage();
+    await page.route("**/sign-variant-fixture.svg", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "image/svg+xml",
+        body: FIXTURE_SVG,
+      }),
+    );
     await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
     await page.evaluate(() => window.sessionStorage.setItem("portal_unlocked", "1"));
     await page.goto(`${BASE_URL}/dev/sign-variants`, { waitUntil: "networkidle" });
