@@ -409,6 +409,50 @@ function Section({
   );
 }
 
+function Collapse({
+  eyebrow,
+  icon,
+  tone,
+  title,
+  children,
+}: {
+  eyebrow: string;
+  icon: ReactNode;
+  tone: "default" | "accent" | "rule" | "george" | "warn" | "tip";
+  title: string;
+  children: ReactNode;
+}) {
+  const wrap = cn(
+    "group rounded-xl border shadow-sm overflow-hidden",
+    tone === "accent" && "border-accent/40 bg-accent/5",
+    tone === "rule" && "border-2 border-accent bg-accent/5",
+    tone === "george" && "border-l-4 border-accent bg-card",
+    tone === "warn" && "border-red-500/30 bg-red-500/5",
+    tone === "tip" && "border-emerald-500/30 bg-emerald-500/5",
+    tone === "default" && "border-border bg-card",
+  );
+  const eyebrowTone =
+    tone === "warn"
+      ? "text-red-500"
+      : tone === "tip"
+        ? "text-emerald-600"
+        : "text-accent";
+  return (
+    <details className={wrap}>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
+        <div className="min-w-0">
+          <div className={cn("flex items-center gap-2 text-[11px] uppercase tracking-[0.2em]", eyebrowTone)}>
+            {icon} {eyebrow}
+          </div>
+          <div className="mt-1 font-display text-base leading-snug">{title}</div>
+        </div>
+        <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="px-5 pb-5">{children}</div>
+    </details>
+  );
+}
+
 function ControlButton({
   onClick,
   label,
