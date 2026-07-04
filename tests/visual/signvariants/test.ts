@@ -128,10 +128,10 @@ async function main() {
     });
     // 3) all images inside the grid have finished loading
     await page.waitForFunction(
-      () => {
+      (selector) => {
         const imgs = Array.from(
           document.querySelectorAll<HTMLImageElement>(
-            GRID_IMAGE_SELECTOR,
+            selector,
           ),
         );
         return (
@@ -139,6 +139,7 @@ async function main() {
           imgs.every((img) => img.complete && img.naturalWidth > 0)
         );
       },
+      GRID_IMAGE_SELECTOR,
       { timeout: 30000 },
     );
     await page.waitForTimeout(300);
