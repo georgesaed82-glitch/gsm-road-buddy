@@ -1552,35 +1552,44 @@ function ClosedJunctionScene(t: number) {
 
 const closedJunction: Lesson = {
   slug: "closed-junction",
-  title: "Closed junction — plan to stop",
+  title: "Closed junction — you MUST stop",
   category: "Highway Code • Junctions",
   rule: "Rules 170–171",
   objective:
-    "Recognise a closed junction — where parked cars, hedges, walls or trees block your view — and use the Plan to Stop, Look to Go routine to leave safely.",
+    "Recognise a closed junction — where parked cars, hedges, walls or trees block your view — and understand that at a closed junction you MUST stop before you can decide anything.",
   think: [
     "What is blocking my view — parked cars, hedges, walls, trees?",
-    "Can I see left AND right from the give-way line? If no — I must creep.",
+    "Can I see left AND right from the give-way line? If no — I must STOP.",
     "Where do my eyes clear the hedge line?",
     "Have I stopped fully — or am I already rolling?",
     "If a car came now, could I still stop?",
   ],
-  ruleHeadline: "I cannot see — so I stop, then I creep, then I go.",
+  ruleHeadline: "Closed junction — you MUST stop. No exceptions.",
   ruleBullets: [
-    "Parked cars + hedges + fences = view is blocked",
-    "Stop fully at the give-way line — not roll through",
-    "Creep forward inch by inch until your eyes are past the obstruction",
+    "Parked cars + hedges + fences = view is blocked — the junction is closed",
+    "At a closed junction you MUST STOP fully — every time, no rolling",
+    "Once stopped, creep forward inch by inch until your eyes clear the obstruction",
     "Look BOTH ways twice — vehicles, cyclists, motorbikes, pedestrians",
-    "Only go when you know it is safe",
+    "Only go when you know it is safe — never on hope",
   ],
   why: (
     <>
-      <p>A closed junction is the most common place a new driver has a serious collision. You cannot borrow the priority of a road you cannot see.</p>
-      <p>The red cones in the diagram show exactly how much of the main road you cannot see from the give-way line. Everything hiding behind those cones — cyclists, motorbikes, cars — will arrive before you can react.</p>
-      <p>The fix is simple and safe: stop fully, then creep forward until your eyes clear the hedge. Then and only then do you make a decision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>You cannot borrow the priority of a road you cannot see. The red cones in the diagram show exactly how much of the main road is hidden — cyclists, motorbikes and cars are all in those blind wedges, and they will arrive before you can react. A closed junction is the most common place a new driver has a serious collision, so we remove the guesswork: we stop.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every single time the view is blocked — parked cars either side, tall hedges, walls, fences, a bend, poor light, or a "STOP" sign / solid white line at the mouth. If you cannot see cleanly both ways from your seat, treat it as closed and stop.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Approach in the correct gear, brakes covered, ready to stop.</li>
+        <li>STOP fully at the give-way line — car still, handbrake if needed.</li>
+        <li>Creep forward inch by inch until your EYES clear the hedge line.</li>
+        <li>Look right — look left — look right again. Cyclists, motorbikes, pedestrians.</li>
+        <li>Only when you have a genuine safe gap, ease off the clutch and go.</li>
+      </ol>
     </>
   ),
   georgeExplains:
-    "Look at all the stuff in your way — parked cars, tall hedges, trees, garden fences right up to the kerb. From behind the give-way line you cannot see left, you cannot see right. So we do not guess. We plan to stop. We stop. And now we creep. Inch by inch. The car creeps forward until your eyes — not the front of your car, your eyes — get past that hedge. Now you can see. Now, and only now, do you decide to go.",
+    "Look at all the stuff in your way — parked cars, tall hedges, trees, garden fences right up to the kerb. From behind the give-way line you cannot see left, you cannot see right. That is a closed junction, and at a closed junction there is no maybe — you MUST STOP. Full stop, wheels still. Now, and only now, you creep forward — inch by inch — until your eyes get past the hedge. When you can see, you decide. When it is safe, you go.",
   commonMistakes: [
     "Rolling through the give-way line without a proper stop",
     "Creeping too far too fast — car nose into moving traffic",
@@ -1589,28 +1598,28 @@ const closedJunction: Lesson = {
     "Pulling out on hope because 'nothing was coming last time'",
   ],
   gsmTips: [
-    "Plan to Stop, Look to Go — every closed junction, every time",
+    "Closed junction = full stop, every time — no exceptions",
     "Your EYES need to see, not the front of your bonnet",
     "Two full looks each way — a cyclist can appear in the gap between them",
     "If in doubt, stay stopped — the queue behind can wait",
     "Roof of the car opposite? Perfect creep marker",
   ],
   keyTakeaway:
-    "If you cannot see, you cannot go. Stop fully, creep until your eyes clear the hedge, then decide.",
+    "Closed junction — you MUST stop. Only after a full stop can you creep, look and go.",
   durationMs: 15000,
   captions: [
-    { at: 0, label: "Approaching — I can already see this is closed", detail: "Parked cars both sides, tall hedges, houses close to the road." },
-    { at: 0.35, label: "STOP at the give-way line", detail: "Full stop. Handbrake if I need it. I don't yet know it's safe." },
-    { at: 0.55, label: "Creep — inch forward", detail: "Move only until my eyes get past the hedge line." },
+    { at: 0, label: "Approaching — this is a CLOSED junction", detail: "Parked cars both sides, tall hedges, houses close to the road." },
+    { at: 0.35, label: "MUST STOP at the give-way line", detail: "Full stop — wheels still. No rolling into it." },
+    { at: 0.55, label: "Creep — inch forward until you can see", detail: "Move only until your eyes get past the hedge line." },
     { at: 0.82, label: "GO — safe gap confirmed", detail: "Only now does the car move properly onto the main road." },
   ],
   questions: [
     {
       at: 0.55,
-      prompt: "You've stopped at a closed junction but you still can't see. What do you do next?",
+      prompt: "You've arrived at a closed junction — hedges and parked cars block your view. What must you do?",
       options: [
-        { label: "Pull out slowly and hope oncoming drivers see you", explain: "No. Never pull out on hope — you cannot see cyclists, motorbikes or a fast approaching car." },
-        { label: "Creep forward inch by inch until your eyes clear the hedge, then decide", correct: true, explain: "Correct. That is Plan to Stop, Look to Go — creep, look properly, then commit." },
+        { label: "Slow to a crawl and roll straight out", explain: "No. A closed junction means you MUST stop — a rolling entry is guessing with your car." },
+        { label: "Come to a full STOP, then creep forward until your eyes clear the hedge, then go when safe", correct: true, explain: "Correct. Closed junction = full stop first. Then you creep, then you look, then you go." },
         { label: "Move over to the wrong side of the road to see better", explain: "Dangerous — you'd be blocking oncoming traffic and still not have priority." },
       ],
     },
