@@ -2152,6 +2152,77 @@ const planStopLookGo: Lesson = {
 // ─────────────────────────────────────────────────────────────
 // Lesson · Roundabouts (turning right — 3rd exit)
 // ─────────────────────────────────────────────────────────────
+// PLAN → STOP → LOOK → GO strip shown across the roundabout scene.
+function FormulaStrip({ t }: { t: number }) {
+  const steps = [
+    { key: "PLAN", from: 0.0, to: 0.15 },
+    { key: "STOP", from: 0.15, to: 0.32 },
+    { key: "LOOK", from: 0.32, to: 0.72 },
+    { key: "GO", from: 0.72, to: 1.0 },
+  ];
+  const activeIdx = steps.findIndex((s) => t >= s.from && t < s.to);
+  const w = 118;
+  const gap = 10;
+  const totalW = steps.length * w + (steps.length - 1) * gap;
+  const startX = (640 - totalW) / 2;
+  return (
+    <g transform="translate(0 8)">
+      {steps.map((s, i) => {
+        const active = i === activeIdx;
+        const x = startX + i * (w + gap);
+        return (
+          <g key={s.key} transform={`translate(${x} 0)`}>
+            <rect
+              width={w}
+              height={26}
+              rx={13}
+              fill={active ? "#f59e0b" : "#000"}
+              opacity={active ? 0.95 : 0.55}
+              stroke={active ? "#fff" : "transparent"}
+              strokeWidth={active ? 1 : 0}
+            />
+            <text
+              x={w / 2}
+              y={17}
+              textAnchor="middle"
+              fontSize={12}
+              fontWeight={800}
+              fill={active ? "#1a1a1c" : "#fff"}
+              fontFamily="sans-serif"
+              letterSpacing={2}
+            >
+              {s.key}
+            </text>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
+// BGL sub-strip active during the LOOK phase — Blockers → Gap → Look for opportunity.
+function BGLStrip({ t }: { t: number }) {
+  const steps: { letter: string; label: string; from: number; to: number }[] = [
+    { letter: "B", label: "Blockers — cyclist · van · bus · bike · horse", from: 0.0, to: 0.4 },
+    { letter: "G", label: "Gap — is there a safe gap?", from: 0.4, to: 0.7 },
+    { letter: "L", label: "Look — safe? legal? can I go?", from: 0.7, to: 1.0 },
+  ];
+  const activeIdx = steps.findIndex((s) => t >= s.from && t < s.to);
+  const active = steps[Math.max(0, activeIdx)];
+  return (
+    <g transform="translate(0 322)">
+      <rect x={90} y={0} width={460} height={30} rx={15} fill="#000" opacity={0.75} />
+      <circle cx={112} cy={15} r={11} fill="#22c55e" />
+      <text x={112} y={19} textAnchor="middle" fontSize={13} fontWeight={800} fill="#0a0a0a" fontFamily="sans-serif">
+        {active.letter}
+      </text>
+      <text x={132} y={19} fontSize={11} fill="#fff" fontFamily="sans-serif">
+        {active.label}
+      </text>
+    </g>
+  );
+}
+
 function RoundaboutScene(t: number) {
   // top-level scene begins
   // Top-down 4-arm roundabout. Ego enters from south (6 o'clock),
