@@ -1665,13 +1665,13 @@ function OpenJunctionScene(t: number) {
       <g>
         <rect x={12} y={12} width={210} height={54} rx={6} fill="#000" opacity={0.72} />
         <text x={22} y={30} fontSize={11} fill="#86efac" fontFamily="sans-serif" fontWeight={800}>OPEN JUNCTION</text>
-        <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">Good visibility</text>
-        <text x={22} y={60} fontSize={10} fill="#86efac" fontFamily="sans-serif">Proceed if safe</text>
+        <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">Visibility is open</text>
+        <text x={22} y={60} fontSize={10} fill="#86efac" fontFamily="sans-serif" fontWeight={800}>Coast through if safe</text>
       </g>
 
       <Hud
         label="PHASE"
-        value={t < 0.5 ? "Approach — look early both ways" : t < 0.85 ? "Decision made early — flow through" : "Emerging"}
+        value={t < 0.5 ? "Approach — look early both ways" : t < 0.85 ? "Visibility open — coast through" : "Emerging smoothly"}
         tone="good"
       />
     </svg>
@@ -1680,65 +1680,75 @@ function OpenJunctionScene(t: number) {
 
 const openJunction: Lesson = {
   slug: "open-junction",
-  title: "Open junction — decide early",
+  title: "Open junction — coast through if the view is clear",
   category: "Highway Code • Junctions",
   rule: "Rules 170–171",
   objective:
-    "Recognise an open junction — where the view is wide and clear — and make your decision early so you flow through smoothly instead of stopping unnecessarily.",
+    "Recognise an open junction — where the view is wide and unobstructed — and, as long as visibility stays open, coast smoothly through instead of stopping unnecessarily.",
   think: [
-    "Can I see cleanly in both directions well before the give-way line?",
+    "Can I truly see cleanly in BOTH directions well before the give-way line?",
     "Is the main road actually clear right now?",
     "Do I still need to slow down — or just adjust my speed?",
     "Am I still doing full mirror-signal-position checks?",
-    "Would I be embarrassed to stop here for no reason?",
+    "If the view suddenly closes (a van, a bend), am I ready to stop?",
   ],
-  ruleHeadline: "Open junction — Plan to Stop, Look to Go — but the LOOK happens early.",
+  ruleHeadline: "Open junction — as long as visibility stays open, you can coast through.",
   ruleBullets: [
-    "No parked cars, no tall hedges — visibility is wide",
+    "Open = no parked cars, no tall hedges — visibility is wide",
     "Look left and right well before the give-way line",
-    "Decide early — either commit to going, or plan to stop",
+    "If the view stays open and the road is clear, coast through — no need to stop",
     "Adjust speed smoothly — don't slam brakes just because it's a junction",
     "Still give way to any traffic that has priority",
+    "The moment visibility closes, treat it as a closed junction and stop",
   ],
   why: (
     <>
-      <p>Open junctions are where good drivers save fuel, brakes and time — and where nervous drivers hesitate unnecessarily.</p>
-      <p>The green cones show a wide, unblocked view. That means the LOOK stage can happen earlier — so the decision to go or to stop is already made long before your bumper reaches the give-way line.</p>
-      <p>Same routine, same rule (Plan to Stop, Look to Go) — the only difference is that here you've earned the right to flow.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>An open junction gives you back a big chunk of the main road with your eyes. The green cones show it — wide, unblocked, both ways. Stopping here for no reason wastes fuel, brakes and time and, worse, teaches you to freeze at every give-way line. If you can genuinely see, you have already done the work — you can coast through.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Only when the view is properly open: no parked cars near the mouth, no tall hedges, no walls or bends hiding the main road, no rain or low sun killing your view. The moment any of those change — you're treating it as closed again.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Read the junction early — parked cars? hedges? walls? Nothing? Good.</li>
+        <li>Mirrors, signal, position — full routine, same as any junction.</li>
+        <li>Look RIGHT and LEFT well before the give-way line, then look again.</li>
+        <li>If visibility stays open and the road is clear, ease off — do not brake harshly — and coast through in the correct gear.</li>
+        <li>If anything closes the view or a vehicle appears, stop at the line and treat it as a closed junction.</li>
+      </ol>
     </>
   ),
   georgeExplains:
-    "Same routine — Plan to Stop, Look to Go — but here I can see clearly. No parked cars, no big hedges, houses set well back. So my LOOK happens early. I check left and right long before I reach the line, and if it's clear, I keep the car flowing. If it isn't, I still plan to stop. That's the whole point — the plan is always to stop, the visibility just tells me how early I can decide to go.",
+    "This one's different — the view is wide open. No parked cars near the mouth, no big hedges, houses set well back. So I look early — right, left, right again — long before the line. And because I can genuinely see, and the road is clear, I don't need to stop. I ease off, stay smooth, and coast through in the right gear. The moment that view closes — a van pulls up, a bend hides the road — it stops being an open junction. Then I stop.",
   commonMistakes: [
     "Stopping unnecessarily and holding up traffic behind you",
-    "Only looking once, right at the line — too late to plan",
+    "Only looking once, right at the line — too late to coast safely",
     "Assuming 'open' means you don't have to give way",
-    "Rolling through when there's actually oncoming traffic",
+    "Coasting through when the view has quietly closed (van, bend, rain)",
     "Not scanning far enough down the main road",
   ],
   gsmTips: [
+    "Open visibility = you can coast through, no need to stop",
     "LOOK first, LINE second — decide early",
-    "Open = flow, but you still give way",
     "Two clean looks each way even when it seems clear",
     "Smooth throttle beats braking hard",
-    "Every junction is Plan to Stop, Look to Go",
+    "The moment the view closes — you stop",
   ],
   keyTakeaway:
-    "Open junctions reward early observation — same rule as a closed junction, but the LOOK lets you flow.",
+    "Open junction, open view — coast through. Closed view — stop. The road decides.",
   durationMs: 14000,
   captions: [
     { at: 0, label: "Approaching an OPEN junction", detail: "Wide view, no parked cars, houses set well back." },
-    { at: 0.35, label: "LOOK happens early", detail: "Green cones — I can already see both directions." },
-    { at: 0.7, label: "Decision made — flow through", detail: "Main road is clear, adjust speed and continue smoothly." },
+    { at: 0.35, label: "Look early — both ways, twice", detail: "Green cones — I can already see both directions." },
+    { at: 0.7, label: "Visibility open — coast through", detail: "Main road is clear, adjust speed and continue smoothly." },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "You approach an open junction. The view is wide, the main road is empty. Should you still stop?",
+      prompt: "You approach an open junction. The view is genuinely wide and the main road is empty. Should you stop?",
       options: [
-        { label: "Yes — every give-way means a full stop", explain: "No. Give-way means give priority. If the road is clearly empty and you looked properly, you can flow." },
-        { label: "No — decide early, adjust speed, flow if it's genuinely safe", correct: true, explain: "Correct. Same rule as a closed junction — Plan to Stop, Look to Go — but the wide view lets you make the decision to go earlier." },
-        { label: "No — accelerate through without looking", explain: "Never. Open doesn't mean skip the look. It means the look can happen earlier." },
+        { label: "Yes — every give-way means a full stop", explain: "No. Give-way means give priority, not always stop. With an open view and a clear road you can coast through." },
+        { label: "No — as long as visibility stays open and the road is clear, coast through smoothly", correct: true, explain: "Correct. Open junction, open view, clear road = coast through. If the view closes, you stop." },
+        { label: "No — accelerate through without looking", explain: "Never. Open doesn't mean skip the look. Look first, then coast." },
       ],
     },
   ],
