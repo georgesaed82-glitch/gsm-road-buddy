@@ -88,7 +88,10 @@ async function main() {
   const failures: string[] = [];
   const seeded: string[] = [];
   const launcher: BrowserType = { chromium, firefox, webkit }[BROWSER] as BrowserType;
-  const browser = await launcher.launch({ headless: true });
+  const browser = await launcher.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined,
+  });
   for (const [viewName, w, h] of VIEWS) {
     const ctx = await browser.newContext({
       viewport: { width: w, height: h },

@@ -79,7 +79,10 @@ async function main() {
   const failures: string[] = [];
   const browserName = (process.env.BROWSER || "chromium").toLowerCase();
   const launcher: BrowserType = { chromium, firefox, webkit }[browserName] as BrowserType;
-  const browser = await launcher.launch({ headless: true });
+  const browser = await launcher.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined,
+  });
   console.log(`Running section-order check on ${browserName}`);
   for (const [name, w, h] of VIEWPORTS) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h } });
