@@ -321,12 +321,14 @@ function Car2({
   color,
   braking,
   wipers,
+  indicator,
 }: {
   x: number;
   y: number;
   color: string;
   braking?: boolean;
   wipers?: boolean;
+  indicator?: "left" | "right" | null;
 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
@@ -341,6 +343,16 @@ function Car2({
         <line x1={7} y1={-6} x2={3} y2={6} stroke="#ddd" strokeWidth={0.8}>
           <animateTransform attributeName="transform" type="rotate" values="-15 5 0;15 5 0;-15 5 0" dur="0.8s" repeatCount="indefinite" />
         </line>
+      )}
+      {indicator === "right" && (
+        <circle cx={14} cy={0} r={1.5} fill="#ffb020">
+          <animate attributeName="opacity" values="1;0.2;1" dur="0.5s" repeatCount="indefinite" />
+        </circle>
+      )}
+      {indicator === "left" && (
+        <circle cx={-14} cy={0} r={1.5} fill="#ffb020">
+          <animate attributeName="opacity" values="1;0.2;1" dur="0.5s" repeatCount="indefinite" />
+        </circle>
       )}
     </g>
   );
