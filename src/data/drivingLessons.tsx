@@ -437,7 +437,229 @@ const twoSecondRule: Lesson = {
   render: TwoSecondRuleScene,
 };
 
-export const drivingLessons: Lesson[] = [speedAdjustment, twoSecondRule];
+// ─────────────────────────────────────────────────────────────
+// Lesson 3 · Approaching a zebra crossing
+// Horizontal road, ego (blue) approaches a zebra crossing on the
+// left. A pedestrian walks up to the kerb, waits, then steps onto
+// the crossing. The driver must brake progressively and stop
+// before the give-way triangles.
+// ─────────────────────────────────────────────────────────────
+function ZebraCrossingScene(t: number) {
+  const roadY = 200;
+  const crossingX = 420; // left edge of the zebra stripes
+  const crossingW = 80;
+
+  // Ego car: cruise → brake → stop at the give-way line by t≈0.6.
+  const stopX = crossingX - 24; // just before the crossing
+  const startX = -20;
+  let egoX: number;
+  if (t < 0.6) {
+    egoX = startX + (stopX - startX) * easeInOut(t / 0.6);
+  } else {
+    egoX = stopX; // held stopped
+  }
+  // Slight roll-forward release after the pedestrian has cleared (t > 0.9).
+  if (t > 0.9) {
+    const k = (t - 0.9) / 0.1;
+    egoX = stopX + easeInOut(k) * 60;
+  }
+  const braking = t > 0.2 && t < 0.62;
+
+  // Pedestrian: walks up to kerb, waits, steps onto crossing, crosses over.
+  // Kerb is at y=155 (top pavement), opposite kerb at y=245.
+  const pedX = crossingX + crossingW / 2;
+  let pedY: number;
+  if (t < 0.3) {
+    // walking along pavement toward the crossing
+    pedY = 140;
+  } else if (t < 0.5) {
+    // waiting at kerb
+    pedY = 152;
+  } else if (t < 0.9) {
+    // crossing over
+    const k = (t - 0.5) / 0.4;
+    pedY = 152 + easeInOut(k) * (248 - 152);
+  } else {
+    pedY = 250; // safely across
+  }
+  const pedWalkPhase = Math.sin(t * 40);
+
+  return (
+    <svg viewBox="0 0 640 360" className="h-full w-full">
+      <defs>
+        <linearGradient id="sky-zx" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#1a1a1c" />
+          <stop offset="1" stopColor="#111" />
+        </linearGradient>
+      </defs>
+      <rect width={640} height={360} fill="url(#sky-zx)" />
+      {/* Pavements */}
+      <rect x={0} y={130} width={640} height={30} fill="#5b5b60" />
+      <rect x={0} y={240} width={640} height={40} fill="#5b5b60" />
+      {/* Kerb lines */}
+      <line x1={0} y1={160} x2={640} y2={160} stroke="#8a8a90" strokeWidth={1} />
+      <line x1={0} y1={240} x2={640} y2={240} stroke="#8a8a90" strokeWidth={1} />
+      {/* Road */}
+      <rect x={0} y={160} width={640} height={80} fill="#2b2b2e" />
+      {/* Centre dashes only where there is no crossing */}
+      {Array.from({ length: 16 }).map((_, i) => {
+        const x = i * 40 + ((t * 40) % 40) - 40;
+        if (x + 20 > crossingX && x < crossingX + crossingW) return null;
+        return <rect key={i} x={x} y={198} width={20} height={4} fill={PAINT} />;
+      })}
+      {/* Zig-zag warning lines on approach (both sides) */}
+      <ZigZag y={164} startX={280} endX={crossingX - 4} />
+      <ZigZag y={236} startX={280} endX={crossingX - 4} />
+      <ZigZag y={164} startX={crossingX + crossingW + 4} endX={620} />
+      <ZigZag y={236} startX={crossingX + crossingW + 4} endX={620} />
+      {/* Zebra stripes */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <rect key={i} x={crossingX + i * 14} y={161} width={9} height={78} fill={PAINT} />
+      ))}
+      {/* Give-way triangles (dashed line before the stripes) */}
+      <line x1={crossingX - 6} y1={162} x2={crossingX - 6} y2={238} stroke={PAINT} strokeDasharray="4 3" strokeWidth={1.2} />
+      {/* Belisha beacons */}
+      <Belisha x={crossingX + 4} y={130} on={t % 1 < 0.5} />
+      <Belisha x={crossingX + crossingW - 4} y={280} on={t % 1 >= 0.5} />
+
+      {/* Ego car */}
+      <Car2 x={egoX} y={roadY} color="#2f6bf0" braking={braking} />
+
+      {/* Pedestrian */}
+      <g transform={`translate(${pedX} ${pedY})`}>
+        <circle r={3.2} cy={-6} fill="#f5d6a0" stroke="#1a1a1c" strokeWidth={0.4} />
+        <rect x={-3} y={-3} width={6} height={9} fill="#c8102e" />
+        <line x1={-1.5} y1={6} x2={-1.5 + pedWalkPhase * 1.5} y2={11} stroke="#1a1a1c" strokeWidth={1.2} />
+        <line x1={1.5} y1={6} x2={1.5 - pedWalkPhase * 1.5} y2={11} stroke="#1a1a1c" strokeWidth={1.2} />
+      </g>
+
+      {/* HUD */}
+      <g transform="translate(20 300)">
+        <rect width={200} height={44} rx={6} fill="#000" opacity={0.6} />
+        <text x={12} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">
+          ZEBRA CROSSING AHEAD
+        </text>
+        <text x={12} y={38} fontSize={16} fontWeight={700} fontFamily="sans-serif"
+          fill={t < 0.3 ? "#f5f5f0" : t < 0.6 ? "#f59e0b" : t < 0.9 ? "#ef4444" : "#22c55e"}
+        >
+          {t < 0.3 ? "Scan and slow" : t < 0.6 ? "Brake progressively" : t < 0.9 ? "Stopped — give way" : "Clear — move off"}
+        </text>
+      </g>
+    </svg>
+  );
+}
+
+function ZigZag({ y, startX, endX }: { y: number; startX: number; endX: number }) {
+  const step = 8;
+  const pts: string[] = [];
+  for (let x = startX; x <= endX; x += step) {
+    pts.push(`${x},${y}`);
+    pts.push(`${x + step / 2},${y + (pts.length % 2 === 0 ? -4 : 4)}`);
+  }
+  return <polyline points={pts.join(" ")} fill="none" stroke={PAINT} strokeWidth={1.4} />;
+}
+
+function Belisha({ x, y, on }: { x: number; y: number; on: boolean }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <rect x={-0.8} y={-14} width={1.6} height={28} fill="#e5e5e5" />
+      <circle r={4} cy={-16} fill={on ? "#ffb020" : "#5a3a00"} stroke="#1a1a1c" strokeWidth={0.5} />
+    </g>
+  );
+}
+
+const zebraCrossing: Lesson = {
+  slug: "zebra-crossing",
+  title: "Approaching a zebra crossing",
+  category: "Highway Code • Practical Driving Skills",
+  rule: "Rules 195, H2",
+  objective:
+    "Learn how to spot, approach and stop safely at a zebra crossing — and how to read pedestrian intent before you commit.",
+  think: [
+    "Can I see the crossing early — beacons, zig-zags, stripes?",
+    "Is there anyone on or near the kerb?",
+    "What is my speed, and can I stop smoothly if needed?",
+    "Is the vehicle behind me too close — do I need to warn them with brake lights early?",
+    "If I stop, will the crossing be clear before I move off?",
+  ],
+  ruleHeadline: "You MUST give way to anyone on the crossing — and be ready to stop for anyone waiting to cross.",
+  ruleBullets: [
+    "Look for the flashing yellow Belisha beacons and zig-zag lines on approach",
+    "Slow down and be prepared to stop — every time",
+    "Never overtake or park on the zig-zags",
+    "Don't wave pedestrians across — another vehicle may not have seen them",
+    "Once you've stopped, wait until the crossing is completely clear before moving off",
+  ],
+  why: (
+    <>
+      <p>
+        A zebra crossing gives pedestrians <strong>priority</strong>. If someone is on it — or clearly
+        about to step on — you MUST stop. This is not a courtesy, it's the law.
+      </p>
+      <p>
+        The zig-zag lines are your early warning. They exist so you have time to <em>see</em>, <em>slow</em>{" "}
+        and <em>stop</em> — not so you can carry on at full speed and brake hard at the last second.
+      </p>
+      <p>
+        A smooth, early stop keeps the driver behind safe too. Late, heavy braking is how rear-end
+        collisions and pedestrian near-misses happen.
+      </p>
+    </>
+  ),
+  georgeExplains:
+    "Beacons, zig-zags, stripes — that's your three-part warning. As soon as you see the beacons, take your foot off the accelerator, cover the brake and look for anyone near the kerb. That lady on the pavement is looking straight at the crossing — she's going to cross. Don't wait until she steps out to react. Slow now, stop early, wave nobody across, and only move off when the crossing is completely empty.",
+  commonMistakes: [
+    "Only looking at the crossing itself — ignoring people on the pavement",
+    "Waving pedestrians across (another car may not have seen them)",
+    "Overtaking on the approach or parking on the zig-zags",
+    "Braking hard at the last moment instead of slowing early",
+    "Moving off while the person is still on the last stripe",
+  ],
+  gsmTips: [
+    "See the beacons — ease off the gas",
+    "Cover the brake as soon as the zig-zags start",
+    "Watch the kerb, not just the crossing",
+    "Make eye contact — but don't beckon",
+    "Handbrake on if you're stopped for more than a second or two",
+  ],
+  keyTakeaway:
+    "Zebra crossings belong to the pedestrian. Your job is to see them early, stop smoothly and only move off when the crossing is completely clear.",
+  durationMs: 15000,
+  captions: [
+    { at: 0, label: "Beacons and zig-zags visible ahead", detail: "Ease off the accelerator — start scanning the pavement." },
+    { at: 0.25, label: "Pedestrian at the kerb", detail: "They're looking at the crossing — assume they will step on." },
+    { at: 0.5, label: "Decision point", detail: "What should you do now?" },
+    { at: 0.65, label: "Stopped at the give-way line", detail: "Handbrake on, watch the crossing." },
+    { at: 0.92, label: "Crossing clear — move off smoothly", detail: "Mirror check, release, gently away." },
+  ],
+  questions: [
+    {
+      at: 0.5,
+      prompt: "A pedestrian is waiting at the kerb of a zebra crossing, looking at it. What should you do?",
+      options: [
+        {
+          label: "Keep going — they haven't stepped on yet",
+          explain:
+            "No. Under the updated Highway Code (Rule H2) you should give way to a pedestrian waiting to cross — not just those already on the stripes.",
+        },
+        {
+          label: "Slow down and stop — let them cross",
+          correct: true,
+          explain:
+            "Correct. They're clearly waiting to cross. Slow smoothly, stop before the give-way line and let them cross. Only move off when the crossing is completely clear.",
+        },
+        {
+          label: "Beep to let them know you've seen them, then drive on",
+          explain:
+            "No. Sounding the horn to hurry or warn pedestrians is aggressive and against the Highway Code. Stop and let them cross.",
+        },
+      ],
+    },
+  ],
+  render: ZebraCrossingScene,
+};
+
+export const drivingLessons: Lesson[] = [speedAdjustment, twoSecondRule, zebraCrossing];
 
 export function getLesson(slug: string): Lesson | undefined {
   return drivingLessons.find((l) => l.slug === slug);
