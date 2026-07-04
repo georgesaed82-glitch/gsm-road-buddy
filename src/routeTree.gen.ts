@@ -41,6 +41,7 @@ import { Route as AuthenticatedGsmMethodRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDrivingClipsRouteImport } from './routes/_authenticated/driving-clips'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedDrivingClipsIndexRouteImport } from './routes/_authenticated/driving-clips.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedDrivingClipsSlugRouteImport } from './routes/_authenticated/driving-clips.$slug'
 import { Route as AuthenticatedAdminTrafficRouteImport } from './routes/_authenticated/admin.traffic'
@@ -218,6 +219,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDrivingClipsIndexRoute =
+  AuthenticatedDrivingClipsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDrivingClipsRoute,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -332,6 +339,7 @@ export interface FileRoutesByFullPath {
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/driving-clips/': typeof AuthenticatedDrivingClipsIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
@@ -345,7 +353,6 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/gsm-method': typeof AuthenticatedGsmMethodRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
@@ -376,6 +383,7 @@ export interface FileRoutesByTo {
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/driving-clips': typeof AuthenticatedDrivingClipsIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
@@ -423,6 +431,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/driving-clips/': typeof AuthenticatedDrivingClipsIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
@@ -470,6 +479,7 @@ export interface FileRouteTypes {
     | '/admin/traffic'
     | '/driving-clips/$slug'
     | '/admin/'
+    | '/driving-clips/'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -483,7 +493,6 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/dashboard'
-    | '/driving-clips'
     | '/gsm-method'
     | '/hazard-perception'
     | '/highway-code'
@@ -514,6 +523,7 @@ export interface FileRouteTypes {
     | '/admin/traffic'
     | '/driving-clips/$slug'
     | '/admin'
+    | '/driving-clips'
     | '/lovable/email/queue/process'
   id:
     | '__root__'
@@ -560,6 +570,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/traffic'
     | '/_authenticated/driving-clips/$slug'
     | '/_authenticated/admin/'
+    | '/_authenticated/driving-clips/'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
@@ -807,6 +818,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/driving-clips/': {
+      id: '/_authenticated/driving-clips/'
+      path: '/'
+      fullPath: '/driving-clips/'
+      preLoaderRoute: typeof AuthenticatedDrivingClipsIndexRouteImport
+      parentRoute: typeof AuthenticatedDrivingClipsRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
@@ -925,11 +943,13 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedDrivingClipsRouteChildren {
   AuthenticatedDrivingClipsSlugRoute: typeof AuthenticatedDrivingClipsSlugRoute
+  AuthenticatedDrivingClipsIndexRoute: typeof AuthenticatedDrivingClipsIndexRoute
 }
 
 const AuthenticatedDrivingClipsRouteChildren: AuthenticatedDrivingClipsRouteChildren =
   {
     AuthenticatedDrivingClipsSlugRoute: AuthenticatedDrivingClipsSlugRoute,
+    AuthenticatedDrivingClipsIndexRoute: AuthenticatedDrivingClipsIndexRoute,
   }
 
 const AuthenticatedDrivingClipsRouteWithChildren =
@@ -1002,13 +1022,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
