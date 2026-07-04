@@ -1873,8 +1873,18 @@ const overtaking: Lesson = {
   ],
   why: (
     <>
-      <p>Most overtakes gain you less than 30 seconds over an average journey. The cost of getting one wrong is a head-on collision.</p>
-      <p>Slightly slower traffic is not a reason to overtake — significantly slower traffic on a long, clear stretch is.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Most overtakes save you less than 30 seconds over an entire journey. The cost of getting one wrong is a head-on collision. Slightly slower traffic is <em>not</em> a reason to overtake — significantly slower traffic on a long, clear, legal stretch is.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Only when it is necessary, legal and safe: a clearly slower vehicle, a long clear view ahead, no solid white lines, no bends, brows, junctions, crossings or oncoming traffic within the overtake and its recovery.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Ask: do I actually NEED to overtake, or am I just impatient?</li>
+        <li>Position back a little — improve your view past the vehicle in front.</li>
+        <li>Mirrors, signal, look — commit only when the view is <em>fully</em> clear.</li>
+        <li>Overtake briskly using the power you have — no lingering alongside.</li>
+        <li>See the whole car in your interior mirror, signal left, return smoothly to the left.</li>
+      </ol>
     </>
   ),
   georgeExplains:
