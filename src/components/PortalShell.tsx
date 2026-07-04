@@ -55,13 +55,12 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
     return theoryActive;
   });
 
-  // (practicalActive not needed — active state is per-item on the link.)
-
-  // Auto-open when navigating into a theory page, but don't force-close
-  // when leaving — respect the user's explicit choice.
-  useEffect(() => {
-    if (theoryActive) setTheoryOpen(true);
-  }, [theoryActive]);
+  // Collapse-on-select behaviour:
+  // - Clicking a Theory sub-topic collapses the Theory group so the page
+  //   below fills the viewport with content instead of a long menu.
+  // - Clicking "Overview" re-opens the Theory group.
+  // We intentionally do NOT auto-open when landing on a theory page —
+  // that would fight the user's tap-to-collapse action.
 
   useEffect(() => {
     if (typeof window === "undefined") return;
