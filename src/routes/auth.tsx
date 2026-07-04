@@ -16,9 +16,10 @@ import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    admin: search.admin === 1 || search.admin === "1" ? 1 : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { admin?: 1 } => {
+    const isAdmin = search.admin === 1 || search.admin === "1";
+    return isAdmin ? { admin: 1 } : {};
+  },
   head: () => ({
     meta: [
       { title: "Learner portal coming soon | GSM Driving School" },
