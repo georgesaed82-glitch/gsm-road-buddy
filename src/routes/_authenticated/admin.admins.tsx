@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { supabase } from "@/integrations/supabase/client";
+import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,18 +22,13 @@ function AdminsPage() {
   const remove = useServerFn(removeAdmin);
   const [email, setEmail] = useState("");
 
-  const { data: me } = useQuery({
-    queryKey: ["me"],
-    queryFn: async () => (await supabase.auth.getUser()).data.user,
-  });
-
   const { data: admins, isLoading } = useQuery({
     queryKey: ["admins"],
-    queryFn: () => list(),
+    queryFn: () => list({ data: { password: getAdminPassword() } }),
   });
 
   const addMut = useMutation({
-    mutationFn: (e: string) => add({ data: { email: e } }),
+    mutationFn: (e: string) => add({ data: { email: e, password: getAdminPassword() } }),
     onSuccess: () => {
       toast.success("Admin added");
       setEmail("");
@@ -43,7 +38,7 @@ function AdminsPage() {
   });
 
   const removeMut = useMutation({
-    mutationFn: (user_id: string) => remove({ data: { user_id } }),
+    mutationFn: (user_id: string) => remove({ data: { user_id, password: getAdminPassword() } }),
     onSuccess: () => {
       toast.success("Admin removed");
       qc.invalidateQueries({ queryKey: ["admins"] });
