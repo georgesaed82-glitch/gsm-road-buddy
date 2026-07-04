@@ -1,8 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 
 const WINDOW_MINUTES = 15;
-const CAPTCHA_AFTER = 2; // require captcha after this many failures in window
-const LOCK_AFTER = 8;    // hard-lock identifier after this many failures in window
+// Keep the learner flow simple: only trigger captcha after many failures in
+// the window, and only lock out after clearly abusive attempts. Real students
+// mistyping a PIN a couple of times should never see a bot check.
+const CAPTCHA_AFTER = 15;
+const LOCK_AFTER = 25;
 
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
