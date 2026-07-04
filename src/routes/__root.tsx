@@ -255,9 +255,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col" suppressHydrationWarning>
         <Header />
-        <main className="flex-1">
+        <main className="flex-1" suppressHydrationWarning>
           <Outlet />
         </main>
         <Footer />
