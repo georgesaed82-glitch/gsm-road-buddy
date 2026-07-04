@@ -149,10 +149,10 @@ export const signs: Sign[] = [
   { id: "c-crossing-ahead", name: "Pedestrian crossing ahead (warning)", meaning: "The red-triangle warning for a pedestrian crossing ahead — figure walking over stripes.", category: "crossings", variant: { kind: "warning", symbol: "pedestrian-crossing" } },
   { id: "c-red-man", name: "Red man — do not cross", meaning: "Pedestrian signal showing the red standing figure. Do not start to cross.", category: "crossings", variant: { kind: "signal-crossing", state: "red-man" } },
   { id: "c-green-man", name: "Green man — cross now", meaning: "Pedestrian signal showing the green walking figure. Safe to cross, but keep watching for traffic.", category: "crossings", variant: { kind: "signal-crossing", state: "green-man" } },
-  { id: "c-pelican", name: "Pelican crossing", meaning: "Pedestrian-operated traffic lights. A flashing amber phase means give way to pedestrians still on the crossing.", category: "crossings", variant: { kind: "warning", symbol: "traffic-signals" } },
-  { id: "c-puffin", name: "Puffin crossing", meaning: "Sensor-controlled crossing. No flashing amber — stays red until the sensors detect that pedestrians are clear.", category: "crossings", variant: { kind: "warning", symbol: "pedestrians" } },
-  { id: "c-toucan", name: "Toucan crossing", meaning: "Shared crossing — pedestrians AND cyclists may cross together on green.", category: "crossings", variant: { kind: "warning", symbol: "cyclists" } },
-  { id: "c-pegasus", name: "Pegasus (equestrian) crossing", meaning: "For horse riders — higher control button and wider crossing area.", category: "crossings", variant: { kind: "warning", symbol: "horse" } },
+  { id: "c-pelican", name: "Pelican crossing", meaning: "Pedestrian-operated traffic lights with a flashing amber phase — during flashing amber you MUST give way to pedestrians still on the crossing, then may proceed if it is clear (Rule 196).", category: "crossings", variant: { kind: "signal-crossing", state: "green-man" } },
+  { id: "c-puffin", name: "Puffin crossing", meaning: "Sensor-controlled crossing with the red/green figure on the near side. No flashing amber — the lights stay red until sensors detect the crossing is clear (Rule 199).", category: "crossings", variant: { kind: "signal-crossing", state: "red-man" } },
+  { id: "c-toucan", name: "Toucan crossing", meaning: "Shared crossing for pedestrians AND cyclists — cyclists may ride across on green (Rule 199).", category: "crossings", variant: { kind: "signal-crossing", state: "green-man" } },
+  { id: "c-pegasus", name: "Pegasus (equestrian) crossing", meaning: "Signal-controlled crossing designed for horse riders — a higher push-button and a larger crossing area (Rule 199).", category: "crossings", variant: { kind: "signal-crossing", state: "green-man" } },
 ];
 
 export function signsByCategory(cat: SignCategory) {
