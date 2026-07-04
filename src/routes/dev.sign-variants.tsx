@@ -8,6 +8,7 @@ import { signs } from "@/data/signs";
 
 const SAMPLE_ID = "w-bend-right";
 const VARIANTS: SignImageVariant[] = ["thumb", "card", "feedback", "detail", "hero"];
+const TEST_SIGN_IMAGE_SRC = "/sign-variant-fixture.svg";
 
 function DevSignVariants() {
   const sample = signs.find((s) => s.id === SAMPLE_ID) ?? signs[0];
@@ -26,7 +27,12 @@ function DevSignVariants() {
             data-expected-size={SIGN_IMAGE_SIZES[v]}
             className="flex flex-col items-center gap-2"
           >
-            <OfficialSignImage sign={sample} variant={v} loading="eager" />
+            <OfficialSignImage
+              sign={sample}
+              variant={v}
+              imageSrc={TEST_SIGN_IMAGE_SRC}
+              loading="eager"
+            />
             <div className="text-xs text-gray-600">
               {v} · {SIGN_IMAGE_SIZES[v]}px
             </div>

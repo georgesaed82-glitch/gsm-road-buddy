@@ -10,7 +10,7 @@
  * Configure browser via BROWSER env var (default: chromium).
  */
 import { chromium, firefox, webkit } from "playwright";
-import type { Browser, BrowserType } from "playwright";
+import type { BrowserType, Page } from "playwright";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { PNG } from "pngjs";
 import { dirname, resolve } from "path";
@@ -46,7 +46,6 @@ const PIXEL_TOL = 12;
 const DIFF_BUDGET_RATIO = 0.02;
 const GRID_SELECTOR = '[data-testid="variant-grid"]';
 const GRID_IMAGE_SELECTOR = `${GRID_SELECTOR} img`;
-const GRID_VISUAL_SELECTOR = `${GRID_SELECTOR} img, ${GRID_SELECTOR} svg`;
 
 interface DiffResult {
   ok: boolean;
@@ -87,6 +86,61 @@ function diffImages(aPath: string, bPath: string, outPath: string): DiffResult {
   };
 }
 
+async function gridImageStates(page: Page) {
+  return page.$$eval(GRID_IMAGE_SELECTOR, (imgs) =>
+    imgs.map((img, index) => {
+      const image = img as HTMLImageElement;
+      const rect = img.getBoundingClientRect();
+      const style = window.getComputedStyle(img);
+      return {
+        index,
+        src: image.currentSrc || image.src,
+        alt: image.alt,
+        complete: image.complete,
+        naturalWidth: image.naturalWidth,
+        naturalHeight: image.naturalHeight,
+        renderedWidth: rect.width,
+        renderedHeight: rect.height,
+        visible: rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden",
+      };
+    }),
+  );
+}
+
+async function waitForGridImages(page: Page, viewName: string) {
+  await page.waitForSelector(GRID_SELECTOR, {
+    state: "visible",
+    timeout: 30000,
+  });
+
+  const images = page.locator(GRID_IMAGE_SELECTOR);
+  await images.first().waitFor({ state: "visible", timeout: 30000 });
+
+  try {
+    await page.waitForFunction(
+      (selector) => {
+        const imgs = Array.from(document.querySelectorAll<HTMLImageElement>(selector));
+        const visibleImgs = imgs.filter((img) => {
+          const rect = img.getBoundingClientRect();
+          const style = window.getComputedStyle(img);
+          return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+        });
+
+        return (
+          visibleImgs.length > 0 &&
+          visibleImgs.every((img) => img.complete && img.naturalWidth > 0 && img.naturalHeight > 0)
+        );
+      },
+      GRID_IMAGE_SELECTOR,
+      { timeout: 30000 },
+    );
+  } catch (err) {
+    console.error(`[${BROWSER}/${viewName}] variant-grid image states:`);
+    console.error(JSON.stringify(await gridImageStates(page), null, 2));
+    throw err;
+  }
+}
+
 async function main() {
   const failures: string[] = [];
   const seeded: string[] = [];
@@ -104,44 +158,7 @@ async function main() {
     await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
     await page.evaluate(() => window.sessionStorage.setItem("portal_unlocked", "1"));
     await page.goto(`${BASE_URL}/dev/sign-variants`, { waitUntil: "networkidle" });
-    // 1) grid visible
-    await page.waitForSelector(GRID_SELECTOR, {
-      state: "visible",
-      timeout: 30000,
-    });
-    // 2) at least one rendered sign visual is visible. WebKit may reject a
-    // hosted SVG and cause OfficialSignImage to fall back to inline SVG, so the
-    // readiness check accepts either the real <img> or the SVG fallback.
-    await page.waitForSelector(GRID_VISUAL_SELECTOR, {
-      state: "visible",
-      timeout: 30000,
-    });
-    // Scroll through page so `loading="lazy"` images below the fold start
-    // fetching in WebKit / Firefox, then return to the top for screenshots.
-    await page.evaluate(async () => {
-      const step = 200;
-      for (let y = 0; y < document.body.scrollHeight; y += step) {
-        window.scrollTo(0, y);
-        await new Promise((r) => setTimeout(r, 30));
-      }
-      window.scrollTo(0, 0);
-    });
-    // 3) all images inside the grid have finished loading
-    await page.waitForFunction(
-      (selector) => {
-        const imgs = Array.from(
-          document.querySelectorAll<HTMLImageElement>(
-            selector,
-          ),
-        );
-        return (
-          imgs.length === 0 ||
-          imgs.every((img) => img.complete && img.naturalWidth > 0)
-        );
-      },
-      GRID_IMAGE_SELECTOR,
-      { timeout: 30000 },
-    );
+    await waitForGridImages(page, viewName);
     await page.waitForTimeout(300);
 
     for (const v of VARIANTS) {
