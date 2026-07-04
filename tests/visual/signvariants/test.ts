@@ -101,8 +101,42 @@ async function main() {
     await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
     await page.evaluate(() => window.sessionStorage.setItem("portal_unlocked", "1"));
     await page.goto(`${BASE_URL}/dev/sign-variants`, { waitUntil: "networkidle" });
-    await page.waitForSelector('[data-testid="variant-grid"] img', { timeout: 15000 });
-    await page.waitForTimeout(800);
+    // 1) grid visible
+    await page.waitForSelector('[data-testid="variant-grid"]', {
+      state: "visible",
+      timeout: 30000,
+    });
+    // 2) at least one image attached
+    await page.waitForSelector('[data-testid="variant-grid"] img', {
+      state: "attached",
+      timeout: 30000,
+    });
+    // Scroll through page so `loading="lazy"` images below the fold start
+    // fetching in WebKit / Firefox, then return to the top for screenshots.
+    await page.evaluate(async () => {
+      const step = 200;
+      for (let y = 0; y < document.body.scrollHeight; y += step) {
+        window.scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 30));
+      }
+      window.scrollTo(0, 0);
+    });
+    // 3) all images inside the grid have finished loading
+    await page.waitForFunction(
+      () => {
+        const imgs = Array.from(
+          document.querySelectorAll<HTMLImageElement>(
+            '[data-testid="variant-grid"] img',
+          ),
+        );
+        return (
+          imgs.length > 0 &&
+          imgs.every((img) => img.complete && img.naturalWidth > 0)
+        );
+      },
+      { timeout: 30000 },
+    );
+    await page.waitForTimeout(300);
 
     for (const v of VARIANTS) {
       const sel = `[data-testid="variant-${v}"]`;
