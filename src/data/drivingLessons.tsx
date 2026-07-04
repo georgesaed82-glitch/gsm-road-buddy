@@ -2222,8 +2222,18 @@ const planStopLookGo: Lesson = {
   ],
   why: (
     <>
-      <p>Half of all junction incidents come from a driver who was moving too fast to actually observe, or who observed but never decided.</p>
-      <p>Planning to stop gives you the time to observe. Looking to go turns observation into a clean decision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Half of all junction incidents come from a driver who was going too fast to actually observe — or who observed but never decided. <strong>Plan to Stop</strong> buys you the time to see. <strong>Look to Go</strong> turns that seeing into a clean decision.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every give-way, T-junction, mini-roundabout, unmarked crossroad and blind emerge. If the view is closed, you stop. If the view is open, you still plan as if you might stop — then let the road decide.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li><strong>Plan</strong> — mirrors, signal, position, gear, brakes covered.</li>
+        <li><strong>Stop</strong> — arrive slowly enough that stopping is easy, not a rescue.</li>
+        <li><strong>Look</strong> — right, left, right again. Blockers, gap, opportunity (BGL).</li>
+        <li><strong>Go</strong> — only when the gap is genuine, not on hope.</li>
+        <li>If anything changes mid-look — a cyclist, a fast car, a closing van — re-stop and start again.</li>
+      </ol>
     </>
   ),
   georgeExplains:
