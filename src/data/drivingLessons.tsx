@@ -150,17 +150,18 @@ const speedAdjustment: Lesson = {
   ],
   why: (
     <>
-      <p>
-        The speed limit is the <strong>maximum legal speed in ideal conditions</strong> — it is not
-        the speed you must drive at.
-      </p>
-      <p>If traffic is travelling slower than the limit… follow the traffic.</p>
-      <p>If visibility is poor… reduce your speed.</p>
-      <p>If you are approaching a hazard… reduce your speed.</p>
-      <p>
-        The aim is to always leave yourself enough time to <strong>think</strong>,{" "}
-        <strong>react</strong> and <strong>stop</strong> safely.
-      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>The speed limit is the <strong>maximum legal speed in ideal conditions</strong> — not a target. Driving to the conditions is what actually keeps you (and everyone around you) safe. Rain, spray, low sun, heavy traffic, roadworks or a queue ahead all shorten the safe speed long before the number on the sign does.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every time the road ahead changes: weather, visibility, traffic flow, a hazard you can see coming, or a vehicle in front travelling slower than the limit. If in doubt, the answer is always to ease off first and reassess.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Look far ahead — read the road, weather and traffic well before you get there.</li>
+        <li>Match your speed to the slowest safe factor (flow, visibility, hazards).</li>
+        <li>Keep the two-second gap — bigger in rain, spray or poor light.</li>
+        <li>Adjust smoothly on the throttle — brakes are for correction, not planning.</li>
+        <li>Only return to the limit once conditions genuinely allow it.</li>
+      </ol>
     </>
   ),
   georgeExplains:
