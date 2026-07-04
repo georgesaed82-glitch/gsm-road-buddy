@@ -197,5 +197,8 @@ export const runDiagnostics = createServerFn({ method: "POST" })
       });
     }
 
-    return { results, ranAt: new Date().toISOString(), origin };
+    // Round-trip through JSON to strip anything non-serializable that leaked
+    // in from third-party SDK responses (Seroval otherwise fails step 3).
+    const safe = JSON.parse(JSON.stringify(results)) as CheckResult[];
+    return { results: safe, ranAt: new Date().toISOString(), origin };
   });
