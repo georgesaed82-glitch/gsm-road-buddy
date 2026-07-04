@@ -385,18 +385,18 @@ const twoSecondRule: Lesson = {
   ],
   why: (
     <>
-      <p>
-        Most rear-end collisions happen because the driver behind was too close to stop in time.
-        The gap in front of you is <strong>your thinking time and your braking distance</strong>.
-      </p>
-      <p>
-        In the dry, a good driver leaves at least 2 seconds. In the wet, tyres grip less and stopping
-        distances double — so the gap must double too.
-      </p>
-      <p>
-        A bigger gap also means you see more of the road ahead. You spot brake lights, hazards and
-        junctions earlier — which means smoother, calmer driving.
-      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>The gap in front of you is your <strong>thinking time and braking distance</strong>. Most rear-end shunts happen because the driver behind was simply too close to react. A proper gap also lets you <em>see</em> more — brake lights, hazards and junctions arrive early, so the whole drive gets smoother.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every single time you are following another vehicle — town, country or dual carriageway. Two seconds in the dry, four in the wet, more still in ice, spray or behind a large vehicle you can't see past.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Pick a fixed point (sign, drain, lamp post) as the car in front passes it.</li>
+        <li>Count "only a fool breaks the two-second rule" — you should finish after your car passes it.</li>
+        <li>If you finish before, you're too close — ease off, don't brake.</li>
+        <li>In rain, spray or low grip, double it: count it twice.</li>
+        <li>If a car cuts in, drop back and rebuild the gap — don't fight for it.</li>
+      </ol>
     </>
   ),
   georgeExplains:
