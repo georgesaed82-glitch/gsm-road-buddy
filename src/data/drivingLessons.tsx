@@ -2180,6 +2180,28 @@ const stretchVision: Lesson = {
     "Not scanning low enough to spot cyclists at the kerb",
     "Locking eyes on one hazard and losing the wider picture",
   ],
+  mistakes: [
+    {
+      wrong: "Staring at the bonnet of the car in front — 'chasing the bonnet'.",
+      why: "You react to their brake lights instead of the road. You brake late, follow too close and miss everything happening 100m ahead.",
+      right: "Look THROUGH and OVER the car in front. Use their windows if you can. Your eyes should live where they'll be in 8 seconds, not now.",
+    },
+    {
+      wrong: "Never lifting your gaze to signs and traffic lights.",
+      why: "You get surprised by red lights, missed turns and speed limits. Late information means late braking or a missed exit.",
+      right: "15% of your scan goes HIGH. Read every sign and light before you're under it — plan the phase, plan the lane.",
+    },
+    {
+      wrong: "Never dropping your gaze to the kerb and lane markings.",
+      why: "Cyclists sit at the kerb. Speed humps, wet paint and drain covers live low. Miss them and you swerve at the last second.",
+      right: "15% goes LOW. Sweep the kerb, the give-way lines, the paint. Once per scan, then eyes back up and forward.",
+    },
+    {
+      wrong: "Locking eyes on one hazard — a cyclist, a bus, a pedestrian — until they're gone.",
+      why: "Tunnel vision means everything else moves without you seeing it. The next hazard is already forming while you stare at the last one.",
+      right: "Note the hazard, keep the eyes moving. Come back to it — don't camp on it.",
+    },
+  ],
   gsmTips: [
     "15% high, 70% ahead, 15% low",
     "Eyes moving, not staring",
