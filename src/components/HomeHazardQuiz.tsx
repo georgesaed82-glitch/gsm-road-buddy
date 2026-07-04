@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, XCircle, RotateCcw, ArrowRight, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { hazardQuestions, type HazardQuestion } from "@/data/hazardQuiz";
@@ -20,7 +20,14 @@ function buildSet(): HazardQuestion[] {
 }
 
 export function HomeHazardQuiz() {
-  const [set, setSet] = useState<HazardQuestion[]>(buildSet);
+  // Use a deterministic initial slice so SSR HTML matches the first client
+  // render, then shuffle after mount to keep the quiz varied across sessions.
+  const [set, setSet] = useState<HazardQuestion[]>(() =>
+    hazardQuestions.slice(0, QUIZ_LENGTH),
+  );
+  useEffect(() => {
+    setSet(buildSet());
+  }, []);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [score, setScore] = useState(0);
