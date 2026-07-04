@@ -783,8 +783,18 @@ const goingUphill: Lesson = {
   ],
   why: (
     <>
-      <p>Gravity is constantly trying to slow you down on a hill. If you wait until the speedo has already dropped, you're playing catch-up.</p>
-      <p>Smooth early acceleration keeps the car in the right gear, keeps you at a safe following distance, and stops you being an obstacle for the driver behind.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Gravity is constantly pulling your speed down on an uphill. If you wait for the speedo to sag you're already playing catch-up — the engine strains, you drop out of the flow, and the driver behind starts to close in.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Any noticeable incline — motorway climbs, country lane rises, even a gentle town gradient. The steeper the hill, the earlier you plan.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Read the hill early — decide the gear before you get to it.</li>
+        <li>Feed in more accelerator on the approach, not once the speed has dropped.</li>
+        <li>If the engine strains, change down — smooth power, no jerk.</li>
+        <li>Keep to the left, keep the gap ahead, don't crawl and hold up traffic.</li>
+        <li>Ease off before the crest — the view opens suddenly, and something may be waiting.</li>
+      </ol>
     </>
   ),
   georgeExplains:
