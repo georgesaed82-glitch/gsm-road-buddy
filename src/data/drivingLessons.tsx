@@ -1119,8 +1119,18 @@ const laneDiscipline: Lesson = {
   ],
   why: (
     <>
-      <p>Middle-lane hogging is one of the biggest causes of frustration and dangerous overtaking on UK dual carriageways.</p>
-      <p>The left lane is your lane, whatever speed you're doing. Overtake, return, repeat.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>Middle-lane hogging is one of the biggest causes of frustration and dangerous overtaking on UK dual carriageways. The left lane is <strong>your lane</strong>, whatever your speed — the other lanes exist purely to overtake and return.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>All the time on a dual carriageway or motorway: default to the left. Move out only to overtake something slower, then move back once you've passed and there's a clear gap.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Mirrors — check well before you move.</li>
+        <li>Signal right in good time — don't drift silently across.</li>
+        <li>Move out only when there's a clear, safe gap.</li>
+        <li>Overtake decisively — no lingering alongside.</li>
+        <li>Once you can see the whole car you've passed in your interior mirror, signal left and return to the left lane.</li>
+      </ol>
     </>
   ),
   georgeExplains:
