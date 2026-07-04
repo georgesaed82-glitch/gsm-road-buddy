@@ -2288,6 +2288,12 @@ function RoundaboutScene(t: number) {
       <text x={620} y={cy - 46} textAnchor="end" fontSize={10} fill="#fff" opacity={0.7} fontFamily="sans-serif">1st exit — left</text>
 
       <Hud label="PHASE" value={phase} tone={t < 0.32 ? "warn" : t > 0.75 ? "good" : "info"} />
+
+      {/* GSM formula strip — PLAN → STOP → LOOK → GO */}
+      <FormulaStrip t={t} />
+
+      {/* BGL overlay when LOOK is active */}
+      {t >= 0.2 && t < 0.6 && <BGLStrip t={(t - 0.2) / 0.4} />}
     </svg>
   );
 }
