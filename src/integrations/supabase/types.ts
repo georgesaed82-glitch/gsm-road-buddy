@@ -1281,6 +1281,60 @@ export type Database = {
         }
         Relationships: []
       }
+      theory_questions: {
+        Row: {
+          category: string
+          correct_index: number
+          created_at: string
+          difficulty: string
+          explanation: string
+          id: string
+          image_path: string | null
+          is_published: boolean
+          option_explanations: string[]
+          options: string[]
+          question: string
+          sort_order: number
+          source_id: string | null
+          tags: string[]
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          correct_index?: number
+          created_at?: string
+          difficulty?: string
+          explanation?: string
+          id?: string
+          image_path?: string | null
+          is_published?: boolean
+          option_explanations?: string[]
+          options: string[]
+          question: string
+          sort_order?: number
+          source_id?: string | null
+          tags?: string[]
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          correct_index?: number
+          created_at?: string
+          difficulty?: string
+          explanation?: string
+          id?: string
+          image_path?: string | null
+          is_published?: boolean
+          option_explanations?: string[]
+          options?: string[]
+          question?: string
+          sort_order?: number
+          source_id?: string | null
+          tags?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_mistakes: {
         Row: {
           created_at: string

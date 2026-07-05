@@ -1,17 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listTheoryOverrides, type TheoryOverrideRow } from "@/lib/theory-overrides.functions";
+import { listPublicTheoryQuestions, type TheoryQuestionRow } from "@/lib/theory-cms.functions";
 import type { TheoryQuestion } from "@/data/theory";
 
+// Backwards-compatible hook: applies CMS edits to built-in questions by matching source_id.
 export function useTheoryOverrides() {
-  const fn = useServerFn(listTheoryOverrides);
+  const fn = useServerFn(listPublicTheoryQuestions);
   const q = useQuery({
-    queryKey: ["theory-overrides"],
+    queryKey: ["theory-questions-public"],
     queryFn: () => fn(),
     staleTime: 60_000,
   });
-  const map = new Map<string, TheoryOverrideRow>();
-  for (const row of q.data ?? []) map.set(row.question_id, row);
+  const map = new Map<string, TheoryQuestionRow>();
+  for (const row of q.data ?? []) if (row.source_id) map.set(row.source_id, row);
   return {
     isLoading: q.isLoading,
     apply: (questions: TheoryQuestion[]): TheoryQuestion[] =>

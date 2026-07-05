@@ -27,7 +27,7 @@ const items = [
   { to: "/admin/access", label: "Access codes", icon: KeyRound },
   { to: "/admin/email", label: "Email settings", icon: Mail },
   { to: "/admin/hazard-videos", label: "Hazard videos", icon: Film },
-  { to: "/admin/theory", label: "Edit theory", icon: BookOpen },
+  { to: "/admin/theory", label: "Theory questions CMS", icon: BookOpen },
   { to: "/admin/content", label: "Signs, markings & Highway Code", icon: SignpostBig },
   { to: "/admin/blocks", label: "George's methods & reviews", icon: Sparkles },
   { to: "/admin/diagnostics", label: "Diagnostics", icon: Activity },
