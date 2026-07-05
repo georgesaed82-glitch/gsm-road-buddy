@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { verifyAdminPasswordServer } from "./portal-access.functions";
+import type { Json } from "@/integrations/supabase/types";
 
 export type HomeSectionStatus = "draft" | "published" | "hidden";
 
@@ -19,7 +20,7 @@ export type HomeSectionRow = {
   cta_secondary_href: string;
   background: string;
   layout: string;
-  extra: Record<string, unknown>;
+  extra: Json;
   status: HomeSectionStatus;
   show_web: boolean;
   show_app: boolean;
@@ -46,7 +47,7 @@ function toRow(r: Record<string, unknown>): HomeSectionRow {
     cta_secondary_href: (r.cta_secondary_href as string) ?? "",
     background: (r.background as string) ?? "default",
     layout: (r.layout as string) ?? "default",
-    extra: ((r.extra as Record<string, unknown> | null) ?? {}) as Record<string, unknown>,
+    extra: (r.extra as Json) ?? ({} as Json),
     status: ((r.status as string) ?? "published") as HomeSectionStatus,
     show_web: (r.show_web as boolean) ?? true,
     show_app: (r.show_app as boolean) ?? true,
@@ -100,7 +101,7 @@ const sectionInput = z.object({
   cta_secondary_href: z.string().default(""),
   background: z.string().default("default"),
   layout: z.string().default("default"),
-  extra: z.record(z.string(), z.unknown()).default({}),
+  extra: z.any().default({}),
   status: z.enum(["draft", "published", "hidden"]).default("draft"),
   show_web: z.boolean().default(true),
   show_app: z.boolean().default(true),
@@ -114,7 +115,7 @@ export const createHomeSection = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("home_sections")
-      .insert(data.section)
+      .insert(data.section as never)
       .select(SELECT_COLS)
       .single();
     if (error) throw new Error(error.message);
@@ -130,7 +131,7 @@ export const updateHomeSection = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("home_sections")
-      .update(data.patch)
+      .update(data.patch as never)
       .eq("id", data.id)
       .select(SELECT_COLS)
       .single();
