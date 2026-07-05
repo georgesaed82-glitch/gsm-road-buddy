@@ -68,22 +68,40 @@ export const listContentOverrides = createServerFn({ method: "GET" }).handler(
     if (error) throw new Error(error.message);
     const rows = (data ?? []) as Array<Omit<ContentOverrideRow, "image_url">>;
 
-    // Batch-sign every image_path in one pass.
-    const paths = rows.map((r) => r.image_path).filter((p): p is string => !!p);
+    // Batch-sign every image_path in one pass — row-level AND block-level.
+    const paths = new Set<string>();
+    for (const r of rows) {
+      if (r.image_path) paths.add(r.image_path);
+      const blocks = (r.data as OverrideData | null)?.blocks;
+      if (blocks) for (const b of blocks) if (b.image_path) paths.add(b.image_path);
+    }
     const signedMap = new Map<string, string>();
-    if (paths.length) {
+    if (paths.size) {
       const { data: signed } = await supabaseAdmin.storage
         .from("content-images")
-        .createSignedUrls(paths, SIGNED_URL_TTL);
+        .createSignedUrls([...paths], SIGNED_URL_TTL);
       for (const s of signed ?? []) {
         if (s.path && s.signedUrl) signedMap.set(s.path, s.signedUrl);
       }
     }
 
-    return rows.map((r) => ({
-      ...r,
-      image_url: r.image_path ? signedMap.get(r.image_path) ?? null : null,
-    }));
+    return rows.map((r) => {
+      const data = r.data as OverrideData | null;
+      const nextData: OverrideData | null = data?.blocks
+        ? {
+            ...data,
+            blocks: data.blocks.map((b) => ({
+              ...b,
+              image_url: b.image_path ? signedMap.get(b.image_path) ?? null : b.image_url ?? null,
+            })),
+          }
+        : data;
+      return {
+        ...r,
+        data: nextData,
+        image_url: r.image_path ? signedMap.get(r.image_path) ?? null : null,
+      };
+    });
   },
 );
 
