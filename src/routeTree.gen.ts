@@ -61,6 +61,7 @@ import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminPoliceSignalsRouteImport } from './routes/_authenticated/admin.police-signals'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin.lessons'
+import { Route as AuthenticatedAdminLegalRouteImport } from './routes/_authenticated/admin.legal'
 import { Route as AuthenticatedAdminInstructorsRouteImport } from './routes/_authenticated/admin.instructors'
 import { Route as AuthenticatedAdminHomeRouteImport } from './routes/_authenticated/admin.home'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
@@ -355,6 +356,11 @@ const AuthenticatedAdminLessonsRoute =
     path: '/lessons',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminLegalRoute = AuthenticatedAdminLegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminInstructorsRoute =
   AuthenticatedAdminInstructorsRouteImport.update({
     id: '/instructors',
@@ -506,6 +512,7 @@ export interface FileRoutesByFullPath {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
@@ -575,6 +582,7 @@ export interface FileRoutesByTo {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
@@ -647,6 +655,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/_authenticated/admin/home': typeof AuthenticatedAdminHomeRoute
   '/_authenticated/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/_authenticated/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
@@ -719,6 +728,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/home'
     | '/admin/instructors'
+    | '/admin/legal'
     | '/admin/lessons'
     | '/admin/navigation'
     | '/admin/police-signals'
@@ -788,6 +798,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/home'
     | '/admin/instructors'
+    | '/admin/legal'
     | '/admin/lessons'
     | '/admin/navigation'
     | '/admin/police-signals'
@@ -859,6 +870,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/hazard-videos'
     | '/_authenticated/admin/home'
     | '/_authenticated/admin/instructors'
+    | '/_authenticated/admin/legal'
     | '/_authenticated/admin/lessons'
     | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/police-signals'
@@ -1267,6 +1279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLessonsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/legal': {
+      id: '/_authenticated/admin/legal'
+      path: '/legal'
+      fullPath: '/admin/legal'
+      preLoaderRoute: typeof AuthenticatedAdminLegalRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/instructors': {
       id: '/_authenticated/admin/instructors'
       path: '/instructors'
@@ -1406,6 +1425,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
   AuthenticatedAdminHomeRoute: typeof AuthenticatedAdminHomeRoute
   AuthenticatedAdminInstructorsRoute: typeof AuthenticatedAdminInstructorsRoute
+  AuthenticatedAdminLegalRoute: typeof AuthenticatedAdminLegalRoute
   AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPoliceSignalsRoute: typeof AuthenticatedAdminPoliceSignalsRoute
@@ -1439,6 +1459,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
   AuthenticatedAdminHomeRoute: AuthenticatedAdminHomeRoute,
   AuthenticatedAdminInstructorsRoute: AuthenticatedAdminInstructorsRoute,
+  AuthenticatedAdminLegalRoute: AuthenticatedAdminLegalRoute,
   AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPoliceSignalsRoute: AuthenticatedAdminPoliceSignalsRoute,
