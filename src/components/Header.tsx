@@ -15,8 +15,9 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
+import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
 
-const navLinks = [
+const DEFAULT_NAV_LINKS = [
   { to: "/about", label: "About" },
   { to: "/services", label: "Practical" },
   { to: "/pricing", label: "Pricing" },
@@ -78,6 +79,11 @@ export function Header() {
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
+  const { business } = useSiteSettings();
+  const { items: dbNav } = useNavItems("header");
+  const navLinks = dbNav.length > 0 ? dbNav.map((n) => ({ to: n.href, label: n.label })) : DEFAULT_NAV_LINKS;
+  const whatsappHref = `https://wa.me/${business.phone_intl}`;
+  const emailHref = `mailto:${business.email}`;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
@@ -101,10 +107,8 @@ export function Header() {
         <Link to="/" className="flex items-center gap-3 text-primary">
           <Monogram />
           <div className="leading-tight">
-            <div className="font-display text-[17px] font-semibold tracking-tight">GSM Driving School</div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              George's School of Motoring · Established 2005
-            </div>
+            <div className="font-display text-[17px] font-semibold tracking-tight">{business.name}</div>
+            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{business.tagline}</div>
           </div>
         </Link>
 
@@ -158,24 +162,24 @@ export function Header() {
         <div className="flex items-center gap-3">
           <div className="hidden flex-col items-end md:flex">
             <a
-              href="https://wa.me/447961585231"
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="WhatsApp 07961 585231"
+              aria-label={`WhatsApp ${business.phone}`}
               onClick={() => trackContactClick("whatsapp", "Header (desktop)")}
               className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
             >
               <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
-              <span>07961 585231</span>
+              <span>{business.phone}</span>
             </a>
             <a
-              href="mailto:gsmdrivingschool@outlook.com"
-              aria-label="Email gsmdrivingschool@outlook.com"
+              href={emailHref}
+              aria-label={`Email ${business.email}`}
               onClick={() => trackContactClick("email", "Header (desktop)")}
               className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary"
             >
               <Mail className="h-3.5 w-3.5 text-accent" />
-              <span>gsmdrivingschool@outlook.com</span>
+              <span>{business.email}</span>
             </a>
           </div>
           {isAuthed ? (
@@ -202,10 +206,8 @@ export function Header() {
                 <Link to="/" className="flex items-center gap-3 text-primary" onClick={() => setOpen(false)}>
                   <Monogram />
                   <div className="leading-tight">
-                    <span className="font-display text-lg font-semibold">GSM Driving School</span>
-                    <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      George's School of Motoring · Established 2005
-                    </div>
+                    <span className="font-display text-lg font-semibold">{business.name}</span>
+                    <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{business.tagline}</div>
                   </div>
                 </Link>
                 <nav className="flex flex-col">
@@ -290,24 +292,24 @@ export function Header() {
                     </Button>
                   )}
                   <a
-                    href="https://wa.me/447961585231"
+                    href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="WhatsApp 07961 585231"
+                    aria-label={`WhatsApp ${business.phone}`}
                     onClick={() => trackContactClick("whatsapp", "Header (mobile)")}
                     className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
                   >
                     <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
-                    <span>WhatsApp 07961 585231</span>
+                    <span>WhatsApp {business.phone}</span>
                   </a>
                   <a
-                    href="mailto:gsmdrivingschool@outlook.com"
-                    aria-label="Email gsmdrivingschool@outlook.com"
+                    href={emailHref}
+                    aria-label={`Email ${business.email}`}
                     onClick={() => trackContactClick("email", "Header (mobile)")}
                     className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground hover:text-primary"
                   >
                     <Mail className="h-3.5 w-3.5 text-accent" />
-                    <span>gsmdrivingschool@outlook.com</span>
+                    <span>{business.email}</span>
                   </a>
                 </div>
               </div>

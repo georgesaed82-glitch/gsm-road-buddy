@@ -401,6 +401,75 @@ export type Database = {
         }
         Relationships: []
       }
+      nav_items: {
+        Row: {
+          enabled: boolean
+          href: string
+          icon: string | null
+          id: string
+          label: string
+          location: string
+          order_index: number
+          updated_at: string
+        }
+        Insert: {
+          enabled?: boolean
+          href: string
+          icon?: string | null
+          id?: string
+          label: string
+          location: string
+          order_index?: number
+          updated_at?: string
+        }
+        Update: {
+          enabled?: boolean
+          href?: string
+          icon?: string | null
+          id?: string
+          label?: string
+          location?: string
+          order_index?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      page_seo: {
+        Row: {
+          canonical_override: string | null
+          description: string | null
+          noindex: boolean
+          og_description: string | null
+          og_image_path: string | null
+          og_title: string | null
+          route: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          canonical_override?: string | null
+          description?: string | null
+          noindex?: boolean
+          og_description?: string | null
+          og_image_path?: string | null
+          og_title?: string | null
+          route: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          canonical_override?: string | null
+          description?: string | null
+          noindex?: boolean
+          og_description?: string | null
+          og_image_path?: string | null
+          og_title?: string | null
+          route?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       page_views: {
         Row: {
           created_at: string
@@ -631,6 +700,24 @@ export type Database = {
           platform?: string | null
           session_id?: string | null
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
         }
         Relationships: []
       }

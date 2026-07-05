@@ -45,7 +45,10 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedDrivingClipsSlugRouteImport } from './routes/_authenticated/driving-clips.$slug'
 import { Route as AuthenticatedAdminTrafficRouteImport } from './routes/_authenticated/admin.traffic'
 import { Route as AuthenticatedAdminTheoryRouteImport } from './routes/_authenticated/admin.theory'
+import { Route as AuthenticatedAdminSiteSettingsRouteImport } from './routes/_authenticated/admin.site-settings'
+import { Route as AuthenticatedAdminSeoRouteImport } from './routes/_authenticated/admin.seo'
 import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_authenticated/admin.pwa-installs'
+import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
 import { Route as AuthenticatedAdminErrorsRouteImport } from './routes/_authenticated/admin.errors'
 import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
@@ -244,10 +247,27 @@ const AuthenticatedAdminTheoryRoute =
     path: '/theory',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminSiteSettingsRoute =
+  AuthenticatedAdminSiteSettingsRouteImport.update({
+    id: '/site-settings',
+    path: '/site-settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSeoRoute = AuthenticatedAdminSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminPwaInstallsRoute =
   AuthenticatedAdminPwaInstallsRouteImport.update({
     id: '/pwa-installs',
     path: '/pwa-installs',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminNavigationRoute =
+  AuthenticatedAdminNavigationRouteImport.update({
+    id: '/navigation',
+    path: '/navigation',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminHazardVideosRoute =
@@ -351,7 +371,10 @@ export interface FileRoutesByFullPath {
   '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
+  '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
+  '/admin/seo': typeof AuthenticatedAdminSeoRoute
+  '/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
@@ -398,7 +421,10 @@ export interface FileRoutesByTo {
   '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
+  '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
+  '/admin/seo': typeof AuthenticatedAdminSeoRoute
+  '/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
@@ -448,7 +474,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
   '/_authenticated/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
+  '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
+  '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
+  '/_authenticated/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
   '/_authenticated/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/_authenticated/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
@@ -498,7 +527,10 @@ export interface FileRouteTypes {
     | '/admin/email'
     | '/admin/errors'
     | '/admin/hazard-videos'
+    | '/admin/navigation'
     | '/admin/pwa-installs'
+    | '/admin/seo'
+    | '/admin/site-settings'
     | '/admin/theory'
     | '/admin/traffic'
     | '/driving-clips/$slug'
@@ -545,7 +577,10 @@ export interface FileRouteTypes {
     | '/admin/email'
     | '/admin/errors'
     | '/admin/hazard-videos'
+    | '/admin/navigation'
     | '/admin/pwa-installs'
+    | '/admin/seo'
+    | '/admin/site-settings'
     | '/admin/theory'
     | '/admin/traffic'
     | '/driving-clips/$slug'
@@ -594,7 +629,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/email'
     | '/_authenticated/admin/errors'
     | '/_authenticated/admin/hazard-videos'
+    | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/pwa-installs'
+    | '/_authenticated/admin/seo'
+    | '/_authenticated/admin/site-settings'
     | '/_authenticated/admin/theory'
     | '/_authenticated/admin/traffic'
     | '/_authenticated/driving-clips/$slug'
@@ -875,11 +913,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminTheoryRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/site-settings': {
+      id: '/_authenticated/admin/site-settings'
+      path: '/site-settings'
+      fullPath: '/admin/site-settings'
+      preLoaderRoute: typeof AuthenticatedAdminSiteSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/seo': {
+      id: '/_authenticated/admin/seo'
+      path: '/seo'
+      fullPath: '/admin/seo'
+      preLoaderRoute: typeof AuthenticatedAdminSeoRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/pwa-installs': {
       id: '/_authenticated/admin/pwa-installs'
       path: '/pwa-installs'
       fullPath: '/admin/pwa-installs'
       preLoaderRoute: typeof AuthenticatedAdminPwaInstallsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/navigation': {
+      id: '/_authenticated/admin/navigation'
+      path: '/navigation'
+      fullPath: '/admin/navigation'
+      preLoaderRoute: typeof AuthenticatedAdminNavigationRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/hazard-videos': {
@@ -965,7 +1024,10 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
   AuthenticatedAdminErrorsRoute: typeof AuthenticatedAdminErrorsRoute
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
+  AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPwaInstallsRoute: typeof AuthenticatedAdminPwaInstallsRoute
+  AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
+  AuthenticatedAdminSiteSettingsRoute: typeof AuthenticatedAdminSiteSettingsRoute
   AuthenticatedAdminTheoryRoute: typeof AuthenticatedAdminTheoryRoute
   AuthenticatedAdminTrafficRoute: typeof AuthenticatedAdminTrafficRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -981,7 +1043,10 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
   AuthenticatedAdminErrorsRoute: AuthenticatedAdminErrorsRoute,
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
+  AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPwaInstallsRoute: AuthenticatedAdminPwaInstallsRoute,
+  AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
+  AuthenticatedAdminSiteSettingsRoute: AuthenticatedAdminSiteSettingsRoute,
   AuthenticatedAdminTheoryRoute: AuthenticatedAdminTheoryRoute,
   AuthenticatedAdminTrafficRoute: AuthenticatedAdminTrafficRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -1068,13 +1133,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
