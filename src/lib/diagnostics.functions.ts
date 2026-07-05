@@ -88,13 +88,22 @@ export const runDiagnostics = createServerFn({ method: "POST" })
     // loops, and catches the actual failure mode (a missing/renamed route).
     try {
       const { getRouter } = await import("@/router");
-      const router = getRouter();
+      const router = getRouter() as unknown as {
+        routesByPath?: Record<string, { fullPath?: string; path?: string; id?: string }>;
+        routesById?: Record<string, { fullPath?: string; path?: string; id?: string }>;
+      };
       const registered = new Set<string>();
-      const flat = (router as unknown as { flatRoutes?: Array<{ fullPath?: string; path?: string }> }).flatRoutes ?? [];
-      for (const r of flat) {
-        if (r.fullPath) registered.add(r.fullPath);
-        if (r.path) registered.add(r.path);
-      }
+      const collect = (rec?: Record<string, { fullPath?: string; path?: string; id?: string }>) => {
+        if (!rec) return;
+        for (const key of Object.keys(rec)) registered.add(key);
+        for (const r of Object.values(rec)) {
+          if (r.fullPath) registered.add(r.fullPath);
+          if (r.path) registered.add(r.path);
+          if (r.id) registered.add(r.id);
+        }
+      };
+      collect(router.routesByPath);
+      collect(router.routesById);
       // Normalise: treat "/" and "" equivalently; strip trailing slashes.
       const has = (p: string) => {
         if (registered.has(p)) return true;
