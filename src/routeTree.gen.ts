@@ -44,6 +44,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedDrivingClipsSlugRouteImport } from './routes/_authenticated/driving-clips.$slug'
 import { Route as AuthenticatedAdminTrafficRouteImport } from './routes/_authenticated/admin.traffic'
+import { Route as AuthenticatedAdminTheoryRouteImport } from './routes/_authenticated/admin.theory'
 import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_authenticated/admin.pwa-installs'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
 import { Route as AuthenticatedAdminErrorsRouteImport } from './routes/_authenticated/admin.errors'
@@ -235,6 +236,12 @@ const AuthenticatedAdminTrafficRoute =
     path: '/traffic',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminTheoryRoute =
+  AuthenticatedAdminTheoryRouteImport.update({
+    id: '/theory',
+    path: '/theory',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminPwaInstallsRoute =
   AuthenticatedAdminPwaInstallsRouteImport.update({
     id: '/pwa-installs',
@@ -329,6 +336,7 @@ export interface FileRoutesByFullPath {
   '/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
+  '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -373,6 +381,7 @@ export interface FileRoutesByTo {
   '/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
+  '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -420,6 +429,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/_authenticated/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
+  '/_authenticated/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/_authenticated/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -467,6 +477,7 @@ export interface FileRouteTypes {
     | '/admin/errors'
     | '/admin/hazard-videos'
     | '/admin/pwa-installs'
+    | '/admin/theory'
     | '/admin/traffic'
     | '/driving-clips/$slug'
     | '/admin/'
@@ -511,6 +522,7 @@ export interface FileRouteTypes {
     | '/admin/errors'
     | '/admin/hazard-videos'
     | '/admin/pwa-installs'
+    | '/admin/theory'
     | '/admin/traffic'
     | '/driving-clips/$slug'
     | '/admin'
@@ -557,6 +569,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/errors'
     | '/_authenticated/admin/hazard-videos'
     | '/_authenticated/admin/pwa-installs'
+    | '/_authenticated/admin/theory'
     | '/_authenticated/admin/traffic'
     | '/_authenticated/driving-clips/$slug'
     | '/_authenticated/admin/'
@@ -829,6 +842,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminTrafficRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/theory': {
+      id: '/_authenticated/admin/theory'
+      path: '/theory'
+      fullPath: '/admin/theory'
+      preLoaderRoute: typeof AuthenticatedAdminTheoryRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/pwa-installs': {
       id: '/_authenticated/admin/pwa-installs'
       path: '/pwa-installs'
@@ -904,6 +924,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminErrorsRoute: typeof AuthenticatedAdminErrorsRoute
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
   AuthenticatedAdminPwaInstallsRoute: typeof AuthenticatedAdminPwaInstallsRoute
+  AuthenticatedAdminTheoryRoute: typeof AuthenticatedAdminTheoryRoute
   AuthenticatedAdminTrafficRoute: typeof AuthenticatedAdminTrafficRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -917,6 +938,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminErrorsRoute: AuthenticatedAdminErrorsRoute,
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
   AuthenticatedAdminPwaInstallsRoute: AuthenticatedAdminPwaInstallsRoute,
+  AuthenticatedAdminTheoryRoute: AuthenticatedAdminTheoryRoute,
   AuthenticatedAdminTrafficRoute: AuthenticatedAdminTrafficRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
