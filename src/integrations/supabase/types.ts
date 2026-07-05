@@ -214,6 +214,45 @@ export type Database = {
           },
         ]
       }
+      brand_assets: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          height: number | null
+          id: string
+          kind: string
+          name: string
+          tags: string[]
+          updated_at: string
+          url: string
+          width: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          height?: number | null
+          id?: string
+          kind?: string
+          name: string
+          tags?: string[]
+          updated_at?: string
+          url: string
+          width?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          height?: number | null
+          id?: string
+          kind?: string
+          name?: string
+          tags?: string[]
+          updated_at?: string
+          url?: string
+          width?: number | null
+        }
+        Relationships: []
+      }
       contact_clicks: {
         Row: {
           channel: string
@@ -1197,6 +1236,30 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      theme_settings: {
+        Row: {
+          draft: Json
+          id: number
+          published: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          draft?: Json
+          id: number
+          published?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          draft?: Json
+          id?: number
+          published?: Json
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
