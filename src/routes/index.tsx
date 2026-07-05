@@ -141,7 +141,7 @@ function HeroSection({ s }: SectionProps) {
             <div className="flex text-accent">
               {Array.from({ length: 5 }).map((_, i) => (<Star key={i} className="h-4 w-4 fill-accent" />))}
             </div>
-            <span className="text-sm text-muted-foreground">5.0 from 143 Google reviews</span>
+            <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
             {or(s.body, "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.")}
@@ -280,7 +280,7 @@ function RecentPassSection({ s }: SectionProps) {
               <div className="flex text-accent">
                 {Array.from({ length: 5 }).map((_, i) => (<Star key={i} className="h-4 w-4 fill-accent" />))}
               </div>
-              <span className="text-sm text-muted-foreground">5.0 from 143 Google reviews</span>
+              <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
             </a>
           </div>
         </div>
