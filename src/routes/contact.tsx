@@ -7,6 +7,7 @@ import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { BookingForm } from "@/components/BookingForm";
 import { trackContactClick } from "@/lib/trackContactClick";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -29,17 +30,18 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
 });
 
-const hours = [
-  { day: "Monday", time: "7:00 – 20:00" },
-  { day: "Tuesday", time: "7:00 – 21:00" },
-  { day: "Wednesday", time: "7:00 – 21:00" },
-  { day: "Thursday", time: "7:00 – 20:30" },
-  { day: "Friday", time: "7:00 – 20:00" },
-  { day: "Saturday", time: "7:00 – 18:00" },
-  { day: "Sunday", time: "Closed" },
-];
+const DAY_LABELS: Record<string, string> = {
+  mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday", fri: "Friday", sat: "Saturday", sun: "Sunday",
+};
 
 function ContactPage() {
+  const { business, social, opening_hours } = useSiteSettings();
+  const hours = (["mon","tue","wed","thu","fri","sat","sun"] as const)
+    .filter((k) => opening_hours[k])
+    .map((k) => ({ day: DAY_LABELS[k], time: opening_hours[k] }));
+  const waHref = `https://wa.me/${business.phone_intl}`;
+  const telHref = `tel:+${business.phone_intl}`;
+  const mailHref = `mailto:${business.email}`;
   return (
     <div className="flex flex-col">
       <section className="bg-secondary/40 py-16">
@@ -64,53 +66,49 @@ function ContactPage() {
               <CardContent className="grid gap-3 sm:grid-cols-2">
                 <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">
                   <a
-                    href="https://wa.me/447961585231"
+                    href={waHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")}
                   >
                     <WhatsAppIcon className="h-5 w-5" />
-                    WhatsApp 07961 585231
+                    WhatsApp {business.phone}
                   </a>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="h-14 w-full justify-center gap-2 rounded-none">
                   <a
-                    href="tel:+447961585231"
+                    href={telHref}
                     onClick={() => trackContactClick("phone", "Contact page – instant CTA")}
                   >
                     <Phone className="h-5 w-5" />
-                    Call 07961 585231
+                    Call {business.phone}
                   </a>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="h-14 w-full justify-center gap-2 rounded-none">
                   <a
-                    href="mailto:gsmdrivingschool@outlook.com"
+                    href={mailHref}
                     onClick={() => trackContactClick("email", "Contact page – instant CTA")}
                   >
                     <Mail className="h-5 w-5" />
-                    gsmdrivingschool@outlook.com
+                    {business.email}
                   </a>
                 </Button>
-                <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] text-white hover:opacity-90">
-                  <a
-                    href="https://www.instagram.com/gsm_driving_school_"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <InstagramBrandIcon className="h-5 w-5" />
-                    Follow us on Instagram
-                  </a>
-                </Button>
-                <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#1877F2] text-white hover:bg-[#166fe5] sm:col-span-2">
-                  <a
-                    href="https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FacebookBrandIcon className="h-5 w-5" />
-                    Follow us on Facebook
-                  </a>
-                </Button>
+                {social.instagram && (
+                  <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] text-white hover:opacity-90">
+                    <a href={social.instagram} target="_blank" rel="noopener noreferrer">
+                      <InstagramBrandIcon className="h-5 w-5" />
+                      Follow us on Instagram
+                    </a>
+                  </Button>
+                )}
+                {social.facebook && (
+                  <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#1877F2] text-white hover:bg-[#166fe5] sm:col-span-2">
+                    <a href={social.facebook} target="_blank" rel="noopener noreferrer">
+                      <FacebookBrandIcon className="h-5 w-5" />
+                      Follow us on Facebook
+                    </a>
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
@@ -153,29 +151,21 @@ function ContactPage() {
                   <div>
                     <p className="font-medium text-foreground">Address</p>
                     <p className="text-sm text-muted-foreground">
-                      71 Sandbourne House, Dartmouth Close, London W11 1DS
+                      {business.address}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">Areas covered</p>
-                    <p className="text-sm text-muted-foreground">
-                      Notting Hill Gate · Holland Park · High Street Kensington · Bayswater
-                    </p>
-                  </div>
-                </div>
+                <AreasCovered />
                 <div className="flex items-start gap-3">
                   <Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                   <div>
                     <p className="font-medium text-foreground">Email</p>
                     <a
-                      href="mailto:gsmdrivingschool@outlook.com"
+                      href={mailHref}
                       onClick={() => trackContactClick("email", "Contact page – details")}
                       className="text-sm text-muted-foreground hover:text-foreground"
                     >
-                      gsmdrivingschool@outlook.com
+                      {business.email}
                     </a>
                   </div>
                 </div>
@@ -184,13 +174,13 @@ function ContactPage() {
                   <div>
                     <p className="font-medium text-foreground">WhatsApp</p>
                     <a
-                      href="https://wa.me/447961585231"
+                      href={waHref}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackContactClick("whatsapp", "Contact page – details")}
                       className="text-sm text-muted-foreground hover:text-foreground"
                     >
-                      07961 585231
+                      {business.phone}
                     </a>
                   </div>
                 </div>
@@ -199,6 +189,20 @@ function ContactPage() {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+function AreasCovered() {
+  const { footer } = useSiteSettings();
+  if (!footer.areas_covered) return null;
+  return (
+    <div className="flex items-start gap-3">
+      <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+      <div>
+        <p className="font-medium text-foreground">Areas covered</p>
+        <p className="text-sm text-muted-foreground">{footer.areas_covered}</p>
+      </div>
     </div>
   );
 }
