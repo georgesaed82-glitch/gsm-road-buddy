@@ -1,0 +1,57 @@
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { useMemo } from "react";
+import { listSiteSettings, listNavItems, type NavItemRow } from "@/lib/cms.functions";
+
+export type BusinessInfo = {
+  name: string;
+  tagline: string;
+  phone: string;
+  phone_intl: string;
+  email: string;
+  address: string;
+};
+export type SocialLinks = { facebook: string; instagram: string; tiktok: string; youtube: string };
+export type OpeningHours = Record<"mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun", string>;
+
+const DEFAULT_BUSINESS: BusinessInfo = {
+  name: "GSM Driving School",
+  tagline: "George's School of Motoring · Established 2005",
+  phone: "07961 585231",
+  phone_intl: "447961585231",
+  email: "gsmdrivingschool@outlook.com",
+  address: "",
+};
+const DEFAULT_SOCIAL: SocialLinks = { facebook: "", instagram: "", tiktok: "", youtube: "" };
+const DEFAULT_HOURS: OpeningHours = { mon: "", tue: "", wed: "", thu: "", fri: "", sat: "", sun: "" };
+
+export function useSiteSettings() {
+  const fn = useServerFn(listSiteSettings);
+  const q = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: () => fn(),
+    staleTime: 5 * 60_000,
+  });
+  return useMemo(() => {
+    const map = new Map((q.data ?? []).map((r) => [r.key, r.value] as const));
+    const business = { ...DEFAULT_BUSINESS, ...(map.get("business") as Partial<BusinessInfo> | undefined) };
+    const social = { ...DEFAULT_SOCIAL, ...(map.get("social") as Partial<SocialLinks> | undefined) };
+    const opening_hours = { ...DEFAULT_HOURS, ...(map.get("opening_hours") as Partial<OpeningHours> | undefined) };
+    const footer = (map.get("footer") as { copy?: string; disclaimer?: string } | undefined) ?? {};
+    return { business, social, opening_hours, footer, isLoading: q.isLoading };
+  }, [q.data, q.isLoading]);
+}
+
+export function useNavItems(location: NavItemRow["location"]) {
+  const fn = useServerFn(listNavItems);
+  const q = useQuery({
+    queryKey: ["nav-items"],
+    queryFn: () => fn(),
+    staleTime: 5 * 60_000,
+  });
+  const items = useMemo(
+    () => (q.data ?? []).filter((r) => r.location === location && r.enabled).sort((a, b) => a.order_index - b.order_index),
+    [q.data, location],
+  );
+  return { items, isLoading: q.isLoading };
+}
