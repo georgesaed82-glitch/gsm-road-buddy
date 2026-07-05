@@ -69,9 +69,9 @@ function RoadSignsPage() {
       </div>
 
       {mode === "learn" ? (
-        <LearnGrid pool={pool} overrideFor={(id) => get("sign", id)?.image_url ?? null} />
+        <LearnGrid pool={pool} overrideFor={imageFor} />
       ) : (
-        <QuizRunner pool={pool} key={group} overrideFor={(id) => get("sign", id)?.image_url ?? null} />
+        <QuizRunner pool={pool} key={group} overrideFor={imageFor} />
       )}
     </PortalShell>
   );
