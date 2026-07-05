@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Users, Award, Heart, UserCheck, Star, Sun, Headphones } from "lucide-react";
+import { usePageBlocks } from "@/hooks/usePageBlocks";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -24,59 +25,79 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
 });
 
-const values = [
+const DEFAULT_VALUES = [
   {
-    icon: Shield,
-    title: "Safety first",
+    id: "safety-first",
+    name: "Safety first",
     description: "We teach defensive habits that keep you safe long after you pass.",
   },
   {
-    icon: Heart,
-    title: "Patient teaching",
+    id: "patient-teaching",
+    name: "Patient teaching",
     description: "Every learner is different. We adapt to your pace and confidence level.",
   },
   {
-    icon: Users,
-    title: "Local expertise",
+    id: "local-expertise",
+    name: "Local expertise",
     description: "Our instructors know the local test routes and road conditions.",
   },
   {
-    icon: Award,
-    title: "High standards",
+    id: "high-standards",
+    name: "High standards",
     description: "All instructors are certified and regularly assessed for quality.",
   },
 ];
 
-const keyPoints = [
-  { icon: UserCheck, title: "DVSA-Approved Instructors" },
-  { icon: Star, title: "High Pass Rate & Proven Results" },
-  { icon: Sun, title: "Flexible Lessons to Suit You" },
-  { icon: Headphones, title: "Patient, Friendly & Supportive" },
-];
+const VALUE_ICONS: Record<string, typeof Shield> = {
+  "safety-first": Shield,
+  "patient-teaching": Heart,
+  "local-expertise": Users,
+  "high-standards": Award,
+};
 
-const faqs = [
+const DEFAULT_KEY_POINTS = [
+  { id: "dvsa-approved", name: "DVSA-Approved Instructors" },
+  { id: "pass-rate", name: "High Pass Rate & Proven Results" },
+  { id: "flexible", name: "Flexible Lessons to Suit You" },
+  { id: "friendly", name: "Patient, Friendly & Supportive" },
+];
+const KEY_POINT_ICONS: Record<string, typeof UserCheck> = {
+  "dvsa-approved": UserCheck,
+  "pass-rate": Star,
+  "flexible": Sun,
+  "friendly": Headphones,
+};
+
+const DEFAULT_FAQS = [
   {
-    question: "How many lessons will I need?",
-    answer:
+    id: "how-many-lessons",
+    name: "How many lessons will I need?",
+    description:
       "It depends on your experience. We normally recommend beginners take around 45 hours of lessons plus 20 hours of practice outside of lessons with friends or family. If you are partly experienced, we usually suggest around 25 hours, and if you are already experienced, around 18 hours should be enough to get you ready for a first-time pass.",
   },
   {
-    question: "Do you offer automatic lessons?",
-    answer: "Yes — we offer both automatic and manual lessons. Please check with your instructor to confirm what car and transmission they will be using for your lessons.",
+    id: "automatic-lessons",
+    name: "Do you offer automatic lessons?",
+    description: "Yes — we offer both automatic and manual lessons. Please check with your instructor to confirm what car and transmission they will be using for your lessons.",
   },
   {
-    question: "Can I pick my instructor?",
-    answer:
+    id: "pick-instructor",
+    name: "Can I pick my instructor?",
+    description:
       "Absolutely. During booking you can choose an instructor by location, availability, and teaching style.",
   },
   {
-    question: "What happens if I need to cancel?",
-    answer:
+    id: "cancel-policy",
+    name: "What happens if I need to cancel?",
+    description:
       "You can reschedule or cancel up to 48 hours before your lesson through your student dashboard.",
   },
 ];
 
 function AboutPage() {
+  const values = usePageBlocks("about-values", DEFAULT_VALUES);
+  const keyPoints = usePageBlocks("about-key-points", DEFAULT_KEY_POINTS);
+  const faqs = usePageBlocks("about-faqs", DEFAULT_FAQS);
   return (
     <div className="flex flex-col">
       <section className="bg-secondary/40 py-16">
@@ -112,10 +133,11 @@ function AboutPage() {
           </h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {keyPoints.map((point) => {
-              const titleId = point.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              const Icon = KEY_POINT_ICONS[point.id] ?? UserCheck;
+              const titleId = point.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
               return (
                 <Card
-                  key={point.title}
+                  key={point.id}
                   role="group"
                   tabIndex={0}
                   aria-labelledby={titleId}
@@ -123,10 +145,10 @@ function AboutPage() {
                 >
                   <CardContent className="p-6">
                     <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
-                      <point.icon className="h-5 w-5" aria-hidden="true" />
+                      <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <h3 id={titleId} className="font-display text-lg font-semibold">
-                      {point.title}
+                      {point.name}
                     </h3>
                   </CardContent>
                 </Card>
@@ -142,17 +164,20 @@ function AboutPage() {
             Our values
           </h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map((value) => (
-              <Card key={value.title} className="border-border bg-background">
+            {values.map((value) => {
+              const Icon = VALUE_ICONS[value.id] ?? Shield;
+              return (
+              <Card key={value.id} className="border-border bg-background">
                 <CardContent className="p-6">
                   <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
-                    <value.icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="font-display text-lg font-semibold">{value.title}</h3>
+                  <h3 className="font-display text-lg font-semibold">{value.name}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{value.description}</p>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -164,9 +189,9 @@ function AboutPage() {
           </h2>
           <div className="mt-10 space-y-4">
             {faqs.map((faq) => (
-              <div key={faq.question} className="rounded-xl border border-border bg-card p-5">
-                <h3 className="font-display font-semibold text-foreground">{faq.question}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{faq.answer}</p>
+              <div key={faq.id} className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-display font-semibold text-foreground">{faq.name}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{faq.description}</p>
               </div>
             ))}
           </div>
