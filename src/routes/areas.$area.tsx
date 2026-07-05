@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin, Star } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
+import { useSiteRating } from "@/hooks/useSiteRating";
 import { areas, getArea, type AreaPage } from "@/data/areas";
 import { listAreas } from "@/lib/local-content.functions";
 
@@ -114,6 +115,7 @@ export const Route = createFileRoute("/areas/$area")({
 
 function AreaPage() {
   const a = Route.useLoaderData() as AreaPage;
+  const rating = useSiteRating();
 
   return (
     <div className="flex flex-col">
@@ -128,7 +130,7 @@ function AreaPage() {
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{a.intro}</p>
           <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
             <Star className="h-4 w-4 fill-accent text-accent" />
-            <span>Rated 5.0 from 143 Google reviews</span>
+            <span>Rated {rating.rating.toFixed(1)} from {rating.review_count} Google reviews</span>
           </div>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button asChild size="lg" className="rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">

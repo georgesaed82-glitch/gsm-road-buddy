@@ -12,6 +12,8 @@ import { HomeTheoryQuiz } from "@/components/HomeTheoryQuiz";
 
 import { trackContactClick } from "@/lib/trackContactClick";
 import { listPublicHomeSections, type HomeSectionRow } from "@/lib/home-cms.functions";
+import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
+import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
@@ -26,7 +28,8 @@ import g8 from "@/assets/gallery/gsm-gallery-8.jpg.asset.json";
 import g9 from "@/assets/gallery/gsm-gallery-9.jpg.asset.json";
 import g10 from "@/assets/gallery/gsm-gallery-10.jpg.asset.json";
 
-const galleryCaptions = [
+const GALLERY_URLS = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10].map((img) => img.url);
+const DEFAULT_GALLERY_CAPTIONS = [
   "The GSM Driving School T-Cross — Notting Hill",
   "Student pass — Greenford Test Centre",
   "On lesson around Holland Park",
@@ -39,11 +42,6 @@ const galleryCaptions = [
   "20+ years teaching West London",
   "Street view — GSM service area",
 ];
-
-const galleryPhotos = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10].map((img, i) => ({
-  url: img.url,
-  caption: galleryCaptions[i],
-}));
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -66,12 +64,12 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const postcodes = ["W2", "W3", "W4", "SW6", "W8", "W10", "W11", "W12", "W14"];
+const DEFAULT_POSTCODES = ["W2", "W3", "W4", "SW6", "W8", "W10", "W11", "W12", "W14"];
 
-const reasons = [
-  { n: "01", title: "Local knowledge", body: "Every test route junction and tricky give-way in W11 and W8, learned over 20+ years on these exact streets." },
-  { n: "02", title: "Consistent teaching", body: "Same instructor from your first lesson to test day — no handovers, no repeated explanations, no wasted hours." },
-  { n: "03", title: "Full support", body: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other." },
+const DEFAULT_REASONS = [
+  { id: "01", name: "Local knowledge", description: "Every test route junction and tricky give-way in W11 and W8, learned over 20+ years on these exact streets." },
+  { id: "02", name: "Consistent teaching", description: "Same instructor from your first lesson to test day — no handovers, no repeated explanations, no wasted hours." },
+  { id: "03", name: "Full support", description: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other." },
 ];
 
 // Defaults ensure the homepage renders identically until an admin edits the CMS.
@@ -127,6 +125,7 @@ function Home() {
 type SectionProps = { s: Partial<HomeSectionRow> };
 
 function HeroSection({ s }: SectionProps) {
+  const rating = useSiteRating();
   return (
     <section className="relative overflow-hidden bg-background">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-8 lg:pb-24 lg:pt-20">
@@ -142,7 +141,7 @@ function HeroSection({ s }: SectionProps) {
             <div className="flex text-accent">
               {Array.from({ length: 5 }).map((_, i) => (<Star key={i} className="h-4 w-4 fill-accent" />))}
             </div>
-            <span className="text-sm text-muted-foreground">5.0 from 143 Google reviews</span>
+            <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
             {or(s.body, "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.")}
@@ -185,6 +184,7 @@ function HeroSection({ s }: SectionProps) {
 }
 
 function WhySection({ s }: SectionProps) {
+  const reasons = usePageBlocks("home-reasons", DEFAULT_REASONS);
   return (
     <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -197,10 +197,10 @@ function WhySection({ s }: SectionProps) {
         </h2>
         <div className="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
           {reasons.map((r) => (
-            <div key={r.n} className="bg-background p-8 lg:p-10">
-              <div className="font-display text-2xl font-medium text-accent">{r.n}</div>
-              <h3 className="mt-6 font-display text-2xl text-foreground">{r.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{r.body}</p>
+            <div key={r.id} className="bg-background p-8 lg:p-10">
+              <div className="font-display text-2xl font-medium text-accent">{r.id}</div>
+              <h3 className="mt-6 font-display text-2xl text-foreground">{r.name}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{r.description}</p>
             </div>
           ))}
         </div>
@@ -210,6 +210,7 @@ function WhySection({ s }: SectionProps) {
 }
 
 function PostcodesSection({ s }: SectionProps) {
+  const postcodes = usePageBlockStrings("home-postcodes", DEFAULT_POSTCODES);
   return (
     <section className="border-y border-border bg-card">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-6 sm:px-6 lg:px-8">
@@ -251,6 +252,7 @@ function AreasSection({ s }: SectionProps) {
 }
 
 function RecentPassSection({ s }: SectionProps) {
+  const rating = useSiteRating();
   return (
     <section className="bg-muted py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -279,7 +281,7 @@ function RecentPassSection({ s }: SectionProps) {
               <div className="flex text-accent">
                 {Array.from({ length: 5 }).map((_, i) => (<Star key={i} className="h-4 w-4 fill-accent" />))}
               </div>
-              <span className="text-sm text-muted-foreground">5.0 from 143 Google reviews</span>
+              <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
             </a>
           </div>
         </div>
@@ -289,6 +291,8 @@ function RecentPassSection({ s }: SectionProps) {
 }
 
 function GallerySection({ s }: SectionProps) {
+  const captions = usePageBlockStrings("home-gallery-captions", DEFAULT_GALLERY_CAPTIONS);
+  const galleryPhotos = GALLERY_URLS.map((url, i) => ({ url, caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "" }));
   return (
     <section className="bg-muted py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
