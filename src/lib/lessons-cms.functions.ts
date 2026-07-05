@@ -294,6 +294,8 @@ export const uploadLessonMedia = createServerFn({ method: "POST" })
     const url = signed?.signedUrl ?? "";
     const column: "image_url" | "video_url" | "pdf_url" =
       data.kind === "image" ? "image_url" : data.kind === "video" ? "video_url" : "pdf_url";
-    await supabaseAdmin.from("lessons").update({ [column]: url }).eq("id", data.lesson_id);
+    const patch =
+      column === "image_url" ? { image_url: url } : column === "video_url" ? { video_url: url } : { pdf_url: url };
+    await supabaseAdmin.from("lessons").update(patch).eq("id", data.lesson_id);
     return { url, column };
   });
