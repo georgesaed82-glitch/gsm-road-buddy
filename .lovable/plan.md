@@ -1,40 +1,69 @@
-## What you're seeing
 
-The screenshot shows the "Elderly / frail pedestrians" answer paired with a sign that's actually **Pedestrians in road ahead** (TSRGD diagram 544). The correct elderly-people warning is diagram 544.1 (two hunched figures with a stick). So the `w-elderly` → `w-pedestrians` image mapping is swapped, and several crossing signs (zebra/pelican/puffin) are all reusing the same pedestrians image as a placeholder. This is the root cause of what you were shown, and it's the kind of thing I need to sweep out everywhere.
+## Goal
 
-## Scope of the audit
+Make almost everything on gsmdrivingschool.com editable from `/admin` without touching code. Ship in phases so nothing breaks and you get value quickly.
 
-Four data files drive every quiz, sign card and lesson. I'll audit each against GOV.UK "Know your traffic signs" + the current Highway Code (2022 revision) + DVSA theory bank language:
+## What you already have (no work needed)
 
-1. **`src/data/signs.ts`** — 60+ signs. Verify every `name`, `meaning`, `category`, and TSRGD-correct wording.
-2. **`src/data/signImages.ts`** — Verify every sign id maps to the correct DfT SVG (this is where the elderly/pedestrians swap lives; also `c-zebra`, `c-pelican`, `c-puffin` all currently point at the pedestrians sign and need real artwork).
-3. **`src/data/theory.ts` + `src/data/topicQuizzes.ts` + `src/data/homeTheoryQuiz.ts`** — Every question: correct answer, distractors, explanation wording, rule references. Check figures (stopping distances, speed limits, alcohol limits, fines/points, tyre tread 1.6mm, MOT age 3 yrs, etc.) match the current Highway Code and DVSA bank.
-4. **`src/data/roadMarkings.ts` + `src/data/policeSignals.ts` + `src/data/drivingLessons.tsx`** — Rule references (e.g. Rule 170 give-way, Rule 103 signals), observation wording, and any legal claims.
+Admin today already edits: signs, road markings, police signals, Highway Code topics, theory questions, George's tips (per topic), driving principles, memory tips, common fail reasons, reviews (all with image upload), plus admin accounts, access codes, email settings, hazard videos, traffic, contact clicks, PWA installs, diagnostics and errors.
 
-## How I'll work
+The plan below is only the NEW work.
 
-- **Verify against primary sources only**: GOV.UK Highway Code, "Know your traffic signs" PDF, DVSA Safe Driving for Life. No Wikipedia guesses.
-- **Fix as I go** in one branch of edits per file, so each change is reviewable.
-- **Replace missing sign artwork** (zebra, pelican, puffin, toucan variants) with the correct DfT SVGs from Wikimedia Commons (OGL, already how the rest are sourced) rather than reusing the pedestrians sign.
-- **Add a short "source" comment** at the top of `signs.ts` and `signImages.ts` pointing at the exact GOV.UK page each entry came from, so future changes stay tied to the standard.
-- **Run the existing `signs.quiz.test.ts`** after edits, and add a smoke test that asserts every quiz answer's sign id has a matching image.
-- **Deliver a written summary** of every correction made (old vs new) so you can spot-check.
+## Phase 1 — Site chrome + per-page SEO (foundation)
 
-## What I will NOT touch
+Highest impact, lowest risk. Everything else builds on the pattern.
 
-- The quiz engine, UI, LessonShell, routes — content only.
-- Anything outside these data files unless a wording change forces it.
+- New table `site_settings` (single-row key/value JSON) for: business name, phone, WhatsApp, email, address, opening hours, social links (Facebook, Instagram, TikTok, YouTube), footer copy, disclaimer.
+- New table `nav_items` (label, href, order, enabled, parent_id) for header and footer menus.
+- New table `page_seo` (route path unique, title, description, og_title, og_description, canonical_override, og_image_path, noindex flag).
+- New admin pages: `/admin/site-settings`, `/admin/navigation`, `/admin/seo`.
+- Wire `Header.tsx`, `Footer.tsx`, `__root.tsx` and every route's `head()` to read from these tables (with in-code defaults as fallback so SSR/prerender never breaks).
 
-## Technical details
+## Phase 2 — Homepage sections with drag-and-drop reorder + enable/disable
 
-- Sign SVGs are already CDN-mirrored under `/__l5e/assets-v1/…`. New ones will be uploaded via the assets pipeline the same way, not hot-linked to Wikimedia at runtime.
-- Attribution ("Crown copyright, OGL v3.0, via Wikimedia Commons") stays on the road-signs page — no change needed.
-- Because this is content-only, no migrations, no auth, no schema changes.
+- New table `home_sections` (id, kind enum: hero/reviews/quiz-theory/quiz-signs/quiz-hazard/gallery/booking/tips/faq/custom, order_index, enabled, data JSONB, updated_at).
+- Admin page `/admin/homepage`: `@dnd-kit/sortable` list of sections. Toggle enabled, drag to reorder, click to open a per-kind editor with text + image fields.
+- Refactor `src/routes/index.tsx` to render sections from this table in order. Each kind maps to its existing component; text/image inputs override the current hardcoded copy.
+- Image uploads reuse the existing `content-images` bucket + upload server fn.
 
-## Estimated size
+## Phase 3 — Instructors, lesson packages & pricing
 
-Roughly 40-60 line-level corrections across the four data files, plus 6-10 new sign SVGs. One test file update. No user-facing UI change beyond the correct content appearing.
+- Tables `instructors` (name, photo, bio, phone, areas, active, order), `packages` (name, description, hours, price_pence, promo_price_pence, promo_ends_at, active, order), `promotions` (code, description, discount, starts/ends, active).
+- Admin CRUD: `/admin/instructors`, `/admin/packages`, `/admin/promotions`.
+- Refactor `/instructors` and `/pricing` routes to read from these tables.
 
-## Before I start — one confirmation
+## Phase 4 — Blog / driving tips + FAQs + downloadable files
 
-This will change wording on questions you may have memorised. If you'd rather I do it in stages (signs first, then theory questions, then lessons) so you can review each batch, say so; otherwise I'll do the full sweep in one pass and give you the change list at the end.
+- Tables `posts` (slug, title, excerpt, body markdown, cover_image, category enum: blog/news/tip, published, published_at, seo_title, seo_description), `faqs` (question, answer, category, order, enabled), `downloads` (title, description, storage_path, category, order).
+- New public routes: `/blog`, `/blog/$slug`, `/tips`, `/tips/$slug`, `/faq`, `/downloads`.
+- Admin CRUD: `/admin/posts`, `/admin/faqs`, `/admin/downloads` (new `downloads` storage bucket).
+- Add posts to sitemap.xml.
+
+## Phase 5 — Advanced (largest phase, split further if needed)
+
+- **Theme editor** `/admin/theme`: form for brand primary/accent hex, heading font, body font, radius. Values written to `theme_settings` row, injected as CSS variables via a `<style>` tag in `__root.tsx`. Google-Fonts-via-@fontsource swap for font choice.
+- **Change history + restore**: new `content_history` table; a shared server helper wraps every upsert so it writes the previous JSON into history keyed by `(entity_kind, entity_id, version, snapshot, changed_by, changed_at)`. Admin history viewer per entity with "Restore" button.
+- **Email template editor** `/admin/email-templates`: table `email_templates` (key, subject, html_body, text_body, variables). Wire existing outbound emails (booking, contact, admin alerts) through a renderer that substitutes `{{name}}` etc. Templates auto-seeded from current hardcoded copy on first deploy.
+
+## Explicitly not in scope
+
+- **Extra roles (Instructor / Staff)**: you did not pick this. Everything stays admin-only. If you want it, we add it as Phase 6.
+- **Add/edit/delete pages from admin**: routes stay file-based (they must, for SSR + type-safe routing). Instead you get per-page SEO + editable content on every existing page + a Blog/Tips CMS for new content. If you want a true "arbitrary new page" builder, that's an extra phase.
+
+## Technical details (safe to skim)
+
+- All new admin routes gated by the existing `_authenticated/admin` layout + `verifyAdminPasswordServer` on every mutation.
+- All new public tables: `GRANT SELECT ... TO anon` only on rows marked published/enabled; `authenticated` gets full CRUD via RLS; `service_role` gets ALL.
+- Public read paths use the server publishable client (per `tanstack-supabase-integration`), never `supabaseAdmin`.
+- SSR head reads settings via a public server fn cached with TanStack Query so route `head()` stays static-render-safe.
+- Hardcoded content stays in the repo as a fallback so a DB outage never blanks the site.
+
+## Ballpark size
+
+Phase 1: ~1 turn. Phase 2: 1-2 turns. Phase 3: 1-2 turns. Phase 4: 2 turns. Phase 5: 2-3 turns (may split). Rough total: 8–10 focused turns.
+
+## What I need from you
+
+1. Approve this plan.
+2. Confirm I should start with **Phase 1 (site chrome + per-page SEO)**.
+3. Anything on the "not in scope" list you actually want added?
