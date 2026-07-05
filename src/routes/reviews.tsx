@@ -6,6 +6,7 @@ import { useContentOverrides } from "@/hooks/useContentOverrides";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { listReviews } from "@/lib/local-content.functions";
+import { useSiteRating } from "@/hooks/useSiteRating";
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/reviews")({
 function ReviewsPage() {
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(18);
+  const rating = useSiteRating();
   const { get } = useContentOverrides();
   const listFn = useServerFn(listReviews);
   const { data: dbRows } = useQuery({
@@ -132,8 +134,8 @@ function ReviewsPage() {
           </div>
 
           <div className="mt-10 grid max-w-3xl grid-cols-3 gap-6 border-t border-primary-foreground/15 pt-8">
-            <Stat value="5.0" label="Google rating" />
-            <Stat value="143" label="Reviews on Google" />
+            <Stat value={rating.rating.toFixed(1)} label="Google rating" />
+            <Stat value={String(rating.review_count)} label="Reviews on Google" />
             <Stat value="20+ yrs" label="Teaching in W11" />
           </div>
         </div>
