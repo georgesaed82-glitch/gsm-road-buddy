@@ -52,6 +52,7 @@ import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminDiagnosticsRouteImport } from './routes/_authenticated/admin.diagnostics'
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
 import { Route as AuthenticatedAdminContactClicksRouteImport } from './routes/_authenticated/admin.contact-clicks'
+import { Route as AuthenticatedAdminBlocksRouteImport } from './routes/_authenticated/admin.blocks'
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
 import { Route as AuthenticatedAdminAccessRouteImport } from './routes/_authenticated/admin.access'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -284,6 +285,12 @@ const AuthenticatedAdminContactClicksRoute =
     path: '/contact-clicks',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminBlocksRoute =
+  AuthenticatedAdminBlocksRouteImport.update({
+    id: '/blocks',
+    path: '/blocks',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminAdminsRoute =
   AuthenticatedAdminAdminsRouteImport.update({
     id: '/admins',
@@ -337,6 +344,7 @@ export interface FileRoutesByFullPath {
   '/areas/': typeof AreasIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
+  '/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
@@ -383,6 +391,7 @@ export interface FileRoutesByTo {
   '/areas': typeof AreasIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
+  '/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
@@ -432,6 +441,7 @@ export interface FileRoutesById {
   '/areas/': typeof AreasIndexRoute
   '/_authenticated/admin/access': typeof AuthenticatedAdminAccessRoute
   '/_authenticated/admin/admins': typeof AuthenticatedAdminAdminsRoute
+  '/_authenticated/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/_authenticated/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
   '/_authenticated/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
@@ -481,6 +491,7 @@ export interface FileRouteTypes {
     | '/areas/'
     | '/admin/access'
     | '/admin/admins'
+    | '/admin/blocks'
     | '/admin/contact-clicks'
     | '/admin/content'
     | '/admin/diagnostics'
@@ -527,6 +538,7 @@ export interface FileRouteTypes {
     | '/areas'
     | '/admin/access'
     | '/admin/admins'
+    | '/admin/blocks'
     | '/admin/contact-clicks'
     | '/admin/content'
     | '/admin/diagnostics'
@@ -575,6 +587,7 @@ export interface FileRouteTypes {
     | '/areas/'
     | '/_authenticated/admin/access'
     | '/_authenticated/admin/admins'
+    | '/_authenticated/admin/blocks'
     | '/_authenticated/admin/contact-clicks'
     | '/_authenticated/admin/content'
     | '/_authenticated/admin/diagnostics'
@@ -911,6 +924,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminContactClicksRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/blocks': {
+      id: '/_authenticated/admin/blocks'
+      path: '/blocks'
+      fullPath: '/admin/blocks'
+      preLoaderRoute: typeof AuthenticatedAdminBlocksRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/admins': {
       id: '/_authenticated/admin/admins'
       path: '/admins'
@@ -938,6 +958,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAccessRoute: typeof AuthenticatedAdminAccessRoute
   AuthenticatedAdminAdminsRoute: typeof AuthenticatedAdminAdminsRoute
+  AuthenticatedAdminBlocksRoute: typeof AuthenticatedAdminBlocksRoute
   AuthenticatedAdminContactClicksRoute: typeof AuthenticatedAdminContactClicksRoute
   AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
   AuthenticatedAdminDiagnosticsRoute: typeof AuthenticatedAdminDiagnosticsRoute
@@ -953,6 +974,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAccessRoute: AuthenticatedAdminAccessRoute,
   AuthenticatedAdminAdminsRoute: AuthenticatedAdminAdminsRoute,
+  AuthenticatedAdminBlocksRoute: AuthenticatedAdminBlocksRoute,
   AuthenticatedAdminContactClicksRoute: AuthenticatedAdminContactClicksRoute,
   AuthenticatedAdminContentRoute: AuthenticatedAdminContentRoute,
   AuthenticatedAdminDiagnosticsRoute: AuthenticatedAdminDiagnosticsRoute,
