@@ -32,6 +32,7 @@ const ROUTES: Array<{ path: string; label: string }> = [
   { path: "/instructors", label: "Instructors" },
   { path: "/theory", label: "Theory landing" },
   { path: "/areas", label: "Areas index" },
+  { path: "/auth", label: "Sign in / auth" },
 ];
 
 function SeoPage() {

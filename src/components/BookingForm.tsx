@@ -5,8 +5,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export function BookingForm() {
+  const { business } = useSiteSettings();
+  const waNumber = business.phone_intl;
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -50,7 +53,7 @@ export function BookingForm() {
     e.preventDefault();
     if (!validate()) return;
     const text = [
-      "Hi GSM Driving School, I'd like to book a driving lesson.",
+      `Hi ${business.name}, I'd like to book a driving lesson.`,
       "",
       `Name: ${form.name.trim()}`,
       `Email: ${form.email.trim().toLowerCase()}`,
@@ -62,7 +65,7 @@ export function BookingForm() {
     ].join("\n");
     trackContactClick("whatsapp", "Book a driving lesson form");
     window.open(
-      `https://wa.me/447961585231?text=${encodeURIComponent(text)}`,
+      `https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`,
       "_blank",
     );
     setSuccess(true);
@@ -80,7 +83,7 @@ export function BookingForm() {
         </p>
         <div className="mt-8 text-center">
           <Button asChild size="lg" className="h-12 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90">
-            <a href="https://wa.me/447961585231" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
               <WhatsAppIcon className="h-5 w-5" />
               Open WhatsApp again
             </a>
