@@ -21,10 +21,7 @@ import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { useEffect } from "react";
 import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
 import { useContentOverrides } from "@/hooks/useContentOverrides";
-
-const SIGN_CATEGORIES: SignCategory[] = [
-  "warning", "prohibitory", "mandatory", "speed", "information", "direction", "signals", "crossings",
-];
+import { useSignsCms } from "@/hooks/useSignsCms";
 
 export const Route = createFileRoute("/_authenticated/road-signs")({
   head: () => ({ meta: [{ title: "Road signs · GSM" }] }),
@@ -34,24 +31,7 @@ export const Route = createFileRoute("/_authenticated/road-signs")({
 function RoadSignsPage() {
   const [group, setGroup] = useState<SignGroup | "all">("all");
   const [mode, setMode] = useState<"learn" | "quiz">("learn");
-  const { applyText, get, isEnabled, sortOrder, customItems } = useContentOverrides();
-
-  const allSigns = useMemo<Sign[]>(() => {
-    const customs: Sign[] = customItems("sign").map((r) => {
-      const cat = SIGN_CATEGORIES.includes(r.group_slug as SignCategory)
-        ? (r.group_slug as SignCategory)
-        : "information";
-      return {
-        id: r.item_id,
-        name: r.name ?? "Custom sign",
-        meaning: r.description ?? "",
-        category: cat,
-        variant: { kind: "warning", symbol: "exclaim" },
-      };
-    });
-    const merged = [...signs, ...customs].filter((s) => isEnabled("sign", s.id));
-    return merged.sort((a, b) => sortOrder("sign", a.id) - sortOrder("sign", b.id));
-  }, [customItems, isEnabled, sortOrder]);
+  const { allSigns, applyText, imageFor } = useSignsCms();
 
   const pool = useMemo(() => {
     const base = group === "all" ? allSigns : allSigns.filter((s) => signGroupOf(s) === group);
