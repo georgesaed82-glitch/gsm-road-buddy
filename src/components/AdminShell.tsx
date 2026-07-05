@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity, Download, TrendingUp, AlertTriangle, BookOpen, SignpostBig, Sparkles, Settings, ListTree, Search, Users, Tag, Newspaper, HelpCircle, FileDown, MapPin, Star, Video, Image as ImageIcon, Route as RouteIcon, Hand } from "lucide-react";
+import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity, Download, TrendingUp, AlertTriangle, BookOpen, SignpostBig, Sparkles, Settings, ListTree, Search, Users, Tag, Newspaper, HelpCircle, FileDown, MapPin, Star, Video, Image as ImageIcon, Route as RouteIcon, Hand, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 
 const items = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard },
+  { to: "/admin/theme", label: "Theme & branding", icon: Palette },
   { to: "/admin/site-settings", label: "Site settings", icon: Settings },
   { to: "/admin/navigation", label: "Navigation menus", icon: ListTree },
   { to: "/admin/seo", label: "Page SEO", icon: Search },
