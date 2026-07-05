@@ -301,7 +301,7 @@ function AdminContentPage() {
   const editedCount = overrides.filter((o) => o.kind === kind).length;
 
   return (
-    <AdminShell eyebrow="Admin" title="Edit signs, markings & arm signals">
+    <AdminShell eyebrow="Admin" title="Edit signs, markings, arm signals & Highway Code">
       <div className="mb-6 grid gap-3 sm:grid-cols-[220px_1fr_auto] sm:items-end">
         <div>
           <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Section</Label>
@@ -311,6 +311,7 @@ function AdminContentPage() {
               <SelectItem value="sign">Road signs ({signs.length})</SelectItem>
               <SelectItem value="marking">Road markings ({roadMarkings.length})</SelectItem>
               <SelectItem value="signal">Arm signals ({policeSignals.length})</SelectItem>
+              <SelectItem value="highway">Highway Code topics ({theoryCategories.length})</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -352,7 +353,8 @@ function AdminContentPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-5">
-          <div className="grid gap-6 sm:grid-cols-[auto_1fr]">
+          <div className={kind === "highway" ? "" : "grid gap-6 sm:grid-cols-[auto_1fr]"}>
+            {kind !== "highway" && (
             <div className="flex flex-col items-center gap-3">
               <div className="flex h-44 items-center justify-center">{preview}</div>
               <div className="flex flex-col gap-2">
@@ -383,10 +385,11 @@ function AdminContentPage() {
                 )}
               </div>
             </div>
+            )}
 
             <div className="space-y-4">
               <div>
-                <Label>Name</Label>
+                <Label>{kind === "highway" ? "Topic title" : "Name"}</Label>
                 <Input
                   className="mt-1"
                   value={draft.name}
@@ -394,13 +397,46 @@ function AdminContentPage() {
                 />
               </div>
               <div>
-                <Label>Description / meaning</Label>
+                <Label>{kind === "highway" ? "Short summary" : "Description / meaning"}</Label>
                 <Textarea
                   className="mt-1 min-h-[140px]"
                   value={draft.description}
                   onChange={(e) => setDraft({ ...draft, description: e.target.value })}
                 />
               </div>
+              {kind === "highway" && (
+                <>
+                  <div>
+                    <Label>Topic tags (one per line)</Label>
+                    <Textarea
+                      className="mt-1 min-h-[100px]"
+                      placeholder="Mirror checks\nBlind spots\nDistractions"
+                      value={draft.topics.join("\n")}
+                      onChange={(e) =>
+                        setDraft({ ...draft, topics: e.target.value.split("\n") })
+                      }
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Shown as the pill row above the topic title.
+                    </p>
+                  </div>
+                  <div>
+                    <Label>Key points (one per line)</Label>
+                    <Textarea
+                      className="mt-1 min-h-[200px]"
+                      placeholder="Mirror–Signal–Manoeuvre before every change of speed or direction."
+                      value={draft.key_points.join("\n")}
+                      onChange={(e) =>
+                        setDraft({ ...draft, key_points: e.target.value.split("\n") })
+                      }
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Each line becomes a bullet on the Highway Code topic card.
+                    </p>
+                  </div>
+                </>
+              )}
+              {kind !== "highway" && (
               <div>
                 <Label>Category / group</Label>
                 <Select
@@ -418,6 +454,7 @@ function AdminContentPage() {
                   Category is stored on the override but doesn't yet reshuffle the built-in category filters on the app.
                 </p>
               </div>
+              )}
             </div>
           </div>
 
