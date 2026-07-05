@@ -12,6 +12,8 @@ import { HomeTheoryQuiz } from "@/components/HomeTheoryQuiz";
 
 import { trackContactClick } from "@/lib/trackContactClick";
 import { listPublicHomeSections, type HomeSectionRow } from "@/lib/home-cms.functions";
+import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
+import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
@@ -26,7 +28,8 @@ import g8 from "@/assets/gallery/gsm-gallery-8.jpg.asset.json";
 import g9 from "@/assets/gallery/gsm-gallery-9.jpg.asset.json";
 import g10 from "@/assets/gallery/gsm-gallery-10.jpg.asset.json";
 
-const galleryCaptions = [
+const GALLERY_URLS = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10].map((img) => img.url);
+const DEFAULT_GALLERY_CAPTIONS = [
   "The GSM Driving School T-Cross — Notting Hill",
   "Student pass — Greenford Test Centre",
   "On lesson around Holland Park",
@@ -39,11 +42,6 @@ const galleryCaptions = [
   "20+ years teaching West London",
   "Street view — GSM service area",
 ];
-
-const galleryPhotos = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10].map((img, i) => ({
-  url: img.url,
-  caption: galleryCaptions[i],
-}));
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -66,12 +64,12 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const postcodes = ["W2", "W3", "W4", "SW6", "W8", "W10", "W11", "W12", "W14"];
+const DEFAULT_POSTCODES = ["W2", "W3", "W4", "SW6", "W8", "W10", "W11", "W12", "W14"];
 
-const reasons = [
-  { n: "01", title: "Local knowledge", body: "Every test route junction and tricky give-way in W11 and W8, learned over 20+ years on these exact streets." },
-  { n: "02", title: "Consistent teaching", body: "Same instructor from your first lesson to test day — no handovers, no repeated explanations, no wasted hours." },
-  { n: "03", title: "Full support", body: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other." },
+const DEFAULT_REASONS = [
+  { id: "01", name: "Local knowledge", description: "Every test route junction and tricky give-way in W11 and W8, learned over 20+ years on these exact streets." },
+  { id: "02", name: "Consistent teaching", description: "Same instructor from your first lesson to test day — no handovers, no repeated explanations, no wasted hours." },
+  { id: "03", name: "Full support", description: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other." },
 ];
 
 // Defaults ensure the homepage renders identically until an admin edits the CMS.
