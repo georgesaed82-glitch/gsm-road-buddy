@@ -6,13 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
 import {
-  signs,
   signGroups,
-  signsByGroup,
   signGroupOf,
   buildSignOptions,
   type Sign,
-  type SignCategory,
   type SignGroup,
 } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
@@ -20,7 +17,6 @@ import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { useEffect } from "react";
 import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
-import { useContentOverrides } from "@/hooks/useContentOverrides";
 import { useSignsCms } from "@/hooks/useSignsCms";
 
 export const Route = createFileRoute("/_authenticated/road-signs")({
