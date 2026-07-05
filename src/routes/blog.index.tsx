@@ -34,8 +34,8 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogIndex() {
-  const navigate = useNavigate({ from: "/blog" });
-  const { q = "", category = "" } = useSearch({ from: "/blog" });
+  const navigate = useNavigate({ from: "/blog/" });
+  const { q = "", category = "" } = useSearch({ from: "/blog/" });
   const listPostsFn = useServerFn(listPublishedPosts);
   const listCatsFn = useServerFn(listCategories);
   const { data: posts = [] } = useQuery({
