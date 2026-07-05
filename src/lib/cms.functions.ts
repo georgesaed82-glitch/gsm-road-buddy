@@ -38,6 +38,29 @@ export const listSiteSettings = createServerFn({ method: "GET" }).handler(
   },
 );
 
+export type SiteRatingValue = { rating: number; review_count: number; show: boolean };
+export const getSiteRating = createServerFn({ method: "GET" }).handler(
+  async (): Promise<SiteRatingValue> => {
+    const fallback: SiteRatingValue = { rating: 5.0, review_count: 143, show: true };
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data } = await supabaseAdmin
+        .from("site_settings")
+        .select("value")
+        .eq("key", "site_rating")
+        .maybeSingle();
+      const v = (data?.value ?? {}) as Partial<SiteRatingValue>;
+      return {
+        rating: typeof v.rating === "number" ? v.rating : fallback.rating,
+        review_count: typeof v.review_count === "number" ? v.review_count : fallback.review_count,
+        show: v.show !== false,
+      };
+    } catch {
+      return fallback;
+    }
+  },
+);
+
 export const upsertSiteSetting = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
