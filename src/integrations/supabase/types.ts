@@ -661,6 +661,78 @@ export type Database = {
         }
         Relationships: []
       }
+      home_sections: {
+        Row: {
+          background: string
+          body: string
+          created_at: string
+          cta_primary_href: string
+          cta_primary_label: string
+          cta_secondary_href: string
+          cta_secondary_label: string
+          extra: Json
+          eyebrow: string
+          id: string
+          image_url: string
+          layout: string
+          section_key: string
+          section_type: string
+          show_app: boolean
+          show_web: boolean
+          sort_order: number
+          status: string
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          background?: string
+          body?: string
+          created_at?: string
+          cta_primary_href?: string
+          cta_primary_label?: string
+          cta_secondary_href?: string
+          cta_secondary_label?: string
+          extra?: Json
+          eyebrow?: string
+          id?: string
+          image_url?: string
+          layout?: string
+          section_key: string
+          section_type?: string
+          show_app?: boolean
+          show_web?: boolean
+          sort_order?: number
+          status?: string
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          background?: string
+          body?: string
+          created_at?: string
+          cta_primary_href?: string
+          cta_primary_label?: string
+          cta_secondary_href?: string
+          cta_secondary_label?: string
+          extra?: Json
+          eyebrow?: string
+          id?: string
+          image_url?: string
+          layout?: string
+          section_key?: string
+          section_type?: string
+          show_app?: boolean
+          show_web?: boolean
+          sort_order?: number
+          status?: string
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       instructors: {
         Row: {
           badges: string[]
