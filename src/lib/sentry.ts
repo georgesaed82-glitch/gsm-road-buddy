@@ -10,6 +10,9 @@ export function initSentryOnce() {
     try {
       const cfg = await getSentryConfig();
       if (!cfg?.dsn) return;
+      // Ignore placeholder / non-URL DSNs so the SDK doesn't log
+      // "Invalid Sentry Dsn" to the console in dev/preview.
+      if (!/^https?:\/\//.test(cfg.dsn)) return;
       Sentry.init({
         dsn: cfg.dsn,
         environment: cfg.environment ?? "production",
