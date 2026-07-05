@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
-import { signs, signCategories, signsByCategory, buildSignOptions, type Sign, type SignCategory } from "@/data/signs";
+import { signCategories, buildSignOptions, type Sign, type SignCategory } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { SignsShapesLegend } from "@/components/SignsShapesLegend";
-import { useContentOverrides } from "@/hooks/useContentOverrides";
+import { useSignsCms } from "@/hooks/useSignsCms";
 
 export const Route = createFileRoute("/_authenticated/signs")({
   head: () => ({ meta: [{ title: "Road signs quiz · GSM" }] }),
@@ -27,6 +27,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 function SignsPage() {
   const [mode, setMode] = useState<null | { kind: "learn" | "quiz"; category?: SignCategory }>(null);
+  const { signsByCategory } = useSignsCms();
 
   if (mode?.kind === "learn") {
     return (
@@ -113,7 +114,7 @@ function SignsPage() {
 }
 
 function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: () => void }) {
-  const { applyText, get } = useContentOverrides();
+  const { applyText, signsByCategory, imageFor } = useSignsCms();
   const groups = category ? [category] : signCategories.map((c) => c.slug);
   return (
     <div>
