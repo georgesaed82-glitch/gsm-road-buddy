@@ -240,7 +240,7 @@ export const updateBrandAsset = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const patch: Record<string, unknown> = {};
+    const patch: { name?: string; tags?: string[]; kind?: string } = {};
     if (data.name !== undefined) patch.name = data.name;
     if (data.tags !== undefined) patch.tags = data.tags;
     if (data.kind !== undefined) patch.kind = data.kind;
