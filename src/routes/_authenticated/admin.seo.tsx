@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { listPageSeo, upsertPageSeo, deletePageSeo } from "@/lib/cms.functions";
+import { listPageSeo, upsertPageSeo, deletePageSeo, listSiteSettings, upsertSiteSetting } from "@/lib/cms.functions";
 import { getAdminPassword } from "@/lib/admin-gate";
 
 export const Route = createFileRoute("/_authenticated/admin/seo")({
@@ -40,9 +40,39 @@ function SeoPage() {
   const listFn = useServerFn(listPageSeo);
   const saveFn = useServerFn(upsertPageSeo);
   const delFn = useServerFn(deletePageSeo);
+  const listSettingsFn = useServerFn(listSiteSettings);
+  const upsertSettingFn = useServerFn(upsertSiteSetting);
 
   const { data: rows = [] } = useQuery({ queryKey: ["page-seo"], queryFn: () => listFn() });
   const byRoute = useMemo(() => new Map(rows.map((r) => [r.route, r])), [rows]);
+
+  const { data: settings = [] } = useQuery({ queryKey: ["site-settings"], queryFn: () => listSettingsFn() });
+  const ratingRow = settings.find((s) => s.key === "site_rating");
+  const ratingValue = (ratingRow?.value ?? {}) as { rating?: number; review_count?: number; show?: boolean };
+  const [rating, setRating] = useState({ rating: 5.0, review_count: 143, show: true });
+  const [savingRating, setSavingRating] = useState(false);
+  useEffect(() => {
+    setRating({
+      rating: typeof ratingValue.rating === "number" ? ratingValue.rating : 5.0,
+      review_count: typeof ratingValue.review_count === "number" ? ratingValue.review_count : 143,
+      show: ratingValue.show !== false,
+    });
+  }, [ratingRow?.updated_at]);
+
+  const saveRating = async () => {
+    const password = getAdminPassword();
+    if (!password) return toast.error("Admin password missing.");
+    setSavingRating(true);
+    try {
+      await upsertSettingFn({ data: { password, key: "site_rating", value: { rating: Number(rating.rating), review_count: Math.round(Number(rating.review_count)), show: rating.show } } });
+      toast.success("Rating saved");
+      await qc.invalidateQueries({ queryKey: ["site-settings"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Save failed");
+    } finally {
+      setSavingRating(false);
+    }
+  };
 
   const [idx, setIdx] = useState(0);
   const current = ROUTES[idx];
@@ -108,6 +138,34 @@ function SeoPage() {
   return (
     <AdminShell eyebrow="Admin" title="SEO editor">
       <p className="mb-4 text-sm text-muted-foreground">Override the title, description and social preview for any public page. Leave a field blank to fall back to the built-in default.</p>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline">Sitewide</Badge>
+            <span className="text-sm font-medium">Aggregate rating (used in JSON-LD, meta, and public rating labels)</span>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-3">
+          <div>
+            <Label>Rating value</Label>
+            <Input type="number" step="0.1" min={0} max={5} className="mt-1" value={rating.rating}
+              onChange={(e) => setRating({ ...rating, rating: Number(e.target.value) })} />
+          </div>
+          <div>
+            <Label>Review count</Label>
+            <Input type="number" step="1" min={0} className="mt-1" value={rating.review_count}
+              onChange={(e) => setRating({ ...rating, review_count: Number(e.target.value) })} />
+          </div>
+          <div className="flex items-end gap-3">
+            <div className="flex items-center gap-2">
+              <Switch checked={rating.show} onCheckedChange={(v) => setRating({ ...rating, show: v })} />
+              <span className="text-sm">Show publicly</span>
+            </div>
+            <Button onClick={saveRating} disabled={savingRating} className="ml-auto"><Save className="mr-2 h-4 w-4" />{savingRating ? "Saving…" : "Save"}</Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
         <div>
