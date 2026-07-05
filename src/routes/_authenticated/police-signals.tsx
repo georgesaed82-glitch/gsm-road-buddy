@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/PortalShell";
 import { policeSignals, signalGroups } from "@/data/policeSignals";
+import type { PoliceSignal, SignalGroup } from "@/data/policeSignals";
+import type { ReactElement } from "react";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { useContentOverrides } from "@/hooks/useContentOverrides";
 
@@ -15,8 +17,21 @@ export const Route = createFileRoute("/_authenticated/police-signals")({
 });
 
 function PoliceSignalsPage() {
-  const { applyText, get } = useContentOverrides();
-  const items = applyText("signal", policeSignals);
+  const { applyText, get, isEnabled, sortOrder, customItems } = useContentOverrides();
+  const baseItems = applyText("signal", policeSignals);
+  const emptyVisual = (() => null) as unknown as () => ReactElement;
+  const customList: PoliceSignal[] = customItems("signal").map((r) => ({
+    id: r.item_id,
+    name: r.name ?? "Custom signal",
+    meaning: r.description ?? "",
+    group: (signalGroups.some((g) => g.slug === r.group_slug)
+      ? (r.group_slug as SignalGroup)
+      : "stop"),
+    Visual: emptyVisual,
+  }));
+  const items = [...baseItems, ...customList]
+    .filter((s) => isEnabled("signal", s.id))
+    .sort((a, b) => sortOrder("signal", a.id) - sortOrder("signal", b.id));
   return (
     <PortalShell eyebrow="Highway Code" title="Arm signals — police, HATOs & drivers">
       <p className="max-w-2xl text-muted-foreground">
