@@ -25,7 +25,8 @@ export type ContentKind =
   | "georges-principle"
   | "memory-tip"
   | "common-fail"
-  | "review";
+  | "review"
+  | "page-block";
 
 const KIND_VALUES = [
   "sign",
@@ -37,6 +38,7 @@ const KIND_VALUES = [
   "memory-tip",
   "common-fail",
   "review",
+  "page-block",
 ] as const;
 
 export type ContentOverrideRow = {
