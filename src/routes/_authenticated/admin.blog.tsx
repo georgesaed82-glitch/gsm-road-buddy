@@ -530,8 +530,14 @@ function CategoryEditor({
   onDelete,
 }: {
   categories: BlogCategoryRow[];
-  onSave: (item: { id?: string; slug: string; name: string; description: string | null; order_index: number }) => void | Promise<void>;
-  onDelete: (id: string) => void | Promise<void>;
+  onSave: (item: {
+    id?: string;
+    slug: string;
+    name: string;
+    description: string | null;
+    order_index: number;
+  }) => Promise<unknown> | unknown;
+  onDelete: (id: string) => Promise<unknown> | unknown;
 }) {
   const [rows, setRows] = useState<BlogCategoryRow[]>(categories);
   const [newCat, setNewCat] = useState({ name: "", slug: "" });
