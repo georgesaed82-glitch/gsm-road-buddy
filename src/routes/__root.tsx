@@ -20,6 +20,7 @@ import { PageViewTracker } from "../components/PageViewTracker";
 import { PWAInstallTracker } from "../components/PWAInstallTracker";
 import { PageSeoOverride } from "../components/PageSeoOverride";
 import { registerServiceWorker } from "../lib/register-sw";
+import { ThemeProvider } from "../components/ThemeProvider";
 
 
 function NotFoundComponent() {
@@ -257,6 +258,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col" suppressHydrationWarning>
+        <ThemeProvider />
         <Header />
         <main className="flex-1" suppressHydrationWarning>
           <Outlet />
