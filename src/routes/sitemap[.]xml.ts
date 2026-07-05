@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { areas } from "@/data/areas";
+import { listPublishedPostSlugs } from "@/lib/blog.functions";
 
 const BASE_URL = "https://www.gsmdrivingschool.com";
 
@@ -17,6 +18,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/reviews", priority: "0.8", changefreq: "weekly" as const },
           { path: "/contact", priority: "0.8", changefreq: "monthly" as const },
           { path: "/areas", priority: "0.9", changefreq: "monthly" as const },
+          { path: "/blog", priority: "0.9", changefreq: "weekly" as const },
+          { path: "/faq", priority: "0.6", changefreq: "monthly" as const },
+          { path: "/downloads", priority: "0.5", changefreq: "monthly" as const },
         ];
 
         const areaPaths = areas.map((a) => ({
@@ -25,7 +29,19 @@ export const Route = createFileRoute("/sitemap.xml")({
           changefreq: "monthly" as const,
         }));
 
-        const all = [...staticPaths, ...areaPaths];
+        let postPaths: { path: string; priority: string; changefreq: "monthly" }[] = [];
+        try {
+          const slugs = await listPublishedPostSlugs();
+          postPaths = slugs.map((s) => ({
+            path: `/blog/${s.slug}`,
+            priority: "0.7",
+            changefreq: "monthly" as const,
+          }));
+        } catch {
+          // If the blog table read fails, keep the rest of the sitemap intact.
+        }
+
+        const all = [...staticPaths, ...areaPaths, ...postPaths];
 
         const urls = all
           .map(

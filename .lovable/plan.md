@@ -32,12 +32,12 @@ Highest impact, lowest risk. Everything else builds on the pattern.
 - Admin CRUD: `/admin/instructors`, `/admin/packages`, `/admin/promotions`.
 - Refactor `/instructors` and `/pricing` routes to read from these tables.
 
-## Phase 4 — Blog / driving tips + FAQs + downloadable files
+## Phase 4 — Blog / driving tips + FAQs + downloadable files ✅
 
-- Tables `posts` (slug, title, excerpt, body markdown, cover_image, category enum: blog/news/tip, published, published_at, seo_title, seo_description), `faqs` (question, answer, category, order, enabled), `downloads` (title, description, storage_path, category, order).
-- New public routes: `/blog`, `/blog/$slug`, `/tips`, `/tips/$slug`, `/faq`, `/downloads`.
-- Admin CRUD: `/admin/posts`, `/admin/faqs`, `/admin/downloads` (new `downloads` storage bucket).
-- Add posts to sitemap.xml.
+- Tables `blog_categories`, `blog_posts`, `faqs`, `downloads` (RLS: anon read published/enabled, service_role write via admin password check).
+- Public routes: `/blog` (search + category filter), `/blog/$slug` (Article + JSON-LD + related posts + breadcrumbs), `/faq` (grouped + search), `/downloads` (grouped by category).
+- Admin CRUD: `/admin/blog` (posts + categories + Markdown editor with preview + cover uploads + SEO fields + related slugs), `/admin/faqs`, `/admin/downloads` (private `downloads` storage bucket + signed URLs).
+- Blog posts + `/blog`, `/faq`, `/downloads` added to sitemap.xml. Nav items and page SEO seeded for the three new pages.
 
 ## Phase 5 — Advanced (largest phase, split further if needed)
 

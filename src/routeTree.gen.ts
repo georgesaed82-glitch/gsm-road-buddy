@@ -15,13 +15,17 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as InstructorsRouteImport } from './routes/instructors'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AreasIndexRouteImport } from './routes/areas.index'
 import { Route as DevSignVariantsRouteImport } from './routes/dev.sign-variants'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AreasAreaRouteImport } from './routes/areas.$area'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedSignsRouteImport } from './routes/_authenticated/signs'
@@ -52,11 +56,14 @@ import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminInstructorsRouteImport } from './routes/_authenticated/admin.instructors'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
+import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authenticated/admin.faqs'
 import { Route as AuthenticatedAdminErrorsRouteImport } from './routes/_authenticated/admin.errors'
 import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
+import { Route as AuthenticatedAdminDownloadsRouteImport } from './routes/_authenticated/admin.downloads'
 import { Route as AuthenticatedAdminDiagnosticsRouteImport } from './routes/_authenticated/admin.diagnostics'
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
 import { Route as AuthenticatedAdminContactClicksRouteImport } from './routes/_authenticated/admin.contact-clicks'
+import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
 import { Route as AuthenticatedAdminBlocksRouteImport } from './routes/_authenticated/admin.blocks'
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
 import { Route as AuthenticatedAdminAccessRouteImport } from './routes/_authenticated/admin.access'
@@ -92,6 +99,16 @@ const InstructorsRoute = InstructorsRouteImport.update({
   path: '/instructors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -116,6 +133,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AreasIndexRoute = AreasIndexRouteImport.update({
   id: '/areas/',
   path: '/areas/',
@@ -124,6 +146,11 @@ const AreasIndexRoute = AreasIndexRouteImport.update({
 const DevSignVariantsRoute = DevSignVariantsRouteImport.update({
   id: '/dev/sign-variants',
   path: '/dev/sign-variants',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AreasAreaRoute = AreasAreaRouteImport.update({
@@ -290,6 +317,11 @@ const AuthenticatedAdminHazardVideosRoute =
     path: '/hazard-videos',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminFaqsRoute = AuthenticatedAdminFaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminErrorsRoute =
   AuthenticatedAdminErrorsRouteImport.update({
     id: '/errors',
@@ -301,6 +333,12 @@ const AuthenticatedAdminEmailRoute = AuthenticatedAdminEmailRouteImport.update({
   path: '/email',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminDownloadsRoute =
+  AuthenticatedAdminDownloadsRouteImport.update({
+    id: '/downloads',
+    path: '/downloads',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminDiagnosticsRoute =
   AuthenticatedAdminDiagnosticsRouteImport.update({
     id: '/diagnostics',
@@ -319,6 +357,11 @@ const AuthenticatedAdminContactClicksRoute =
     path: '/contact-clicks',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminBlogRoute = AuthenticatedAdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminBlocksRoute =
   AuthenticatedAdminBlocksRouteImport.update({
     id: '/blocks',
@@ -349,6 +392,8 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/downloads': typeof DownloadsRoute
+  '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
   '/reviews': typeof ReviewsRoute
@@ -374,16 +419,21 @@ export interface FileRoutesByFullPath {
   '/signs': typeof AuthenticatedSignsRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
   '/areas/': typeof AreasIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/blocks': typeof AuthenticatedAdminBlocksRoute
+  '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
+  '/admin/downloads': typeof AuthenticatedAdminDownloadsRoute
   '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/errors': typeof AuthenticatedAdminErrorsRoute
+  '/admin/faqs': typeof AuthenticatedAdminFaqsRoute
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
@@ -402,6 +452,8 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/downloads': typeof DownloadsRoute
+  '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
   '/reviews': typeof ReviewsRoute
@@ -426,16 +478,21 @@ export interface FileRoutesByTo {
   '/signs': typeof AuthenticatedSignsRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
   '/areas': typeof AreasIndexRoute
+  '/blog': typeof BlogIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/blocks': typeof AuthenticatedAdminBlocksRoute
+  '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
+  '/admin/downloads': typeof AuthenticatedAdminDownloadsRoute
   '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/errors': typeof AuthenticatedAdminErrorsRoute
+  '/admin/faqs': typeof AuthenticatedAdminFaqsRoute
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
@@ -456,6 +513,8 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/downloads': typeof DownloadsRoute
+  '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
   '/reviews': typeof ReviewsRoute
@@ -481,16 +540,21 @@ export interface FileRoutesById {
   '/_authenticated/signs': typeof AuthenticatedSignsRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
   '/areas/': typeof AreasIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/_authenticated/admin/access': typeof AuthenticatedAdminAccessRoute
   '/_authenticated/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/_authenticated/admin/blocks': typeof AuthenticatedAdminBlocksRoute
+  '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/_authenticated/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
   '/_authenticated/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
+  '/_authenticated/admin/downloads': typeof AuthenticatedAdminDownloadsRoute
   '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
   '/_authenticated/admin/errors': typeof AuthenticatedAdminErrorsRoute
+  '/_authenticated/admin/faqs': typeof AuthenticatedAdminFaqsRoute
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/_authenticated/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
@@ -511,6 +575,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/downloads'
+    | '/faq'
     | '/instructors'
     | '/pricing'
     | '/reviews'
@@ -536,16 +602,21 @@ export interface FileRouteTypes {
     | '/signs'
     | '/api/chat'
     | '/areas/$area'
+    | '/blog/$slug'
     | '/dev/sign-variants'
     | '/areas/'
+    | '/blog/'
     | '/admin/access'
     | '/admin/admins'
     | '/admin/blocks'
+    | '/admin/blog'
     | '/admin/contact-clicks'
     | '/admin/content'
     | '/admin/diagnostics'
+    | '/admin/downloads'
     | '/admin/email'
     | '/admin/errors'
+    | '/admin/faqs'
     | '/admin/hazard-videos'
     | '/admin/instructors'
     | '/admin/navigation'
@@ -564,6 +635,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/downloads'
+    | '/faq'
     | '/instructors'
     | '/pricing'
     | '/reviews'
@@ -588,16 +661,21 @@ export interface FileRouteTypes {
     | '/signs'
     | '/api/chat'
     | '/areas/$area'
+    | '/blog/$slug'
     | '/dev/sign-variants'
     | '/areas'
+    | '/blog'
     | '/admin/access'
     | '/admin/admins'
     | '/admin/blocks'
+    | '/admin/blog'
     | '/admin/contact-clicks'
     | '/admin/content'
     | '/admin/diagnostics'
+    | '/admin/downloads'
     | '/admin/email'
     | '/admin/errors'
+    | '/admin/faqs'
     | '/admin/hazard-videos'
     | '/admin/instructors'
     | '/admin/navigation'
@@ -617,6 +695,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/downloads'
+    | '/faq'
     | '/instructors'
     | '/pricing'
     | '/reviews'
@@ -642,16 +722,21 @@ export interface FileRouteTypes {
     | '/_authenticated/signs'
     | '/api/chat'
     | '/areas/$area'
+    | '/blog/$slug'
     | '/dev/sign-variants'
     | '/areas/'
+    | '/blog/'
     | '/_authenticated/admin/access'
     | '/_authenticated/admin/admins'
     | '/_authenticated/admin/blocks'
+    | '/_authenticated/admin/blog'
     | '/_authenticated/admin/contact-clicks'
     | '/_authenticated/admin/content'
     | '/_authenticated/admin/diagnostics'
+    | '/_authenticated/admin/downloads'
     | '/_authenticated/admin/email'
     | '/_authenticated/admin/errors'
+    | '/_authenticated/admin/faqs'
     | '/_authenticated/admin/hazard-videos'
     | '/_authenticated/admin/instructors'
     | '/_authenticated/admin/navigation'
@@ -672,6 +757,8 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  DownloadsRoute: typeof DownloadsRoute
+  FaqRoute: typeof FaqRoute
   InstructorsRoute: typeof InstructorsRoute
   PricingRoute: typeof PricingRoute
   ReviewsRoute: typeof ReviewsRoute
@@ -680,8 +767,10 @@ export interface RootRouteChildren {
   TheoryRoute: typeof TheoryRoute
   ApiChatRoute: typeof ApiChatRoute
   AreasAreaRoute: typeof AreasAreaRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   DevSignVariantsRoute: typeof DevSignVariantsRoute
   AreasIndexRoute: typeof AreasIndexRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
@@ -729,6 +818,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InstructorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -764,6 +867,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/areas/': {
       id: '/areas/'
       path: '/areas'
@@ -776,6 +886,13 @@ declare module '@tanstack/react-router' {
       path: '/dev/sign-variants'
       fullPath: '/dev/sign-variants'
       preLoaderRoute: typeof DevSignVariantsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/areas/$area': {
@@ -988,6 +1105,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminHazardVideosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/faqs': {
+      id: '/_authenticated/admin/faqs'
+      path: '/faqs'
+      fullPath: '/admin/faqs'
+      preLoaderRoute: typeof AuthenticatedAdminFaqsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/errors': {
       id: '/_authenticated/admin/errors'
       path: '/errors'
@@ -1000,6 +1124,13 @@ declare module '@tanstack/react-router' {
       path: '/email'
       fullPath: '/admin/email'
       preLoaderRoute: typeof AuthenticatedAdminEmailRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/downloads': {
+      id: '/_authenticated/admin/downloads'
+      path: '/downloads'
+      fullPath: '/admin/downloads'
+      preLoaderRoute: typeof AuthenticatedAdminDownloadsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/diagnostics': {
@@ -1021,6 +1152,13 @@ declare module '@tanstack/react-router' {
       path: '/contact-clicks'
       fullPath: '/admin/contact-clicks'
       preLoaderRoute: typeof AuthenticatedAdminContactClicksRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/blog': {
+      id: '/_authenticated/admin/blog'
+      path: '/blog'
+      fullPath: '/admin/blog'
+      preLoaderRoute: typeof AuthenticatedAdminBlogRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/blocks': {
@@ -1058,11 +1196,14 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAccessRoute: typeof AuthenticatedAdminAccessRoute
   AuthenticatedAdminAdminsRoute: typeof AuthenticatedAdminAdminsRoute
   AuthenticatedAdminBlocksRoute: typeof AuthenticatedAdminBlocksRoute
+  AuthenticatedAdminBlogRoute: typeof AuthenticatedAdminBlogRoute
   AuthenticatedAdminContactClicksRoute: typeof AuthenticatedAdminContactClicksRoute
   AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
   AuthenticatedAdminDiagnosticsRoute: typeof AuthenticatedAdminDiagnosticsRoute
+  AuthenticatedAdminDownloadsRoute: typeof AuthenticatedAdminDownloadsRoute
   AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
   AuthenticatedAdminErrorsRoute: typeof AuthenticatedAdminErrorsRoute
+  AuthenticatedAdminFaqsRoute: typeof AuthenticatedAdminFaqsRoute
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
   AuthenticatedAdminInstructorsRoute: typeof AuthenticatedAdminInstructorsRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
@@ -1079,11 +1220,14 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAccessRoute: AuthenticatedAdminAccessRoute,
   AuthenticatedAdminAdminsRoute: AuthenticatedAdminAdminsRoute,
   AuthenticatedAdminBlocksRoute: AuthenticatedAdminBlocksRoute,
+  AuthenticatedAdminBlogRoute: AuthenticatedAdminBlogRoute,
   AuthenticatedAdminContactClicksRoute: AuthenticatedAdminContactClicksRoute,
   AuthenticatedAdminContentRoute: AuthenticatedAdminContentRoute,
   AuthenticatedAdminDiagnosticsRoute: AuthenticatedAdminDiagnosticsRoute,
+  AuthenticatedAdminDownloadsRoute: AuthenticatedAdminDownloadsRoute,
   AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
   AuthenticatedAdminErrorsRoute: AuthenticatedAdminErrorsRoute,
+  AuthenticatedAdminFaqsRoute: AuthenticatedAdminFaqsRoute,
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
   AuthenticatedAdminInstructorsRoute: AuthenticatedAdminInstructorsRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
@@ -1162,6 +1306,8 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  DownloadsRoute: DownloadsRoute,
+  FaqRoute: FaqRoute,
   InstructorsRoute: InstructorsRoute,
   PricingRoute: PricingRoute,
   ReviewsRoute: ReviewsRoute,
@@ -1170,8 +1316,10 @@ const rootRouteChildren: RootRouteChildren = {
   TheoryRoute: TheoryRoute,
   ApiChatRoute: ApiChatRoute,
   AreasAreaRoute: AreasAreaRoute,
+  BlogSlugRoute: BlogSlugRoute,
   DevSignVariantsRoute: DevSignVariantsRoute,
   AreasIndexRoute: AreasIndexRoute,
+  BlogIndexRoute: BlogIndexRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport

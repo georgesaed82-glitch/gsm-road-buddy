@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity, Download, TrendingUp, AlertTriangle, BookOpen, SignpostBig, Sparkles, Settings, ListTree, Search, Users, Tag } from "lucide-react";
+import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity, Download, TrendingUp, AlertTriangle, BookOpen, SignpostBig, Sparkles, Settings, ListTree, Search, Users, Tag, Newspaper, HelpCircle, FileDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -11,6 +11,9 @@ const items = [
   { to: "/admin/seo", label: "Page SEO", icon: Search },
   { to: "/admin/instructors", label: "Instructors", icon: Users },
   { to: "/admin/pricing", label: "Pricing packages", icon: Tag },
+  { to: "/admin/blog", label: "Blog & articles", icon: Newspaper },
+  { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },
+  { to: "/admin/downloads", label: "Downloads", icon: FileDown },
   { to: "/admin/traffic", label: "Traffic", icon: TrendingUp },
   { to: "/admin/contact-clicks", label: "Contact clicks", icon: BarChart3 },
   { to: "/admin/pwa-installs", label: "PWA installs", icon: Download },
