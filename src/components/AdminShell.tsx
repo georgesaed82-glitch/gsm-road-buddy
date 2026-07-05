@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity, Download, TrendingUp, AlertTriangle, BookOpen } from "lucide-react";
+import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity, Download, TrendingUp, AlertTriangle, BookOpen, SignpostBig } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -14,6 +14,7 @@ const items = [
   { to: "/admin/email", label: "Email settings", icon: Mail },
   { to: "/admin/hazard-videos", label: "Hazard videos", icon: Film },
   { to: "/admin/theory", label: "Edit theory", icon: BookOpen },
+  { to: "/admin/content", label: "Signs & markings", icon: SignpostBig },
   { to: "/admin/diagnostics", label: "Diagnostics", icon: Activity },
   { to: "/admin/errors", label: "Errors", icon: AlertTriangle },
 ] as const;
