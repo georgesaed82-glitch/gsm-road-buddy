@@ -712,6 +712,42 @@ export type Database = {
         }
         Relationships: []
       }
+      theory_question_overrides: {
+        Row: {
+          correct_index: number
+          created_at: string
+          explanation: string
+          option_explanations: Json
+          options: Json
+          question: string
+          question_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          correct_index: number
+          created_at?: string
+          explanation: string
+          option_explanations: Json
+          options: Json
+          question: string
+          question_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          correct_index?: number
+          created_at?: string
+          explanation?: string
+          option_explanations?: Json
+          options?: Json
+          question?: string
+          question_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_mistakes: {
         Row: {
           created_at: string

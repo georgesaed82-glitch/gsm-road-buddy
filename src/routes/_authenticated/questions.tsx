@@ -13,6 +13,7 @@ import { CheckCircle2, XCircle, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { saveAttempt, type QuizAttemptItem, type QuizKind } from "@/lib/quizAttempts";
+import { useTheoryOverrides } from "@/hooks/useTheoryOverrides";
 
 export const Route = createFileRoute("/_authenticated/questions")({
   head: () => ({ meta: [{ title: "Theory questions · GSM" }] }),
@@ -82,6 +83,7 @@ function QuestionsPage() {
 
 function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => void }) {
   const [order] = useState<TheoryQuestion[]>(() => shuffle(questionsByDifficulty(difficulty)));
+  const { apply } = useTheoryOverrides();
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [right, setRight] = useState(0);
@@ -89,7 +91,8 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
   const [log, setLog] = useState<QuizAttemptItem[]>([]);
   const [savedAttempt, setSavedAttempt] = useState(false);
 
-  const q = order[i];
+  const merged = apply(order);
+  const q = merged[i];
 
   useEffect(() => {
     if (q || savedAttempt || log.length === 0) return;
