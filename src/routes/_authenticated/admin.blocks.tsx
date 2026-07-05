@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, Save, RotateCcw, Plus, Trash2, ArrowUp, ArrowDown, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Save, RotateCcw, Plus, Trash2, ArrowUp, ArrowDown, CheckCircle2, Upload, X } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import {
   listContentOverrides,
   upsertContentOverride,
   deleteContentOverride,
+  uploadContentImage,
   type ContentKind,
   type ContentOverrideRow,
   type OverrideBlock,
@@ -136,6 +137,7 @@ function AdminBlocksPage() {
   const listFn = useServerFn(listContentOverrides);
   const upsertFn = useServerFn(upsertContentOverride);
   const deleteFn = useServerFn(deleteContentOverride);
+  const uploadFn = useServerFn(uploadContentImage);
 
   const [section, setSection] = useState<Section>("georges-tip");
   const [itemIdx, setItemIdx] = useState(0);
@@ -215,8 +217,9 @@ function AdminBlocksPage() {
                   aid: b.aid?.trim() || undefined,
                   rule: b.rule?.trim() || undefined,
                   note: b.note?.trim() || undefined,
+                  image_path: b.image_path || undefined,
                 }))
-                .filter((b) => b.title || b.body || b.aid || b.rule || b.note),
+                .filter((b) => b.title || b.body || b.aid || b.rule || b.note || b.image_path),
             },
         },
       });
@@ -330,7 +333,34 @@ function AdminBlocksPage() {
             {spec.mode === "strings" ? (
               <StringListEditor value={strings} onChange={setStrings} />
             ) : (
-              <BlockListEditor value={blocks} onChange={setBlocks} fields={spec.fields} />
+              <BlockListEditor
+                value={blocks}
+                onChange={setBlocks}
+                fields={spec.fields}
+                onUploadImage={async (file) => {
+                  if (!currentItem) throw new Error("No item selected");
+                  const password = requirePassword();
+                  if (!password) throw new Error("Missing admin password");
+                  if (file.size > 5 * 1024 * 1024) throw new Error("Image too large — max 5 MB.");
+                  const dataUrl = await new Promise<string>((resolve, reject) => {
+                    const r = new FileReader();
+                    r.onload = () => resolve(String(r.result));
+                    r.onerror = () => reject(r.error);
+                    r.readAsDataURL(file);
+                  });
+                  const res = await uploadFn({
+                    data: {
+                      password,
+                      kind: section as ContentKind,
+                      item_id: currentItem.id,
+                      filename: file.name,
+                      content_type: file.type || "image/png",
+                      base64: dataUrl,
+                    },
+                  });
+                  return { image_path: res.image_path, image_url: res.image_url };
+                }}
+              />
             )}
 
             <div className="flex flex-wrap items-center gap-2 border-t pt-4">
