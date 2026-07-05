@@ -25,6 +25,7 @@ import { OfficialSignImage } from "@/components/OfficialSignImage";
 import { signs, type Sign } from "@/data/signs";
 import { roadMarkings, markingGroups } from "@/data/roadMarkings";
 import { policeSignals, signalGroups } from "@/data/policeSignals";
+import { theoryCategories } from "@/data/theory";
 import {
   listContentOverrides,
   upsertContentOverride,
@@ -40,7 +41,14 @@ export const Route = createFileRoute("/_authenticated/admin/content")({
   component: AdminContentPage,
 });
 
-type Item = { id: string; name: string; description: string; group: string | null };
+type Item = {
+  id: string;
+  name: string;
+  description: string;
+  group: string | null;
+  key_points?: string[];
+  topics?: string[];
+};
 
 function toItems(kind: ContentKind): Item[] {
   if (kind === "sign") {
@@ -49,7 +57,17 @@ function toItems(kind: ContentKind): Item[] {
   if (kind === "marking") {
     return roadMarkings.map((m) => ({ id: m.id, name: m.name, description: m.meaning, group: m.group }));
   }
-  return policeSignals.map((s) => ({ id: s.id, name: s.name, description: s.meaning, group: s.group }));
+  if (kind === "signal") {
+    return policeSignals.map((s) => ({ id: s.id, name: s.name, description: s.meaning, group: s.group }));
+  }
+  return theoryCategories.map((c) => ({
+    id: c.slug,
+    name: c.title,
+    description: c.description,
+    group: null,
+    key_points: c.keyPoints,
+    topics: c.topics,
+  }));
 }
 
 function groupOptionsFor(kind: ContentKind): { value: string; label: string }[] {
@@ -66,7 +84,8 @@ function groupOptionsFor(kind: ContentKind): { value: string; label: string }[] 
     ];
   }
   if (kind === "marking") return markingGroups.map((g) => ({ value: g.slug, label: g.title }));
-  return signalGroups.map((g) => ({ value: g.slug, label: g.title }));
+  if (kind === "signal") return signalGroups.map((g) => ({ value: g.slug, label: g.title }));
+  return [];
 }
 
 type Draft = {
@@ -75,6 +94,8 @@ type Draft = {
   group_slug: string;
   image_path: string | null;
   image_url: string | null;
+  key_points: string[];
+  topics: string[];
 };
 
 function draftOf(item: Item, ov?: ContentOverrideRow): Draft {
@@ -84,6 +105,8 @@ function draftOf(item: Item, ov?: ContentOverrideRow): Draft {
     group_slug: ov?.group_slug ?? item.group ?? "",
     image_path: ov?.image_path ?? null,
     image_url: ov?.image_url ?? null,
+    key_points: ov?.key_points ?? item.key_points ?? [],
+    topics: ov?.topics ?? item.topics ?? [],
   };
 }
 
@@ -135,13 +158,17 @@ function AdminContentPage() {
     draft.name === current.name &&
     draft.description === current.description &&
     draft.group_slug === (current.group ?? "") &&
-    !draft.image_path;
+    !draft.image_path &&
+    arraysEqual(draft.key_points, current.key_points ?? []) &&
+    arraysEqual(draft.topics, current.topics ?? []);
   const overrideMatchesDraft =
     !!existing &&
     draft.name === (existing.name ?? current.name) &&
     draft.description === (existing.description ?? current.description) &&
     draft.group_slug === (existing.group_slug ?? current.group ?? "") &&
-    (draft.image_path ?? null) === (existing.image_path ?? null);
+    (draft.image_path ?? null) === (existing.image_path ?? null) &&
+    arraysEqual(draft.key_points, existing.key_points ?? current.key_points ?? []) &&
+    arraysEqual(draft.topics, existing.topics ?? current.topics ?? []);
 
   const dirty = existing ? !overrideMatchesDraft : !originalMatchesDraft;
 
@@ -172,6 +199,8 @@ function AdminContentPage() {
           description: draft.description.trim(),
           group_slug: draft.group_slug || null,
           image_path: draft.image_path,
+          key_points: kind === "highway" ? draft.key_points.map((s) => s.trim()).filter(Boolean) : null,
+          topics: kind === "highway" ? draft.topics.map((s) => s.trim()).filter(Boolean) : null,
         },
       });
       toast.success("Saved");
