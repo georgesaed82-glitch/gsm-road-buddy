@@ -5,9 +5,11 @@ import {
   listContentOverrides,
   type ContentKind,
   type ContentOverrideRow,
+  type OverrideBlock,
+  type OverrideData,
 } from "@/lib/content-overrides.functions";
 
-export type { ContentKind, ContentOverrideRow };
+export type { ContentKind, ContentOverrideRow, OverrideBlock, OverrideData };
 
 export function useContentOverrides() {
   const fn = useServerFn(listContentOverrides);
@@ -24,6 +26,18 @@ export function useContentOverrides() {
 
   function get(kind: ContentKind, id: string) {
     return byKey.get(`${kind}:${id}`);
+  }
+
+  function getBlocks(kind: ContentKind, id: string): OverrideBlock[] | null {
+    const row = byKey.get(`${kind}:${id}`);
+    const blocks = row?.data?.blocks;
+    return blocks && blocks.length ? blocks : null;
+  }
+
+  function getStrings(kind: ContentKind, id: string): string[] | null {
+    const row = byKey.get(`${kind}:${id}`);
+    const strings = row?.data?.strings;
+    return strings && strings.length ? strings : null;
   }
 
   function applyText<T extends { id: string; name: string; meaning?: string }>(
@@ -56,5 +70,13 @@ export function useContentOverrides() {
     });
   }
 
-  return { isLoading: q.isLoading, get, applyText, applyHighway, all: q.data ?? [] };
+  return {
+    isLoading: q.isLoading,
+    get,
+    getBlocks,
+    getStrings,
+    applyText,
+    applyHighway,
+    all: q.data ?? [],
+  };
 }
