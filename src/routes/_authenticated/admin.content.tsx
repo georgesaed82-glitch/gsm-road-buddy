@@ -99,6 +99,10 @@ type Draft = {
 };
 
 function draftOf(item: Item, ov?: ContentOverrideRow): Draft {
+  return draftOfInner(item, ov);
+}
+
+function draftOfInner(item: Item, ov?: ContentOverrideRow): Draft {
   return {
     name: ov?.name ?? item.name,
     description: ov?.description ?? item.description,
@@ -108,6 +112,12 @@ function draftOf(item: Item, ov?: ContentOverrideRow): Draft {
     key_points: ov?.key_points ?? item.key_points ?? [],
     topics: ov?.topics ?? item.topics ?? [],
   };
+}
+
+function arraysEqual(a: string[], b: string[]) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
 }
 
 function AdminContentPage() {
