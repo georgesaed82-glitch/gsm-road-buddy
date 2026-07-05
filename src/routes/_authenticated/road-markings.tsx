@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { roadMarkings, markingGroups } from "@/data/roadMarkings";
+import type { RoadMarking, MarkingGroup } from "@/data/roadMarkings";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { MarkingsQuiz } from "@/components/MarkingsQuiz";
 import { cn } from "@/lib/utils";
@@ -22,8 +23,20 @@ export const Route = createFileRoute("/_authenticated/road-markings")({
 
 function RoadMarkingsPage() {
   const [mode, setMode] = useState<"learn" | "quiz">("learn");
-  const { applyText, get } = useContentOverrides();
-  const items = applyText("marking", roadMarkings);
+  const { applyText, get, isEnabled, sortOrder, customItems } = useContentOverrides();
+  const baseItems = applyText("marking", roadMarkings);
+  const customList: RoadMarking[] = customItems("marking").map((r) => ({
+    id: r.item_id,
+    name: r.name ?? "Custom marking",
+    meaning: r.description ?? "",
+    group: (markingGroups.some((g) => g.slug === r.group_slug)
+      ? (r.group_slug as MarkingGroup)
+      : "along"),
+    Visual: () => null as unknown as ReactNode as never,
+  }));
+  const items = [...baseItems, ...customList]
+    .filter((m) => isEnabled("marking", m.id))
+    .sort((a, b) => sortOrder("marking", a.id) - sortOrder("marking", b.id));
   return (
     <PortalShell eyebrow="Highway Code" title="Road markings">
       <p className="max-w-2xl text-muted-foreground">
