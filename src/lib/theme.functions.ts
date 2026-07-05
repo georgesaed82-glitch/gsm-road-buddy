@@ -110,9 +110,9 @@ export const publishTheme = createServerFn({ method: "POST" })
       .select("draft, published")
       .eq("id", 1)
       .maybeSingle();
-    const draft = ((row?.draft ?? {}) as Record<string, Record<string, unknown>>) ?? {};
-    const published = ((row?.published ?? {}) as Record<string, Record<string, unknown>>) ?? {};
-    const merged: Record<string, Record<string, unknown>> = { ...published };
+    const draft = (row?.draft ?? {}) as Record<string, Record<string, unknown>>;
+    const published = (row?.published ?? {}) as Record<string, Record<string, unknown>>;
+    const merged: Record<string, unknown> = { ...published };
     for (const [k, v] of Object.entries(draft)) {
       if (v && typeof v === "object" && !Array.isArray(v)) {
         merged[k] = { ...(published[k] ?? {}), ...(v as Record<string, unknown>) };
@@ -122,7 +122,7 @@ export const publishTheme = createServerFn({ method: "POST" })
     }
     const { error } = await supabaseAdmin
       .from("theme_settings")
-      .update({ published: merged, draft: {} })
+      .update({ published: merged as never, draft: {} })
       .eq("id", 1);
     if (error) throw new Error(error.message);
     return { ok: true, published: merged as Partial<ThemeTokens> };
