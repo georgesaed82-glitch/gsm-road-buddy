@@ -71,6 +71,101 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          order_index: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          order_index?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          order_index?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author_name: string
+          body_md: string
+          category_id: string | null
+          cover_image_path: string | null
+          created_at: string
+          excerpt: string
+          id: string
+          order_index: number
+          published: boolean
+          published_at: string | null
+          related_slugs: string[]
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string
+          body_md?: string
+          category_id?: string | null
+          cover_image_path?: string | null
+          created_at?: string
+          excerpt?: string
+          id?: string
+          order_index?: number
+          published?: boolean
+          published_at?: string | null
+          related_slugs?: string[]
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          body_md?: string
+          category_id?: string | null
+          cover_image_path?: string | null
+          created_at?: string
+          excerpt?: string
+          id?: string
+          order_index?: number
+          published?: boolean
+          published_at?: string | null
+          related_slugs?: string[]
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "blog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_clicks: {
         Row: {
           channel: string
@@ -143,6 +238,48 @@ export type Database = {
           topics?: string[] | null
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      downloads: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string
+          enabled: boolean
+          id: string
+          mime_type: string | null
+          order_index: number
+          size_bytes: number | null
+          storage_path: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string
+          enabled?: boolean
+          id?: string
+          mime_type?: string | null
+          order_index?: number
+          size_bytes?: number | null
+          storage_path: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string
+          enabled?: boolean
+          id?: string
+          mime_type?: string | null
+          order_index?: number
+          size_bytes?: number | null
+          storage_path?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -302,6 +439,39 @@ export type Database = {
           user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      faqs: {
+        Row: {
+          answer: string
+          category: string | null
+          created_at: string
+          enabled: boolean
+          id: string
+          order_index: number
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer?: string
+          category?: string | null
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          order_index?: number
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          category?: string | null
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          order_index?: number
+          question?: string
+          updated_at?: string
         }
         Relationships: []
       }
