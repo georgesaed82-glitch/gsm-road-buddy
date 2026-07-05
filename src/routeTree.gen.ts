@@ -24,6 +24,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AreasIndexRouteImport } from './routes/areas.index'
+import { Route as LegalSlugRouteImport } from './routes/legal.$slug'
 import { Route as DevSignVariantsRouteImport } from './routes/dev.sign-variants'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AreasAreaRouteImport } from './routes/areas.$area'
@@ -60,6 +61,7 @@ import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminPoliceSignalsRouteImport } from './routes/_authenticated/admin.police-signals'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin.lessons'
+import { Route as AuthenticatedAdminLegalRouteImport } from './routes/_authenticated/admin.legal'
 import { Route as AuthenticatedAdminInstructorsRouteImport } from './routes/_authenticated/admin.instructors'
 import { Route as AuthenticatedAdminHomeRouteImport } from './routes/_authenticated/admin.home'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
@@ -150,6 +152,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
 const AreasIndexRoute = AreasIndexRouteImport.update({
   id: '/areas/',
   path: '/areas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalSlugRoute = LegalSlugRouteImport.update({
+  id: '/legal/$slug',
+  path: '/legal/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevSignVariantsRoute = DevSignVariantsRouteImport.update({
@@ -349,6 +356,11 @@ const AuthenticatedAdminLessonsRoute =
     path: '/lessons',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminLegalRoute = AuthenticatedAdminLegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminInstructorsRoute =
   AuthenticatedAdminInstructorsRouteImport.update({
     id: '/instructors',
@@ -481,6 +493,7 @@ export interface FileRoutesByFullPath {
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/areas/': typeof AreasIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
@@ -499,6 +512,7 @@ export interface FileRoutesByFullPath {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
@@ -549,6 +563,7 @@ export interface FileRoutesByTo {
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/areas': typeof AreasIndexRoute
   '/blog': typeof BlogIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
@@ -567,6 +582,7 @@ export interface FileRoutesByTo {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
@@ -620,6 +636,7 @@ export interface FileRoutesById {
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/areas/': typeof AreasIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/_authenticated/admin/access': typeof AuthenticatedAdminAccessRoute
@@ -638,6 +655,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/_authenticated/admin/home': typeof AuthenticatedAdminHomeRoute
   '/_authenticated/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/_authenticated/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
@@ -691,6 +709,7 @@ export interface FileRouteTypes {
     | '/areas/$area'
     | '/blog/$slug'
     | '/dev/sign-variants'
+    | '/legal/$slug'
     | '/areas/'
     | '/blog/'
     | '/admin/access'
@@ -709,6 +728,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/home'
     | '/admin/instructors'
+    | '/admin/legal'
     | '/admin/lessons'
     | '/admin/navigation'
     | '/admin/police-signals'
@@ -759,6 +779,7 @@ export interface FileRouteTypes {
     | '/areas/$area'
     | '/blog/$slug'
     | '/dev/sign-variants'
+    | '/legal/$slug'
     | '/areas'
     | '/blog'
     | '/admin/access'
@@ -777,6 +798,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/home'
     | '/admin/instructors'
+    | '/admin/legal'
     | '/admin/lessons'
     | '/admin/navigation'
     | '/admin/police-signals'
@@ -829,6 +851,7 @@ export interface FileRouteTypes {
     | '/areas/$area'
     | '/blog/$slug'
     | '/dev/sign-variants'
+    | '/legal/$slug'
     | '/areas/'
     | '/blog/'
     | '/_authenticated/admin/access'
@@ -847,6 +870,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/hazard-videos'
     | '/_authenticated/admin/home'
     | '/_authenticated/admin/instructors'
+    | '/_authenticated/admin/legal'
     | '/_authenticated/admin/lessons'
     | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/police-signals'
@@ -883,6 +907,7 @@ export interface RootRouteChildren {
   AreasAreaRoute: typeof AreasAreaRoute
   BlogSlugRoute: typeof BlogSlugRoute
   DevSignVariantsRoute: typeof DevSignVariantsRoute
+  LegalSlugRoute: typeof LegalSlugRoute
   AreasIndexRoute: typeof AreasIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -993,6 +1018,13 @@ declare module '@tanstack/react-router' {
       path: '/areas'
       fullPath: '/areas/'
       preLoaderRoute: typeof AreasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/$slug': {
+      id: '/legal/$slug'
+      path: '/legal/$slug'
+      fullPath: '/legal/$slug'
+      preLoaderRoute: typeof LegalSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev/sign-variants': {
@@ -1247,6 +1279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLessonsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/legal': {
+      id: '/_authenticated/admin/legal'
+      path: '/legal'
+      fullPath: '/admin/legal'
+      preLoaderRoute: typeof AuthenticatedAdminLegalRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/instructors': {
       id: '/_authenticated/admin/instructors'
       path: '/instructors'
@@ -1386,6 +1425,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
   AuthenticatedAdminHomeRoute: typeof AuthenticatedAdminHomeRoute
   AuthenticatedAdminInstructorsRoute: typeof AuthenticatedAdminInstructorsRoute
+  AuthenticatedAdminLegalRoute: typeof AuthenticatedAdminLegalRoute
   AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPoliceSignalsRoute: typeof AuthenticatedAdminPoliceSignalsRoute
@@ -1419,6 +1459,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
   AuthenticatedAdminHomeRoute: AuthenticatedAdminHomeRoute,
   AuthenticatedAdminInstructorsRoute: AuthenticatedAdminInstructorsRoute,
+  AuthenticatedAdminLegalRoute: AuthenticatedAdminLegalRoute,
   AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPoliceSignalsRoute: AuthenticatedAdminPoliceSignalsRoute,
@@ -1513,6 +1554,7 @@ const rootRouteChildren: RootRouteChildren = {
   AreasAreaRoute: AreasAreaRoute,
   BlogSlugRoute: BlogSlugRoute,
   DevSignVariantsRoute: DevSignVariantsRoute,
+  LegalSlugRoute: LegalSlugRoute,
   AreasIndexRoute: AreasIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,

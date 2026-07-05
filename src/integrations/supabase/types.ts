@@ -790,6 +790,45 @@ export type Database = {
         }
         Relationships: []
       }
+      legal_pages: {
+        Row: {
+          body_markdown: string
+          created_at: string
+          enabled: boolean
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          sort_order: number
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          body_markdown?: string
+          created_at?: string
+          enabled?: boolean
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          body_markdown?: string
+          created_at?: string
+          enabled?: boolean
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       lesson_bookings: {
         Row: {
           created_at: string

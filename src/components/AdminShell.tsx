@@ -16,6 +16,7 @@ const items = [
   { to: "/admin/pricing", label: "Pricing packages", icon: Tag },
   { to: "/admin/blog", label: "Blog & articles", icon: Newspaper },
   { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },
+  { to: "/admin/legal", label: "Legal pages", icon: Newspaper },
   { to: "/admin/downloads", label: "Downloads", icon: FileDown },
   { to: "/admin/areas", label: "Areas covered", icon: MapPin },
   { to: "/admin/reviews", label: "Reviews", icon: Star },
