@@ -2,6 +2,20 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { verifyAdminPasswordServer } from "./portal-access.functions";
 
+export type OverrideBlock = {
+  title?: string;
+  body?: string;
+  aid?: string;
+  rule?: string;
+  note?: string;
+  image_path?: string;
+  image_url?: string;
+};
+export type OverrideData = {
+  blocks?: OverrideBlock[];
+  strings?: string[];
+};
+
 export type ContentKind =
   | "sign"
   | "marking"
@@ -35,7 +49,7 @@ export type ContentOverrideRow = {
   image_url: string | null;
   key_points: string[] | null;
   topics: string[] | null;
-  data: Record<string, unknown> | null;
+  data: OverrideData | null;
   updated_at: string;
 };
 
