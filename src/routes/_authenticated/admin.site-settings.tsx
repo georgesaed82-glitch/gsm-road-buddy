@@ -40,7 +40,8 @@ function SiteSettingsPage() {
   useEffect(() => {
     const map = new Map(rows.map((r) => [r.key, r.value]));
     setBusiness((map.get("business") ?? {}) as BusinessValue);
-    setHours({ mon: "", tue: "", wed: "", thu: "", fri: "", sat: "", sun: "", ...(map.get("opening_hours") as HoursValue ?? {}) });
+    const h = (map.get("opening_hours") as Partial<HoursValue>) ?? {};
+    setHours({ mon: h.mon ?? "", tue: h.tue ?? "", wed: h.wed ?? "", thu: h.thu ?? "", fri: h.fri ?? "", sat: h.sat ?? "", sun: h.sun ?? "" });
     setSocial((map.get("social") ?? {}) as SocialValue);
     setFooter((map.get("footer") ?? {}) as FooterValue);
   }, [rows]);
