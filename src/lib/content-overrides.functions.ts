@@ -62,11 +62,14 @@ export const upsertContentOverride = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const row: Record<string, unknown> = { kind: data.kind, item_id: data.item_id };
-    if (data.name !== undefined) row.name = data.name;
-    if (data.description !== undefined) row.description = data.description;
-    if (data.group_slug !== undefined) row.group_slug = data.group_slug;
-    if (data.image_path !== undefined) row.image_path = data.image_path;
+    const row = {
+      kind: data.kind,
+      item_id: data.item_id,
+      name: data.name ?? null,
+      description: data.description ?? null,
+      group_slug: data.group_slug ?? null,
+      image_path: data.image_path ?? null,
+    };
     const { error } = await supabaseAdmin
       .from("content_overrides")
       .upsert(row, { onConflict: "kind,item_id" });
