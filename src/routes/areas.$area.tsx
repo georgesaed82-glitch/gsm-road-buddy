@@ -7,8 +7,12 @@ import { trackContactClick } from "@/lib/trackContactClick";
 import { useSiteRating } from "@/hooks/useSiteRating";
 import { areas, getArea, type AreaPage } from "@/data/areas";
 import { listAreas } from "@/lib/local-content.functions";
+import { getSiteRating, type SiteRatingValue } from "@/lib/cms.functions";
 
-async function resolveArea(slug: string): Promise<AreaPage> {
+async function resolveArea(slug: string): Promise<AreaPage & { _rating: SiteRatingValue }> {
+  const fallbackRating: SiteRatingValue = { rating: 5.0, review_count: 143, show: true };
+  let ratingVal: SiteRatingValue = fallbackRating;
+  try { ratingVal = await getSiteRating(); } catch { /* fall back */ }
   try {
     const rows = await listAreas();
     const enabled = rows.filter((r) => r.enabled);
@@ -23,6 +27,7 @@ async function resolveArea(slug: string): Promise<AreaPage> {
         highlights: match.highlights,
         routes: match.routes_text,
         faqs: match.faqs,
+        _rating: ratingVal,
       };
     }
   } catch {
@@ -30,7 +35,7 @@ async function resolveArea(slug: string): Promise<AreaPage> {
   }
   const staticMatch = getArea(slug);
   if (!staticMatch) throw notFound();
-  return staticMatch;
+  return { ...staticMatch, _rating: ratingVal };
 }
 
 export const Route = createFileRoute("/areas/$area")({
@@ -40,8 +45,10 @@ export const Route = createFileRoute("/areas/$area")({
   head: ({ loaderData }) => {
     const a = loaderData;
     if (!a) return { meta: [] };
+    const rv = a._rating ?? { rating: 5, review_count: 143 };
+    const ratingLabel = `${rv.rating.toFixed(1)} from ${rv.review_count} Google reviews`;
     const title = `Driving Lessons ${a.area} (${a.postcode}) | GSM Driving School`;
-    const description = `Driving lessons in ${a.area} ${a.postcode}. DVSA-approved local instructor, manual & automatic, door-to-door pickup. Rated 5.0 from 143 Google reviews.`;
+    const description = `Driving lessons in ${a.area} ${a.postcode}. DVSA-approved local instructor, manual & automatic, door-to-door pickup. Rated ${ratingLabel}.`;
     const url = `https://www.gsmdrivingschool.com/areas/${a.slug}`;
     return {
       meta: [
@@ -83,8 +90,8 @@ export const Route = createFileRoute("/areas/$area")({
             })),
             aggregateRating: {
               "@type": "AggregateRating",
-              ratingValue: "5.0",
-              reviewCount: "143",
+              ratingValue: rv.rating.toFixed(1),
+              reviewCount: String(rv.review_count),
             },
           }),
         },
