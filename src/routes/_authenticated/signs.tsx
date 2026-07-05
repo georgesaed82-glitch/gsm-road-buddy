@@ -9,6 +9,7 @@ import { signs, signCategories, signsByCategory, buildSignOptions, type Sign, ty
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { SignsShapesLegend } from "@/components/SignsShapesLegend";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
 export const Route = createFileRoute("/_authenticated/signs")({
   head: () => ({ meta: [{ title: "Road signs quiz · GSM" }] }),
@@ -112,6 +113,7 @@ function SignsPage() {
 }
 
 function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: () => void }) {
+  const { applyText, get } = useContentOverrides();
   const groups = category ? [category] : signCategories.map((c) => c.slug);
   return (
     <div>
@@ -119,7 +121,7 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
       <div className="mt-6 space-y-10">
         {groups.map((g) => {
           const meta = signCategories.find((c) => c.slug === g)!;
-          const items = signsByCategory(g);
+          const items = applyText("sign", signsByCategory(g));
           return (
             <section key={g}>
               <h3 className="font-display text-2xl">{meta.title}</h3>
@@ -128,7 +130,7 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
                 {items.map((s) => (
                   <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
                     <div className="flex h-[110px] w-[110px] shrink-0 items-center justify-center">
-                      <OfficialSignImage sign={s} variant="card" />
+                      <OfficialSignImage sign={s} variant="card" overrideSrc={get("sign", s.id)?.image_url ?? null} />
                     </div>
                     <div className="min-w-0">
                       <div className="font-display text-base leading-tight">{s.name}</div>
@@ -150,7 +152,11 @@ type QState =
   | { phase: "revealed"; chosen: number };
 
 function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () => void }) {
-  const pool = useMemo(() => shuffle(category ? signsByCategory(category) : signs), [category]);
+  const { applyText, get } = useContentOverrides();
+  const pool = useMemo(
+    () => shuffle(applyText("sign", category ? signsByCategory(category) : signs)),
+    [category, applyText],
+  );
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState({ answered: 0, correct: 0 });
   const [finished, setFinished] = useState(false);
@@ -174,7 +180,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {missed.map((s) => (
                 <div key={s.id} className="flex gap-3 border border-border p-3">
-                  <OfficialSignImage sign={s} variant="thumb" />
+                  <OfficialSignImage sign={s} variant="thumb" overrideSrc={get("sign", s.id)?.image_url ?? null} />
                   <div className="min-w-0">
                     <div className="text-sm font-medium">{s.name}</div>
                     <p className="mt-1 text-xs text-muted-foreground">{s.meaning}</p>
@@ -234,7 +240,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
 
         <div className="mt-6 flex flex-col items-center gap-4">
           <div className="flex h-[200px] items-center justify-center">
-            <OfficialSignImage sign={current} variant="detail" />
+            <OfficialSignImage sign={current} variant="detail" overrideSrc={get("sign", current.id)?.image_url ?? null} />
           </div>
           <h2 className="text-center font-display text-2xl leading-snug">What does this sign mean?</h2>
         </div>
@@ -281,7 +287,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
               {correct ? "Correct" : "Not quite — here's the sign explained"}
             </div>
             <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row">
-              <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" /></div>
+              <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" overrideSrc={get("sign", current.id)?.image_url ?? null} /></div>
               <div>
                 <div className="font-display text-lg">{current.name}</div>
                 <p className="mt-1 text-sm text-muted-foreground">{current.meaning}</p>

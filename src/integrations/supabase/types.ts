@@ -101,6 +101,42 @@ export type Database = {
         }
         Relationships: []
       }
+      content_overrides: {
+        Row: {
+          created_at: string
+          description: string | null
+          group_slug: string | null
+          image_path: string | null
+          item_id: string
+          kind: string
+          name: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          group_slug?: string | null
+          image_path?: string | null
+          item_id: string
+          kind: string
+          name?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          group_slug?: string | null
+          image_path?: string | null
+          item_id?: string
+          kind?: string
+          name?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
