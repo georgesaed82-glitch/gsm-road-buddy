@@ -9,8 +9,10 @@ import {
   signs,
   signGroups,
   signsByGroup,
+  signGroupOf,
   buildSignOptions,
   type Sign,
+  type SignCategory,
   type SignGroup,
 } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
@@ -20,6 +22,10 @@ import { useEffect } from "react";
 import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
 import { useContentOverrides } from "@/hooks/useContentOverrides";
 
+const SIGN_CATEGORIES: SignCategory[] = [
+  "warning", "prohibitory", "mandatory", "speed", "information", "direction", "signals", "crossings",
+];
+
 export const Route = createFileRoute("/_authenticated/road-signs")({
   head: () => ({ meta: [{ title: "Road signs · GSM" }] }),
   component: RoadSignsPage,
@@ -28,12 +34,29 @@ export const Route = createFileRoute("/_authenticated/road-signs")({
 function RoadSignsPage() {
   const [group, setGroup] = useState<SignGroup | "all">("all");
   const [mode, setMode] = useState<"learn" | "quiz">("learn");
-  const { applyText, get } = useContentOverrides();
+  const { applyText, get, isEnabled, sortOrder, customItems } = useContentOverrides();
+
+  const allSigns = useMemo<Sign[]>(() => {
+    const customs: Sign[] = customItems("sign").map((r) => {
+      const cat = SIGN_CATEGORIES.includes(r.group_slug as SignCategory)
+        ? (r.group_slug as SignCategory)
+        : "information";
+      return {
+        id: r.item_id,
+        name: r.name ?? "Custom sign",
+        meaning: r.description ?? "",
+        category: cat,
+        variant: { kind: "warning", symbol: "exclaim" },
+      };
+    });
+    const merged = [...signs, ...customs].filter((s) => isEnabled("sign", s.id));
+    return merged.sort((a, b) => sortOrder("sign", a.id) - sortOrder("sign", b.id));
+  }, [customItems, isEnabled, sortOrder]);
 
   const pool = useMemo(() => {
-    const base = group === "all" ? signs : signsByGroup(group);
+    const base = group === "all" ? allSigns : allSigns.filter((s) => signGroupOf(s) === group);
     return applyText("sign", base);
-  }, [group, applyText]);
+  }, [group, applyText, allSigns]);
 
   return (
     <PortalShell eyebrow="Highway Code" title="Road signs">
@@ -51,11 +74,11 @@ function RoadSignsPage() {
 
       <div className="mt-6 flex flex-wrap gap-2">
         <CategoryChip active={group === "all"} onClick={() => setGroup("all")}>
-          All ({signs.length})
+          All ({allSigns.length})
         </CategoryChip>
         {signGroups.map((g) => (
           <CategoryChip key={g.slug} active={group === g.slug} onClick={() => setGroup(g.slug)}>
-            {g.title} ({signsByGroup(g.slug).length})
+            {g.title} ({allSigns.filter((s) => signGroupOf(s) === g.slug).length})
           </CategoryChip>
         ))}
       </div>
