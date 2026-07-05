@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin, Star } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
+import { useSiteRating } from "@/hooks/useSiteRating";
 import { areas, getArea, type AreaPage } from "@/data/areas";
 import { listAreas } from "@/lib/local-content.functions";
 
