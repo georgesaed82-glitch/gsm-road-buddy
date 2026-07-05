@@ -104,6 +104,7 @@ export type Database = {
       content_overrides: {
         Row: {
           created_at: string
+          data: Json | null
           description: string | null
           group_slug: string | null
           image_path: string | null
@@ -117,6 +118,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          data?: Json | null
           description?: string | null
           group_slug?: string | null
           image_path?: string | null
@@ -130,6 +132,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          data?: Json | null
           description?: string | null
           group_slug?: string | null
           image_path?: string | null
