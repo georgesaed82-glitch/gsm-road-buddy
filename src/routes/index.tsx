@@ -252,6 +252,7 @@ function AreasSection({ s }: SectionProps) {
 }
 
 function RecentPassSection({ s }: SectionProps) {
+  const rating = useSiteRating();
   return (
     <section className="bg-muted py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
