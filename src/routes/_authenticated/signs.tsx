@@ -131,7 +131,7 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
                 {items.map((s) => (
                   <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
                     <div className="flex h-[110px] w-[110px] shrink-0 items-center justify-center">
-                      <OfficialSignImage sign={s} variant="card" overrideSrc={get("sign", s.id)?.image_url ?? null} />
+                      <OfficialSignImage sign={s} variant="card" overrideSrc={imageFor(s.id)} />
                     </div>
                     <div className="min-w-0">
                       <div className="font-display text-base leading-tight">{s.name}</div>
@@ -153,17 +153,21 @@ type QState =
   | { phase: "revealed"; chosen: number };
 
 function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () => void }) {
-  const { applyText, get } = useContentOverrides();
+  const { applyText, allSigns, signsByCategory, imageFor } = useSignsCms();
+  const source = useMemo(
+    () => (category ? signsByCategory(category) : allSigns),
+    [category, signsByCategory, allSigns],
+  );
   const pool = useMemo(
-    () => shuffle(applyText("sign", category ? signsByCategory(category) : signs)),
-    [category, applyText],
+    () => shuffle(applyText("sign", source)),
+    [applyText, source],
   );
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState({ answered: 0, correct: 0 });
   const [finished, setFinished] = useState(false);
   const [missed, setMissed] = useState<Sign[]>([]);
   const current: Sign | undefined = pool[idx];
-  const opts = useMemo(() => (current ? buildSignOptions(current, category ? signsByCategory(category) : signs) : null), [current, category]);
+  const opts = useMemo(() => (current ? buildSignOptions(current, source) : null), [current, source]);
   const [state, setState] = useState<QState>({ phase: "answering", chosen: null });
 
   if (!current || finished) {
