@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/PortalShell";
 import { policeSignals, signalGroups } from "@/data/policeSignals";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
 export const Route = createFileRoute("/_authenticated/police-signals")({
   head: () => ({
@@ -14,6 +15,8 @@ export const Route = createFileRoute("/_authenticated/police-signals")({
 });
 
 function PoliceSignalsPage() {
+  const { applyText, get } = useContentOverrides();
+  const items = applyText("signal", policeSignals);
   return (
     <PortalShell eyebrow="Highway Code" title="Arm signals — police, HATOs & drivers">
       <p className="max-w-2xl text-muted-foreground">
@@ -29,20 +32,25 @@ function PoliceSignalsPage() {
 
       <div className="mt-10 space-y-14">
         {signalGroups.map((group) => {
-          const items = policeSignals.filter((s) => s.group === group.slug);
+          const groupItems = items.filter((s) => s.group === group.slug);
           return (
             <section key={group.slug}>
               <h2 className="font-display text-2xl leading-tight sm:text-3xl">{group.title}</h2>
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{group.blurb}</p>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {items.map((s) => {
+                {groupItems.map((s) => {
                   const Visual = s.Visual;
+                  const img = get("signal", s.id)?.image_url ?? null;
                   return (
                     <article key={s.id} className="border border-border bg-card p-4">
                       <div className="mx-auto w-40 max-w-full">
                         <div className="aspect-square overflow-hidden border border-border">
-                          <Visual />
+                          {img ? (
+                            <img src={img} alt={s.name} className="h-full w-full object-cover" />
+                          ) : (
+                            <Visual />
+                          )}
                         </div>
                       </div>
                       <h3 className="mt-4 font-display text-lg leading-tight">{s.name}</h3>
