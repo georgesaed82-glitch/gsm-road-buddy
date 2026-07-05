@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Star, ArrowLeft, Search, ExternalLink, Instagram, Facebook } from "lucide-react";
 import { reviews } from "@/data/reviews";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({
@@ -33,17 +34,31 @@ export const Route = createFileRoute("/reviews")({
 function ReviewsPage() {
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(18);
+  const { get } = useContentOverrides();
+
+  const merged = useMemo(() =>
+    reviews.map((r, i) => {
+      const o = get("review", `r-${i}`);
+      if (!o) return r;
+      return {
+        name: o.name ?? r.name,
+        note: o.description ?? r.note,
+        quote: (o.data?.blocks?.[0]?.body) ?? r.quote,
+      };
+    }),
+    [get],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return reviews;
-    return reviews.filter(
+    if (!q) return merged;
+    return merged.filter(
       (r) =>
         r.name.toLowerCase().includes(q) ||
         r.note.toLowerCase().includes(q) ||
         r.quote.toLowerCase().includes(q),
     );
-  }, [query]);
+  }, [query, merged]);
 
   const shown = filtered.slice(0, visible);
 

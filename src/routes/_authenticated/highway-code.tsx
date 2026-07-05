@@ -160,11 +160,7 @@ function HighwayCodePage() {
                 ))}
               </ul>
 
-              {georgesTips[c.slug]?.map((tip, i) => (
-                <GeorgesTip key={i} title={tip.title}>
-                  {tip.body}
-                </GeorgesTip>
-              ))}
+              <TopicGeorgesTips slug={c.slug} />
 
               <div className="mt-5 border-t border-border pt-3">
                 <label className="flex cursor-pointer items-center gap-2 text-sm">
@@ -200,5 +196,30 @@ function HighwayCodePage() {
         )}
       </div>
     </PortalShell>
+  );
+}
+
+function TopicGeorgesTips({ slug }: { slug: string }) {
+  const { getBlocks } = useContentOverrides();
+  const override = getBlocks("georges-tip", slug);
+  if (override) {
+    return (
+      <>
+        {override.map((b, i) => (
+          <GeorgesTip key={i} title={b.title ?? ""}>
+            <p>{b.body ?? ""}</p>
+          </GeorgesTip>
+        ))}
+      </>
+    );
+  }
+  return (
+    <>
+      {georgesTips[slug]?.map((tip, i) => (
+        <GeorgesTip key={i} title={tip.title}>
+          {tip.body}
+        </GeorgesTip>
+      ))}
+    </>
   );
 }

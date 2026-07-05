@@ -2,9 +2,42 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { verifyAdminPasswordServer } from "./portal-access.functions";
 
-export type ContentKind = "sign" | "marking" | "signal" | "highway";
+export type OverrideBlock = {
+  title?: string;
+  body?: string;
+  aid?: string;
+  rule?: string;
+  note?: string;
+  image_path?: string;
+  image_url?: string;
+};
+export type OverrideData = {
+  blocks?: OverrideBlock[];
+  strings?: string[];
+};
 
-const KIND_VALUES = ["sign", "marking", "signal", "highway"] as const;
+export type ContentKind =
+  | "sign"
+  | "marking"
+  | "signal"
+  | "highway"
+  | "georges-tip"
+  | "georges-principle"
+  | "memory-tip"
+  | "common-fail"
+  | "review";
+
+const KIND_VALUES = [
+  "sign",
+  "marking",
+  "signal",
+  "highway",
+  "georges-tip",
+  "georges-principle",
+  "memory-tip",
+  "common-fail",
+  "review",
+] as const;
 
 export type ContentOverrideRow = {
   kind: ContentKind;
@@ -16,6 +49,7 @@ export type ContentOverrideRow = {
   image_url: string | null;
   key_points: string[] | null;
   topics: string[] | null;
+  data: OverrideData | null;
   updated_at: string;
 };
 
@@ -28,7 +62,9 @@ export const listContentOverrides = createServerFn({ method: "GET" }).handler(
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("content_overrides")
-      .select("kind, item_id, name, description, group_slug, image_path, key_points, topics, updated_at");
+      .select(
+        "kind, item_id, name, description, group_slug, image_path, key_points, topics, data, updated_at",
+      );
     if (error) throw new Error(error.message);
     const rows = (data ?? []) as Array<Omit<ContentOverrideRow, "image_url">>;
 
@@ -56,11 +92,12 @@ const upsertSchema = z.object({
   kind: z.enum(KIND_VALUES),
   item_id: z.string().min(1).max(120),
   name: z.string().trim().min(1).max(300).nullable().optional(),
-  description: z.string().trim().min(1).max(6000).nullable().optional(),
+  description: z.string().trim().min(1).max(8000).nullable().optional(),
   group_slug: z.string().trim().min(1).max(60).nullable().optional(),
   image_path: z.string().trim().max(400).nullable().optional(),
   key_points: z.array(z.string().trim().min(1).max(1000)).max(40).nullable().optional(),
   topics: z.array(z.string().trim().min(1).max(120)).max(20).nullable().optional(),
+  data: z.any().nullable().optional(),
 });
 
 export const upsertContentOverride = createServerFn({ method: "POST" })
@@ -77,6 +114,7 @@ export const upsertContentOverride = createServerFn({ method: "POST" })
       image_path: data.image_path ?? null,
       key_points: data.key_points ?? null,
       topics: data.topics ?? null,
+      data: data.data ?? null,
     };
     const { error } = await supabaseAdmin
       .from("content_overrides")

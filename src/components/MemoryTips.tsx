@@ -1,6 +1,7 @@
 import { Lightbulb } from "lucide-react";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
-const tips = [
+const defaultTips = [
   { title: "Road studs — which colour, where?", aid: "Red = Left · Amber = Right · White = Middle · Green = sliP road", body: "Red on the left edge, Amber next to the central reservation on the right, White between lanes, Green where a slip road meets the main carriageway. Green + yellow = temporary works." },
   { title: "Sign shapes — what they do", aid: "Circles Order · Triangles Warn · Rectangles Inform · Octagon = STOP · ▽ = GIVE WAY", body: "Blue circle = must do. Red-ringed circle = must not. Red triangle (point up) = warning. Downward triangle = give way. Octagon is only ever STOP." },
   { title: "Sign background colours", aid: "Blue Motorway · Green Primary (A-road) · White Local · Brown Tourist · Yellow Diversion", body: "You can tell the type of road from the sign colour before you can read a single word on it." },
@@ -12,6 +13,11 @@ const tips = [
 ];
 
 export function MemoryTips() {
+  const { getBlocks } = useContentOverrides();
+  const override = getBlocks("memory-tip", "default");
+  const tips = override
+    ? override.map((b) => ({ title: b.title ?? "", aid: b.aid ?? "", body: b.body ?? "" }))
+    : defaultTips;
   return (
     <section id="memory-tips" className="scroll-mt-24 border border-border bg-card p-5 sm:p-6">
       <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Memory aids</div>

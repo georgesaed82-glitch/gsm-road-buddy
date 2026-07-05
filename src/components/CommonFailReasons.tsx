@@ -1,6 +1,7 @@
 import { AlertTriangle, Eye, Route, Timer, Gauge, Compass } from "lucide-react";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
-const reasons = [
+const defaultReasons = [
   { icon: Eye, title: "Not checking mirrors properly", body: "Especially before signalling, changing lane, or slowing down. Examiners want to see MSM every single time — mirrors first, then signal, then manoeuvre.", rule: "Rules 159, 161" },
   { icon: AlertTriangle, title: "Missing blind spots", body: "Before moving off, changing lane, or leaving a parked position, turn your head — the mirrors alone will not cover the blind spot over your shoulder.", rule: "Rules 159, 161, 267" },
   { icon: Route, title: "Incorrect positioning", body: "Drifting into another lane on roundabouts, cutting corners on right turns, or sitting too close to the kerb / centre line. Hold a clear, deliberate lane position.", rule: "Rules 160, 179, 186" },
@@ -10,6 +11,16 @@ const reasons = [
 ];
 
 export function CommonFailReasons() {
+  const { getBlocks } = useContentOverrides();
+  const override = getBlocks("common-fail", "default");
+  const reasons = override
+    ? override.map((b, i) => ({
+        icon: defaultReasons[i % defaultReasons.length].icon,
+        title: b.title ?? "",
+        body: b.body ?? "",
+        rule: b.rule ?? "",
+      }))
+    : defaultReasons;
   return (
     <section id="common-fail-reasons" className="scroll-mt-24 border border-border bg-card p-5 sm:p-6">
       <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Practical test</div>
