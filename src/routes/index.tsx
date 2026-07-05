@@ -125,6 +125,7 @@ function Home() {
 type SectionProps = { s: Partial<HomeSectionRow> };
 
 function HeroSection({ s }: SectionProps) {
+  const rating = useSiteRating();
   return (
     <section className="relative overflow-hidden bg-background">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-8 lg:pb-24 lg:pt-20">
