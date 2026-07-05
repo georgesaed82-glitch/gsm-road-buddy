@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TheoryRouteImport } from './routes/theory'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ReviewsRouteImport } from './routes/reviews'
@@ -23,7 +24,6 @@ import { Route as AreasIndexRouteImport } from './routes/areas.index'
 import { Route as DevSignVariantsRouteImport } from './routes/dev.sign-variants'
 import { Route as AreasAreaRouteImport } from './routes/areas.$area'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AuthenticatedTheoryRouteImport } from './routes/_authenticated/theory'
 import { Route as AuthenticatedSignsRouteImport } from './routes/_authenticated/signs'
 import { Route as AuthenticatedRoadSignsRouteImport } from './routes/_authenticated/road-signs'
 import { Route as AuthenticatedRoadMarkingsRouteImport } from './routes/_authenticated/road-markings'
@@ -54,6 +54,11 @@ import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminAccessRouteImport } from './routes/_authenticated/admin.access'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
+const TheoryRoute = TheoryRouteImport.update({
+  id: '/theory',
+  path: '/theory',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -122,11 +127,6 @@ const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedTheoryRoute = AuthenticatedTheoryRouteImport.update({
-  id: '/theory',
-  path: '/theory',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSignsRoute = AuthenticatedSignsRouteImport.update({
   id: '/signs',
@@ -299,6 +299,7 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/theory': typeof TheoryRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
@@ -316,7 +317,6 @@ export interface FileRoutesByFullPath {
   '/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
-  '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
@@ -344,6 +344,7 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/theory': typeof TheoryRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/gsm-method': typeof AuthenticatedGsmMethodRoute
@@ -360,7 +361,6 @@ export interface FileRoutesByTo {
   '/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
-  '/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
@@ -390,6 +390,7 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/theory': typeof TheoryRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
@@ -407,7 +408,6 @@ export interface FileRoutesById {
   '/_authenticated/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/_authenticated/road-signs': typeof AuthenticatedRoadSignsRoute
   '/_authenticated/signs': typeof AuthenticatedSignsRoute
-  '/_authenticated/theory': typeof AuthenticatedTheoryRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
@@ -437,6 +437,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/services'
     | '/sitemap.xml'
+    | '/theory'
     | '/admin'
     | '/dashboard'
     | '/driving-clips'
@@ -454,7 +455,6 @@ export interface FileRouteTypes {
     | '/road-markings'
     | '/road-signs'
     | '/signs'
-    | '/theory'
     | '/api/chat'
     | '/areas/$area'
     | '/dev/sign-variants'
@@ -482,6 +482,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/services'
     | '/sitemap.xml'
+    | '/theory'
     | '/dashboard'
     | '/driving-clips'
     | '/gsm-method'
@@ -498,7 +499,6 @@ export interface FileRouteTypes {
     | '/road-markings'
     | '/road-signs'
     | '/signs'
-    | '/theory'
     | '/api/chat'
     | '/areas/$area'
     | '/dev/sign-variants'
@@ -527,6 +527,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/services'
     | '/sitemap.xml'
+    | '/theory'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/driving-clips'
@@ -544,7 +545,6 @@ export interface FileRouteTypes {
     | '/_authenticated/road-markings'
     | '/_authenticated/road-signs'
     | '/_authenticated/signs'
-    | '/_authenticated/theory'
     | '/api/chat'
     | '/areas/$area'
     | '/dev/sign-variants'
@@ -574,6 +574,7 @@ export interface RootRouteChildren {
   ReviewsRoute: typeof ReviewsRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TheoryRoute: typeof TheoryRoute
   ApiChatRoute: typeof ApiChatRoute
   AreasAreaRoute: typeof AreasAreaRoute
   DevSignVariantsRoute: typeof DevSignVariantsRoute
@@ -583,6 +584,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/theory': {
+      id: '/theory'
+      path: '/theory'
+      fullPath: '/theory'
+      preLoaderRoute: typeof TheoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -680,13 +688,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/theory': {
-      id: '/_authenticated/theory'
-      path: '/theory'
-      fullPath: '/theory'
-      preLoaderRoute: typeof AuthenticatedTheoryRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/signs': {
       id: '/_authenticated/signs'
@@ -955,7 +956,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRoadMarkingsRoute: typeof AuthenticatedRoadMarkingsRoute
   AuthenticatedRoadSignsRoute: typeof AuthenticatedRoadSignsRoute
   AuthenticatedSignsRoute: typeof AuthenticatedSignsRoute
-  AuthenticatedTheoryRoute: typeof AuthenticatedTheoryRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -976,7 +976,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRoadMarkingsRoute: AuthenticatedRoadMarkingsRoute,
   AuthenticatedRoadSignsRoute: AuthenticatedRoadSignsRoute,
   AuthenticatedSignsRoute: AuthenticatedSignsRoute,
-  AuthenticatedTheoryRoute: AuthenticatedTheoryRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -993,6 +992,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewsRoute: ReviewsRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TheoryRoute: TheoryRoute,
   ApiChatRoute: ApiChatRoute,
   AreasAreaRoute: AreasAreaRoute,
   DevSignVariantsRoute: DevSignVariantsRoute,
@@ -1002,3 +1002,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -11,7 +11,7 @@ import { CheckCircle2, XCircle, BookOpen, FileText, Lightbulb, Sparkles, Target,
 import { addMistake, removeMistake } from "@/lib/mistakes";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 
-export const Route = createFileRoute("/_authenticated/theory")({
+export const Route = createFileRoute("/theory")({
   head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
   validateSearch: (search: Record<string, unknown>): { category?: string } => {
     return typeof search.category === "string" ? { category: search.category } : {};
