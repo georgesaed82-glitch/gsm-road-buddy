@@ -9,7 +9,7 @@ export type OverrideBlock = {
   rule?: string;
   note?: string;
   image_path?: string;
-  image_url?: string;
+  image_url?: string | null;
 };
 export type OverrideData = {
   blocks?: OverrideBlock[];
