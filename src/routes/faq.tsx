@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import {
   Accordion,
@@ -31,19 +30,17 @@ export const Route = createFileRoute("/faq")({
   }),
   component: FaqPage,
   loader: async ({ context }) => {
-    const faqs = await context.queryClient.fetchQuery({
+    await context.queryClient.ensureQueryData({
       queryKey: ["faqs-public"],
       queryFn: () => listPublishedFaqs(),
     });
-    return { faqs };
   },
 });
 
 function FaqPage() {
-  const listFn = useServerFn(listPublishedFaqs);
-  const { data: faqs = [] } = useQuery({
+  const { data: faqs = [] } = useSuspenseQuery({
     queryKey: ["faqs-public"],
-    queryFn: () => listFn(),
+    queryFn: () => listPublishedFaqs(),
   });
   const [q, setQ] = useState("");
 
