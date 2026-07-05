@@ -3,6 +3,9 @@ import { useMemo, useState } from "react";
 import { Star, ArrowLeft, Search, ExternalLink, Instagram, Facebook } from "lucide-react";
 import { reviews } from "@/data/reviews";
 import { useContentOverrides } from "@/hooks/useContentOverrides";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { listReviews } from "@/lib/local-content.functions";
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({
@@ -35,9 +38,22 @@ function ReviewsPage() {
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(18);
   const { get } = useContentOverrides();
+  const listFn = useServerFn(listReviews);
+  const { data: dbRows } = useQuery({
+    queryKey: ["reviews-public"],
+    queryFn: () => listFn(),
+  });
+
+  const source = useMemo(() => {
+    const enabled = (dbRows ?? []).filter((r) => r.enabled);
+    if (enabled.length > 0) {
+      return enabled.map((r) => ({ name: r.name, note: r.note, quote: r.quote }));
+    }
+    return reviews;
+  }, [dbRows]);
 
   const merged = useMemo(() =>
-    reviews.map((r, i) => {
+    source.map((r, i) => {
       const o = get("review", `r-${i}`);
       if (!o) return r;
       return {
@@ -46,7 +62,7 @@ function ReviewsPage() {
         quote: (o.data?.blocks?.[0]?.body) ?? r.quote,
       };
     }),
-    [get],
+    [get, source],
   );
 
   const filtered = useMemo(() => {
@@ -78,7 +94,7 @@ function ReviewsPage() {
             What learners say
           </div>
           <h1 className="mt-4 max-w-3xl font-display text-5xl font-medium leading-[1.05] sm:text-6xl">
-            {reviews.length} five-star reviews from West London learners.
+            {source.length} five-star reviews from West London learners.
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-primary-foreground/80">
             Verified students from Notting Hill, Holland Park, Kensington and beyond. First-time

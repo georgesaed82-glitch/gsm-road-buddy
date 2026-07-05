@@ -38,6 +38,54 @@ export type Database = {
         }
         Relationships: []
       }
+      areas: {
+        Row: {
+          area: string
+          created_at: string
+          enabled: boolean
+          faqs: Json
+          highlights: Json
+          id: string
+          intro: string
+          nearby_postcodes: Json
+          order_index: number
+          postcode: string
+          routes_text: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          area: string
+          created_at?: string
+          enabled?: boolean
+          faqs?: Json
+          highlights?: Json
+          id?: string
+          intro?: string
+          nearby_postcodes?: Json
+          order_index?: number
+          postcode: string
+          routes_text?: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          enabled?: boolean
+          faqs?: Json
+          highlights?: Json
+          id?: string
+          intro?: string
+          nearby_postcodes?: Json
+          order_index?: number
+          postcode?: string
+          routes_text?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       auth_attempts: {
         Row: {
           captcha_verified: boolean
@@ -496,6 +544,48 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           video_path?: string
+        }
+        Relationships: []
+      }
+      hazard_clips: {
+        Row: {
+          created_at: string
+          developing_hazard: string
+          difficulty: string
+          duration_seconds: number
+          enabled: boolean
+          id: string
+          order_index: number
+          scenario: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          developing_hazard?: string
+          difficulty?: string
+          duration_seconds?: number
+          enabled?: boolean
+          id?: string
+          order_index?: number
+          scenario?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          developing_hazard?: string
+          difficulty?: string
+          duration_seconds?: number
+          enabled?: boolean
+          id?: string
+          order_index?: number
+          scenario?: string
+          slug?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -969,6 +1059,42 @@ export type Database = {
           platform?: string | null
           session_id?: string | null
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          name: string
+          note: string
+          order_index: number
+          quote: string
+          rating: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          name: string
+          note?: string
+          order_index?: number
+          quote: string
+          rating?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          name?: string
+          note?: string
+          order_index?: number
+          quote?: string
+          rating?: number
+          updated_at?: string
         }
         Relationships: []
       }
