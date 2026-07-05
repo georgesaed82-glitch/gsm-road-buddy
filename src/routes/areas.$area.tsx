@@ -5,12 +5,36 @@ import { Phone, Mail, MapPin, Star } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { areas, getArea, type AreaPage } from "@/data/areas";
+import { listAreas } from "@/lib/local-content.functions";
+
+async function resolveArea(slug: string): Promise<AreaPage> {
+  try {
+    const rows = await listAreas();
+    const enabled = rows.filter((r) => r.enabled);
+    const match = enabled.find((r) => r.slug === slug);
+    if (match) {
+      return {
+        slug: match.slug,
+        area: match.area,
+        postcode: match.postcode,
+        nearbyPostcodes: match.nearby_postcodes,
+        intro: match.intro,
+        highlights: match.highlights,
+        routes: match.routes_text,
+        faqs: match.faqs,
+      };
+    }
+  } catch {
+    // fall through to static
+  }
+  const staticMatch = getArea(slug);
+  if (!staticMatch) throw notFound();
+  return staticMatch;
+}
 
 export const Route = createFileRoute("/areas/$area")({
   loader: ({ params }) => {
-    const area = getArea(params.area);
-    if (!area) throw notFound();
-    return area;
+    return resolveArea(params.area);
   },
   head: ({ loaderData }) => {
     const a = loaderData;

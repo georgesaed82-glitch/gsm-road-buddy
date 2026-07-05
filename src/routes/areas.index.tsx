@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin } from "lucide-react";
 import { areas } from "@/data/areas";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { listAreas } from "@/lib/local-content.functions";
 
 export const Route = createFileRoute("/areas/")({
   head: () => ({
@@ -17,6 +20,13 @@ export const Route = createFileRoute("/areas/")({
 });
 
 function AreasIndex() {
+  const listFn = useServerFn(listAreas);
+  const { data: dbRows } = useQuery({ queryKey: ["areas-public"], queryFn: () => listFn() });
+  const enabled = (dbRows ?? []).filter((r) => r.enabled);
+  const list =
+    enabled.length > 0
+      ? enabled.map((r) => ({ slug: r.slug, area: r.area, postcode: r.postcode }))
+      : areas;
   return (
     <div className="flex flex-col">
       <section className="bg-secondary/40 py-10 sm:py-12">
@@ -30,7 +40,7 @@ function AreasIndex() {
       <section className="py-8 sm:py-10">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-3">
-            {areas.map((a) => (
+            {list.map((a) => (
               <Link
                 key={a.slug}
                 to="/areas/$area"
