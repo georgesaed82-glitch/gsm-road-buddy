@@ -87,19 +87,22 @@ export const runDiagnostics = createServerFn({ method: "POST" })
     // instead of self-fetching. This is deterministic, avoids subrequest
     // loops, and catches the actual failure mode (a missing/renamed route).
     try {
-      const { routeTree } = await import("@/routeTree.gen");
+      const { getRouter } = await import("@/router");
+      const router = getRouter();
       const registered = new Set<string>();
-      const walk = (node: unknown) => {
-        const n = node as { path?: string; fullPath?: string; children?: Record<string, unknown> | unknown[] };
-        if (n?.fullPath) registered.add(n.fullPath);
-        if (n?.path) registered.add(n.path);
-        const kids = n?.children;
-        if (Array.isArray(kids)) kids.forEach(walk);
-        else if (kids && typeof kids === "object") Object.values(kids).forEach(walk);
+      const flat = (router as unknown as { flatRoutes?: Array<{ fullPath?: string; path?: string }> }).flatRoutes ?? [];
+      for (const r of flat) {
+        if (r.fullPath) registered.add(r.fullPath);
+        if (r.path) registered.add(r.path);
+      }
+      // Normalise: treat "/" and "" equivalently; strip trailing slashes.
+      const has = (p: string) => {
+        if (registered.has(p)) return true;
+        const noSlash = p.replace(/\/$/, "");
+        return registered.has(noSlash) || registered.has(noSlash + "/");
       };
-      walk(routeTree as unknown);
       for (const path of ROUTES) {
-        const ok = registered.has(path);
+        const ok = has(path);
         results.push({
           name: path,
           category: "Route",
