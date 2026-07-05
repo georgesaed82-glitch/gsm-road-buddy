@@ -35,7 +35,7 @@ export type ContentOverrideRow = {
   image_url: string | null;
   key_points: string[] | null;
   topics: string[] | null;
-  data: unknown | null;
+  data: Record<string, unknown> | null;
   updated_at: string;
 };
 
