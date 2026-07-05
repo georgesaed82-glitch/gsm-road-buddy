@@ -18,6 +18,7 @@ import { Footer } from "../components/Footer";
 import { AIChatWidget } from "../components/AIChatWidget";
 import { PageViewTracker } from "../components/PageViewTracker";
 import { PWAInstallTracker } from "../components/PWAInstallTracker";
+import { PageSeoOverride } from "../components/PageSeoOverride";
 import { registerServiceWorker } from "../lib/register-sw";
 
 
@@ -264,6 +265,7 @@ function RootComponent() {
         <AIChatWidget />
         <PageViewTracker />
         <PWAInstallTracker />
+        <PageSeoOverride />
       </div>
     </QueryClientProvider>
   );
