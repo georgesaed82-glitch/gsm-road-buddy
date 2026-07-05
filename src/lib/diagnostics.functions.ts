@@ -87,21 +87,23 @@ export const runDiagnostics = createServerFn({ method: "POST" })
     // instead of self-fetching. This is deterministic, avoids subrequest
     // loops, and catches the actual failure mode (a missing/renamed route).
     try {
-      const { routeTree } = await import("@/routeTree.gen");
+      const { getRouter } = await import("@/router");
+      const router = getRouter() as unknown as {
+        routesByPath?: Record<string, { fullPath?: string; path?: string; id?: string }>;
+        routesById?: Record<string, { fullPath?: string; path?: string; id?: string }>;
+      };
       const registered = new Set<string>();
-      type AnyRoute = { fullPath?: string; path?: string; id?: string; children?: unknown };
-      const walk = (node: AnyRoute) => {
-        if (node.fullPath) registered.add(node.fullPath);
-        if (node.path) registered.add(node.path);
-        if (node.id) registered.add(node.id);
-        const children = node.children;
-        if (Array.isArray(children)) {
-          for (const c of children) walk(c as AnyRoute);
-        } else if (children && typeof children === "object") {
-          for (const c of Object.values(children)) walk(c as AnyRoute);
+      const collect = (rec?: Record<string, { fullPath?: string; path?: string; id?: string }>) => {
+        if (!rec) return;
+        for (const key of Object.keys(rec)) registered.add(key);
+        for (const r of Object.values(rec)) {
+          if (r.fullPath) registered.add(r.fullPath);
+          if (r.path) registered.add(r.path);
+          if (r.id) registered.add(r.id);
         }
       };
-      walk(routeTree as unknown as AnyRoute);
+      collect(router.routesByPath);
+      collect(router.routesById);
       // Normalise: treat "/" and "" equivalently; strip trailing slashes.
       const has = (p: string) => {
         if (registered.has(p)) return true;
