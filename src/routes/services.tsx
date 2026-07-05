@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Check, ArrowRight, Car, Shield, FileCheck } from "lucide-react";
+import { usePageBlocks } from "@/hooks/usePageBlocks";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -24,38 +25,45 @@ export const Route = createFileRoute("/services")({
   component: ServicesPage,
 });
 
-const services = [
+const DEFAULT_SERVICES = [
   {
-    icon: Car,
-    title: "Beginner lessons",
+    id: "beginner",
+    name: "Beginner lessons",
     description:
       "Start from the basics in a dual-control car. Build clutch control, steering, and road awareness at your pace.",
-    features: ["1-to-1 tuition", "Dual-control cars", "Pick-up from home or work"],
+    key_points: ["1-to-1 tuition", "Dual-control cars", "Pick-up from home or work"],
   },
   {
-    icon: Shield,
-    title: "Refresher courses",
+    id: "refresher",
+    name: "Refresher courses",
     description:
       "Haven't driven in a while? Rebuild confidence on motorways, parking, and busy junctions.",
-    features: ["Flexible hours", "Motorway practice", "Parking confidence"],
+    key_points: ["Flexible hours", "Motorway practice", "Parking confidence"],
   },
   {
-    icon: FileCheck,
-    title: "Test preparation",
+    id: "test-prep",
+    name: "Test preparation",
     description:
       "Mock tests, manoeuvre coaching, and last-minute tips to help you pass the practical driving test.",
-    features: ["Mock test routes", "Show-me-tell-me questions", "Calm test-day coaching"],
+    key_points: ["Mock test routes", "Show-me-tell-me questions", "Calm test-day coaching"],
   },
   {
-    icon: ArrowRight,
-    title: "Intensive courses",
+    id: "intensive",
+    name: "Intensive courses",
     description:
       "Fast-track your learning with daily lessons. Ideal if you need to pass quickly or have a deadline.",
-    features: ["Daily lessons", "Theory support", "Test booking help"],
+    key_points: ["Daily lessons", "Theory support", "Test booking help"],
   },
 ];
+const SERVICE_ICONS: Record<string, typeof Car> = {
+  beginner: Car,
+  refresher: Shield,
+  "test-prep": FileCheck,
+  intensive: ArrowRight,
+};
 
 function ServicesPage() {
+  const services = usePageBlocks("services", DEFAULT_SERVICES);
   return (
     <div className="flex flex-col">
       <section className="bg-secondary/40 py-16">
@@ -72,14 +80,16 @@ function ServicesPage() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 md:grid-cols-2">
-            {services.map((service) => (
-              <Card key={service.title} className="border-border bg-card">
+            {services.map((service) => {
+              const Icon = SERVICE_ICONS[service.id] ?? Car;
+              return (
+              <Card key={service.id} className="border-border bg-card">
                 <CardHeader className="flex flex-row items-start gap-4 pb-4">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
-                    <service.icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <h2 className="font-display text-xl font-semibold">{service.title}</h2>
+                    <h2 className="font-display text-xl font-semibold">{service.name}</h2>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {service.description}
                     </p>
@@ -87,7 +97,7 @@ function ServicesPage() {
                 </CardHeader>
                 <CardContent className="pt-0">
                   <ul className="space-y-2">
-                    {service.features.map((feature) => (
+                    {(service.key_points ?? []).map((feature) => (
                       <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Check className="h-4 w-4 text-success" />
                         {feature}
@@ -96,7 +106,8 @@ function ServicesPage() {
                   </ul>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
