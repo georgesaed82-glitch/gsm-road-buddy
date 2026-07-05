@@ -180,7 +180,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {missed.map((s) => (
                 <div key={s.id} className="flex gap-3 border border-border p-3">
-                  <OfficialSignImage sign={s} variant="thumb" />
+                  <OfficialSignImage sign={s} variant="thumb" overrideSrc={get("sign", s.id)?.image_url ?? null} />
                   <div className="min-w-0">
                     <div className="text-sm font-medium">{s.name}</div>
                     <p className="mt-1 text-xs text-muted-foreground">{s.meaning}</p>
@@ -240,7 +240,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
 
         <div className="mt-6 flex flex-col items-center gap-4">
           <div className="flex h-[200px] items-center justify-center">
-            <OfficialSignImage sign={current} variant="detail" />
+            <OfficialSignImage sign={current} variant="detail" overrideSrc={get("sign", current.id)?.image_url ?? null} />
           </div>
           <h2 className="text-center font-display text-2xl leading-snug">What does this sign mean?</h2>
         </div>
@@ -287,7 +287,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
               {correct ? "Correct" : "Not quite — here's the sign explained"}
             </div>
             <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row">
-              <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" /></div>
+              <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" overrideSrc={get("sign", current.id)?.image_url ?? null} /></div>
               <div>
                 <div className="font-display text-lg">{current.name}</div>
                 <p className="mt-1 text-sm text-muted-foreground">{current.meaning}</p>
