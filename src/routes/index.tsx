@@ -289,6 +289,8 @@ function RecentPassSection({ s }: SectionProps) {
 }
 
 function GallerySection({ s }: SectionProps) {
+  const captions = usePageBlockStrings("home-gallery-captions", DEFAULT_GALLERY_CAPTIONS);
+  const galleryPhotos = GALLERY_URLS.map((url, i) => ({ url, caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "" }));
   return (
     <section className="bg-muted py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
