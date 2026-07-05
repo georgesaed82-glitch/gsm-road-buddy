@@ -2,7 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { verifyAdminPasswordServer } from "./portal-access.functions";
 
-export type SiteSettingsRow = { key: string; value: Record<string, unknown>; updated_at: string };
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+export type SiteSettingsRow = { key: string; value: { [key: string]: JsonValue }; updated_at: string };
 export type NavItemRow = {
   id: string;
   location: "header" | "footer-primary" | "footer-secondary" | "portal";
@@ -43,7 +44,7 @@ export const upsertSiteSetting = createServerFn({ method: "POST" })
       .object({
         password: z.string(),
         key: z.string().min(1).max(60),
-        value: z.record(z.string(), z.any()),
+        value: z.record(z.string(), z.any()) as z.ZodType<{ [key: string]: JsonValue }>,
       })
       .parse(d),
   )
