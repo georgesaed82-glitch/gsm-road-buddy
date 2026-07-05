@@ -172,7 +172,7 @@ export const bulkUpdateTheoryQuestions = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const simple: Record<string, unknown> = {};
+    const simple: { category?: string; difficulty?: TheoryDifficulty; is_published?: boolean } = {};
     if (data.patch.category !== undefined) simple.category = data.patch.category;
     if (data.patch.difficulty !== undefined) simple.difficulty = data.patch.difficulty;
     if (data.patch.is_published !== undefined) simple.is_published = data.patch.is_published;
