@@ -9,6 +9,7 @@ import { signs, signCategories, signsByCategory, buildSignOptions, type Sign, ty
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { SignsShapesLegend } from "@/components/SignsShapesLegend";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
 export const Route = createFileRoute("/_authenticated/signs")({
   head: () => ({ meta: [{ title: "Road signs quiz · GSM" }] }),
@@ -112,6 +113,7 @@ function SignsPage() {
 }
 
 function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: () => void }) {
+  const { applyText, get } = useContentOverrides();
   const groups = category ? [category] : signCategories.map((c) => c.slug);
   return (
     <div>
