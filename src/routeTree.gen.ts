@@ -24,6 +24,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AreasIndexRouteImport } from './routes/areas.index'
+import { Route as LegalSlugRouteImport } from './routes/legal.$slug'
 import { Route as DevSignVariantsRouteImport } from './routes/dev.sign-variants'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AreasAreaRouteImport } from './routes/areas.$area'
@@ -150,6 +151,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
 const AreasIndexRoute = AreasIndexRouteImport.update({
   id: '/areas/',
   path: '/areas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalSlugRoute = LegalSlugRouteImport.update({
+  id: '/legal/$slug',
+  path: '/legal/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevSignVariantsRoute = DevSignVariantsRouteImport.update({
@@ -481,6 +487,7 @@ export interface FileRoutesByFullPath {
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/areas/': typeof AreasIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
@@ -549,6 +556,7 @@ export interface FileRoutesByTo {
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/areas': typeof AreasIndexRoute
   '/blog': typeof BlogIndexRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
@@ -620,6 +628,7 @@ export interface FileRoutesById {
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
+  '/legal/$slug': typeof LegalSlugRoute
   '/areas/': typeof AreasIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/_authenticated/admin/access': typeof AuthenticatedAdminAccessRoute
@@ -691,6 +700,7 @@ export interface FileRouteTypes {
     | '/areas/$area'
     | '/blog/$slug'
     | '/dev/sign-variants'
+    | '/legal/$slug'
     | '/areas/'
     | '/blog/'
     | '/admin/access'
@@ -759,6 +769,7 @@ export interface FileRouteTypes {
     | '/areas/$area'
     | '/blog/$slug'
     | '/dev/sign-variants'
+    | '/legal/$slug'
     | '/areas'
     | '/blog'
     | '/admin/access'
@@ -829,6 +840,7 @@ export interface FileRouteTypes {
     | '/areas/$area'
     | '/blog/$slug'
     | '/dev/sign-variants'
+    | '/legal/$slug'
     | '/areas/'
     | '/blog/'
     | '/_authenticated/admin/access'
@@ -883,6 +895,7 @@ export interface RootRouteChildren {
   AreasAreaRoute: typeof AreasAreaRoute
   BlogSlugRoute: typeof BlogSlugRoute
   DevSignVariantsRoute: typeof DevSignVariantsRoute
+  LegalSlugRoute: typeof LegalSlugRoute
   AreasIndexRoute: typeof AreasIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -993,6 +1006,13 @@ declare module '@tanstack/react-router' {
       path: '/areas'
       fullPath: '/areas/'
       preLoaderRoute: typeof AreasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/$slug': {
+      id: '/legal/$slug'
+      path: '/legal/$slug'
+      fullPath: '/legal/$slug'
+      preLoaderRoute: typeof LegalSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev/sign-variants': {
@@ -1513,6 +1533,7 @@ const rootRouteChildren: RootRouteChildren = {
   AreasAreaRoute: AreasAreaRoute,
   BlogSlugRoute: BlogSlugRoute,
   DevSignVariantsRoute: DevSignVariantsRoute,
+  LegalSlugRoute: LegalSlugRoute,
   AreasIndexRoute: AreasIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
