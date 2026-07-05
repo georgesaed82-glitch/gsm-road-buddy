@@ -267,17 +267,6 @@ function AdminRoadSignsPage() {
             onUploadImage={async (file) => {
               const b64 = await fileToBase64(file);
               try {
-                await upload({
-                  data: {
-                    password: getAdminPassword(),
-                    kind: "sign",
-                    item_id: row.id,
-                    filename: file.name,
-                    content_type: file.type || "image/png",
-                    base64: b64,
-                  },
-                });
-                // Attach path implicitly (uploader already stored image_path on the row via upload fn? No — it only uploads to storage & removes old; the path is returned but not upserted. We upsert now.)
                 const uploaded = await upload({
                   data: {
                     password: getAdminPassword(),
