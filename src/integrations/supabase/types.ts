@@ -356,6 +356,63 @@ export type Database = {
         }
         Relationships: []
       }
+      instructors: {
+        Row: {
+          badges: string[]
+          bio: string
+          color: string
+          created_at: string
+          cta_href: string
+          enabled: boolean
+          id: string
+          image_path: string | null
+          initials: string
+          location: string | null
+          name: string
+          order_index: number
+          rating: number | null
+          reviews: number | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          badges?: string[]
+          bio?: string
+          color?: string
+          created_at?: string
+          cta_href?: string
+          enabled?: boolean
+          id?: string
+          image_path?: string | null
+          initials?: string
+          location?: string | null
+          name: string
+          order_index?: number
+          rating?: number | null
+          reviews?: number | null
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          badges?: string[]
+          bio?: string
+          color?: string
+          created_at?: string
+          cta_href?: string
+          enabled?: boolean
+          id?: string
+          image_path?: string | null
+          initials?: string
+          location?: string | null
+          name?: string
+          order_index?: number
+          rating?: number | null
+          reviews?: number | null
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lesson_bookings: {
         Row: {
           created_at: string
@@ -430,6 +487,48 @@ export type Database = {
           label?: string
           location?: string
           order_index?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      packages: {
+        Row: {
+          created_at: string
+          cta_label: string
+          description: string
+          duration: string
+          enabled: boolean
+          features: string[]
+          id: string
+          name: string
+          order_index: number
+          popular: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string
+          description?: string
+          duration?: string
+          enabled?: boolean
+          features?: string[]
+          id?: string
+          name: string
+          order_index?: number
+          popular?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string
+          description?: string
+          duration?: string
+          enabled?: boolean
+          features?: string[]
+          id?: string
+          name?: string
+          order_index?: number
+          popular?: boolean
           updated_at?: string
         }
         Relationships: []
