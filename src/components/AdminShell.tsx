@@ -14,7 +14,7 @@ const items = [
   { to: "/admin/email", label: "Email settings", icon: Mail },
   { to: "/admin/hazard-videos", label: "Hazard videos", icon: Film },
   { to: "/admin/theory", label: "Edit theory", icon: BookOpen },
-  { to: "/admin/content", label: "Signs & markings", icon: SignpostBig },
+  { to: "/admin/content", label: "Signs, markings & Highway Code", icon: SignpostBig },
   { to: "/admin/diagnostics", label: "Diagnostics", icon: Activity },
   { to: "/admin/errors", label: "Errors", icon: AlertTriangle },
 ] as const;
