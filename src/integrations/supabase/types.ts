@@ -763,6 +763,69 @@ export type Database = {
         }
         Relationships: []
       }
+      lessons: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          duration_minutes: number | null
+          id: string
+          image_url: string
+          pdf_url: string
+          show_app: boolean
+          show_web: boolean
+          slug: string
+          sort_order: number
+          status: string
+          subtitle: string
+          tags: string[]
+          title: string
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          duration_minutes?: number | null
+          id?: string
+          image_url?: string
+          pdf_url?: string
+          show_app?: boolean
+          show_web?: boolean
+          slug: string
+          sort_order?: number
+          status?: string
+          subtitle?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+          video_url?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          duration_minutes?: number | null
+          id?: string
+          image_url?: string
+          pdf_url?: string
+          show_app?: boolean
+          show_web?: boolean
+          slug?: string
+          sort_order?: number
+          status?: string
+          subtitle?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
       nav_items: {
         Row: {
           enabled: boolean
