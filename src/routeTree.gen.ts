@@ -48,6 +48,7 @@ import { Route as AuthenticatedAdminTheoryRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminSiteSettingsRouteImport } from './routes/_authenticated/admin.site-settings'
 import { Route as AuthenticatedAdminSeoRouteImport } from './routes/_authenticated/admin.seo'
 import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_authenticated/admin.pwa-installs'
+import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated/admin.pricing'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminInstructorsRouteImport } from './routes/_authenticated/admin.instructors'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
@@ -265,6 +266,12 @@ const AuthenticatedAdminPwaInstallsRoute =
     path: '/pwa-installs',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminPricingRoute =
+  AuthenticatedAdminPricingRouteImport.update({
+    id: '/pricing',
+    path: '/pricing',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminNavigationRoute =
   AuthenticatedAdminNavigationRouteImport.update({
     id: '/navigation',
@@ -380,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
+  '/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
@@ -431,6 +439,7 @@ export interface FileRoutesByTo {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
+  '/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
@@ -485,6 +494,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/_authenticated/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
+  '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/_authenticated/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/_authenticated/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
@@ -539,6 +549,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/instructors'
     | '/admin/navigation'
+    | '/admin/pricing'
     | '/admin/pwa-installs'
     | '/admin/seo'
     | '/admin/site-settings'
@@ -590,6 +601,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/instructors'
     | '/admin/navigation'
+    | '/admin/pricing'
     | '/admin/pwa-installs'
     | '/admin/seo'
     | '/admin/site-settings'
@@ -643,6 +655,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/hazard-videos'
     | '/_authenticated/admin/instructors'
     | '/_authenticated/admin/navigation'
+    | '/_authenticated/admin/pricing'
     | '/_authenticated/admin/pwa-installs'
     | '/_authenticated/admin/seo'
     | '/_authenticated/admin/site-settings'
@@ -947,6 +960,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPwaInstallsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/pricing': {
+      id: '/_authenticated/admin/pricing'
+      path: '/pricing'
+      fullPath: '/admin/pricing'
+      preLoaderRoute: typeof AuthenticatedAdminPricingRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/navigation': {
       id: '/_authenticated/admin/navigation'
       path: '/navigation'
@@ -1046,6 +1066,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
   AuthenticatedAdminInstructorsRoute: typeof AuthenticatedAdminInstructorsRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
+  AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
   AuthenticatedAdminPwaInstallsRoute: typeof AuthenticatedAdminPwaInstallsRoute
   AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
   AuthenticatedAdminSiteSettingsRoute: typeof AuthenticatedAdminSiteSettingsRoute
@@ -1066,6 +1087,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
   AuthenticatedAdminInstructorsRoute: AuthenticatedAdminInstructorsRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
+  AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
   AuthenticatedAdminPwaInstallsRoute: AuthenticatedAdminPwaInstallsRoute,
   AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
   AuthenticatedAdminSiteSettingsRoute: AuthenticatedAdminSiteSettingsRoute,
