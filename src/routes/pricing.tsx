@@ -1,9 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Check, Mail, Phone } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
+import { listPackages, type PackageRow } from "@/lib/catalog.functions";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -26,88 +30,17 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
-const packages = [
-  {
-    name: "Single lessons",
-    duration: "2 hours",
-    description: "Perfect for an assessment, refresher, or booking as you go.",
-    features: [
-      "2 hours 1-to-1 tuition",
-      "Flexible location",
-      "Progress feedback",
-      "Pay-as-you-go",
-    ],
-    cta: "Get details",
-    popular: false,
-  },
-  {
-    name: "Twelve-hour packages",
-    duration: "12 hours",
-    description: "A structured block of lessons to build real confidence.",
-    features: [
-      "12 hours 1-to-1 tuition",
-      "Flexible location",
-      "Progress feedback",
-      "Discount bundle rate",
-    ],
-    cta: "Get details",
-    popular: true,
-  },
-  {
-    name: "Intense packages",
-    duration: "Intensive",
-    description: "Fast-track learning for learners who want to pass quickly.",
-    features: [
-      "Concentrated 1-to-1 tuition",
-      "Flexible location",
-      "Progress feedback",
-      "Discount bundle rate",
-    ],
-    cta: "Get details",
-    popular: false,
-  },
-  {
-    name: "Weekend packages",
-    duration: "Weekend",
-    description: "Saturday and Sunday sessions that fit around work or study.",
-    features: [
-      "Weekend 1-to-1 tuition",
-      "Flexible location",
-      "Progress feedback",
-      "Discount bundle rate",
-    ],
-    cta: "Get details",
-    popular: false,
-  },
-  {
-    name: "Refresher packages",
-    duration: "Refresher",
-    description: "Rebuild confidence after a break or returning to driving.",
-    features: [
-      "Tailored 1-to-1 tuition",
-      "Flexible location",
-      "Progress feedback",
-      "Discount bundle rate",
-    ],
-    cta: "Get details",
-    popular: false,
-  },
-  {
-    name: "Pass Plus",
-    duration: "Pass Plus",
-    description: "Advanced modules for motorway, night and all-weather driving.",
-    features: [
-      "Pass Plus 1-to-1 tuition",
-      "Flexible location",
-      "Progress feedback",
-      "Insurance discount potential",
-    ],
-    cta: "Get details",
-    popular: false,
-  },
-];
-
 function PricingPage() {
+  const listFn = useServerFn(listPackages);
+  const { data: packages = [] } = useQuery<PackageRow[]>({
+    queryKey: ["packages-public"],
+    queryFn: () => listFn(),
+    staleTime: 5 * 60_000,
+  });
+  const visible = packages.filter((p) => p.enabled);
+  const { business } = useSiteSettings();
+  const waHref = `https://wa.me/${business.phone_intl}`;
+  const emailHref = `mailto:${business.email}`;
   return (
     <div className="flex flex-col">
       <section className="bg-secondary/40 py-16">
@@ -124,9 +57,9 @@ function PricingPage() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {packages.map((pkg) => (
+            {visible.map((pkg) => (
               <Card
-                key={pkg.name}
+                key={pkg.id}
                 className={`relative border-border bg-card ${pkg.popular ? "ring-2 ring-primary" : ""}`}
               >
                 {pkg.popular && (
@@ -156,18 +89,18 @@ function PricingPage() {
                   <div className="mt-6 flex flex-col gap-2">
                     <Button asChild variant={pkg.popular ? "default" : "outline"} className="w-full gap-2">
                       <a
-                        href="https://wa.me/447961585231"
+                        href={waHref}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => trackContactClick("whatsapp", pkg.name)}
                       >
                         <WhatsAppIcon className="h-4 w-4" />
-                        WhatsApp us
+                        {pkg.cta_label || "WhatsApp us"}
                       </a>
                     </Button>
                     <Button asChild variant="ghost" className="w-full gap-2 text-muted-foreground hover:text-primary">
                       <a
-                        href="mailto:gsmdrivingschool@outlook.com"
+                        href={emailHref}
                         onClick={() => trackContactClick("email", pkg.name)}
                       >
                         <Mail className="h-4 w-4" />
@@ -190,7 +123,7 @@ function PricingPage() {
             <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild variant="outline" className="h-11 gap-2">
                 <a
-                  href="https://wa.me/447961585231"
+                  href={waHref}
                   onClick={() => trackContactClick("whatsapp", "Pricing CTA")}
                 >
                   <Phone className="h-4 w-4" />
