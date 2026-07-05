@@ -56,6 +56,7 @@ import { Route as AuthenticatedAdminRoadMarkingsRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminReviewsRouteImport } from './routes/_authenticated/admin.reviews'
 import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_authenticated/admin.pwa-installs'
 import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated/admin.pricing'
+import { Route as AuthenticatedAdminPoliceSignalsRouteImport } from './routes/_authenticated/admin.police-signals'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminInstructorsRouteImport } from './routes/_authenticated/admin.instructors'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
@@ -322,6 +323,12 @@ const AuthenticatedAdminPricingRoute =
     path: '/pricing',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminPoliceSignalsRoute =
+  AuthenticatedAdminPoliceSignalsRouteImport.update({
+    id: '/police-signals',
+    path: '/police-signals',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminNavigationRoute =
   AuthenticatedAdminNavigationRouteImport.update({
     id: '/navigation',
@@ -473,6 +480,7 @@ export interface FileRoutesByFullPath {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
+  '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
@@ -537,6 +545,7 @@ export interface FileRoutesByTo {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
+  '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
@@ -604,6 +613,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/_authenticated/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
+  '/_authenticated/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/_authenticated/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/_authenticated/admin/reviews': typeof AuthenticatedAdminReviewsRoute
@@ -671,6 +681,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/instructors'
     | '/admin/navigation'
+    | '/admin/police-signals'
     | '/admin/pricing'
     | '/admin/pwa-installs'
     | '/admin/reviews'
@@ -735,6 +746,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/instructors'
     | '/admin/navigation'
+    | '/admin/police-signals'
     | '/admin/pricing'
     | '/admin/pwa-installs'
     | '/admin/reviews'
@@ -801,6 +813,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/hazard-videos'
     | '/_authenticated/admin/instructors'
     | '/_authenticated/admin/navigation'
+    | '/_authenticated/admin/police-signals'
     | '/_authenticated/admin/pricing'
     | '/_authenticated/admin/pwa-installs'
     | '/_authenticated/admin/reviews'
@@ -1169,6 +1182,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPricingRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/police-signals': {
+      id: '/_authenticated/admin/police-signals'
+      path: '/police-signals'
+      fullPath: '/admin/police-signals'
+      preLoaderRoute: typeof AuthenticatedAdminPoliceSignalsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/navigation': {
       id: '/_authenticated/admin/navigation'
       path: '/navigation'
@@ -1308,6 +1328,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
   AuthenticatedAdminInstructorsRoute: typeof AuthenticatedAdminInstructorsRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
+  AuthenticatedAdminPoliceSignalsRoute: typeof AuthenticatedAdminPoliceSignalsRoute
   AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
   AuthenticatedAdminPwaInstallsRoute: typeof AuthenticatedAdminPwaInstallsRoute
   AuthenticatedAdminReviewsRoute: typeof AuthenticatedAdminReviewsRoute
@@ -1337,6 +1358,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
   AuthenticatedAdminInstructorsRoute: AuthenticatedAdminInstructorsRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
+  AuthenticatedAdminPoliceSignalsRoute: AuthenticatedAdminPoliceSignalsRoute,
   AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
   AuthenticatedAdminPwaInstallsRoute: AuthenticatedAdminPwaInstallsRoute,
   AuthenticatedAdminReviewsRoute: AuthenticatedAdminReviewsRoute,
