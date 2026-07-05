@@ -1,6 +1,7 @@
 import { Compass } from "lucide-react";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
-const principles = [
+const defaultPrinciples = [
   "Stretch your vision.",
   "Plan to stop, look to go.",
   "Use the 15–70–15 scanning method.",
@@ -13,6 +14,8 @@ const principles = [
 ];
 
 export function GeorgesPrinciples() {
+  const { getStrings } = useContentOverrides();
+  const principles = getStrings("georges-principle", "default") ?? defaultPrinciples;
   return (
     <section
       id="georges-principles"
