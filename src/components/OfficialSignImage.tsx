@@ -30,6 +30,8 @@ type OfficialSignImageProps = {
   size?: number;
   /** Test/dev escape hatch for stable local image fixtures. */
   imageSrc?: string;
+  /** Admin content override image URL. When set, wins over official/imageSrc. */
+  overrideSrc?: string | null;
   /** Visual tests can opt out of lazy loading so browsers render before screenshots. */
   loading?: "eager" | "lazy";
 };
@@ -51,10 +53,11 @@ export function OfficialSignImage({
   variant = "detail",
   size,
   imageSrc,
+  overrideSrc,
   loading = "lazy",
 }: OfficialSignImageProps) {
   const resolvedSize = size ?? SIGN_IMAGE_SIZES[variant];
-  const src = imageSrc ?? officialSignImageFor(sign.id);
+  const src = overrideSrc || imageSrc || officialSignImageFor(sign.id);
   const [errored, setErrored] = useState(false);
 
   const wrapperStyle: CSSProperties = {
