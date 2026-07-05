@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { listSiteSettings } from "@/lib/cms.functions";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -16,14 +19,14 @@ function fixPhoneNumbers(content: string) {
     .replace(/447956195602/g, "447961585231");
 }
 
-const SUGGESTIONS = [
+const DEFAULT_SUGGESTIONS = [
   "What areas do you cover?",
   "Manual or automatic?",
   "Ask me a theory question",
   "Help me book a lesson",
 ];
 
-const GREETING: Msg = {
+const DEFAULT_GREETING: Msg = {
   role: "assistant",
   content:
     "Hi! I'm George's AI assistant 👋 I can answer questions about lessons, run a theory practice quiz, or help you book. What can I help with?",
@@ -39,8 +42,33 @@ function getFocusableElements(container: HTMLElement | null) {
 }
 
 export function AIChatWidget() {
+  const listSettings = useServerFn(listSiteSettings);
+  const settingsQuery = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: () => listSettings(),
+    staleTime: 5 * 60_000,
+  });
+  const aiChatSetting = (() => {
+    const row = (settingsQuery.data ?? []).find((r) => r.key === "ai_chat");
+    const v = (row?.value ?? {}) as { welcome?: string; prompts?: string[]; enabled?: boolean };
+    return {
+      welcome: typeof v.welcome === "string" && v.welcome.trim() ? v.welcome : DEFAULT_GREETING.content,
+      prompts: Array.isArray(v.prompts) && v.prompts.length ? v.prompts.filter((p) => typeof p === "string") : DEFAULT_SUGGESTIONS,
+      enabled: v.enabled !== false,
+    };
+  })();
+  const GREETING: Msg = { role: "assistant", content: aiChatSetting.welcome };
+  const SUGGESTIONS = aiChatSetting.prompts;
+
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
+
+  // Keep the greeting in sync with CMS updates while the panel is closed / unstarted.
+  useEffect(() => {
+    setMessages((cur) => (cur.length <= 1 ? [GREETING] : cur));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aiChatSetting.welcome]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
