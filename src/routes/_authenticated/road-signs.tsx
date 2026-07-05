@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { useEffect } from "react";
 import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
 export const Route = createFileRoute("/_authenticated/road-signs")({
   head: () => ({ meta: [{ title: "Road signs · GSM" }] }),
@@ -27,11 +28,12 @@ export const Route = createFileRoute("/_authenticated/road-signs")({
 function RoadSignsPage() {
   const [group, setGroup] = useState<SignGroup | "all">("all");
   const [mode, setMode] = useState<"learn" | "quiz">("learn");
+  const { applyText, get } = useContentOverrides();
 
-  const pool = useMemo(
-    () => (group === "all" ? signs : signsByGroup(group)),
-    [group],
-  );
+  const pool = useMemo(() => {
+    const base = group === "all" ? signs : signsByGroup(group);
+    return applyText("sign", base);
+  }, [group, applyText]);
 
   return (
     <PortalShell eyebrow="Highway Code" title="Road signs">
@@ -63,7 +65,11 @@ function RoadSignsPage() {
         <TabBtn active={mode === "quiz"} onClick={() => setMode("quiz")}>Quiz</TabBtn>
       </div>
 
-      {mode === "learn" ? <LearnGrid pool={pool} /> : <QuizRunner pool={pool} key={group} />}
+      {mode === "learn" ? (
+        <LearnGrid pool={pool} overrideFor={(id) => get("sign", id)?.image_url ?? null} />
+      ) : (
+        <QuizRunner pool={pool} key={group} overrideFor={(id) => get("sign", id)?.image_url ?? null} />
+      )}
     </PortalShell>
   );
 }
@@ -98,12 +104,12 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
   );
 }
 
-function LearnGrid({ pool }: { pool: Sign[] }) {
+function LearnGrid({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: string) => string | null }) {
   return (
     <div data-testid="road-signs-learn-grid" className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {pool.map((s) => (
         <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
-          <div className="shrink-0"><OfficialSignImage sign={s} variant="card" /></div>
+          <div className="shrink-0"><OfficialSignImage sign={s} variant="card" overrideSrc={overrideFor(s.id)} /></div>
           <div className="min-w-0">
             <div className="font-display text-base text-foreground">{s.name}</div>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{s.meaning}</p>
@@ -123,7 +129,7 @@ function shuffle<T>(a: T[]): T[] {
   return b;
 }
 
-function QuizRunner({ pool }: { pool: Sign[] }) {
+function QuizRunner({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: string) => string | null }) {
   const [order, setOrder] = useState<Sign[]>(() => shuffle(pool));
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -176,7 +182,7 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {missed.map((s) => (
                 <div key={s.id} className="flex gap-3 border border-border p-3">
-                  <div className="shrink-0"><OfficialSignImage sign={s} variant="thumb" /></div>
+                  <div className="shrink-0"><OfficialSignImage sign={s} variant="thumb" overrideSrc={overrideFor(s.id)} /></div>
                   <div className="min-w-0">
                     <div className="text-sm font-medium">{s.name}</div>
                     <p className="mt-1 text-xs text-muted-foreground">{s.meaning}</p>
@@ -243,7 +249,7 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
       <Progress value={((i + (picked !== null ? 1 : 0)) / order.length) * 100} />
 
       <div className="mt-6 grid gap-6 border border-border bg-card p-6 sm:grid-cols-[auto_1fr]">
-        <div className="flex items-start justify-center"><OfficialSignImage sign={current} variant="detail" /></div>
+        <div className="flex items-start justify-center"><OfficialSignImage sign={current} variant="detail" overrideSrc={overrideFor(current.id)} /></div>
         <div>
           <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">What does this sign mean?</div>
           <div className="mt-4 grid gap-2">
@@ -278,7 +284,7 @@ function QuizRunner({ pool }: { pool: Sign[] }) {
               </div>
               {picked !== q.correctIndex && (
                 <div className="mt-3 flex gap-4 border border-destructive/40 bg-background p-3">
-                  <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" /></div>
+                  <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" overrideSrc={overrideFor(current.id)} /></div>
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">
                       You picked: <span className="text-foreground">{q.options[picked]}</span>
