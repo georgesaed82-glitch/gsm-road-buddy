@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, Save, RotateCcw, Plus, Trash2, ArrowUp, ArrowDown, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Save, RotateCcw, Plus, Trash2, ArrowUp, ArrowDown, CheckCircle2, Upload, X } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import {
   listContentOverrides,
   upsertContentOverride,
   deleteContentOverride,
+  uploadContentImage,
   type ContentKind,
   type ContentOverrideRow,
   type OverrideBlock,
@@ -136,6 +137,7 @@ function AdminBlocksPage() {
   const listFn = useServerFn(listContentOverrides);
   const upsertFn = useServerFn(upsertContentOverride);
   const deleteFn = useServerFn(deleteContentOverride);
+  const uploadFn = useServerFn(uploadContentImage);
 
   const [section, setSection] = useState<Section>("georges-tip");
   const [itemIdx, setItemIdx] = useState(0);
@@ -215,8 +217,9 @@ function AdminBlocksPage() {
                   aid: b.aid?.trim() || undefined,
                   rule: b.rule?.trim() || undefined,
                   note: b.note?.trim() || undefined,
+                  image_path: b.image_path || undefined,
                 }))
-                .filter((b) => b.title || b.body || b.aid || b.rule || b.note),
+                .filter((b) => b.title || b.body || b.aid || b.rule || b.note || b.image_path),
             },
         },
       });
@@ -330,7 +333,34 @@ function AdminBlocksPage() {
             {spec.mode === "strings" ? (
               <StringListEditor value={strings} onChange={setStrings} />
             ) : (
-              <BlockListEditor value={blocks} onChange={setBlocks} fields={spec.fields} />
+              <BlockListEditor
+                value={blocks}
+                onChange={setBlocks}
+                fields={spec.fields}
+                onUploadImage={async (file) => {
+                  if (!currentItem) throw new Error("No item selected");
+                  const password = requirePassword();
+                  if (!password) throw new Error("Missing admin password");
+                  if (file.size > 5 * 1024 * 1024) throw new Error("Image too large — max 5 MB.");
+                  const dataUrl = await new Promise<string>((resolve, reject) => {
+                    const r = new FileReader();
+                    r.onload = () => resolve(String(r.result));
+                    r.onerror = () => reject(r.error);
+                    r.readAsDataURL(file);
+                  });
+                  const res = await uploadFn({
+                    data: {
+                      password,
+                      kind: section as ContentKind,
+                      item_id: currentItem.id,
+                      filename: file.name,
+                      content_type: file.type || "image/png",
+                      base64: dataUrl,
+                    },
+                  });
+                  return { image_path: res.image_path, image_url: res.image_url };
+                }}
+              />
             )}
 
             <div className="flex flex-wrap items-center gap-2 border-t pt-4">
@@ -359,10 +389,12 @@ function BlockListEditor({
   value,
   onChange,
   fields,
+  onUploadImage,
 }: {
   value: OverrideBlock[];
   onChange: (v: OverrideBlock[]) => void;
   fields: Field[];
+  onUploadImage: (file: File) => Promise<{ image_path: string; image_url: string }>;
 }) {
   const update = (i: number, patch: Partial<OverrideBlock>) => {
     const next = value.slice();
@@ -381,6 +413,19 @@ function BlockListEditor({
     onChange(value.filter((_, idx) => idx !== i));
   };
   const add = () => onChange([...value, {}]);
+  const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
+  const handleUpload = async (i: number, file: File) => {
+    setUploadingIdx(i);
+    try {
+      const res = await onUploadImage(file);
+      update(i, { image_path: res.image_path, image_url: res.image_url });
+      toast.success("Image uploaded — remember to Save.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setUploadingIdx(null);
+    }
+  };
 
   const labels: Record<Field, string> = {
     title: "Title",
@@ -430,6 +475,44 @@ function BlockListEditor({
                 </div>
               );
             })}
+            <div>
+              <Label>Image (optional)</Label>
+              <div className="mt-1 flex items-center gap-3">
+                {b.image_url ? (
+                  <img src={b.image_url} alt="" className="h-20 w-20 border border-border object-cover" />
+                ) : (
+                  <div className="flex h-20 w-20 items-center justify-center border border-dashed border-border text-[11px] text-muted-foreground">
+                    None
+                  </div>
+                )}
+                <div className="flex flex-col gap-2">
+                  <label className="inline-flex cursor-pointer items-center gap-2 border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-secondary">
+                    <Upload className="h-3.5 w-3.5" />
+                    {uploadingIdx === i ? "Uploading…" : b.image_url ? "Replace image" : "Upload image"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={uploadingIdx === i}
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleUpload(i, f);
+                        e.currentTarget.value = "";
+                      }}
+                    />
+                  </label>
+                  {b.image_url && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => update(i, { image_path: undefined, image_url: null })}
+                    >
+                      <X className="mr-1 h-3.5 w-3.5" /> Remove
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       ))}
