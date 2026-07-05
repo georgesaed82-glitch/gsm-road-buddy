@@ -13,6 +13,7 @@ import { TopicMiniQuiz } from "@/components/TopicMiniQuiz";
 import { GeorgesTip } from "@/components/GeorgesTip";
 import { GeorgesPrinciples } from "@/components/GeorgesPrinciples";
 import { georgesTips } from "@/data/georgesTips";
+import { useContentOverrides } from "@/hooks/useContentOverrides";
 
 export const Route = createFileRoute("/_authenticated/highway-code")({
   head: () => ({ meta: [{ title: "Highway Code · GSM" }] }),
@@ -23,15 +24,18 @@ function HighwayCodePage() {
   const { studied, bookmarked, toggleStudied, toggleBookmark, isStudied, isBookmarked } =
     useTopicProgress();
   const [filter, setFilter] = useState<"all" | "bookmarks" | "unstudied">("all");
+  const { applyHighway } = useContentOverrides();
+
+  const merged = useMemo(() => applyHighway(theoryCategories), [applyHighway]);
 
   const visible = useMemo(() => {
-    if (filter === "bookmarks") return theoryCategories.filter((c) => bookmarked.has(c.slug));
-    if (filter === "unstudied") return theoryCategories.filter((c) => !studied.has(c.slug));
-    return theoryCategories;
-  }, [filter, bookmarked, studied]);
+    if (filter === "bookmarks") return merged.filter((c) => bookmarked.has(c.slug));
+    if (filter === "unstudied") return merged.filter((c) => !studied.has(c.slug));
+    return merged;
+  }, [filter, bookmarked, studied, merged]);
 
   const studiedCount = studied.size;
-  const total = theoryCategories.length;
+  const total = merged.length;
   const pct = Math.round((studiedCount / total) * 100);
 
   return (

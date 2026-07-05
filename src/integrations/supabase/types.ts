@@ -108,8 +108,10 @@ export type Database = {
           group_slug: string | null
           image_path: string | null
           item_id: string
+          key_points: string[] | null
           kind: string
           name: string | null
+          topics: string[] | null
           updated_at: string
           updated_by: string | null
         }
@@ -119,8 +121,10 @@ export type Database = {
           group_slug?: string | null
           image_path?: string | null
           item_id: string
+          key_points?: string[] | null
           kind: string
           name?: string | null
+          topics?: string[] | null
           updated_at?: string
           updated_by?: string | null
         }
@@ -130,8 +134,10 @@ export type Database = {
           group_slug?: string | null
           image_path?: string | null
           item_id?: string
+          key_points?: string[] | null
           kind?: string
           name?: string | null
+          topics?: string[] | null
           updated_at?: string
           updated_by?: string | null
         }

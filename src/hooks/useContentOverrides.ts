@@ -42,5 +42,19 @@ export function useContentOverrides() {
     });
   }
 
-  return { isLoading: q.isLoading, get, applyText, all: q.data ?? [] };
+  function applyHighway<T extends { slug: string; title: string; description: string; topics: string[]; keyPoints: string[] }>(items: T[]): T[] {
+    return items.map((it) => {
+      const o = byKey.get(`highway:${it.slug}`);
+      if (!o) return it;
+      return {
+        ...it,
+        title: o.name ?? it.title,
+        description: o.description ?? it.description,
+        topics: o.topics && o.topics.length ? o.topics : it.topics,
+        keyPoints: o.key_points && o.key_points.length ? o.key_points : it.keyPoints,
+      };
+    });
+  }
+
+  return { isLoading: q.isLoading, get, applyText, applyHighway, all: q.data ?? [] };
 }

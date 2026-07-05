@@ -2,7 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { verifyAdminPasswordServer } from "./portal-access.functions";
 
-export type ContentKind = "sign" | "marking" | "signal";
+export type ContentKind = "sign" | "marking" | "signal" | "highway";
+
+const KIND_VALUES = ["sign", "marking", "signal", "highway"] as const;
 
 export type ContentOverrideRow = {
   kind: ContentKind;
@@ -12,6 +14,8 @@ export type ContentOverrideRow = {
   group_slug: string | null;
   image_path: string | null;
   image_url: string | null;
+  key_points: string[] | null;
+  topics: string[] | null;
   updated_at: string;
 };
 
@@ -24,7 +28,7 @@ export const listContentOverrides = createServerFn({ method: "GET" }).handler(
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("content_overrides")
-      .select("kind, item_id, name, description, group_slug, image_path, updated_at");
+      .select("kind, item_id, name, description, group_slug, image_path, key_points, topics, updated_at");
     if (error) throw new Error(error.message);
     const rows = (data ?? []) as Array<Omit<ContentOverrideRow, "image_url">>;
 
@@ -49,12 +53,14 @@ export const listContentOverrides = createServerFn({ method: "GET" }).handler(
 
 const upsertSchema = z.object({
   password: z.string(),
-  kind: z.enum(["sign", "marking", "signal"]),
+  kind: z.enum(KIND_VALUES),
   item_id: z.string().min(1).max(120),
   name: z.string().trim().min(1).max(300).nullable().optional(),
-  description: z.string().trim().min(1).max(4000).nullable().optional(),
+  description: z.string().trim().min(1).max(6000).nullable().optional(),
   group_slug: z.string().trim().min(1).max(60).nullable().optional(),
   image_path: z.string().trim().max(400).nullable().optional(),
+  key_points: z.array(z.string().trim().min(1).max(1000)).max(40).nullable().optional(),
+  topics: z.array(z.string().trim().min(1).max(120)).max(20).nullable().optional(),
 });
 
 export const upsertContentOverride = createServerFn({ method: "POST" })
@@ -69,6 +75,8 @@ export const upsertContentOverride = createServerFn({ method: "POST" })
       description: data.description ?? null,
       group_slug: data.group_slug ?? null,
       image_path: data.image_path ?? null,
+      key_points: data.key_points ?? null,
+      topics: data.topics ?? null,
     };
     const { error } = await supabaseAdmin
       .from("content_overrides")
@@ -81,7 +89,7 @@ export const deleteContentOverride = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z.object({
       password: z.string(),
-      kind: z.enum(["sign", "marking", "signal"]),
+      kind: z.enum(KIND_VALUES),
       item_id: z.string(),
     }).parse(d),
   )
@@ -113,7 +121,7 @@ export const deleteContentOverride = createServerFn({ method: "POST" })
 // Returns the storage path so the caller can upsert it onto the override.
 const uploadSchema = z.object({
   password: z.string(),
-  kind: z.enum(["sign", "marking", "signal"]),
+  kind: z.enum(KIND_VALUES),
   item_id: z.string().min(1).max(120),
   filename: z.string().min(1).max(200),
   content_type: z.string().min(1).max(80),
