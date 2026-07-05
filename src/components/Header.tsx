@@ -15,8 +15,9 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
+import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
 
-const navLinks = [
+const DEFAULT_NAV_LINKS = [
   { to: "/about", label: "About" },
   { to: "/services", label: "Practical" },
   { to: "/pricing", label: "Pricing" },
@@ -78,6 +79,11 @@ export function Header() {
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
+  const { business } = useSiteSettings();
+  const { items: dbNav } = useNavItems("header");
+  const navLinks = dbNav.length > 0 ? dbNav.map((n) => ({ to: n.href, label: n.label })) : DEFAULT_NAV_LINKS;
+  const whatsappHref = `https://wa.me/${business.phone_intl}`;
+  const emailHref = `mailto:${business.email}`;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
