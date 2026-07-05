@@ -183,6 +183,7 @@ function HeroSection({ s }: SectionProps) {
 }
 
 function WhySection({ s }: SectionProps) {
+  const reasons = usePageBlocks("home-reasons", DEFAULT_REASONS);
   return (
     <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -195,10 +196,10 @@ function WhySection({ s }: SectionProps) {
         </h2>
         <div className="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
           {reasons.map((r) => (
-            <div key={r.n} className="bg-background p-8 lg:p-10">
-              <div className="font-display text-2xl font-medium text-accent">{r.n}</div>
-              <h3 className="mt-6 font-display text-2xl text-foreground">{r.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{r.body}</p>
+            <div key={r.id} className="bg-background p-8 lg:p-10">
+              <div className="font-display text-2xl font-medium text-accent">{r.id}</div>
+              <h3 className="mt-6 font-display text-2xl text-foreground">{r.name}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{r.description}</p>
             </div>
           ))}
         </div>
@@ -208,6 +209,7 @@ function WhySection({ s }: SectionProps) {
 }
 
 function PostcodesSection({ s }: SectionProps) {
+  const postcodes = usePageBlockStrings("home-postcodes", DEFAULT_POSTCODES);
   return (
     <section className="border-y border-border bg-card">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-6 sm:px-6 lg:px-8">
