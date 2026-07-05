@@ -178,8 +178,8 @@ function DownloadRowCard({
   onDelete,
 }: {
   row: DownloadRow;
-  onSave: (r: DownloadRow) => void | Promise<void>;
-  onDelete: (id: string) => void | Promise<void>;
+  onSave: (r: DownloadRow) => Promise<unknown> | unknown;
+  onDelete: (id: string) => Promise<unknown> | unknown;
 }) {
   const [draft, setDraft] = useState<DownloadRow>(row);
   return (
