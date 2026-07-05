@@ -49,6 +49,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedDrivingClipsSlugRouteImport } from './routes/_authenticated/driving-clips.$slug'
 import { Route as AuthenticatedAdminTrafficRouteImport } from './routes/_authenticated/admin.traffic'
 import { Route as AuthenticatedAdminTheoryRouteImport } from './routes/_authenticated/admin.theory'
+import { Route as AuthenticatedAdminThemeRouteImport } from './routes/_authenticated/admin.theme'
 import { Route as AuthenticatedAdminSiteSettingsRouteImport } from './routes/_authenticated/admin.site-settings'
 import { Route as AuthenticatedAdminSeoRouteImport } from './routes/_authenticated/admin.seo'
 import { Route as AuthenticatedAdminRoadSignsRouteImport } from './routes/_authenticated/admin.road-signs'
@@ -282,6 +283,11 @@ const AuthenticatedAdminTheoryRoute =
     path: '/theory',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminThemeRoute = AuthenticatedAdminThemeRouteImport.update({
+  id: '/theme',
+  path: '/theme',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminSiteSettingsRoute =
   AuthenticatedAdminSiteSettingsRouteImport.update({
     id: '/site-settings',
@@ -488,6 +494,7 @@ export interface FileRoutesByFullPath {
   '/admin/road-signs': typeof AuthenticatedAdminRoadSignsRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
+  '/admin/theme': typeof AuthenticatedAdminThemeRoute
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
@@ -553,6 +560,7 @@ export interface FileRoutesByTo {
   '/admin/road-signs': typeof AuthenticatedAdminRoadSignsRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
+  '/admin/theme': typeof AuthenticatedAdminThemeRoute
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
@@ -621,6 +629,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/road-signs': typeof AuthenticatedAdminRoadSignsRoute
   '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/_authenticated/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
+  '/_authenticated/admin/theme': typeof AuthenticatedAdminThemeRoute
   '/_authenticated/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/_authenticated/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
@@ -689,6 +698,7 @@ export interface FileRouteTypes {
     | '/admin/road-signs'
     | '/admin/seo'
     | '/admin/site-settings'
+    | '/admin/theme'
     | '/admin/theory'
     | '/admin/traffic'
     | '/driving-clips/$slug'
@@ -754,6 +764,7 @@ export interface FileRouteTypes {
     | '/admin/road-signs'
     | '/admin/seo'
     | '/admin/site-settings'
+    | '/admin/theme'
     | '/admin/theory'
     | '/admin/traffic'
     | '/driving-clips/$slug'
@@ -821,6 +832,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/road-signs'
     | '/_authenticated/admin/seo'
     | '/_authenticated/admin/site-settings'
+    | '/_authenticated/admin/theme'
     | '/_authenticated/admin/theory'
     | '/_authenticated/admin/traffic'
     | '/_authenticated/driving-clips/$slug'
@@ -1133,6 +1145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminTheoryRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/theme': {
+      id: '/_authenticated/admin/theme'
+      path: '/theme'
+      fullPath: '/admin/theme'
+      preLoaderRoute: typeof AuthenticatedAdminThemeRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/site-settings': {
       id: '/_authenticated/admin/site-settings'
       path: '/site-settings'
@@ -1336,6 +1355,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminRoadSignsRoute: typeof AuthenticatedAdminRoadSignsRoute
   AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
   AuthenticatedAdminSiteSettingsRoute: typeof AuthenticatedAdminSiteSettingsRoute
+  AuthenticatedAdminThemeRoute: typeof AuthenticatedAdminThemeRoute
   AuthenticatedAdminTheoryRoute: typeof AuthenticatedAdminTheoryRoute
   AuthenticatedAdminTrafficRoute: typeof AuthenticatedAdminTrafficRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -1366,6 +1386,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminRoadSignsRoute: AuthenticatedAdminRoadSignsRoute,
   AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
   AuthenticatedAdminSiteSettingsRoute: AuthenticatedAdminSiteSettingsRoute,
+  AuthenticatedAdminThemeRoute: AuthenticatedAdminThemeRoute,
   AuthenticatedAdminTheoryRoute: AuthenticatedAdminTheoryRoute,
   AuthenticatedAdminTrafficRoute: AuthenticatedAdminTrafficRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
