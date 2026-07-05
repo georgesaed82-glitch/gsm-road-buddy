@@ -52,6 +52,7 @@ import { Route as AuthenticatedAdminTheoryRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminSiteSettingsRouteImport } from './routes/_authenticated/admin.site-settings'
 import { Route as AuthenticatedAdminSeoRouteImport } from './routes/_authenticated/admin.seo'
 import { Route as AuthenticatedAdminRoadSignsRouteImport } from './routes/_authenticated/admin.road-signs'
+import { Route as AuthenticatedAdminRoadMarkingsRouteImport } from './routes/_authenticated/admin.road-markings'
 import { Route as AuthenticatedAdminReviewsRouteImport } from './routes/_authenticated/admin.reviews'
 import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_authenticated/admin.pwa-installs'
 import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated/admin.pricing'
@@ -297,6 +298,12 @@ const AuthenticatedAdminRoadSignsRoute =
     path: '/road-signs',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminRoadMarkingsRoute =
+  AuthenticatedAdminRoadMarkingsRouteImport.update({
+    id: '/road-markings',
+    path: '/road-markings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminReviewsRoute =
   AuthenticatedAdminReviewsRouteImport.update({
     id: '/reviews',
@@ -469,6 +476,7 @@ export interface FileRoutesByFullPath {
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
+  '/admin/road-markings': typeof AuthenticatedAdminRoadMarkingsRoute
   '/admin/road-signs': typeof AuthenticatedAdminRoadSignsRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
@@ -532,6 +540,7 @@ export interface FileRoutesByTo {
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
+  '/admin/road-markings': typeof AuthenticatedAdminRoadMarkingsRoute
   '/admin/road-signs': typeof AuthenticatedAdminRoadSignsRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
@@ -598,6 +607,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
   '/_authenticated/admin/pwa-installs': typeof AuthenticatedAdminPwaInstallsRoute
   '/_authenticated/admin/reviews': typeof AuthenticatedAdminReviewsRoute
+  '/_authenticated/admin/road-markings': typeof AuthenticatedAdminRoadMarkingsRoute
   '/_authenticated/admin/road-signs': typeof AuthenticatedAdminRoadSignsRoute
   '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/_authenticated/admin/site-settings': typeof AuthenticatedAdminSiteSettingsRoute
@@ -664,6 +674,7 @@ export interface FileRouteTypes {
     | '/admin/pricing'
     | '/admin/pwa-installs'
     | '/admin/reviews'
+    | '/admin/road-markings'
     | '/admin/road-signs'
     | '/admin/seo'
     | '/admin/site-settings'
@@ -727,6 +738,7 @@ export interface FileRouteTypes {
     | '/admin/pricing'
     | '/admin/pwa-installs'
     | '/admin/reviews'
+    | '/admin/road-markings'
     | '/admin/road-signs'
     | '/admin/seo'
     | '/admin/site-settings'
@@ -792,6 +804,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/pricing'
     | '/_authenticated/admin/pwa-installs'
     | '/_authenticated/admin/reviews'
+    | '/_authenticated/admin/road-markings'
     | '/_authenticated/admin/road-signs'
     | '/_authenticated/admin/seo'
     | '/_authenticated/admin/site-settings'
@@ -1128,6 +1141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRoadSignsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/road-markings': {
+      id: '/_authenticated/admin/road-markings'
+      path: '/road-markings'
+      fullPath: '/admin/road-markings'
+      preLoaderRoute: typeof AuthenticatedAdminRoadMarkingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/reviews': {
       id: '/_authenticated/admin/reviews'
       path: '/reviews'
@@ -1291,6 +1311,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
   AuthenticatedAdminPwaInstallsRoute: typeof AuthenticatedAdminPwaInstallsRoute
   AuthenticatedAdminReviewsRoute: typeof AuthenticatedAdminReviewsRoute
+  AuthenticatedAdminRoadMarkingsRoute: typeof AuthenticatedAdminRoadMarkingsRoute
   AuthenticatedAdminRoadSignsRoute: typeof AuthenticatedAdminRoadSignsRoute
   AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
   AuthenticatedAdminSiteSettingsRoute: typeof AuthenticatedAdminSiteSettingsRoute
@@ -1319,6 +1340,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
   AuthenticatedAdminPwaInstallsRoute: AuthenticatedAdminPwaInstallsRoute,
   AuthenticatedAdminReviewsRoute: AuthenticatedAdminReviewsRoute,
+  AuthenticatedAdminRoadMarkingsRoute: AuthenticatedAdminRoadMarkingsRoute,
   AuthenticatedAdminRoadSignsRoute: AuthenticatedAdminRoadSignsRoute,
   AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
   AuthenticatedAdminSiteSettingsRoute: AuthenticatedAdminSiteSettingsRoute,
@@ -1412,13 +1434,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
