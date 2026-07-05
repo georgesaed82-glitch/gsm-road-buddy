@@ -249,12 +249,14 @@ export type Database = {
           created_at: string
           data: Json | null
           description: string | null
+          enabled: boolean
           group_slug: string | null
           image_path: string | null
           item_id: string
           key_points: string[] | null
           kind: string
           name: string | null
+          sort_order: number
           topics: string[] | null
           updated_at: string
           updated_by: string | null
@@ -263,12 +265,14 @@ export type Database = {
           created_at?: string
           data?: Json | null
           description?: string | null
+          enabled?: boolean
           group_slug?: string | null
           image_path?: string | null
           item_id: string
           key_points?: string[] | null
           kind: string
           name?: string | null
+          sort_order?: number
           topics?: string[] | null
           updated_at?: string
           updated_by?: string | null
@@ -277,12 +281,14 @@ export type Database = {
           created_at?: string
           data?: Json | null
           description?: string | null
+          enabled?: boolean
           group_slug?: string | null
           image_path?: string | null
           item_id?: string
           key_points?: string[] | null
           kind?: string
           name?: string | null
+          sort_order?: number
           topics?: string[] | null
           updated_at?: string
           updated_by?: string | null

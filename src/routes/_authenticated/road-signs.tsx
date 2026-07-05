@@ -6,9 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
 import {
-  signs,
   signGroups,
-  signsByGroup,
+  signGroupOf,
   buildSignOptions,
   type Sign,
   type SignGroup,
@@ -18,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { useEffect } from "react";
 import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
-import { useContentOverrides } from "@/hooks/useContentOverrides";
+import { useSignsCms } from "@/hooks/useSignsCms";
 
 export const Route = createFileRoute("/_authenticated/road-signs")({
   head: () => ({ meta: [{ title: "Road signs · GSM" }] }),
@@ -28,12 +27,12 @@ export const Route = createFileRoute("/_authenticated/road-signs")({
 function RoadSignsPage() {
   const [group, setGroup] = useState<SignGroup | "all">("all");
   const [mode, setMode] = useState<"learn" | "quiz">("learn");
-  const { applyText, get } = useContentOverrides();
+  const { allSigns, applyText, imageFor } = useSignsCms();
 
   const pool = useMemo(() => {
-    const base = group === "all" ? signs : signsByGroup(group);
+    const base = group === "all" ? allSigns : allSigns.filter((s) => signGroupOf(s) === group);
     return applyText("sign", base);
-  }, [group, applyText]);
+  }, [group, applyText, allSigns]);
 
   return (
     <PortalShell eyebrow="Highway Code" title="Road signs">
@@ -51,11 +50,11 @@ function RoadSignsPage() {
 
       <div className="mt-6 flex flex-wrap gap-2">
         <CategoryChip active={group === "all"} onClick={() => setGroup("all")}>
-          All ({signs.length})
+          All ({allSigns.length})
         </CategoryChip>
         {signGroups.map((g) => (
           <CategoryChip key={g.slug} active={group === g.slug} onClick={() => setGroup(g.slug)}>
-            {g.title} ({signsByGroup(g.slug).length})
+            {g.title} ({allSigns.filter((s) => signGroupOf(s) === g.slug).length})
           </CategoryChip>
         ))}
       </div>
@@ -66,9 +65,9 @@ function RoadSignsPage() {
       </div>
 
       {mode === "learn" ? (
-        <LearnGrid pool={pool} overrideFor={(id) => get("sign", id)?.image_url ?? null} />
+        <LearnGrid pool={pool} overrideFor={imageFor} />
       ) : (
-        <QuizRunner pool={pool} key={group} overrideFor={(id) => get("sign", id)?.image_url ?? null} />
+        <QuizRunner pool={pool} key={group} overrideFor={imageFor} />
       )}
     </PortalShell>
   );

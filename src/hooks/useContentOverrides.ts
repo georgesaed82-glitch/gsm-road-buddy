@@ -28,6 +28,22 @@ export function useContentOverrides() {
     return byKey.get(`${kind}:${id}`);
   }
 
+  function isEnabled(kind: ContentKind, id: string): boolean {
+    const row = byKey.get(`${kind}:${id}`);
+    return row ? row.enabled !== false : true;
+  }
+
+  function sortOrder(kind: ContentKind, id: string): number {
+    const row = byKey.get(`${kind}:${id}`);
+    return row?.sort_order ?? 0;
+  }
+
+  function customItems(kind: ContentKind): ContentOverrideRow[] {
+    return (q.data ?? []).filter(
+      (r) => r.kind === kind && r.item_id.startsWith("custom:"),
+    );
+  }
+
   function getBlocks(kind: ContentKind, id: string): OverrideBlock[] | null {
     const row = byKey.get(`${kind}:${id}`);
     const blocks = row?.data?.blocks;
@@ -78,5 +94,8 @@ export function useContentOverrides() {
     applyText,
     applyHighway,
     all: q.data ?? [],
+    isEnabled,
+    sortOrder,
+    customItems,
   };
 }

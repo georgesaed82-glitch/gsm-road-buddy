@@ -50,6 +50,8 @@ export type ContentOverrideRow = {
   key_points: string[] | null;
   topics: string[] | null;
   data: OverrideData | null;
+  enabled: boolean;
+  sort_order: number;
   updated_at: string;
 };
 
@@ -63,7 +65,7 @@ export const listContentOverrides = createServerFn({ method: "GET" }).handler(
     const { data, error } = await supabaseAdmin
       .from("content_overrides")
       .select(
-        "kind, item_id, name, description, group_slug, image_path, key_points, topics, data, updated_at",
+        "kind, item_id, name, description, group_slug, image_path, key_points, topics, data, enabled, sort_order, updated_at",
       );
     if (error) throw new Error(error.message);
     const rows = (data ?? []) as Array<Omit<ContentOverrideRow, "image_url">>;
@@ -116,6 +118,8 @@ const upsertSchema = z.object({
   key_points: z.array(z.string().trim().min(1).max(1000)).max(40).nullable().optional(),
   topics: z.array(z.string().trim().min(1).max(120)).max(20).nullable().optional(),
   data: z.any().nullable().optional(),
+  enabled: z.boolean().optional(),
+  sort_order: z.number().int().optional(),
 });
 
 export const upsertContentOverride = createServerFn({ method: "POST" })
@@ -133,10 +137,39 @@ export const upsertContentOverride = createServerFn({ method: "POST" })
       key_points: data.key_points ?? null,
       topics: data.topics ?? null,
       data: data.data ?? null,
+      ...(data.enabled !== undefined ? { enabled: data.enabled } : {}),
+      ...(data.sort_order !== undefined ? { sort_order: data.sort_order } : {}),
     };
     const { error } = await supabaseAdmin
       .from("content_overrides")
       .upsert(row, { onConflict: "kind,item_id" });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// Bulk reorder for a single kind. Accepts the desired ordered list of item_ids
+// and writes their sort_order. Missing rows are upserted so base-catalogue
+// items get a row on first reorder.
+const reorderSchema = z.object({
+  password: z.string(),
+  kind: z.enum(KIND_VALUES),
+  item_ids: z.array(z.string().min(1).max(120)).max(500),
+});
+
+export const reorderContentOverrides = createServerFn({ method: "POST" })
+  .inputValidator((d) => reorderSchema.parse(d))
+  .handler(async ({ data }) => {
+    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const rows = data.item_ids.map((item_id, i) => ({
+      kind: data.kind,
+      item_id,
+      sort_order: (i + 1) * 10,
+    }));
+    if (!rows.length) return { ok: true };
+    const { error } = await supabaseAdmin
+      .from("content_overrides")
+      .upsert(rows, { onConflict: "kind,item_id" });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

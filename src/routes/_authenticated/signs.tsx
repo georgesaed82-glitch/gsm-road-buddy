@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
-import { signs, signCategories, signsByCategory, buildSignOptions, type Sign, type SignCategory } from "@/data/signs";
+import { signCategories, buildSignOptions, type Sign, type SignCategory } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { SignsShapesLegend } from "@/components/SignsShapesLegend";
-import { useContentOverrides } from "@/hooks/useContentOverrides";
+import { useSignsCms } from "@/hooks/useSignsCms";
 
 export const Route = createFileRoute("/_authenticated/signs")({
   head: () => ({ meta: [{ title: "Road signs quiz · GSM" }] }),
@@ -27,6 +27,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 function SignsPage() {
   const [mode, setMode] = useState<null | { kind: "learn" | "quiz"; category?: SignCategory }>(null);
+  const { signsByCategory } = useSignsCms();
 
   if (mode?.kind === "learn") {
     return (
@@ -113,7 +114,7 @@ function SignsPage() {
 }
 
 function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: () => void }) {
-  const { applyText, get } = useContentOverrides();
+  const { applyText, signsByCategory, imageFor } = useSignsCms();
   const groups = category ? [category] : signCategories.map((c) => c.slug);
   return (
     <div>
@@ -130,7 +131,7 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
                 {items.map((s) => (
                   <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
                     <div className="flex h-[110px] w-[110px] shrink-0 items-center justify-center">
-                      <OfficialSignImage sign={s} variant="card" overrideSrc={get("sign", s.id)?.image_url ?? null} />
+                      <OfficialSignImage sign={s} variant="card" overrideSrc={imageFor(s.id)} />
                     </div>
                     <div className="min-w-0">
                       <div className="font-display text-base leading-tight">{s.name}</div>
@@ -152,17 +153,21 @@ type QState =
   | { phase: "revealed"; chosen: number };
 
 function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () => void }) {
-  const { applyText, get } = useContentOverrides();
+  const { applyText, allSigns, signsByCategory, imageFor } = useSignsCms();
+  const source = useMemo(
+    () => (category ? signsByCategory(category) : allSigns),
+    [category, signsByCategory, allSigns],
+  );
   const pool = useMemo(
-    () => shuffle(applyText("sign", category ? signsByCategory(category) : signs)),
-    [category, applyText],
+    () => shuffle(applyText("sign", source)),
+    [applyText, source],
   );
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState({ answered: 0, correct: 0 });
   const [finished, setFinished] = useState(false);
   const [missed, setMissed] = useState<Sign[]>([]);
   const current: Sign | undefined = pool[idx];
-  const opts = useMemo(() => (current ? buildSignOptions(current, category ? signsByCategory(category) : signs) : null), [current, category]);
+  const opts = useMemo(() => (current ? buildSignOptions(current, source) : null), [current, source]);
   const [state, setState] = useState<QState>({ phase: "answering", chosen: null });
 
   if (!current || finished) {
@@ -180,7 +185,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {missed.map((s) => (
                 <div key={s.id} className="flex gap-3 border border-border p-3">
-                  <OfficialSignImage sign={s} variant="thumb" overrideSrc={get("sign", s.id)?.image_url ?? null} />
+                  <OfficialSignImage sign={s} variant="thumb" overrideSrc={imageFor(s.id)} />
                   <div className="min-w-0">
                     <div className="text-sm font-medium">{s.name}</div>
                     <p className="mt-1 text-xs text-muted-foreground">{s.meaning}</p>
@@ -240,7 +245,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
 
         <div className="mt-6 flex flex-col items-center gap-4">
           <div className="flex h-[200px] items-center justify-center">
-            <OfficialSignImage sign={current} variant="detail" overrideSrc={get("sign", current.id)?.image_url ?? null} />
+            <OfficialSignImage sign={current} variant="detail" overrideSrc={imageFor(current.id)} />
           </div>
           <h2 className="text-center font-display text-2xl leading-snug">What does this sign mean?</h2>
         </div>
@@ -287,7 +292,7 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
               {correct ? "Correct" : "Not quite — here's the sign explained"}
             </div>
             <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row">
-              <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" overrideSrc={get("sign", current.id)?.image_url ?? null} /></div>
+              <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" overrideSrc={imageFor(current.id)} /></div>
               <div>
                 <div className="font-display text-lg">{current.name}</div>
                 <p className="mt-1 text-sm text-muted-foreground">{current.meaning}</p>
