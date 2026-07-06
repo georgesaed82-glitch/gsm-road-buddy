@@ -8,7 +8,6 @@ import type { ReactElement } from "react";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { MarkingsQuiz } from "@/components/MarkingsQuiz";
 import { cn } from "@/lib/utils";
-import dualCarriagewayAsset from "@/assets/dual-carriageway-join.jpeg.asset.json";
 import hatchedPhotoAsset from "@/assets/hatched-area-photo.jpeg.asset.json";
 import { useContentOverrides } from "@/hooks/useContentOverrides";
 
@@ -296,12 +295,10 @@ function DualCarriagewayJoin() {
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
-          <img
-            src={dualCarriagewayAsset.url}
-            alt="Illustration of a slip road joining a dual carriageway. Red cars travel along the join-in lane on the left, a chevron-hatched central area separates the slip road from the running lane, and further red vehicles continue on the main carriageway with green trees and grass verges on either side."
-            className="h-auto w-full"
-            loading="lazy"
-          />
+          <DualCarriagewayJoinDiagram />
+          <figcaption className="border-t border-border bg-card px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            Diagram — join-in lane and chevron hatch
+          </figcaption>
         </figure>
         <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
           <img
@@ -310,6 +307,9 @@ function DualCarriagewayJoin() {
             className="h-auto w-full"
             loading="lazy"
           />
+          <figcaption className="border-t border-border bg-card px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            Photo — the same layout on a UK dual carriageway
+          </figcaption>
         </figure>
       </div>
 
@@ -323,5 +323,116 @@ function DualCarriagewayJoin() {
         </ul>
       </div>
     </section>
+  );
+}
+
+function DualCarriagewayJoinDiagram() {
+  // Top-down schematic of a slip road merging onto a two-lane dual carriageway.
+  // Palette matches RoadMarkingVisual so it sits beside the marking tiles.
+  const ROAD = "#2b2b2e";
+  const PAINT = "#f8fafc";
+  const GRASS = "#3a5a2a";
+  const CAR_RED = "#dc2626";
+  return (
+    <svg
+      viewBox="0 0 400 260"
+      className="block h-auto w-full"
+      role="img"
+      aria-label="Top-down diagram of a slip road joining a dual carriageway. A join-in lane on the left merges through a chevron-hatched area into two running lanes on the right, with grass verges on both sides and cars flowing left to right."
+      preserveAspectRatio="xMidYMid meet"
+      shapeRendering="geometricPrecision"
+    >
+      {/* Grass background */}
+      <rect width="400" height="260" fill={GRASS} />
+
+      {/* Main carriageway — two lanes, running left→right */}
+      <rect x="0" y="90" width="400" height="130" fill={ROAD} />
+
+      {/* Slip road tapering in from bottom-left */}
+      <path d="M0 220 L0 250 L260 250 L340 220 Z" fill={ROAD} />
+
+      {/* Solid outer edges (top of carriageway, bottom of slip road) */}
+      <rect x="0" y="88" width="400" height="3" fill={PAINT} />
+      <path d="M0 250 L260 250 L340 220 L400 220 L400 217 L341 217 L261 247 L0 247 Z" fill={PAINT} />
+
+      {/* Lane divider between the two running lanes — long broken (4:2) */}
+      {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360].map((x) => (
+        <rect key={`ln-${x}`} x={x} y="152" width="20" height="3" fill={PAINT} />
+      ))}
+
+      {/* Give-way merge line between slip road and left running lane — short 1:5 */}
+      <path
+        d="M0 216 L260 216 L336 184"
+        stroke={PAINT}
+        strokeWidth="3"
+        fill="none"
+        strokeDasharray="6 22"
+        strokeLinecap="butt"
+      />
+
+      {/* Chevron hatched area (diagram 1041) separating the join-in lane
+          from the running lane at the top of the merge triangle. */}
+      <g>
+        {/* Outer solid border — elongated wedge */}
+        <path
+          d="M175 214 L330 214 L360 190 L200 190 Z"
+          fill="none"
+          stroke={PAINT}
+          strokeWidth="2.5"
+        />
+        {/* Diagonal chevron stripes clipped to the wedge */}
+        <defs>
+          <clipPath id="dcj-hatch">
+            <path d="M175 214 L330 214 L360 190 L200 190 Z" />
+          </clipPath>
+        </defs>
+        <g clipPath="url(#dcj-hatch)">
+          {Array.from({ length: 22 }).map((_, i) => {
+            const x = 170 + i * 12;
+            return (
+              <line
+                key={`hatch-${i}`}
+                x1={x}
+                y1={220}
+                x2={x + 40}
+                y2={180}
+                stroke={PAINT}
+                strokeWidth="2"
+              />
+            );
+          })}
+        </g>
+      </g>
+
+      {/* Cars — simple top-down rectangles with a lighter roof */}
+      {/* Car in slip road (join-in lane) */}
+      <g transform="translate(60 224)">
+        <rect x="-14" y="-8" width="28" height="16" rx="3" fill={CAR_RED} />
+        <rect x="-9" y="-5" width="18" height="10" rx="2" fill="#fca5a5" opacity="0.85" />
+      </g>
+      {/* Car in left running lane, just past the merge */}
+      <g transform="translate(300 175)">
+        <rect x="-14" y="-8" width="28" height="16" rx="3" fill={CAR_RED} />
+        <rect x="-9" y="-5" width="18" height="10" rx="2" fill="#fca5a5" opacity="0.85" />
+      </g>
+      {/* Car in right (overtaking) running lane, further ahead */}
+      <g transform="translate(360 122)">
+        <rect x="-14" y="-8" width="28" height="16" rx="3" fill={CAR_RED} />
+        <rect x="-9" y="-5" width="18" height="10" rx="2" fill="#fca5a5" opacity="0.85" />
+      </g>
+
+      {/* Direction arrow in the join-in lane, pointing towards the merge */}
+      <g fill="#a3e635" opacity="0.9">
+        <path d="M120 236 L150 226 L120 216 L128 226 Z" />
+      </g>
+
+      {/* Labels */}
+      <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill={PAINT}>
+        <text x="8" y="242" opacity="0.9">Join-in lane</text>
+        <text x="8" y="146" opacity="0.9">Left running lane</text>
+        <text x="8" y="112" opacity="0.9">Overtaking lane</text>
+        <text x="240" y="207" opacity="0.9">Hatched area — do not enter</text>
+      </g>
+    </svg>
   );
 }
