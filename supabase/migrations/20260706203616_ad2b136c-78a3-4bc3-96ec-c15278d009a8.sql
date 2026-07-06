@@ -1,0 +1,1 @@
+DELETE FROM public.auth_attempts WHERE created_at > now() - interval '1 hour' AND success = false;
