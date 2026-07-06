@@ -161,7 +161,7 @@ export const getAttemptState = createServerFn({ method: "POST" })
  * `supabase.auth.setSession`.
  */
 export const studentSignIn = createServerFn({ method: "POST" })
-  .inputValidator((d: { email: string; password: string; captchaToken?: string | null }) => d)
+  .inputValidator((d: { email: string; captchaToken?: string | null }) => d)
   .handler(async ({ data }): Promise<{
     ok: boolean;
     reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed";

@@ -48,7 +48,7 @@ async function requireAdmin() {
 }
 
 export const verifyPortalAccess = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; mode: "learner" | "admin"; captchaToken?: string | null; email?: string | null }) => d)
+  .inputValidator((d: { mode: "learner" | "admin"; captchaToken?: string | null; email?: string | null }) => d)
   .handler(async ({ data }): Promise<{
     ok: boolean;
     reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed" | "email_mismatch";
@@ -276,7 +276,7 @@ export type AccessUse = {
 };
 
 export const listAccessUses = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; codeId: string; limit?: number }) => d)
+  .inputValidator((d: { codeId: string; limit?: number }) => d)
   .handler(async ({ data }): Promise<AccessUse[]> => {
     const supabase = await requireAdmin();
     const limit = Math.min(500, Math.max(1, data.limit ?? 100));
@@ -298,7 +298,7 @@ function csvEscape(value: unknown): string {
 }
 
 export const exportAccessUsesCsv = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; codeId: string }) => d)
+  .inputValidator((d: { codeId: string }) => d)
   .handler(async ({ data }): Promise<{ filename: string; csv: string }> => {
     const supabase = await requireAdmin();
     const { data: codeRow, error: codeErr } = await supabase
@@ -365,7 +365,7 @@ function validateCode(code: string) {
 
 /** Replace (or create) the active code for kind = admin | learner. Old codes of that kind are revoked. */
 export const setMasterPassword = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; kind: "admin" | "learner"; newCode: string }) => d)
+  .inputValidator((d: { kind: "admin" | "learner"; newCode: string }) => d)
   .handler(async ({ data }) => {
     const supabase = await requireAdmin();
     const newCode = validateCode(data.newCode);
@@ -404,7 +404,7 @@ function generateCode(): string {
 
 /** Issue a time-limited subscription code for a learner email. */
 export const createSubscriptionCode = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; email: string; days: number; label?: string; code?: string }) => d)
+  .inputValidator((d: { email: string; days: number; label?: string; code?: string }) => d)
   .handler(async ({ data }) => {
     const supabase = await requireAdmin();
     const email = (data.email || "").trim().toLowerCase();
@@ -444,7 +444,7 @@ export const createSubscriptionCode = createServerFn({ method: "POST" })
   });
 
 export const revokeAccessCode = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; id: string }) => d)
+  .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     const supabase = await requireAdmin();
     const { error } = await supabase
@@ -456,7 +456,7 @@ export const revokeAccessCode = createServerFn({ method: "POST" })
   });
 
 export const deleteAccessCode = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; id: string }) => d)
+  .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     const supabase = await requireAdmin();
     const { error } = await supabase.from("portal_access_codes").delete().eq("id", data.id);
