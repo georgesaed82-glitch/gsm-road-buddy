@@ -135,7 +135,7 @@ function HeroSection({ s }: SectionProps) {
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
           <h1 className="mt-6 text-balance font-display text-[44px] font-medium leading-[1.05] text-foreground sm:text-6xl lg:text-[72px]">
-            {s.title && s.title.trim().length > 0 ? s.title : (<>Drive today. <span className="italic text-accent">Succeed</span> tomorrow.</>)}
+            {s.title && s.title.trim().length > 0 ? s.title : (<>Drive today. <span className="italic" style={{ color: "#C87445" }}>Succeed</span> tomorrow.</>)}
           </h1>
           <a href="https://maps.google.com/?cid=12315071950298926858" target="_blank" rel="noopener noreferrer" className="mt-6 flex items-center gap-3 hover:opacity-80">
             <div className="flex text-accent">
