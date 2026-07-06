@@ -17,11 +17,8 @@ async function admin() {
  */
 export async function verifyAdminPasswordServer(_password?: string): Promise<boolean> {
   try {
-    const { getRequest } = await import("@tanstack/react-start/server");
-    const req = getRequest();
-    const header = req?.headers.get("authorization") || req?.headers.get("Authorization");
-    if (!header) return false;
-    const token = header.replace(/^Bearer\s+/i, "").trim();
+    const { getBearerToken } = await import("./auth-guard.server");
+    const token = getBearerToken();
     if (!token) return false;
     const supabase = await admin();
     const { data: userData, error: userErr } = await supabase.auth.getUser(token);
