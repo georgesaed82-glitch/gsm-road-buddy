@@ -240,6 +240,45 @@ function AuthPage() {
               </label>
             )}
           </form>
+          {isAdmin ? (
+            <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left space-y-2">
+              <div className="flex items-center gap-2 font-medium">
+                <Mail className="h-4 w-4 text-primary" /> Forgot or setting up your password?
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Enter your admin email above, then click below to email yourself a
+                password reset link. First-time admins use the same flow to set
+                their initial password.
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={submitting}
+                onClick={async () => {
+                  const emailValue = email.trim();
+                  if (!emailValue) {
+                    toast.error("Enter your admin email address above first.");
+                    return;
+                  }
+                  try {
+                    const { error } = await supabase.auth.resetPasswordForEmail(emailValue, {
+                      redirectTo: `${window.location.origin}/reset-password`,
+                    });
+                    if (error) {
+                      toast.error(error.message || "Could not send reset email.");
+                      return;
+                    }
+                    toast.success("Reset email sent. Check your inbox.");
+                  } catch {
+                    toast.error("Could not send reset email. Try again.");
+                  }
+                }}
+              >
+                Email me a reset link
+              </Button>
+            </div>
+          ) : (
           <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left">
             <div className="flex items-center gap-2 font-medium">
               <Mail className="h-4 w-4 text-primary" /> Don't have a PIN yet?
@@ -255,6 +294,7 @@ function AuthPage() {
               to request a PIN for the learner portal.
             </p>
           </div>
+          )}
           <Button asChild variant="outline" className="w-full">
             <Link to="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
