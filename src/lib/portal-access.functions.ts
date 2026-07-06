@@ -63,21 +63,18 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
       return { ok: false, reason: guard.reason, retryAfterSeconds: guard.retryAfterSeconds };
     }
     const captchaVerified = guard.captchaVerified;
-    let req: Request | undefined;
+    let reqMetaInfo: { ip: string | null; ua: string | null } = { ip: null, ua: null };
     try {
-      const { getRequest } = await import("@tanstack/react-start/server");
-      req = getRequest();
+      const { reqMeta } = await import("./auth-guard.server");
+      reqMetaInfo = reqMeta();
     } catch {
-      req = undefined;
+      // ignore — no request context available
     }
     const logUsage = async (codeId: string, mode: "learner" | "admin") => {
       try {
         const supabase = await admin();
-        const ua = req?.headers.get("user-agent") ?? null;
-        const ipRaw =
-          req?.headers.get("cf-connecting-ip") ||
-          req?.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-          null;
+        const ua = reqMetaInfo.ua;
+        const ipRaw = reqMetaInfo.ip;
         let ip_hash: string | null = null;
         if (ipRaw) {
           const buf = await crypto.subtle.digest(
