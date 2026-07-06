@@ -7,7 +7,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { PortalSearch } from "@/components/PortalSearch";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
 
@@ -184,10 +183,8 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                 Menu
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] overflow-y-auto p-3 sm:w-[320px]">
-                <VisuallyHidden>
-                  <SheetTitle>Learner portal navigation</SheetTitle>
-                  <SheetDescription>Choose a topic to open.</SheetDescription>
-                </VisuallyHidden>
+                <SheetTitle className="sr-only">Learner portal navigation</SheetTitle>
+                <SheetDescription className="sr-only">Choose a topic to open.</SheetDescription>
                 {sidebarInner}
               </SheetContent>
             </Sheet>
