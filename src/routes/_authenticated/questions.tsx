@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { saveAttempt, type QuizAttemptItem, type QuizKind } from "@/lib/quizAttempts";
 import { useTheoryOverrides } from "@/hooks/useTheoryOverrides";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 export const Route = createFileRoute("/_authenticated/questions")({
   head: () => ({ meta: [{ title: "Theory questions · GSM" }] }),
@@ -43,7 +44,7 @@ function QuestionsPage() {
   return (
     <PortalShell eyebrow="Theory practice" title="Questions by difficulty">
       <p className="max-w-2xl text-sm text-muted-foreground">
-        Practice DVSA-style theory questions grouped by difficulty. Each question
+        Practice UK theory questions grouped by difficulty. Each question
         shows the correct answer and an explanation the moment you tap.
       </p>
 
@@ -76,6 +77,9 @@ function QuestionsPage() {
             </button>
           );
         })}
+      </div>
+      <div className="mt-8">
+        <DVSADisclaimer />
       </div>
     </PortalShell>
   );
