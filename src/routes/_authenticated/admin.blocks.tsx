@@ -181,20 +181,11 @@ function AdminBlocksPage() {
     }
   }, [section, currentItem, existing, spec]);
 
-  const requirePassword = (): string | null => {
-if (!p) {
-      toast.error("Admin password missing. Sign in via /auth?admin=1.");
-      return null;
-    }
-    return p;
-  };
-
   const [saving, setSaving] = useState(false);
 
   const save = async () => {
     if (!currentItem) return;
-    const password = requirePassword();
-setSaving(true);
+    setSaving(true);
     try {
       const usePerItemMeta = !!spec.perItemMeta;
       await upsertFn({
@@ -238,8 +229,7 @@ setSaving(true);
 
   const removeOverride = async () => {
     if (!existing || !currentItem) return;
-    const password = requirePassword();
-if (!window.confirm("Remove this override and restore the original?")) return;
+    if (!window.confirm("Remove this override and restore the original?")) return;
     try {
       await deleteFn({ data: { kind: section as ContentKind, item_id: currentItem.id } });
       toast.success("Removed");
@@ -333,8 +323,6 @@ if (!window.confirm("Remove this override and restore the original?")) return;
                 fields={spec.fields}
                 onUploadImage={async (file) => {
                   if (!currentItem) throw new Error("No item selected");
-                  const password = requirePassword();
-                  if (!password) throw new Error("Missing admin password");
                   if (file.size > 5 * 1024 * 1024) throw new Error("Image too large — max 5 MB.");
                   const dataUrl = await new Promise<string>((resolve, reject) => {
                     const r = new FileReader();
