@@ -77,8 +77,8 @@ export const runDiagnostics = createServerFn({ method: "POST" })
     // returning 500 on same-zone subrequest fan-out was the real "fetch failed").
     let origin = "";
     try {
-      const { getRequest } = await import("@tanstack/react-start/server");
-      origin = new URL(getRequest().url).origin;
+      const { getRequestOrigin } = await import("./auth-guard.server");
+      origin = getRequestOrigin();
     } catch {
       /* noop */
     }
