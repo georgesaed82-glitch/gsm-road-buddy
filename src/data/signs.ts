@@ -139,10 +139,12 @@ export const signs: Sign[] = [
 
 
   // ── Signals ────────────────────────────────────────────
-  { id: "t-red", name: "Red light", meaning: "You must stop at the stop line — do not go past the line.", category: "signals", variant: { kind: "traffic-light", state: "red" } },
-  { id: "t-red-amber", name: "Red and amber together", meaning: "Stop. Do not pass through or start until GREEN shows.", category: "signals", variant: { kind: "traffic-light", state: "red-amber" } },
-  { id: "t-green", name: "Green light", meaning: "You may go if the way is clear — give way to pedestrians still crossing.", category: "signals", variant: { kind: "traffic-light", state: "green" } },
-  { id: "t-amber", name: "Amber light on its own", meaning: "Stop — unless you have already crossed the line or stopping would cause a collision.", category: "signals", variant: { kind: "traffic-light", state: "amber" } },
+  // Sequence at UK traffic signals (Highway Code Rule 176):
+  //   RED  →  RED + AMBER  →  GREEN  →  AMBER  →  RED  →  …
+  { id: "t-red", name: "Red", meaning: "You MUST stop behind the white stop line across your side of the road. Wait — do not enter the junction, even to turn left, until the light changes (Rule 176).", category: "signals", variant: { kind: "traffic-light", state: "red" } },
+  { id: "t-red-amber", name: "Red and amber", meaning: "You MUST still stop — do not pass through or start moving until the light turns GREEN. This phase warns that green is about to appear (Rule 176).", category: "signals", variant: { kind: "traffic-light", state: "red-amber" } },
+  { id: "t-green", name: "Green", meaning: "You may go if the way is clear. Give way to pedestrians already crossing, and only enter the junction if you can clear it before the lights change again (Rules 176, 178).", category: "signals", variant: { kind: "traffic-light", state: "green" } },
+  { id: "t-amber", name: "Amber (steady)", meaning: "Stop at the stop line. You may only continue if the amber appears after you have already crossed the line, or if stopping would cause a collision (Rule 176).", category: "signals", variant: { kind: "traffic-light", state: "amber" } },
 
   // ── Crossings ──────────────────────────────────────────
   { id: "c-zebra", name: "Zebra crossing", meaning: "Black-and-white stripes with flashing yellow (Belisha) beacons on poles. Give way to anyone waiting to cross.", category: "crossings", variant: { kind: "zebra-crossing" } },
