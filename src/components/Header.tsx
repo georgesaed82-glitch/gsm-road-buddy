@@ -261,7 +261,7 @@ export function Header() {
               {/* Scrollable menu body */}
               <div className="flex-1 overflow-y-auto px-5">
                 {/* Public pages grid */}
-                <nav className="grid grid-cols-3 gap-2">
+                <nav className="grid grid-cols-2 gap-2">
                   {navLinks.map((link) => {
                     const Icon = (link as { icon?: typeof Download }).icon ?? getMobileIcon(link.to, link.label);
                     const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
