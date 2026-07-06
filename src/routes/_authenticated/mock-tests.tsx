@@ -8,6 +8,7 @@ import { CheckCircle2, XCircle, Clock, Trophy, Download, RotateCcw } from "lucid
 import { cn } from "@/lib/utils";
 import { addMistakes } from "@/lib/mistakes";
 import { saveAttempt } from "@/lib/quizAttempts";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 const TEST_LENGTH = 50;
 const TEST_MINUTES = 60;
