@@ -14,20 +14,23 @@ export const officialSignImages: Record<string, string> = {
   "w-side-road": "/__l5e/assets-v1/506f652f-f546-41a5-b110-97d2699a6b4b/UK_traffic_sign_506.1__variant_1,_right_.svg",
   "w-hump": "/__l5e/assets-v1/aba6b0cd-de31-4ebd-bb1f-3e1f57872b1c/UK_traffic_sign_529.svg",
   "w-slippery": "/__l5e/assets-v1/de785913-dcb7-41ed-944f-4fc2cba4804c/UK_traffic_sign_557.svg",
-  "w-uneven": "/__l5e/assets-v1/d864f503-9a3a-42c5-baf6-8e7704e3e06e/UK_traffic_sign_557.1.svg",
+  // Series of road humps (diagram 557.1). Kept for the "w-road-humps" sign
+  // below — was previously mis-mapped to "w-uneven" (uneven road, diagram
+  // 556). No verified 556 SVG is on the CDN, so w-uneven falls back to the
+  // hand-drawn SignVisual pictogram until one is added.
+  "w-road-humps": "/__l5e/assets-v1/d864f503-9a3a-42c5-baf6-8e7704e3e06e/UK_traffic_sign_557.1.svg",
   "w-narrows": "/__l5e/assets-v1/88996f05-0d53-49b4-88c0-c20398d0a262/UK_traffic_sign_517__left_.svg",
   "w-two-way": "/__l5e/assets-v1/9927d4f4-99f4-4b97-9b7f-97ed062a14c0/UK_traffic_sign_521.svg",
   "w-school": "/__l5e/assets-v1/2b93c7b1-fcfd-4732-8a4a-7603c1ac83d6/UK_traffic_sign_545.svg",
   "w-pedestrians": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
-  // "w-cyclists" — removed: diagram 950 is the blue mandatory "cycle route
-  // recommended" sign, not the red-triangle warning. Falls back to the
-  // locally-drawn cyclists-in-triangle pictogram.
+  // Cyclists (or cycle route crosses road) ahead — red-triangle warning,
+  // TSRGD diagram 950.
+  "w-cyclists": "/__l5e/assets-v1/4f280b61-729b-47ae-a216-58478f477c4a/UK_traffic_sign_950.svg",
   "w-horse": "/__l5e/assets-v1/02e1af99-77c8-4b5d-899f-cdb204414d93/UK_traffic_sign_550.1.svg",
   "w-wild": "/__l5e/assets-v1/9af3afb8-2a0d-4994-81c2-625d9c064389/UK_traffic_sign_551.svg",
   "w-cattle": "/__l5e/assets-v1/273626b6-049c-4249-bf6a-ebac57635c93/UK_traffic_sign_548.svg",
-  // "w-elderly" — removed: previous mapping (diagram 544) is a pedestrian-crossing
-  // warning, not the "frail / elderly pedestrians likely to cross" sign. Falls back
-  // to the locally-drawn SignVisual pictogram until a verified DfT SVG is added.
+  // Frail (elderly or disabled) pedestrians likely to cross — TSRGD 544.2.
+  "w-elderly": "/__l5e/assets-v1/25c70e1c-a6a8-483c-a661-079a81d90da1/UK_traffic_sign_544.2.svg",
   "w-roadworks": "/__l5e/assets-v1/9d8d91ed-7cc6-442e-9cae-a1d953cd954a/UK_traffic_sign_7001.svg",
   "w-signals": "/__l5e/assets-v1/e943ec19-92cd-436e-bd68-e9e99117eb55/UK_traffic_sign_543.svg",
   "w-level": "/__l5e/assets-v1/a8a719a7-5e4f-42c3-a851-d80cad938afd/UK_traffic_sign_771.svg",
