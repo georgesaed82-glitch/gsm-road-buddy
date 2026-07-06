@@ -285,7 +285,7 @@ export function Header() {
                 </nav>
 
                 {/* Learner portal grid */}
-                <div className="mt-5">
+                <div className="mt-4">
                   <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     Learner portal
                   </div>
