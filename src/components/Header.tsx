@@ -262,9 +262,10 @@ export function Header() {
               <div className="flex-1 overflow-y-auto px-5">
                 {/* Public pages grid */}
                 <nav className="grid grid-cols-2 gap-2">
-                  {navLinks.map((link) => {
+                  {navLinks.map((link, index) => {
                     const Icon = (link as { icon?: typeof Download }).icon ?? getMobileIcon(link.to, link.label);
                     const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
+                    const isLastOdd = index === navLinks.length - 1 && navLinks.length % 2 === 1;
                     return (
                       <Link
                         key={link.to}
@@ -272,6 +273,7 @@ export function Header() {
                         onClick={() => setOpen(false)}
                         className={cn(
                           "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-2 text-center font-display text-sm leading-tight transition-colors",
+                          isLastOdd && "col-span-2",
                           active
                             ? "border-accent/40 bg-accent/10 text-primary"
                             : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
