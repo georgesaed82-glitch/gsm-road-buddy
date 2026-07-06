@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/driving-clips")({
   head: () => ({
     meta: [
-      { title: "Practical Driving Animations · GSM" },
+      { title: "Practical Strategy Videos · GSM" },
       {
         name: "description",
         content:
-          "Real UK driving scenarios turned into interactive animations — organised by topic and tied to the Highway Code so you can build your driving skills one situation at a time.",
+          "Practical Strategy Videos — real UK driving scenarios turned into interactive animations, organised by topic and tied to the Highway Code so you build a repeatable driving system, not just memorised facts.",
       },
     ],
   }),
@@ -59,9 +59,9 @@ function DrivingClipsPage() {
     .filter((l) => l.status === "ready" && completed.has(l.slug)).length;
 
   return (
-    <PortalShell eyebrow="Practical" title="Practical Driving Animations">
+    <PortalShell eyebrow="Practical" title="Practical Strategy Videos">
       <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        Real UK driving scenarios — turned into short interactive animations.
+        Real UK driving scenarios — turned into short interactive strategy videos.
         Each lesson is tied to the Highway Code and built to help you
         understand <em>why</em> we drive the way we do, not just what to
         memorise. Work through a category, mark lessons complete as you go,

@@ -93,7 +93,7 @@ export function PortalSearch() {
     }
     for (const c of drivingClips) {
       const sc = scoreMatch(`${c.title} ${c.rule} ${c.summary} ${c.beats.map((b) => b.label + " " + b.detail).join(" ")}`, q);
-      if (sc > 0) hits.push({ href: `/driving-clips#${c.slug}`, title: c.title, snippet: c.summary, group: "Driving clips", score: sc });
+      if (sc > 0) hits.push({ href: `/driving-clips#${c.slug}`, title: c.title, snippet: c.summary, group: "Practical strategy videos", score: sc });
     }
 
     hits.sort((a, b) => b.score - a.score);

@@ -145,6 +145,7 @@ export const lessonGroups: LessonGroup[] = [
     lessons: compact([
       existing("lane-discipline"),
       existing("lane-merging"),
+      existing("motorway-changing-lanes"),
       planned("motorway-joining", "Joining a motorway", "Rules 259–260"),
       planned("motorway-leaving", "Leaving a motorway", "Rules 272–273"),
       planned("smart-motorways", "Smart motorways", "Rules 269–271"),

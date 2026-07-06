@@ -1277,6 +1277,523 @@ const laneMerging: Lesson = {
 };
 
 // ─────────────────────────────────────────────────────────────
+// Lesson · Motorway Skills — Changing Lanes
+// A premium-quality interactive teaching animation.
+//
+// Scene layout: 3-lane UK motorway (top-down). Ego (blue) starts
+// in Lane 1 behind a slower HGV. The learner is guided through
+// the full observation routine: Observe ahead → interior mirror →
+// right door mirror → reference point → signal → blind-spot check
+// → match speed → smooth movement → cancel signal → continue
+// scanning. A right-hand HUD shows both mirrors, a blind-spot
+// indicator, speedometer and step badge synced to the timeline.
+// ─────────────────────────────────────────────────────────────
+
+type LaneChangeStep = {
+  id: number;
+  label: string;
+  at: number; // start (0..1)
+};
+
+const LANE_CHANGE_STEPS: LaneChangeStep[] = [
+  { id: 1, label: "Observe ahead", at: 0.00 },
+  { id: 2, label: "Interior mirror", at: 0.08 },
+  { id: 3, label: "Right door mirror", at: 0.18 },
+  { id: 4, label: "Reference point", at: 0.28 },
+  { id: 5, label: "Signal right", at: 0.38 },
+  { id: 6, label: "Blind spot check", at: 0.46 },
+  { id: 7, label: "Match speed", at: 0.56 },
+  { id: 8, label: "Smooth lane change", at: 0.66 },
+  { id: 9, label: "Cancel signal", at: 0.82 },
+  { id: 10, label: "Continue scanning", at: 0.90 },
+];
+
+function stepAt(t: number): LaneChangeStep {
+  let cur = LANE_CHANGE_STEPS[0];
+  for (const s of LANE_CHANGE_STEPS) {
+    if (t >= s.at) cur = s;
+  }
+  return cur;
+}
+
+function ChangingLanesScene(t: number) {
+  // ── Layout ────────────────────────────────────────────────
+  // Left canvas 0..440: motorway view. Right canvas 440..640: HUD.
+  const roadTop = 60;
+  const roadBottom = 300;
+  const lane1Y = 260; // nearside (left in UK)
+  const lane2Y = 200; // middle
+  const lane3Y = 140; // offside (fastest)
+
+  // Rolling-camera effect: dashes scroll leftwards.
+  const scroll = (t * 90) % 45;
+
+  // ── Ego position (blue) ───────────────────────────────────
+  // Stays around x=200 in the left region; moves from lane 1 to lane 2 during 0.66..0.80.
+  const egoX = 200;
+  const changeStart = 0.66;
+  const changeEnd = 0.80;
+  let egoY = lane1Y;
+  if (t > changeStart) {
+    const k = Math.min(1, Math.max(0, (t - changeStart) / (changeEnd - changeStart)));
+    egoY = lane1Y + (lane2Y - lane1Y) * easeInOut(k);
+  }
+
+  // ── HGV ahead in lane 1 (the reason to change) ────────────
+  // Cruising slower than ego so ego catches up during the observation phase.
+  const hgvX = 260 + t * 120; // slow
+  const hgvSpeed = 56;
+  const egoSpeed = t < 0.56 ? 60 : t < 0.66 ? 60 + (t - 0.56) * 100 : 70; // ramps to 70 to match lane 2 flow
+
+  // ── "Following car" (silver) — approaches from behind in lane 2.
+  // Reference point beat: at t≈0.28 it should be visible in BOTH mirrors
+  // simultaneously — i.e. far enough back that we're clear to move.
+  //   t=0.10 → very close behind (right-mirror-only) — NOT safe
+  //   t=0.28 → sits at the reference distance (safe)
+  //   t=0.55 → dropped further back
+  const followerX = interpolatePoints(t, [
+    [0.0, 130],
+    [0.1, 155],
+    [0.28, 100],
+    [0.55, 60],
+    [1.0, 30],
+  ]);
+  const followerY = lane2Y;
+
+  // Visibility state driven by follower position relative to ego.
+  // Distance behind ego (positive = behind).
+  const followerBehind = egoX - followerX;
+  const inRightMirror = followerBehind > 20 && followerBehind < 180; // just behind, offset lane
+  const inInteriorMirror = followerBehind > 70 && followerBehind < 260; // farther back, centre-ish
+  const inBothMirrors = inRightMirror && inInteriorMirror;
+
+  // ── Blind-spot car (red) — appears from lane 3 drifting into lane 2 during blind-spot beat.
+  const bsShow = t > 0.42 && t < 0.66;
+  const bsProgress = Math.min(1, Math.max(0, (t - 0.42) / 0.24));
+  const bsX = egoX + 20 + bsProgress * 30;
+  const bsY = lane3Y + (lane2Y - lane3Y) * easeInOut(Math.max(0, (bsProgress - 0.2) / 0.6));
+
+  // ── Signal state ──────────────────────────────────────────
+  const signalOn = t > 0.38 && t < 0.82;
+
+  // ── Current step ──────────────────────────────────────────
+  const step = stepAt(t);
+
+  return (
+    <svg viewBox="0 0 640 360" className="h-full w-full">
+      <defs>
+        <linearGradient id="sky-cl" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#1a1a1c" />
+          <stop offset="1" stopColor="#111" />
+        </linearGradient>
+        <linearGradient id="hud-cl" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#0f1116" />
+          <stop offset="1" stopColor="#0a0b0f" />
+        </linearGradient>
+      </defs>
+
+      {/* Sky / background */}
+      <rect width={640} height={360} fill="url(#sky-cl)" />
+
+      {/* Grass verges */}
+      <rect x={0} y={roadTop - 20} width={440} height={20} fill={GRASS} opacity={0.9} />
+      <rect x={0} y={roadBottom} width={440} height={40} fill={GRASS} opacity={0.9} />
+
+      {/* Motorway carriageway */}
+      <rect x={0} y={roadTop} width={440} height={roadBottom - roadTop} fill="#2b2b2e" />
+
+      {/* Hard shoulder (below lane 1) */}
+      <rect x={0} y={lane1Y + 30} width={440} height={roadBottom - (lane1Y + 30)} fill="#33333a" />
+      <line x1={0} y1={lane1Y + 30} x2={440} y2={lane1Y + 30} stroke={PAINT} strokeWidth={1.6} />
+
+      {/* Outer edge line (top) */}
+      <line x1={0} y1={roadTop + 2} x2={440} y2={roadTop + 2} stroke={PAINT} strokeWidth={1.6} />
+
+      {/* Lane dividers — long broken white (Diagram 1004) */}
+      {[lane3Y + 30, lane2Y + 30].map((y, li) => (
+        <g key={li}>
+          {Array.from({ length: 12 }).map((_, i) => (
+            <rect
+              key={i}
+              x={i * 45 - scroll}
+              y={y - 1.5}
+              width={26}
+              height={3}
+              fill={PAINT}
+            />
+          ))}
+        </g>
+      ))}
+
+      {/* Lane numbers */}
+      <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize={9} fill="#ffffff" opacity={0.35}>
+        <text x={12} y={lane3Y - 4}>LANE 3</text>
+        <text x={12} y={lane2Y - 4}>LANE 2</text>
+        <text x={12} y={lane1Y - 4}>LANE 1</text>
+      </g>
+
+      {/* HGV ahead in lane 1 (top-down block) */}
+      <g transform={`translate(${hgvX} ${lane1Y})`}>
+        <rect x={-28} y={-11} width={56} height={22} rx={2} fill="#d1d5db" stroke="#0a0a0a" strokeWidth={0.6} />
+        <rect x={16} y={-9} width={10} height={18} rx={1} fill="#4b5563" />
+        <rect x={-27} y={-10} width={1.6} height={3} fill="#5a1010" />
+        <rect x={-27} y={7} width={1.6} height={3} fill="#5a1010" />
+        <text x={0} y={3} textAnchor="middle" fontSize={7} fill="#111" fontFamily="sans-serif" fontWeight={700}>HGV · {hgvSpeed}</text>
+      </g>
+
+      {/* Follower silver car in lane 2, coming up from behind */}
+      <Car2 x={followerX} y={followerY} color="#c0c0c6" />
+
+      {/* Blind-spot car (red) in Lane 3 → Lane 2 during blind-spot beat */}
+      {bsShow && (
+        <>
+          <Car2 x={bsX} y={bsY} color="#dc2626" indicator="left" />
+          {/* Warning pulse */}
+          <circle cx={bsX} cy={bsY} r={22} fill="none" stroke="#ef4444" strokeWidth={2} opacity={0.85}>
+            <animate attributeName="r" values="18;28;18" dur="1s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.85;0.2;0.85" dur="1s" repeatCount="indefinite" />
+          </circle>
+        </>
+      )}
+
+      {/* Blind-spot cone on ego (right-rear wedge) */}
+      <g transform={`translate(${egoX} ${egoY})`}>
+        <path d="M 10 -6 L 60 -34 L 60 -8 Z" fill="#ef4444" opacity={t > 0.42 && t < 0.66 ? 0.35 : 0.12} />
+      </g>
+
+      {/* Ego car */}
+      <Car2 x={egoX} y={egoY} color="#2f6bf0" indicator={signalOn ? "right" : null} braking={false} />
+
+      {/* Motorway sign — subtle 70 limit ahead */}
+      <g transform="translate(340 70)">
+        <circle r={16} fill="#fff" stroke="#c8102e" strokeWidth={4} />
+        <text textAnchor="middle" y={5} fontSize={15} fontWeight={800} fill="#111" fontFamily="sans-serif">70</text>
+      </g>
+
+      {/* ────── RIGHT-HAND HUD ────── */}
+      <rect x={440} y={0} width={200} height={360} fill="url(#hud-cl)" />
+      <line x1={440} y1={0} x2={440} y2={360} stroke="#2a2a2f" strokeWidth={1} />
+
+      {/* HUD header — current step */}
+      <g transform="translate(452 14)">
+        <text fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1.5">STEP {String(step.id).padStart(2, "0")} / 10</text>
+        <text y={18} fontSize={13} fontWeight={700} fill="#ffffff" fontFamily="sans-serif">{step.label}</text>
+      </g>
+
+      {/* Interior mirror module */}
+      <MirrorModule
+        x={452}
+        y={54}
+        width={176}
+        height={62}
+        label="INTERIOR MIRROR"
+        active={t >= 0.08 && t < 0.28}
+        highlight={inInteriorMirror}
+        drawMirrorContent={(cx, cy, w) => {
+          // Rear-view: show a small silver car if follower is in interior-mirror range.
+          return (
+            <g>
+              <rect x={cx - w / 2 + 6} y={cy - 12} width={w - 12} height={24} rx={3} fill="#050506" />
+              {inInteriorMirror ? (
+                <g transform={`translate(${cx} ${cy + 2})`}>
+                  {/* Distant view: small car */}
+                  <rect x={-8} y={-4} width={16} height={8} rx={1.5} fill="#c0c0c6" />
+                  <rect x={-6} y={-3} width={5} height={6} rx={1} fill="#111" opacity={0.7} />
+                  <rect x={1} y={-3} width={5} height={6} rx={1} fill="#111" opacity={0.5} />
+                </g>
+              ) : (
+                <text x={cx} y={cy + 3} textAnchor="middle" fontSize={8} fill="#4b5563" fontFamily="sans-serif">clear</text>
+              )}
+            </g>
+          );
+        }}
+      />
+
+      {/* Right door mirror module */}
+      <MirrorModule
+        x={452}
+        y={122}
+        width={176}
+        height={62}
+        label="RIGHT DOOR MIRROR"
+        active={t >= 0.18 && t < 0.34}
+        highlight={inRightMirror}
+        drawMirrorContent={(cx, cy, w) => {
+          return (
+            <g>
+              {/* trapezoid mirror shape */}
+              <path d={`M ${cx - w / 2 + 10} ${cy - 12} L ${cx + w / 2 - 6} ${cy - 8} L ${cx + w / 2 - 6} ${cy + 8} L ${cx - w / 2 + 10} ${cy + 12} Z`} fill="#050506" />
+              {inRightMirror ? (
+                <g transform={`translate(${cx + 4} ${cy + 1})`}>
+                  <rect x={-10} y={-5} width={20} height={10} rx={1.5} fill="#c0c0c6" />
+                  <rect x={-8} y={-4} width={6} height={8} rx={1} fill="#111" opacity={0.7} />
+                  <rect x={2} y={-4} width={6} height={8} rx={1} fill="#111" opacity={0.5} />
+                </g>
+              ) : (
+                <text x={cx} y={cy + 3} textAnchor="middle" fontSize={8} fill="#4b5563" fontFamily="sans-serif">clear</text>
+              )}
+            </g>
+          );
+        }}
+      />
+
+      {/* Reference-point verdict pill */}
+      <g transform="translate(452 192)">
+        <rect width={176} height={30} rx={4} fill={inBothMirrors ? "#052e16" : "#3a0e0e"} stroke={inBothMirrors ? "#22c55e" : "#ef4444"} strokeWidth={1} />
+        <circle cx={12} cy={15} r={5} fill={inBothMirrors ? "#22c55e" : "#ef4444"} />
+        <text x={24} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">REFERENCE POINT</text>
+        <text x={24} y={25} fontSize={10} fill="#ffffff" fontWeight={700} fontFamily="sans-serif">
+          {inBothMirrors ? "Visible in BOTH — safe" : inRightMirror ? "Right mirror only — too close" : "Waiting…"}
+        </text>
+      </g>
+
+      {/* Blind-spot indicator */}
+      <g transform="translate(452 230)">
+        <rect width={176} height={30} rx={4} fill={bsShow ? "#3a0e0e" : "#111318"} stroke={bsShow ? "#ef4444" : "#2a2a2f"} strokeWidth={1} />
+        <g transform="translate(12 15)">
+          <path d="M -6 -5 L 6 -5 L 8 0 L 6 5 L -6 5 L -8 0 Z" fill={bsShow ? "#ef4444" : "#4b5563"} />
+        </g>
+        <text x={24} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">BLIND SPOT</text>
+        <text x={24} y={25} fontSize={10} fill="#ffffff" fontWeight={700} fontFamily="sans-serif">
+          {bsShow ? "Car in Lane 3 moving across!" : "Shoulder check — clear"}
+        </text>
+      </g>
+
+      {/* Speed matcher */}
+      <g transform="translate(452 268)">
+        <rect width={176} height={44} rx={4} fill="#111318" stroke="#2a2a2f" strokeWidth={1} />
+        <text x={12} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">SPEED · MATCH FLOW</text>
+        <text x={12} y={34} fontSize={18} fontWeight={800} fill="#ffffff" fontFamily="sans-serif">
+          {Math.round(egoSpeed)}<tspan fontSize={10} fontWeight={500} fill="#9ca3af"> mph</tspan>
+        </text>
+        <text x={100} y={20} fontSize={8} fill="#9ca3af" fontFamily="sans-serif">target</text>
+        <text x={100} y={34} fontSize={14} fontWeight={700} fill={egoSpeed >= 68 ? "#22c55e" : "#f59e0b"} fontFamily="sans-serif">70 mph</text>
+      </g>
+
+      {/* Signal indicator */}
+      <g transform="translate(452 320)">
+        <rect width={176} height={28} rx={4} fill="#111318" stroke="#2a2a2f" strokeWidth={1} />
+        <text x={12} y={12} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">SIGNAL</text>
+        <g transform="translate(150 14)">
+          <path d="M -14 -4 L -4 -4 L -4 -8 L 6 0 L -4 8 L -4 4 L -14 4 Z" fill={signalOn ? "#f59e0b" : "#374151"}>
+            {signalOn && (
+              <animate attributeName="opacity" values="1;0.25;1" dur="0.6s" repeatCount="indefinite" />
+            )}
+          </path>
+        </g>
+        <text x={12} y={23} fontSize={10} fontWeight={700} fill="#ffffff" fontFamily="sans-serif">{signalOn ? "RIGHT · ON" : "OFF"}</text>
+      </g>
+    </svg>
+  );
+}
+
+function MirrorModule({
+  x,
+  y,
+  width,
+  height,
+  label,
+  active,
+  highlight,
+  drawMirrorContent,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+  active: boolean;
+  highlight: boolean;
+  drawMirrorContent: (cx: number, cy: number, w: number) => React.ReactNode;
+}) {
+  const stroke = highlight ? "#22c55e" : active ? "#f59e0b" : "#2a2a2f";
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <rect width={width} height={height} rx={5} fill="#111318" stroke={stroke} strokeWidth={active || highlight ? 1.5 : 1} />
+      {active && (
+        <rect width={width} height={height} rx={5} fill="none" stroke={stroke} strokeWidth={2} opacity={0.5}>
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.1s" repeatCount="indefinite" />
+        </rect>
+      )}
+      <text x={10} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">{label}</text>
+      {/* Mirror surface */}
+      <g>{drawMirrorContent(width / 2, height / 2 + 6, width - 20)}</g>
+    </g>
+  );
+}
+
+// Small utility — piecewise linear interpolation across (t, value) waypoints.
+function interpolatePoints(t: number, points: [number, number][]): number {
+  for (let i = 0; i < points.length - 1; i++) {
+    const [t0, v0] = points[i];
+    const [t1, v1] = points[i + 1];
+    if (t >= t0 && t <= t1) {
+      const k = (t - t0) / (t1 - t0 || 1);
+      return v0 + (v1 - v0) * k;
+    }
+  }
+  return points[points.length - 1][1];
+}
+
+const changingLanes: Lesson = {
+  slug: "motorway-changing-lanes",
+  title: "Motorway skills — Changing lanes",
+  category: "Highway Code • Motorway Skills",
+  rule: "Rules 133–134, 161, 267",
+  objective:
+    "Learn the full GSM lane-change routine on a motorway — Observe · Interior mirror · Right mirror · Reference point · Signal · Blind spot · Match speed · Move smoothly · Cancel signal · Continue scanning.",
+  think: [
+    "Do I actually need to change lane, or can I stay put?",
+    "Is the vehicle behind me visible in BOTH mirrors — my reference point?",
+    "Is anyone in Lane 3 already moving towards Lane 2?",
+    "Am I fast enough to match the flow I'm joining?",
+    "Have I committed — or am I hesitating and confusing everyone else?",
+  ],
+  ruleHeadline: "Observe · Mirror · Reference point · Signal · Blind spot · Match speed · Move.",
+  ruleBullets: [
+    "Interior mirror THEN right door mirror — always in that order",
+    "Reference point: vehicle behind visible in BOTH mirrors = enough space to move",
+    "Right-mirror-only = too close — wait, don't move",
+    "Signal in good time, then a physical shoulder check for the blind spot",
+    "Match the speed of the lane you are joining before you move across",
+    "Once you have decided it is safe, commit smoothly — hesitation confuses others",
+    "Cancel the signal, settle, then continue scanning",
+  ],
+  why: (
+    <>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
+      <p>
+        At motorway speeds a car can close 40 metres every second. Mirrors alone cannot
+        confirm a safe move — the offside blind spot hides an entire car. The GSM
+        routine layers the checks so nothing is left to chance and the decision to
+        move becomes a <strong>system</strong>, not a guess.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">The reference point</p>
+      <p>
+        Check your interior mirror, then your right door mirror. If the vehicle
+        behind you is visible in <strong>BOTH mirrors at the same time</strong>, that
+        is normally enough space to move safely. If it is visible only in the right
+        mirror, it is too close — hold your position and wait for the gap to open.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
+      <p>Every lane change on a dual carriageway or motorway — to overtake, to leave, or to make room for merging traffic. Same routine, every time.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <ol className="list-decimal space-y-1 pl-5">
+        <li>Observe ahead — spot the reason for the change early.</li>
+        <li>Interior mirror — assess the traffic behind you.</li>
+        <li>Right door mirror — check the lane you are moving into.</li>
+        <li>Reference point — car behind visible in <em>both</em> mirrors = safe distance.</li>
+        <li>Signal right — give other drivers time to plan around you.</li>
+        <li>Blind-spot check over your right shoulder — a car from Lane 3 could be moving across too.</li>
+        <li>Match your speed to the traffic in the lane you are joining.</li>
+        <li>Move smoothly across — one steady steering input, no drifting.</li>
+        <li>Cancel the signal once you are settled in the new lane.</li>
+        <li>Continue scanning — mirrors, road ahead, position, repeat.</li>
+      </ol>
+    </>
+  ),
+  georgeExplains:
+    "Confidence on a motorway comes from a routine you trust — not from bravery. Interior mirror, right mirror, reference point. If the car behind sits in BOTH mirrors together, you have the space. If it's only in the right one, it's too close — wait. Signal, then look over your right shoulder — someone in Lane 3 might be moving across at the same time you are. Match the speed, commit, cancel the signal, and keep scanning. Every time. Same order. That's the system.",
+  commonMistakes: [
+    "Only checking the interior mirror and assuming it's clear",
+    "Moving while the car behind is still right-mirror-only — too close",
+    "Skipping the blind-spot check because 'the mirrors looked clear'",
+    "Drifting across at 55 mph into a lane where traffic is doing 70",
+    "Hesitating half-way across when another driver flashes",
+    "Leaving the indicator on and confusing everyone behind you",
+  ],
+  mistakes: [
+    {
+      wrong: "Glancing at the interior mirror and moving straight across.",
+      why: "The offside blind spot hides an entire car. Mirror-only lane changes are the classic motorway side-swipe.",
+      right: "Interior mirror → right mirror → reference point → signal → shoulder check. Only then, move.",
+    },
+    {
+      wrong: "Moving into Lane 2 at your current speed when the flow is 10 mph faster.",
+      why: "The car behind has to brake sharply — a real risk on a motorway. It also feels aggressive and unpredictable to other drivers.",
+      right: "Match the target-lane speed BEFORE you steer across. Smooth in, no braking required behind you.",
+    },
+    {
+      wrong: "Starting the move, then hesitating half-way across because someone flashed.",
+      why: "Hesitation is the second-most-dangerous thing on a motorway. Other drivers can't read a half-committed manoeuvre.",
+      right: "Complete the observation routine BEFORE you steer. Once you've decided, commit smoothly.",
+    },
+  ],
+  gsmTips: [
+    "Interior first, right door mirror second — always in that order",
+    "Both mirrors = space. Right only = too close. Wait.",
+    "Physical shoulder check — mirrors don't reach the blind spot",
+    "Match the speed first, THEN steer — not the other way round",
+    "Commit smoothly — hesitation is a hazard",
+    "Cancel the signal or you become the driver everyone talks about",
+  ],
+  keyTakeaway:
+    "Trust the system — Observe, Mirror, Reference point, Signal, Blind spot, Match speed, Move, Cancel, Scan. Same routine every lane, every time.",
+  durationMs: 20000,
+  captions: [
+    { at: 0.00, label: "Observe ahead", detail: "Slower HGV in Lane 1 — plan the move now, not later." },
+    { at: 0.08, label: "Interior mirror", detail: "Assess the traffic behind you. What is coming up?" },
+    { at: 0.18, label: "Right door mirror", detail: "Check the lane you are moving into." },
+    { at: 0.28, label: "Reference point — safe gap", detail: "The silver car is visible in BOTH mirrors at once. That's the reference point." },
+    { at: 0.38, label: "Signal right", detail: "Signal in good time so other drivers can plan around you." },
+    { at: 0.46, label: "Blind-spot check", detail: "Physical look over your right shoulder — someone from Lane 3 could be moving too." },
+    { at: 0.56, label: "Match speed", detail: "Accelerate to match the flow in Lane 2 BEFORE you steer across." },
+    { at: 0.66, label: "Smooth lane change", detail: "One steady steering input — no drifting, no hesitation." },
+    { at: 0.82, label: "Cancel signal", detail: "Settled in Lane 2 — cancel the indicator." },
+    { at: 0.90, label: "Continue scanning", detail: "Mirrors, road ahead, position — the routine never stops." },
+  ],
+  questions: [
+    {
+      at: 0.34,
+      prompt:
+        "You check your interior mirror, then your right door mirror. The car behind is visible only in the right mirror. Is it safe to move across?",
+      options: [
+        {
+          label: "Yes — you can see them, so move",
+          explain:
+            "No. Right-mirror-only means the car is too close. If you move now they'll have to brake sharply. Hold your position and wait for the gap to open.",
+        },
+        {
+          label: "No — right-mirror-only means too close. Wait.",
+          correct: true,
+          explain:
+            "Correct. The reference point is BOTH mirrors together. Right-mirror-only means the gap is not there yet — hold your lane and wait.",
+        },
+        {
+          label: "Move anyway — they'll adjust",
+          explain:
+            "No. Never assume another driver will bail you out. At motorway speed that assumption becomes a side-swipe.",
+        },
+      ],
+    },
+    {
+      at: 0.5,
+      prompt:
+        "Your mirrors are clear and you've signalled. Do you still need to look over your right shoulder?",
+      options: [
+        {
+          label: "No — mirrors and signal are enough",
+          explain:
+            "No. A car from Lane 3 could be moving into Lane 2 at exactly the same time as you. Mirrors do not see the blind spot.",
+        },
+        {
+          label: "Yes — a car from Lane 3 could also be moving across",
+          correct: true,
+          explain:
+            "Correct. The physical shoulder check catches a car crossing from Lane 3 into Lane 2 alongside you — a classic motorway conflict that mirrors miss.",
+        },
+        {
+          label: "Only if the road is busy",
+          explain:
+            "No. Same routine every time — the day you skip it is the day someone is there.",
+        },
+      ],
+    },
+  ],
+  render: ChangingLanesScene,
+};
+
+// ─────────────────────────────────────────────────────────────
 // Lesson · Keeping junctions clear (yellow box)
 // ─────────────────────────────────────────────────────────────
 function JunctionClearScene(t: number) {
@@ -2691,6 +3208,7 @@ export const drivingLessons: Lesson[] = [
   meetingTraffic,
   laneDiscipline,
   laneMerging,
+  changingLanes,
   keepingJunctionsClear,
   closedJunction,
   openJunction,

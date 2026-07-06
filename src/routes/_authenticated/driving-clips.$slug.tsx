@@ -42,7 +42,7 @@ function LessonPage() {
         to="/driving-clips"
         className="mb-6 inline-flex items-center gap-1 text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
       >
-        <ChevronLeft className="h-4 w-4" /> All practical animations
+        <ChevronLeft className="h-4 w-4" /> All practical strategy videos
       </Link>
       <LessonShell
         lesson={lesson}
