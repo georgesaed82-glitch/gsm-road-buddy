@@ -164,3 +164,98 @@ function AreasCovered() {
     </div>
   );
 }
+
+function WhatsAppButton({ phoneIntl }: { phoneIntl: string }) {
+  return (
+    <Button
+      asChild
+      size="lg"
+      className="h-14 w-full justify-center gap-2 rounded-xl bg-primary text-primary-foreground shadow-md transition-transform hover:bg-primary/90 hover:shadow-lg"
+    >
+      <a
+        href={`https://wa.me/${phoneIntl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")}
+      >
+        <WhatsAppIcon className="h-5 w-5" />
+        WhatsApp
+      </a>
+    </Button>
+  );
+}
+
+function CallButton({ phoneIntl }: { phoneIntl: string }) {
+  return (
+    <Button
+      asChild
+      size="lg"
+      variant="outline"
+      className="h-14 w-full justify-center gap-2 rounded-xl border-primary bg-background text-primary shadow-md transition-transform hover:bg-secondary hover:text-primary"
+    >
+      <a
+        href={`tel:+${phoneIntl}`}
+        onClick={() => trackContactClick("phone", "Contact page – instant CTA")}
+      >
+        <Phone className="h-5 w-5" />
+        Call
+      </a>
+    </Button>
+  );
+}
+
+function detectPlatform() {
+  if (typeof navigator === "undefined") return { ios: false, android: false, standalone: false };
+  const ua = navigator.userAgent || "";
+  const ios = /iPhone|iPad|iPod/i.test(ua);
+  const android = /Android/i.test(ua);
+  const standalone =
+    (typeof window !== "undefined" && window.matchMedia?.("(display-mode: standalone)").matches) ||
+    (navigator as Navigator & { standalone?: boolean }).standalone === true;
+  return { ios, android, standalone };
+}
+
+function DownloadAppButton() {
+  const [platform, setPlatform] = useState({ ios: false, android: false, standalone: false });
+  const [showHelp, setShowHelp] = useState(false);
+
+  useEffect(() => {
+    setPlatform(detectPlatform());
+  }, []);
+
+  const handleClick = async () => {
+    if (platform.ios || platform.standalone) {
+      setShowHelp(true);
+      return;
+    }
+    const shown = await triggerPwaInstallPrompt();
+    if (!shown) setShowHelp(true);
+  };
+
+  return (
+    <>
+      <Button
+        size="lg"
+        onClick={handleClick}
+        className="h-14 w-full justify-center gap-2 rounded-xl bg-accent text-accent-foreground shadow-md transition-transform hover:bg-accent/90 hover:shadow-lg"
+      >
+        <Download className="h-5 w-5" />
+        Download the App
+      </Button>
+      {showHelp && (
+        <div className="col-span-full rounded-lg border border-border bg-muted p-4 text-sm text-muted-foreground">
+          <p className="font-medium text-foreground">Install the GSM app</p>
+          {platform.ios ? (
+            <p className="mt-1">
+              Tap the Share button in Safari, then choose <strong className="text-foreground">Add to Home Screen</strong>.
+            </p>
+          ) : (
+            <p className="mt-1">
+              Open this site in Chrome, Edge or Samsung Internet, then choose <strong className="text-foreground">Install app</strong> or <strong className="text-foreground">Add to Home screen</strong> from the browser menu.
+            </p>
+          )}
+        </div>
+      )}
+    </>
+  );
+}
