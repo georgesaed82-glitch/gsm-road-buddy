@@ -35,7 +35,7 @@ const DAY_LABELS: Record<string, string> = {
 };
 
 function ContactPage() {
-  const { business, social, opening_hours } = useSiteSettings();
+  const { business, opening_hours } = useSiteSettings();
   const hours = (["mon","tue","wed","thu","fri","sat","sun"] as const)
     .filter((k) => opening_hours[k])
     .map((k) => ({ day: DAY_LABELS[k], time: opening_hours[k] }));
