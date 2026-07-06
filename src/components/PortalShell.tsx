@@ -1,6 +1,6 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, GraduationCap, ChevronDown, Copyright, History, Film, Compass } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, ChevronDown, Copyright, History, Film, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,32 +9,53 @@ import { PortalSearch } from "@/components/PortalSearch";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
 
-const topItems: Item[] = [
-  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { to: "/lessons", label: "Lessons & progress", icon: CalendarCheck },
-  { to: "/payments", label: "Payments", icon: CreditCard },
-  { to: "/gsm-method", label: "GSM Driving Method", icon: Compass },
-];
+const overviewItem: Item = { to: "/dashboard", label: "Overview", icon: LayoutDashboard };
 
-const theoryItems: Item[] = [
-  { to: "/highway-code", label: "Highway Code", icon: BookOpen },
-  { to: "/road-signs", label: "Road signs", icon: SignpostBig },
-  { to: "/road-markings", label: "Road markings", icon: Milestone },
-  { to: "/police-signals", label: "Arm signals", icon: Hand },
-  { to: "/questions", label: "Questions", icon: HelpCircle },
-  { to: "/mock-tests", label: "Mock tests", icon: ClipboardCheck },
-  { to: "/review", label: "Review mistakes", icon: RotateCcw },
-  { to: "/my-attempts", label: "My attempts", icon: History },
-];
+type Group = { id: string; label: string; items: Item[] };
 
-const practicalItems: Item[] = [
-  { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
-  { to: "/driving-clips/", label: "Practical animations", icon: Film },
-];
+const learningGroup: Group = {
+  id: "learning",
+  label: "Learning",
+  items: [
+    { to: "/gsm-method", label: "GSM Driving Method", icon: Compass },
+    { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
+    { to: "/driving-clips/", label: "Practical animations", icon: Film },
+  ],
+};
 
-const bottomItems: Item[] = [
-  { to: "/profile", label: "Profile", icon: UserCircle2 },
-];
+const theoryGroup: Group = {
+  id: "theory",
+  label: "Theory",
+  items: [
+    { to: "/highway-code", label: "Highway Code", icon: BookOpen },
+    { to: "/road-signs", label: "Road signs", icon: SignpostBig },
+    { to: "/road-markings", label: "Road markings", icon: Milestone },
+    { to: "/police-signals", label: "Arm signals", icon: Hand },
+    { to: "/questions", label: "Questions", icon: HelpCircle },
+    { to: "/mock-tests", label: "Mock tests", icon: ClipboardCheck },
+    { to: "/review", label: "Review mistakes", icon: RotateCcw },
+    { to: "/my-attempts", label: "My attempts", icon: History },
+  ],
+};
+
+const myLearningGroup: Group = {
+  id: "my-learning",
+  label: "My learning",
+  items: [
+    { to: "/lessons", label: "Lessons & progress", icon: CalendarCheck },
+    { to: "/payments", label: "Payments", icon: CreditCard },
+  ],
+};
+
+const accountGroup: Group = {
+  id: "account",
+  label: "Account",
+  items: [
+    { to: "/profile", label: "Profile", icon: UserCircle2 },
+  ],
+};
+
+const groups: Group[] = [learningGroup, theoryGroup, myLearningGroup, accountGroup];
 
 export function PortalShell({ children, title, eyebrow, showCopyright = false }: { children: ReactNode; title: string; eyebrow?: string; showCopyright?: boolean }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -42,30 +63,11 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
   const queryClient = useQueryClient();
   const { isAdmin } = useIsAdmin();
 
-  const theoryPaths = theoryItems.map((i) => i.to);
-  const theoryActive = theoryPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
-
-  // Whole-menu collapse:
-  // - When collapsed, sidebar shows only the search, Overview, and Sign out.
-  // - Clicking any topic (not Overview) collapses the menu so the page
-  //   below fills the viewport with content.
-  // - Clicking Overview re-opens the whole menu.
-  const [menuOpen, setMenuOpen] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    const saved = window.localStorage.getItem("gsm.portal.menuOpen");
-    return saved === null ? true : saved === "1";
-  });
-  const [theoryOpen, setTheoryOpen] = useState<boolean>(theoryActive);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem("gsm.portal.menuOpen", menuOpen ? "1" : "0");
-  }, [menuOpen]);
-
-  const collapseMenu = () => {
-    setMenuOpen(false);
-    setTheoryOpen(false);
-  };
+  const activeGroupId = groups.find((g) => g.items.some((i) => pathname === i.to || pathname.startsWith(i.to + "/")))?.id ?? null;
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(groups.map((g) => [g.id, activeGroupId ? g.id === activeGroupId : true])),
+  );
+  const toggleGroup = (id: string) => setOpenGroups((s) => ({ ...s, [id]: !s[id] }));
 
   const onSignOut = async () => {
     await queryClient.cancelQueries();
@@ -73,6 +75,14 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
     await supabase.auth.signOut();
     navigate({ to: "/auth", replace: true });
   };
+
+  const linkClass = (active: boolean) =>
+    cn(
+      "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
+      active
+        ? "bg-primary text-primary-foreground"
+        : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+    );
 
   return (
     <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-8">
@@ -86,128 +96,48 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
             <PortalSearch />
           </div>
           <nav className="mt-2 flex flex-col gap-0.5">
-            {topItems.map((item) => {
-              const isOverview = item.to === "/dashboard";
-              if (!menuOpen && !isOverview) return null;
-              const active = pathname === item.to;
-              const Icon = item.icon;
+            <Link to={overviewItem.to} className={linkClass(pathname === overviewItem.to)}>
+              <overviewItem.icon className="h-4 w-4" />
+              {overviewItem.label}
+            </Link>
+            {groups.map((group) => {
+              const open = !!openGroups[group.id];
+              const groupActive = group.items.some((i) => pathname === i.to || pathname.startsWith(i.to + "/"));
               return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => {
-                    if (isOverview) {
-                      setMenuOpen(true);
-                      setTheoryOpen(true);
-                    } else {
-                      collapseMenu();
-                    }
-                  }}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
-                    active
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                <div key={group.id} className="mt-1">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.id)}
+                    aria-expanded={open}
+                    className={cn(
+                      "flex w-full items-center gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors",
+                      groupActive ? "text-accent" : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    <span className="flex-1 text-left">{group.label}</span>
+                    <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open ? "rotate-180" : "rotate-0")} />
+                  </button>
+                  {open && (
+                    <div className="flex flex-col gap-0.5">
+                      {group.items.map((item) => {
+                        const Icon = item.icon;
+                        const active = pathname === item.to || pathname.startsWith(item.to + "/");
+                        return (
+                          <Link key={item.to} to={item.to} className={linkClass(active)}>
+                            <Icon className="h-4 w-4" />
+                            {item.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
                   )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
-
-            {menuOpen && <button
-              type="button"
-              onClick={() => setTheoryOpen((v) => !v)}
-              aria-expanded={theoryOpen}
-              aria-controls="portal-theory-group"
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
-                theoryActive
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-              )}
-            >
-              <GraduationCap className="h-4 w-4" />
-              <span className="flex-1 text-left">Theory</span>
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 transition-transform",
-                  theoryOpen ? "rotate-180" : "rotate-0",
-                )}
-              />
-            </button>}
-            {menuOpen && theoryOpen && (
-              <div id="portal-theory-group" className="flex flex-col gap-0.5 pl-3 border-l border-border ml-4">
-                {theoryItems.map((item) => {
-                  const active = pathname === item.to;
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      onClick={collapseMenu}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2 text-sm transition-colors",
-                        active
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-                      )}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-
-            {menuOpen && practicalItems.map((item) => {
-              const active = pathname === item.to;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={collapseMenu}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
-                    active
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
-
-            {menuOpen && bottomItems.map((item) => {
-              const active = pathname === item.to;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={collapseMenu}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
-                    active
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
+                </div>
               );
             })}
           </nav>
-          {menuOpen && isAdmin && (
+          {isAdmin && (
             <Link
               to="/admin"
-              onClick={collapseMenu}
               className="mt-2 flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-accent transition-colors hover:text-foreground"
             >
               <ShieldCheck className="h-4 w-4" /> Admin portal
