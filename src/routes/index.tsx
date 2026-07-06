@@ -192,9 +192,12 @@ function HeroSection({ s }: SectionProps) {
               height={1200}
             />
           </div>
-          <div className="absolute -bottom-6 left-0 max-w-[260px] bg-primary p-6 text-primary-foreground shadow-xl sm:-bottom-8 lg:-left-8">
-            <div className="text-[11px] uppercase tracking-[0.2em] opacity-70">About GSM</div>
-            <p className="mt-3 text-sm leading-relaxed">
+          <div className="absolute -bottom-6 left-0 max-w-[300px] bg-sage p-8 text-primary shadow-xl sm:-bottom-8 lg:-left-8">
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              <span className="h-px w-8 bg-accent" />
+              About GSM
+            </div>
+            <p className="mt-4 text-sm leading-relaxed">
               George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.
             </p>
           </div>
@@ -403,10 +406,14 @@ function PortalSection({ s }: SectionProps) {
             <p className="mt-6 max-w-md text-lg leading-relaxed opacity-80">
               {or(s.body, "Lesson notes, payment history, theory revision and hazard perception — synced from your instructor's tablet after every session.")}
             </p>
-            <Button asChild size="lg" className="mt-8 h-12 rounded-none bg-accent px-6 text-accent-foreground hover:bg-accent/90">
-              <a href={or(s.cta_primary_href, "/dashboard")}>
+            <Button
+              asChild
+              size="lg"
+              className="mt-8 h-14 rounded-xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
+            >
+              <a href={or(s.cta_primary_href, "/dashboard")} className="inline-flex items-center gap-2 font-medium">
                 {or(s.cta_primary_label, "Open your portal")}
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
           </div>
