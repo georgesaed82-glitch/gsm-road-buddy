@@ -34,9 +34,9 @@ export const listAdmins = createServerFn({ method: "POST" })
   });
 
 export const addAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ email: z.string().trim().toLowerCase().email().max(255), password: z.string() }).parse(d))
+  .inputValidator((d) => z.object({ email: z.string().trim().toLowerCase().email().max(255) }).parse(d))
   .handler(async ({ data: input }) => {
-    await requireAdmin(input.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Page through users to find matching email (Auth Admin API has no direct lookup).
@@ -58,9 +58,9 @@ export const addAdmin = createServerFn({ method: "POST" })
   });
 
 export const removeAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ user_id: z.string().uuid(), password: z.string() }).parse(d))
+  .inputValidator((d) => z.object({ user_id: z.string().uuid() }).parse(d))
   .handler(async ({ data: input }) => {
-    await requireAdmin(input.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { count } = await supabaseAdmin

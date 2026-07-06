@@ -170,7 +170,7 @@ export const upsertPageSeo = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { password: _p, ...row } = data;
+    const row = data;
     const { error } = await supabaseAdmin.from("page_seo").upsert(row, { onConflict: "route" });
     if (error) throw new Error(error.message);
     return { ok: true };

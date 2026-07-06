@@ -128,8 +128,7 @@ export const updateTheoryQuestion = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { password, id, ...patch } = data;
-    void password;
+    const { id, ...patch } = data;
     const { error } = await supabaseAdmin.from("theory_questions").update(patch).eq("id", id);
     if (error) throw new Error(error.message);
     return { ok: true };

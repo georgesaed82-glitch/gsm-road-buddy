@@ -170,8 +170,7 @@ export const studentSignIn = createServerFn({ method: "POST" })
     session?: { access_token: string; refresh_token: string };
   }> => {
     const email = (data.email || "").trim().toLowerCase();
-    const password = data.password || "";
-    if (!email || !password) return { ok: false, reason: "invalid" };
+    if (!email) return { ok: false, reason: "invalid" };
 
     const state = await evaluateAttemptState(email);
     if (state.locked) {
