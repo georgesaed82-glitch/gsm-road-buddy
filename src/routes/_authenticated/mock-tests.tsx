@@ -8,6 +8,7 @@ import { CheckCircle2, XCircle, Clock, Trophy, Download, RotateCcw } from "lucid
 import { cn } from "@/lib/utils";
 import { addMistakes } from "@/lib/mistakes";
 import { saveAttempt } from "@/lib/quizAttempts";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 const TEST_LENGTH = 50;
 const TEST_MINUTES = 60;
@@ -208,6 +209,9 @@ function MockRunner({ onRestart }: { onRestart: () => void }) {
             <Download className="mr-2 h-4 w-4" /> Save wrong answers
           </Button>
           <Button variant="outline" className="rounded-none" onClick={onRestart}>Retake mock</Button>
+        </div>
+        <div className="mt-8">
+          <DVSADisclaimer />
         </div>
       </PortalShell>
     );

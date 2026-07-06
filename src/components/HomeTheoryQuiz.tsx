@@ -3,6 +3,7 @@ import { CheckCircle2, XCircle, RotateCcw, ArrowRight, BookOpen } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { homeTheoryQuestions, type TheoryQ } from "@/data/homeTheoryQuiz";
 import { cn } from "@/lib/utils";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 const QUIZ_LENGTH = 10;
 
@@ -60,6 +61,9 @@ export function HomeTheoryQuiz() {
         <Button onClick={restart} className="mt-6 h-11 rounded-none">
           <RotateCcw className="mr-2 h-4 w-4" /> Play again
         </Button>
+        <div className="mt-6">
+          <DVSADisclaimer />
+        </div>
       </div>
     );
   }
@@ -144,6 +148,9 @@ export function HomeTheoryQuiz() {
           </div>
         </div>
       )}
+      <div className="mt-6">
+        <DVSADisclaimer />
+      </div>
     </div>
   );
 }

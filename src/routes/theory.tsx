@@ -10,6 +10,7 @@ import { theoryCategories, sampleTheoryQuestions, type TheoryQuestion } from "@/
 import { CheckCircle2, XCircle, BookOpen, FileText, Lightbulb, Sparkles, Target, Clock, ShieldCheck, Eye as Eye2, Trophy } from "lucide-react";
 import { addMistake, removeMistake } from "@/lib/mistakes";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 export const Route = createFileRoute("/theory")({
   head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
@@ -89,6 +90,10 @@ function TheoryPage() {
 
       <StudyPack />
 
+      <div className="mt-6">
+        <DVSADisclaimer />
+      </div>
+
       <div className="mt-10 border border-border bg-card p-6 sm:p-8">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
@@ -104,7 +109,7 @@ function TheoryPage() {
 
       <h2 className="mt-12 font-display text-2xl">All 14 DVSA categories</h2>
       <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-        Pick a category to revise. Each one has key points to learn first, then DVSA-style questions with explanations. Your progress saves automatically.
+        Pick a category to revise. Each one has key points to learn first, then practice questions with explanations. Your progress saves automatically.
       </p>
       <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
         {theoryCategories.map((c) => {
