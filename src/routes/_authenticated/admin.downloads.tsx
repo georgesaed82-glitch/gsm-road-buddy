@@ -94,7 +94,7 @@ try {
   const remove = async (id: string) => {
 if (!confirm("Delete this file permanently?")) return;
     try {
-      await delFn({ data: { password, id } });
+      await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {

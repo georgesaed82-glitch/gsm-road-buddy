@@ -47,7 +47,7 @@ function SiteSettingsPage() {
   const save = async (key: string, value: object) => {
 setSaving(key);
     try {
-      await saveFn({ data: { password, key, value: value as Record<string, never> } });
+      await saveFn({ data: { key, value: value as Record<string, never> } });
       toast.success("Saved");
       await qc.invalidateQueries({ queryKey: ["site-settings"] });
     } catch (e) {

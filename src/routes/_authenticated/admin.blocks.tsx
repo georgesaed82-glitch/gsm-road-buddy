@@ -241,7 +241,7 @@ setSaving(true);
     const password = requirePassword();
 if (!window.confirm("Remove this override and restore the original?")) return;
     try {
-      await deleteFn({ data: { password, kind: section as ContentKind, item_id: currentItem.id } });
+      await deleteFn({ data: { kind: section as ContentKind, item_id: currentItem.id } });
       toast.success("Removed");
       await qc.invalidateQueries({ queryKey: ["content-overrides"] });
     } catch (e) {

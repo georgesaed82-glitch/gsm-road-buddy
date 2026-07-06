@@ -60,7 +60,7 @@ function SeoPage() {
   const saveRating = async () => {
 setSavingRating(true);
     try {
-      await upsertSettingFn({ data: { password, key: "site_rating", value: { rating: Number(rating.rating), review_count: Math.round(Number(rating.review_count)), show: rating.show } } });
+      await upsertSettingFn({ data: { key: "site_rating", value: { rating: Number(rating.rating), review_count: Math.round(Number(rating.review_count)), show: rating.show } } });
       toast.success("Rating saved");
       await qc.invalidateQueries({ queryKey: ["site-settings"] });
     } catch (e) {
@@ -118,7 +118,7 @@ setSaving(true);
     if (!existing) return;
     if (!window.confirm("Remove this SEO override and use the built-in defaults?")) return;
 try {
-      await delFn({ data: { password, route: current.path } });
+      await delFn({ data: { route: current.path } });
       toast.success("Removed");
       await qc.invalidateQueries({ queryKey: ["page-seo"] });
     } catch (e) {

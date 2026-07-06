@@ -70,7 +70,7 @@ try {
     }
 if (!confirm(`Delete /legal/${d.slug}?`)) return;
     try {
-      await delFn({ data: { password, slug: d.slug } });
+      await delFn({ data: { slug: d.slug } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {

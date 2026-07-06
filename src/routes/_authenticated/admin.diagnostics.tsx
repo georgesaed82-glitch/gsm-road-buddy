@@ -22,7 +22,7 @@ function DiagnosticsPage() {
   const mut = useMutation({
     mutationFn: async () => {
 if (!password) throw new Error("Admin session not unlocked");
-      return run({ data: { password } });
+      return run({ data: {} });
     },
   });
 

@@ -78,7 +78,7 @@ setSavingId(d.id || "new");
 
   const remove = async (id: string) => {
     if (!confirm("Delete this clip metadata? (video/poster files are not touched.)")) return;
-try { await delFn({ data: { password, id } }); toast.success("Deleted"); invalidate(); }
+try { await delFn({ data: { id } }); toast.success("Deleted"); invalidate(); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Delete failed"); }
   };
 
@@ -89,7 +89,7 @@ const next = [...drafts];
     [next[idx], next[target]] = [next[target], next[idx]];
     setDrafts(next.map((r, i) => ({ ...r, order_index: i })));
     const order = next.map((r, i) => ({ id: r.id, order_index: i })).filter((r) => r.id);
-    try { await orderFn({ data: { password, order } }); invalidate(); }
+    try { await orderFn({ data: { order } }); invalidate(); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Reorder failed"); }
   };
 
@@ -98,7 +98,7 @@ const next = [...drafts];
   const seed = async () => {
 if (!confirm("Import all default hazard clip metadata? (Only runs if table is empty.)")) return;
     try {
-      const res = await seedFn({ data: { password, target: "hazard_clips" } });
+      const res = await seedFn({ data: { target: "hazard_clips" } });
       toast.success(`Imported ${res.inserted.hazard_clips ?? 0} clips`);
       invalidate();
     } catch (e) {

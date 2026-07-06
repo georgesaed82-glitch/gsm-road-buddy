@@ -94,7 +94,7 @@ setSavingId(d.id || "new");
   const remove = async (id: string) => {
     if (!confirm("Delete this package?")) return;
 try {
-      await delFn({ data: { password, id } });
+      await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {
@@ -110,7 +110,7 @@ const next = [...drafts];
     setDrafts(next.map((r, i) => ({ ...r, order_index: i })));
     const order = next.map((r, i) => ({ id: r.id, order_index: i })).filter((r) => r.id);
     try {
-      await orderFn({ data: { password, order } });
+      await orderFn({ data: { order } });
       invalidate();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reorder failed");

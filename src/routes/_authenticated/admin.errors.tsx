@@ -25,20 +25,20 @@ const fetchLogs = useServerFn(listErrorLogs);
 
   const logs = useQuery({
     queryKey: ["admin", "error-logs", days],
-    queryFn: () => fetchLogs({ data: { password, days, limit: 300 } }),
+    queryFn: () => fetchLogs({ data: { days, limit: 300 } }),
     enabled: Boolean(password),
     refetchInterval: 30_000,
   });
   const stats = useQuery({
     queryKey: ["admin", "error-stats", days],
-    queryFn: () => fetchStats({ data: { password, days } }),
+    queryFn: () => fetchStats({ data: { days } }),
     enabled: Boolean(password),
     refetchInterval: 30_000,
   });
 
   const clearMut = useMutation({
     mutationFn: (olderThanDays: number) =>
-      clearOld({ data: { password, olderThanDays } }),
+      clearOld({ data: { olderThanDays } }),
     onSuccess: async () => {
       await Promise.all([
         qc.invalidateQueries({ queryKey: ["admin", "error-logs"] }),

@@ -65,7 +65,7 @@ try {
     }
 if (!confirm("Delete this FAQ?")) return;
     try {
-      await delFn({ data: { password, id: d.id } });
+      await delFn({ data: { id: d.id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {

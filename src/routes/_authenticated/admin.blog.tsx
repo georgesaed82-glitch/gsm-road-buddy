@@ -146,7 +146,7 @@ if (!editing.slug) editing.slug = slugify(editing.title);
   const remove = async (id: string) => {
 if (!confirm("Delete this post permanently?")) return;
     try {
-      await delFn({ data: { password, id } });
+      await delFn({ data: { id } });
       toast.success("Deleted");
       if (editing?.id === id) setEditing(null);
       invalidate();
@@ -225,7 +225,7 @@ const reader = new FileReader();
             categories={categories}
             onSave={async (item) => {
 try {
-                await saveCatFn({ data: { password, item } });
+                await saveCatFn({ data: { item } });
                 toast.success("Category saved");
                 invalidate();
               } catch (e) {
@@ -235,7 +235,7 @@ try {
             onDelete={async (id) => {
 if (!confirm("Delete category? Posts keep their content but lose the category link.")) return;
               try {
-                await delCatFn({ data: { password, id } });
+                await delCatFn({ data: { id } });
                 toast.success("Deleted");
                 invalidate();
               } catch (e) {

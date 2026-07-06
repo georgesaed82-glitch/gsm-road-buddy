@@ -144,7 +144,7 @@ const list = useServerFn(listHomeSectionsAdmin);
 
   const q = useQuery({
     queryKey: ["admin", "home-sections"],
-    queryFn: () => list({ data: { password } }),
+    queryFn: () => list({ data: {} }),
   });
 
   const [editing, setEditing] = useState<Draft | null>(null);
@@ -177,10 +177,10 @@ const list = useServerFn(listHomeSectionsAdmin);
       const payload = { ...editing };
       delete (payload as { id?: string }).id;
       if (editing.id) {
-        await update({ data: { password, id: editing.id, patch: payload } });
+        await update({ data: { id: editing.id, patch: payload } });
         toast.success("Saved");
       } else {
-        await create({ data: { password, section: payload } });
+        await create({ data: { section: payload } });
         toast.success("Created");
       }
       setEditing(null);
@@ -195,7 +195,7 @@ const list = useServerFn(listHomeSectionsAdmin);
   const onDelete = async (row: HomeSectionRow) => {
     if (!confirm(`Delete section "${row.section_key}"? This cannot be undone.`)) return;
     try {
-      await remove({ data: { password, id: row.id } });
+      await remove({ data: { id: row.id } });
       toast.success("Deleted");
       refresh();
     } catch (e) {
@@ -205,7 +205,7 @@ const list = useServerFn(listHomeSectionsAdmin);
 
   const onDuplicate = async (row: HomeSectionRow) => {
     try {
-      await dupe({ data: { password, id: row.id } });
+      await dupe({ data: { id: row.id } });
       toast.success("Duplicated");
       refresh();
     } catch (e) {
@@ -215,7 +215,7 @@ const list = useServerFn(listHomeSectionsAdmin);
 
   const onMove = async (row: HomeSectionRow, direction: "up" | "down") => {
     try {
-      await reorder({ data: { password, id: row.id, direction } });
+      await reorder({ data: { id: row.id, direction } });
       refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
@@ -224,7 +224,7 @@ const list = useServerFn(listHomeSectionsAdmin);
 
   const onToggle = async (row: HomeSectionRow, patch: Partial<HomeSectionRow>) => {
     try {
-      await update({ data: { password, id: row.id, patch: patch as never } });
+      await update({ data: { id: row.id, patch: patch as never } });
       refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
@@ -241,7 +241,7 @@ const list = useServerFn(listHomeSectionsAdmin);
       for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
       const base64 = btoa(bin);
       const { url } = await upload({
-        data: { password, filename: file.name, content_type: file.type || "application/octet-stream", base64 },
+        data: { filename: file.name, content_type: file.type || "application/octet-stream", base64 },
       });
       setEditing({ ...editing, image_url: url });
       toast.success("Uploaded");

@@ -155,7 +155,7 @@ const qc = useQueryClient();
 
   const codes = useQuery({
     queryKey: ["access-codes"],
-    queryFn: () => fetchList({ data: { password } }),
+    queryFn: () => fetchList({ data: {} }),
     enabled: !!password,
   });
 
@@ -163,10 +163,10 @@ const qc = useQueryClient();
 
   const changeMaster = useMutation({
     mutationFn: (vars: { kind: "admin" | "learner"; newCode: string }) =>
-      setMaster({ data: { password, ...vars } }),
+      setMaster({ data: { ...vars } }),
     onSuccess: (res, vars) => {
       toast.success(`${vars.kind === "admin" ? "Admin" : "Learner"} password updated.`);
-      if (vars.kind === "admin" && res?.newCode) cacheAdminPassword(res.newCode);
+      if (vars.kind === "admin" && res?.newCode) 
       invalidate();
     },
     onError: (e: any) => toast.error(e?.message || "Could not update password."),
@@ -174,7 +174,7 @@ const qc = useQueryClient();
 
   const issueSub = useMutation({
     mutationFn: (vars: { email: string; days: number; label?: string; code?: string }) =>
-      createSub({ data: { password, ...vars } }),
+      createSub({ data: { ...vars } }),
     onSuccess: (row: any) => {
       toast.success(`Code ${row.code} issued for ${row.email}.`);
       invalidate();
@@ -183,7 +183,7 @@ const qc = useQueryClient();
   });
 
   const revokeMut = useMutation({
-    mutationFn: (id: string) => revoke({ data: { password, id } }),
+    mutationFn: (id: string) => revoke({ data: { id } }),
     onSuccess: () => {
       toast.success("Code revoked.");
       invalidate();
@@ -191,7 +191,7 @@ const qc = useQueryClient();
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id: string) => del({ data: { password, id } }),
+    mutationFn: (id: string) => del({ data: { id } }),
     onSuccess: () => {
       toast.success("Code deleted.");
       invalidate();
@@ -250,7 +250,7 @@ const qc = useQueryClient();
             ) : (
               <CodesTable
                 rows={subs}
-                password={password}
+                password={}
                 fetchUses={fetchUses}
                 exportUses={exportUses}
                 onRevoke={(id) => revokeMut.mutate(id)}
@@ -269,7 +269,7 @@ const qc = useQueryClient();
             <CardContent>
               <CodesTable
                 rows={[...admins, ...learners]}
-                password={password}
+                password={}
                 fetchUses={fetchUses}
                 exportUses={exportUses}
                 masterView
@@ -493,7 +493,7 @@ function CodesTable({
             <CodeRow
               key={r.id}
               row={r}
-              password={password}
+              password={}
               fetchUses={fetchUses}
               exportUses={exportUses}
               onRevoke={onRevoke ? () => onRevoke(r.id) : undefined}
@@ -529,7 +529,7 @@ function CodeRow({
   const sendMail = useServerFn(sendOutlookMail);
   const uses = useQuery({
     queryKey: ["access-uses", row.id],
-    queryFn: () => fetchUses({ data: { password, codeId: row.id, limit: 100 } }),
+    queryFn: () => fetchUses({ data: { codeId: row.id, limit: 100 } }),
     enabled: open && !!password,
   });
 
@@ -537,7 +537,7 @@ function CodeRow({
     if (exporting) return;
     setExporting(true);
     try {
-      const { filename, csv } = await exportUses({ data: { password, codeId: row.id } });
+      const { filename, csv } = await exportUses({ data: { codeId: row.id } });
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");

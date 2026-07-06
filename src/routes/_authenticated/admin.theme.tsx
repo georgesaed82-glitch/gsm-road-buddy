@@ -121,7 +121,7 @@ const qc = useQueryClient();
 
   const settings = useQuery({
     queryKey: ["admin", "theme"],
-    queryFn: () => getSettingsFn({ data: { password } }),
+    queryFn: () => getSettingsFn({ data: {} }),
     enabled: !!password,
   });
 
@@ -165,7 +165,7 @@ const qc = useQueryClient();
 
   const onSaveDraft = async () => {
     try {
-      await saveDraftFn({ data: { password, draft: tokens as unknown as Record<string, unknown> } });
+      await saveDraftFn({ data: { draft: tokens as unknown as Record<string, unknown> } });
       toast.success("Draft saved");
       setDirty(false);
       qc.invalidateQueries({ queryKey: ["admin", "theme"] });
@@ -177,8 +177,8 @@ const qc = useQueryClient();
   const onPublish = async () => {
     try {
       // Save current UI state as draft first, then publish.
-      await saveDraftFn({ data: { password, draft: tokens as unknown as Record<string, unknown> } });
-      await publishFn({ data: { password } });
+      await saveDraftFn({ data: { draft: tokens as unknown as Record<string, unknown> } });
+      await publishFn({ data: {} });
       toast.success("Theme published — live site updated");
       setDirty(false);
       qc.invalidateQueries({ queryKey: ["admin", "theme"] });
@@ -190,7 +190,7 @@ const qc = useQueryClient();
   const onReset = async () => {
     if (!confirm("Discard draft changes and return to the published theme?")) return;
     try {
-      await resetFn({ data: { password } });
+      await resetFn({ data: {} });
       toast.success("Draft cleared");
       qc.invalidateQueries({ queryKey: ["admin", "theme"] });
     } catch (e) {
@@ -318,7 +318,7 @@ const qc = useQueryClient();
                 }}
                 onDelete={async (id) => {
                   if (!confirm("Delete asset?")) return;
-                  await deleteAssetFn({ data: { password, id } });
+                  await deleteAssetFn({ data: { id } });
                   qc.invalidateQueries({ queryKey: ["admin", "brand-assets"] });
                 }}
               />

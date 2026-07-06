@@ -76,7 +76,7 @@ setSavingId(d.id || "new");
   const remove = async (id: string) => {
     if (!confirm("Delete this review?")) return;
 try {
-      await delFn({ data: { password, id } });
+      await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {
@@ -91,7 +91,7 @@ const next = [...drafts];
     [next[idx], next[target]] = [next[target], next[idx]];
     setDrafts(next.map((r, i) => ({ ...r, order_index: i })));
     const order = next.map((r, i) => ({ id: r.id, order_index: i })).filter((r) => r.id);
-    try { await orderFn({ data: { password, order } }); invalidate(); }
+    try { await orderFn({ data: { order } }); invalidate(); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Reorder failed"); }
   };
 
@@ -100,7 +100,7 @@ const next = [...drafts];
   const seed = async () => {
 if (!confirm("Import all default reviews from the built-in list? (Only runs if table is empty.)")) return;
     try {
-      const res = await seedFn({ data: { password, target: "reviews" } });
+      const res = await seedFn({ data: { target: "reviews" } });
       toast.success(`Imported ${res.inserted.reviews ?? 0} reviews`);
       invalidate();
     } catch (e) {

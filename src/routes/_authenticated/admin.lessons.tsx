@@ -150,7 +150,7 @@ const qc = useQueryClient();
 
   const q = useQuery({
     queryKey: ["admin", "lessons"],
-    queryFn: () => listFn({ data: { password } }),
+    queryFn: () => listFn({ data: {} }),
     enabled: !!password,
   });
 
@@ -212,10 +212,10 @@ const qc = useQueryClient();
     try {
       if (editing.id) {
         const { id, ...patch } = editing;
-        await updateFn({ data: { password, id, ...patch } });
+        await updateFn({ data: { id, ...patch } });
         toast.success("Lesson saved");
       } else {
-        await createFn({ data: { password, ...editing } });
+        await createFn({ data: { ...editing } });
         toast.success("Lesson created");
       }
       setEditing(null);
@@ -231,7 +231,7 @@ const qc = useQueryClient();
     if (!ids.length) return;
     if (!confirm(`Delete ${ids.length} lesson${ids.length > 1 ? "s" : ""}?`)) return;
     try {
-      await deleteFn({ data: { password, ids } });
+      await deleteFn({ data: { ids } });
       toast.success("Deleted");
       setSelected(new Set());
       refresh();
@@ -243,7 +243,7 @@ const qc = useQueryClient();
   const onBulk = async (patch: { status?: LessonStatus; show_web?: boolean; show_app?: boolean; category?: string }) => {
     if (!selected.size) return;
     try {
-      await bulkFn({ data: { password, ids: [...selected], patch } });
+      await bulkFn({ data: { ids: [...selected], patch } });
       toast.success("Updated");
       refresh();
     } catch (e) {
@@ -253,7 +253,7 @@ const qc = useQueryClient();
 
   const onDuplicate = async (id: string) => {
     try {
-      await duplicateFn({ data: { password, id } });
+      await duplicateFn({ data: { id } });
       toast.success("Duplicated");
       refresh();
     } catch (e) {
@@ -263,7 +263,7 @@ const qc = useQueryClient();
 
   const onReorder = async (id: string, direction: "up" | "down") => {
     try {
-      await reorderFn({ data: { password, id, direction } });
+      await reorderFn({ data: { id, direction } });
       refresh();
     } catch (e) {
       toast.error((e as Error).message);

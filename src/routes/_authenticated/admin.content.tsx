@@ -222,7 +222,7 @@ if (!draft.name.trim() || !draft.description.trim()) {
     const password = requirePassword();
 if (!window.confirm("Remove this override and restore the original?")) return;
     try {
-      await deleteFn({ data: { password, kind, item_id: current.id } });
+      await deleteFn({ data: { kind, item_id: current.id } });
       toast.success("Removed");
       await qc.invalidateQueries({ queryKey: ["content-overrides"] });
     } catch (e) {

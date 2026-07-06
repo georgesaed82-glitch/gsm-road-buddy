@@ -103,7 +103,7 @@ setSavingId(d.id || "new");
   const remove = async (id: string) => {
     if (!confirm("Delete this instructor?")) return;
 try {
-      await delFn({ data: { password, id } });
+      await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {
@@ -119,7 +119,7 @@ const next = [...drafts];
     const order = next.map((r, i) => ({ id: r.id, order_index: i })).filter((r) => r.id);
     setDrafts(next.map((r, i) => ({ ...r, order_index: i })));
     try {
-      await orderFn({ data: { password, order } });
+      await orderFn({ data: { order } });
       invalidate();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reorder failed");
@@ -135,7 +135,7 @@ if (!password || !id) return toast.error("Save the instructor first, then upload
       r.readAsDataURL(file);
     });
     try {
-      await uploadFn({ data: { password, id, filename: file.name, content_type: file.type, base64: b64 } });
+      await uploadFn({ data: { id, filename: file.name, content_type: file.type, base64: b64 } });
       toast.success("Image uploaded");
       invalidate();
     } catch (e) {
