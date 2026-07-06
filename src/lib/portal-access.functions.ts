@@ -123,7 +123,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
       let ok = false;
       let session: { access_token: string; refresh_token: string } | null = null;
       if (row && (!row.expires_at || row.expires_at > nowIso)) {
-        const adminEmail = submittedEmail || row.email?.trim().toLowerCase() || "";
+        const adminEmail = row.email?.trim().toLowerCase() || "";
         if (adminEmail) {
           const minted = await mintSessionForEmail(adminEmail, false);
           if (minted) {
