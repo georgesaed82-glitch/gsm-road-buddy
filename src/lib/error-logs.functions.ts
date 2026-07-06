@@ -117,9 +117,9 @@ function escapeHtml(s: string) {
 // -------- Admin views --------
 
 export const listErrorLogs = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; days?: number; limit?: number }) => d)
+  .inputValidator((d: { days?: number; limit?: number }) => d)
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) {
+    if (!(await verifyAdminPasswordServer())) {
       throw new Error("Unauthorized");
     }
     const days = Math.min(90, Math.max(1, data.days ?? 7));
@@ -141,9 +141,9 @@ export const listErrorLogs = createServerFn({ method: "POST" })
   });
 
 export const getErrorStats = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; days?: number }) => d)
+  .inputValidator((d: { days?: number }) => d)
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) {
+    if (!(await verifyAdminPasswordServer())) {
       throw new Error("Unauthorized");
     }
     const days = Math.min(90, Math.max(1, data.days ?? 7));
@@ -172,9 +172,9 @@ export const getErrorStats = createServerFn({ method: "POST" })
   });
 
 export const clearResolvedErrors = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; olderThanDays?: number }) => d)
+  .inputValidator((d: { olderThanDays?: number }) => d)
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) {
+    if (!(await verifyAdminPasswordServer())) {
       throw new Error("Unauthorized");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

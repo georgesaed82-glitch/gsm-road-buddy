@@ -11,9 +11,9 @@ async function requireAdmin(password: string) {
 export type AdminRow = { user_id: string; email: string; full_name: string | null; created_at: string };
 
 export const listAdmins = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string() }).parse(d))
+  .inputValidator((d) => z.object({}).parse(d))
   .handler(async ({ data }): Promise<AdminRow[]> => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: roles, error: rolesErr } = await supabaseAdmin

@@ -49,7 +49,7 @@ export const runDiagnostics = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const results: CheckResult[] = [];
     try {
-      if (!(await verifyAdminPasswordServer(data.password))) {
+      if (!(await verifyAdminPasswordServer())) {
         return { results: [], ranAt: new Date().toISOString(), origin: "", error: "Unauthorized" };
       }
     } catch (e) {

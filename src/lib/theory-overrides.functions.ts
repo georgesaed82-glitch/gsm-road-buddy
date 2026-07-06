@@ -32,7 +32,6 @@ export const listTheoryOverrides = createServerFn({ method: "GET" }).handler(
 );
 
 const upsertSchema = z.object({
-  password: z.string(),
   question_id: z.string().min(1).max(120),
   question: z.string().trim().min(1).max(2000),
   options: z.array(z.string().trim().min(1).max(500)).length(4),
@@ -44,7 +43,7 @@ const upsertSchema = z.object({
 export const upsertTheoryOverride = createServerFn({ method: "POST" })
   .inputValidator((d) => upsertSchema.parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) {
+    if (!(await verifyAdminPasswordServer())) {
       throw new Error("Unauthorized");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -66,9 +65,9 @@ export const upsertTheoryOverride = createServerFn({ method: "POST" })
   });
 
 export const deleteTheoryOverride = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), question_id: z.string() }).parse(d))
+  .inputValidator((d) => z.object({ question_id: z.string() }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) {
+    if (!(await verifyAdminPasswordServer())) {
       throw new Error("Unauthorized");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

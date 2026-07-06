@@ -89,7 +89,7 @@ export type AdminOverview = {
 };
 
 export const getAdminOverview = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; rangeDays: number }) => d)
+  .inputValidator((d: { rangeDays: number }) => d)
   .handler(async ({ data }): Promise<AdminOverview> => {
     const supabase = await adminClient(data.password);
     const range = [7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 30;
@@ -395,7 +395,7 @@ export const listAdminAlertSubscribers = createServerFn({ method: "POST" })
   });
 
 export const subscribeAdminAlert = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; email: string }) => d)
+  .inputValidator((d: { email: string }) => d)
   .handler(async ({ data }) => {
     const supabase = await adminClient(data.password);
     const email = data.email.trim().toLowerCase();
@@ -410,7 +410,7 @@ export const subscribeAdminAlert = createServerFn({ method: "POST" })
   });
 
 export const unsubscribeAdminAlert = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; id: string }) => d)
+  .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     const supabase = await adminClient(data.password);
     const { error } = await supabase.from("admin_alert_subscribers").delete().eq("id", data.id);
@@ -440,7 +440,7 @@ function ymd(d: Date) {
 }
 
 export const exportAdminCsv = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; dataset: AdminCsvDataset; rangeDays: number }) => d)
+  .inputValidator((d: { dataset: AdminCsvDataset; rangeDays: number }) => d)
   .handler(async ({ data }): Promise<AdminCsvResult> => {
     const supabase = await adminClient(data.password);
     const range = [7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 30;
@@ -588,7 +588,7 @@ export type SectionBreakdown = {
 };
 
 export const getSectionBreakdown = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; rangeDays: number; path: string }) => d)
+  .inputValidator((d: { rangeDays: number; path: string }) => d)
   .handler(async ({ data }): Promise<SectionBreakdown> => {
     const supabase = await adminClient(data.password);
     const range = [1, 7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 7;
@@ -700,7 +700,7 @@ export const getSectionBreakdown = createServerFn({ method: "POST" })
   });
 
 export const getTrafficStats = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; rangeDays: number }) => d)
+  .inputValidator((d: { rangeDays: number }) => d)
   .handler(async ({ data }): Promise<TrafficStats> => {
     const supabase = await adminClient(data.password);
     const range = [1, 7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 7;

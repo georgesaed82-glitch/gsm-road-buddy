@@ -48,9 +48,9 @@ function toRow(r: Record<string, unknown>): LessonRow {
 
 // Admin: list every lesson
 export const listLessonsAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string() }).parse(d))
+  .inputValidator((d) => z.object({}).parse(d))
   .handler(async ({ data }): Promise<LessonRow[]> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("lessons")
@@ -99,9 +99,9 @@ const lessonInput = z.object({
 });
 
 export const createLesson = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string() }).merge(lessonInput).parse(d))
+  .inputValidator((d) => z.object({}).merge(lessonInput).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Auto-assign sort_order to end of list if not given
     let sort = data.sort_order;
@@ -140,10 +140,10 @@ export const createLesson = createServerFn({ method: "POST" })
 
 export const updateLesson = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), id: z.string().uuid() }).merge(lessonInput.partial()).parse(d),
+    z.object({ id: z.string().uuid() }).merge(lessonInput.partial()).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { password, id, ...patch } = data;
     void password;
@@ -154,10 +154,10 @@ export const updateLesson = createServerFn({ method: "POST" })
 
 export const deleteLessons = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d),
+    z.object({ ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("lessons").delete().in("id", data.ids);
     if (error) throw new Error(error.message);
@@ -168,7 +168,6 @@ export const bulkUpdateLessons = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         ids: z.array(z.string().uuid()).min(1).max(500),
         patch: z.object({
           category: z.string().trim().min(1).max(80).optional(),
@@ -180,7 +179,7 @@ export const bulkUpdateLessons = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const patch: {
       category?: string;
@@ -199,9 +198,9 @@ export const bulkUpdateLessons = createServerFn({ method: "POST" })
   });
 
 export const duplicateLesson = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: src, error } = await supabaseAdmin
       .from("lessons")
@@ -237,10 +236,10 @@ export const duplicateLesson = createServerFn({ method: "POST" })
 
 export const reorderLesson = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), id: z.string().uuid(), direction: z.enum(["up", "down"]) }).parse(d),
+    z.object({ id: z.string().uuid(), direction: z.enum(["up", "down"]) }).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("lessons")
@@ -265,7 +264,6 @@ export const uploadLessonMedia = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         lesson_id: z.string().uuid(),
         kind: z.enum(["image", "video", "pdf"]),
         filename: z.string().min(1).max(200),
@@ -275,7 +273,7 @@ export const uploadLessonMedia = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }): Promise<{ url: string; column: "image_url" | "video_url" | "pdf_url" }> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const b64 = data.base64.includes(",") ? data.base64.split(",", 2)[1] : data.base64;
     const buf = Buffer.from(b64, "base64");

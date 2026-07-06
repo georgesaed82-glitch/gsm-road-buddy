@@ -76,9 +76,9 @@ const areaInput = z.object({
 });
 
 export const upsertArea = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), item: areaInput }).parse(d))
+  .inputValidator((d) => z.object({ item: areaInput }).parse(d))
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, ...rest } = data.item;
     if (id) {
@@ -96,9 +96,9 @@ export const upsertArea = createServerFn({ method: "POST" })
   });
 
 export const deleteArea = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("areas").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -109,13 +109,12 @@ export const reorderAreas = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         order: z.array(z.object({ id: z.string().uuid(), order_index: z.number().int() })).max(200),
       })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     for (const it of data.order) {
       const { error } = await supabaseAdmin
@@ -150,9 +149,9 @@ const reviewInput = z.object({
 });
 
 export const upsertReview = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), item: reviewInput }).parse(d))
+  .inputValidator((d) => z.object({ item: reviewInput }).parse(d))
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, ...rest } = data.item;
     if (id) {
@@ -170,9 +169,9 @@ export const upsertReview = createServerFn({ method: "POST" })
   });
 
 export const deleteReview = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("reviews").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -183,13 +182,12 @@ export const reorderReviews = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         order: z.array(z.object({ id: z.string().uuid(), order_index: z.number().int() })).max(500),
       })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     for (const it of data.order) {
       const { error } = await supabaseAdmin
@@ -228,9 +226,9 @@ const hazardInput = z.object({
 });
 
 export const upsertHazardClip = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), item: hazardInput }).parse(d))
+  .inputValidator((d) => z.object({ item: hazardInput }).parse(d))
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, ...rest } = data.item;
     if (id) {
@@ -248,9 +246,9 @@ export const upsertHazardClip = createServerFn({ method: "POST" })
   });
 
 export const deleteHazardClip = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("hazard_clips").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -261,13 +259,12 @@ export const reorderHazardClips = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         order: z.array(z.object({ id: z.string().uuid(), order_index: z.number().int() })).max(200),
       })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     for (const it of data.order) {
       const { error } = await supabaseAdmin
@@ -285,13 +282,12 @@ export const seedLocalContent = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         target: z.enum(["areas", "reviews", "hazard_clips", "all"]),
       })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    await requireAdmin(data.password);
+    await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const results: Record<string, number> = {};
 

@@ -94,9 +94,9 @@ const questionInput = z.object({
 });
 
 export const createTheoryQuestion = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string() }).merge(questionInput).parse(d))
+  .inputValidator((d) => z.object({}).merge(questionInput).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (data.correct_index >= data.options.length) throw new Error("Correct index out of range.");
     const { error, data: row } = await supabaseAdmin
@@ -123,10 +123,10 @@ export const createTheoryQuestion = createServerFn({ method: "POST" })
 
 export const updateTheoryQuestion = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), id: z.string().uuid() }).merge(questionInput.partial()).parse(d),
+    z.object({ id: z.string().uuid() }).merge(questionInput.partial()).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { password, id, ...patch } = data;
     void password;
@@ -137,10 +137,10 @@ export const updateTheoryQuestion = createServerFn({ method: "POST" })
 
 export const deleteTheoryQuestions = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d),
+    z.object({ ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: existing } = await supabaseAdmin
       .from("theory_questions")
@@ -157,7 +157,6 @@ export const bulkUpdateTheoryQuestions = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         ids: z.array(z.string().uuid()).min(1).max(500),
         patch: z.object({
           category: z.string().trim().min(1).max(80).optional(),
@@ -170,7 +169,7 @@ export const bulkUpdateTheoryQuestions = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const simple: { category?: string; difficulty?: TheoryDifficulty; is_published?: boolean } = {};
     if (data.patch.category !== undefined) simple.category = data.patch.category;
@@ -198,9 +197,9 @@ export const bulkUpdateTheoryQuestions = createServerFn({ method: "POST" })
   });
 
 export const duplicateTheoryQuestion = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: src, error: e1 } = await supabaseAdmin
       .from("theory_questions")
@@ -218,9 +217,9 @@ export const duplicateTheoryQuestion = createServerFn({ method: "POST" })
   });
 
 export const reorderTheoryQuestion = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid(), direction: z.enum(["up", "down"]) }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid(), direction: z.enum(["up", "down"]) }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: cur, error } = await supabaseAdmin
       .from("theory_questions")
@@ -249,7 +248,6 @@ export const uploadTheoryQuestionImage = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         question_id: z.string().uuid(),
         filename: z.string().min(1).max(200),
         content_type: z.string().min(1).max(80),
@@ -258,7 +256,7 @@ export const uploadTheoryQuestionImage = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }): Promise<{ image_path: string; image_url: string }> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const b64 = data.base64.includes(",") ? data.base64.split(",", 2)[1] : data.base64;
     const buf = Buffer.from(b64, "base64");
@@ -289,10 +287,10 @@ export const uploadTheoryQuestionImage = createServerFn({ method: "POST" })
 const importRow = questionInput.extend({ password: z.string().optional() }).omit({});
 export const importTheoryQuestions = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), rows: z.array(importRow).min(1).max(2000) }).parse(d),
+    z.object({ rows: z.array(importRow).min(1).max(2000) }).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const rows = data.rows.map((r) => ({
       source_id: r.source_id ?? null,
