@@ -180,17 +180,8 @@ function AdminContentPage() {
 
   const dirty = existing ? !overrideMatchesDraft : !originalMatchesDraft;
 
-  const requirePassword = (): string | null => {
-if (!p) {
-      toast.error("Admin password missing. Sign in via /auth?admin=1.");
-      return null;
-    }
-    return p;
-  };
-
   const save = async () => {
-    const password = requirePassword();
-if (!draft.name.trim() || !draft.description.trim()) {
+    if (!draft.name.trim() || !draft.description.trim()) {
       toast.error("Name and description are required.");
       return;
     }
@@ -219,8 +210,7 @@ if (!draft.name.trim() || !draft.description.trim()) {
 
   const removeOverride = async () => {
     if (!existing) return;
-    const password = requirePassword();
-if (!window.confirm("Remove this override and restore the original?")) return;
+    if (!window.confirm("Remove this override and restore the original?")) return;
     try {
       await deleteFn({ data: { kind, item_id: current.id } });
       toast.success("Removed");
@@ -244,8 +234,7 @@ if (!window.confirm("Remove this override and restore the original?")) return;
       toast.error("Image too large — max 5 MB.");
       return;
     }
-    const password = requirePassword();
-setUploading(true);
+    setUploading(true);
     try {
       const dataUrl = await readFileAsBase64(file);
       const res = await uploadFn({
