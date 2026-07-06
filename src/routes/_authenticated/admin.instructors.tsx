@@ -127,7 +127,7 @@ const next = [...drafts];
   };
 
   const upload = async (id: string, file: File) => {
-if (!password || !id) return toast.error("Save the instructor first, then upload an image.");
+    if (!id) return toast.error("Save the instructor first, then upload an image.");
     const b64 = await new Promise<string>((res, rej) => {
       const r = new FileReader();
       r.onload = () => res(String(r.result));
