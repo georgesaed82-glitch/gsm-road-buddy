@@ -1,19 +1,19 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
+import { useMemo, useState } from "react";
+import { CheckCircle2, ChevronDown, Clock, Search, X } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
-import { ClipShell } from "@/components/driving-clips/ClipShell";
-import { drivingClips } from "@/components/driving-clips/clips";
-import { drivingLessons } from "@/data/drivingLessons";
-import { LessonPreview } from "@/components/driving-clips/LessonPreview";
+import { lessonGroups, totalPlanned, totalReady, type LessonGroup, type PlannedLesson } from "@/data/lessonGroups";
+import { useLessonProgress } from "@/lib/lessonProgress";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/driving-clips")({
   head: () => ({
     meta: [
-      { title: "Animated driving clips · GSM" },
+      { title: "Practical Driving Animations · GSM" },
       {
         name: "description",
         content:
-          "Short animated diagrams for common UK driving scenarios — turning right, roundabouts, zebra crossings, smart motorways and more.",
+          "Real UK driving scenarios turned into interactive animations — organised by topic and tied to the Highway Code so you can build your driving skills one situation at a time.",
       },
     ],
   }),
@@ -21,66 +21,249 @@ export const Route = createFileRoute("/_authenticated/driving-clips")({
 });
 
 function DrivingClipsPage() {
-  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isLesson = pathname.startsWith("/driving-clips/") && pathname !== "/driving-clips/";
-
   if (isLesson) return <Outlet />;
 
+  const [query, setQuery] = useState("");
+  const [ruleFilter, setRuleFilter] = useState("");
+  const { isDone, completed } = useLessonProgress();
+
+  const q = query.trim().toLowerCase();
+  const ruleNum = ruleFilter.trim() ? Number(ruleFilter.trim()) : null;
+
+  const filteredGroups = useMemo(() => {
+    return lessonGroups
+      .map((g) => ({
+        ...g,
+        lessons: g.lessons.filter((l) => {
+          const matchesQuery =
+            !q ||
+            l.title.toLowerCase().includes(q) ||
+            (l.rule?.toLowerCase().includes(q) ?? false) ||
+            g.title.toLowerCase().includes(q);
+          const matchesRule =
+            ruleNum === null || (l.ruleNumbers ?? []).includes(ruleNum);
+          return matchesQuery && matchesRule;
+        }),
+      }))
+      .filter((g) => g.lessons.length > 0);
+  }, [q, ruleNum]);
+
+  const totalMatches = filteredGroups.reduce((n, g) => n + g.lessons.length, 0);
+  const filtering = q.length > 0 || ruleNum !== null;
+  const readyCount = totalReady();
+  const plannedCount = totalPlanned();
+  const completedInSyllabus = lessonGroups
+    .flatMap((g) => g.lessons)
+    .filter((l) => l.status === "ready" && completed.has(l.slug)).length;
+
   return (
-    <PortalShell eyebrow="Practical" title="Animated driving clips">
-      <p className="max-w-2xl text-sm text-muted-foreground">
-        Short top-down animations for the trickiest bits of UK driving. Play,
-        pause, restart. Each clip is a working diagram tied to the relevant
-        Highway Code rules — treat them as a teaching aid, not a replacement
-        for on-road tuition.
+    <PortalShell eyebrow="Practical" title="Practical Driving Animations">
+      <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        Real UK driving scenarios — turned into short interactive animations.
+        Each lesson is tied to the Highway Code and built to help you
+        understand <em>why</em> we drive the way we do, not just what to
+        memorise. Work through a category, mark lessons complete as you go,
+        and come back to review before your test.
       </p>
 
-      {drivingLessons.length > 0 && (
-        <section className="mt-8">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-accent">
-            <Sparkles className="h-4 w-4" /> Full GSM lessons — {drivingLessons.length} animated
-          </div>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Every clip plays below. Tap any card to open the full lesson with George Explains, common mistakes, GSM tips and the interactive question.
-          </p>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {drivingLessons.map((lesson) => (
-              <Link
-                key={lesson.slug}
-                to="/driving-clips/$slug"
-                params={{ slug: lesson.slug }}
-                className="group block overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-accent"
-              >
-                <LessonPreview render={lesson.render} durationMs={lesson.durationMs} />
-                <div className="flex items-start justify-between gap-2 p-3">
-                  <div>
-                    <div className="font-display text-base leading-tight">{lesson.title}</div>
-                    <div className="mt-1 text-[11px] uppercase tracking-wider text-muted-foreground">
-                      {lesson.rule ?? lesson.category}
-                    </div>
-                  </div>
-                  <span className="text-accent transition-transform group-hover:translate-x-0.5">→</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
+      {/* Progress + counts */}
+      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        <Stat label="Lessons ready" value={`${readyCount}`} />
+        <Stat label="Full syllabus" value={`${plannedCount}`} />
+        <Stat
+          label="You've completed"
+          value={`${completedInSyllabus} / ${readyCount}`}
+          accent
+        />
+      </div>
+
+      {/* Search + rule filter */}
+      <div className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
+        <label className="relative block">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search animations, topics or rule text…"
+            className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-9 text-sm outline-none focus:border-accent"
+            aria-label="Search driving animations"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground"
+              aria-label="Clear search"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </label>
+        <label className="relative block">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            Rule #
+          </span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            value={ruleFilter}
+            onChange={(e) => setRuleFilter(e.target.value)}
+            placeholder="e.g. 170"
+            className="h-11 w-full rounded-lg border border-border bg-card pl-16 pr-3 text-sm outline-none focus:border-accent"
+            aria-label="Filter by Highway Code rule number"
+          />
+        </label>
+      </div>
+
+      {filtering && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {totalMatches === 0
+            ? "No lessons match those filters yet."
+            : `${totalMatches} lesson${totalMatches === 1 ? "" : "s"} match.`}
+        </p>
       )}
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        {drivingClips.map((clip) => (
-          <div key={clip.slug} id={clip.slug} className="scroll-mt-24">
-            <ClipShell
-              title={clip.title}
-              rule={clip.rule}
-              beats={clip.beats}
-              explanation={clip.explanation}
-              render={clip.render}
-              durationMs={clip.durationMs}
-            />
-          </div>
+      {/* Accordion */}
+      <div className="mt-6 space-y-3">
+        {(filtering ? filteredGroups : lessonGroups).map((g) => (
+          <GroupAccordion
+            key={g.id}
+            group={g}
+            defaultOpen={filtering}
+            isDone={isDone}
+          />
         ))}
+        {filtering && filteredGroups.length === 0 && (
+          <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+            Try a broader search term or clear the rule number.
+          </div>
+        )}
       </div>
     </PortalShell>
+  );
+}
+
+function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div
+      className={cn(
+        "rounded-lg border p-4",
+        accent ? "border-accent bg-accent/10" : "border-border bg-card",
+      )}
+    >
+      <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="mt-1 font-display text-2xl">{value}</div>
+    </div>
+  );
+}
+
+function GroupAccordion({
+  group,
+  defaultOpen,
+  isDone,
+}: {
+  group: LessonGroup;
+  defaultOpen: boolean;
+  isDone: (slug: string) => boolean;
+}) {
+  const readyInGroup = group.lessons.filter((l) => l.status === "ready").length;
+  const doneInGroup = group.lessons.filter((l) => l.status === "ready" && isDone(l.slug)).length;
+  const pct = readyInGroup === 0 ? 0 : Math.round((doneInGroup / readyInGroup) * 100);
+
+  return (
+    <details
+      className="group rounded-xl border border-border bg-card shadow-sm open:border-accent/60"
+      open={defaultOpen}
+    >
+      <summary className="flex cursor-pointer list-none items-center gap-3 p-4 [&::-webkit-details-marker]:hidden sm:p-5">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="font-display text-lg leading-tight sm:text-xl">
+              {group.title}
+            </h2>
+            <span className="rounded-full border border-border bg-background px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {group.lessons.length} lesson{group.lessons.length === 1 ? "" : "s"}
+            </span>
+            {readyInGroup > 0 && (
+              <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent">
+                {readyInGroup} ready
+              </span>
+            )}
+          </div>
+          <p className="mt-1 hidden text-sm text-muted-foreground sm:block">
+            {group.blurb}
+          </p>
+          {readyInGroup > 0 && (
+            <div className="mt-2 flex items-center gap-2">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary sm:max-w-[240px]">
+                <div
+                  className="h-full bg-accent transition-[width] duration-300"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {doneInGroup}/{readyInGroup}
+              </span>
+            </div>
+          )}
+        </div>
+        <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="border-t border-border p-3 sm:p-4">
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {group.lessons.map((l) => (
+            <LessonRow key={l.slug} lesson={l} done={l.status === "ready" && isDone(l.slug)} />
+          ))}
+        </ul>
+      </div>
+    </details>
+  );
+}
+
+function LessonRow({ lesson, done }: { lesson: PlannedLesson; done: boolean }) {
+  if (lesson.status === "coming-soon") {
+    return (
+      <li className="flex items-start gap-3 rounded-lg border border-dashed border-border bg-background/60 p-3 opacity-80">
+        <Clock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+        <div className="min-w-0">
+          <div className="truncate text-sm font-medium text-foreground/80">{lesson.title}</div>
+          <div className="mt-0.5 text-[11px] uppercase tracking-wider text-muted-foreground">
+            {lesson.rule ?? "Highway Code"} · Coming soon
+          </div>
+        </div>
+      </li>
+    );
+  }
+  return (
+    <li>
+      <Link
+        to="/driving-clips/$slug"
+        params={{ slug: lesson.slug }}
+        className="group/row flex items-start gap-3 rounded-lg border border-border bg-background p-3 transition-colors hover:border-accent"
+      >
+        {done ? (
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+        ) : (
+          <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-border" />
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <div className="truncate text-sm font-semibold">{lesson.title}</div>
+            <span className="text-accent transition-transform group-hover/row:translate-x-0.5">→</span>
+          </div>
+          {lesson.rule && (
+            <div className="mt-0.5 text-[11px] uppercase tracking-wider text-muted-foreground">
+              {lesson.rule}
+            </div>
+          )}
+        </div>
+      </Link>
+    </li>
   );
 }
