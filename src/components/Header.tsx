@@ -1,6 +1,25 @@
 import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Menu, Mail, Lock, LogOut, ChevronDown, ChevronUp, BookOpen, Eye, GraduationCap, LayoutDashboard, Download } from "lucide-react";
+import {
+  Menu,
+  Lock,
+  LogOut,
+  ChevronDown,
+  ChevronUp,
+  BookOpen,
+  Eye,
+  GraduationCap,
+  LayoutDashboard,
+  Download,
+  Info,
+  Car,
+  CreditCard,
+  Star,
+  MessageSquare,
+  Newspaper,
+  HelpCircle,
+  ArrowRight,
+} from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
@@ -16,6 +35,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 const DEFAULT_NAV_LINKS = [
   { to: "/about", label: "About" },
