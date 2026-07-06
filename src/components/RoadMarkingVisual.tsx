@@ -7,7 +7,6 @@
  *   - foreground text/paint uses currentColor
  */
 import type { ReactNode } from "react";
-import miniRoundaboutImg from "@/assets/mini-roundabout.jpg";
 
 const ROAD = "#3f3f46"; // slate/tarmac
 const PAINT = "#f8fafc"; // matte white
@@ -402,16 +401,81 @@ export function BusLane() {
 // ── WORDS / SPECIAL ──────────────────────────────────
 
 export function RoundaboutTriangles() {
-  // Aerial diagram rendered from a DVSA/Highway Code style reference image.
+  // Aerial diagram of a UK mini-roundabout: a solid white painted disc at
+  // the centre of a small crossroads, with a give-way ("shark's teeth")
+  // triangle row on every approach and a curved arrow following the ring.
+  const cx = 100;
+  const cy = 100;
+  const discR = 22;
+  // Give-way "shark's teeth" — a row of solid white triangles pointing back
+  // at the approaching driver, drawn once and rotated for each approach.
+  function TeethRow() {
+    const teeth = [];
+    for (let i = -2; i <= 2; i++) {
+      const x = i * 12;
+      teeth.push(
+        <polygon key={i} points={`${x - 4},0 ${x + 4},0 ${x},9`} fill={PAINT} />,
+      );
+    }
+    return <g>{teeth}</g>;
+  }
+  const armWidth = 46;
   return (
-    <img
-      src={miniRoundaboutImg}
-      alt="Aerial diagram of a UK mini-roundabout: a solid white painted circle at the centre of a small crossroads, with give-way (shark's teeth) triangle markings on every approach and directional arrows around the ring."
-      loading="lazy"
-      width={1024}
-      height={1024}
-      className="block h-full w-full object-cover"
-    />
+    <Frame>
+      {/* Grass corners (four squares) leaving a cross-shaped tarmac road */}
+      {[
+        { x: 0, y: 0 },
+        { x: 200 - 77, y: 0 },
+        { x: 0, y: 200 - 77 },
+        { x: 200 - 77, y: 200 - 77 },
+      ].map((c, i) => (
+        <rect key={i} x={c.x} y={c.y} width={77} height={77} fill="#3a5a2a" />
+      ))}
+
+      {/* Centre-line dashes running out along each of the four arms */}
+      {/* N + S */}
+      {[6, 26, 46].map((y) => (
+        <rect key={`n${y}`} x={cx - 2} y={y} width="4" height="10" fill={PAINT} />
+      ))}
+      {[148, 168, 188].map((y) => (
+        <rect key={`s${y}`} x={cx - 2} y={y} width="4" height="10" fill={PAINT} />
+      ))}
+      {/* E + W */}
+      {[6, 26, 46].map((x) => (
+        <rect key={`w${x}`} x={x} y={cy - 2} width="10" height="4" fill={PAINT} />
+      ))}
+      {[148, 168, 188].map((x) => (
+        <rect key={`e${x}`} x={x} y={cy - 2} width="10" height="4" fill={PAINT} />
+      ))}
+
+      {/* Give-way triangle rows on each approach, pointing back at the driver */}
+      <g transform={`translate(${cx} ${cy - discR - 26})`}>
+        <TeethRow />
+      </g>
+      <g transform={`translate(${cx} ${cy + discR + 17}) rotate(180)`}>
+        <TeethRow />
+      </g>
+      <g transform={`translate(${cx - discR - 26} ${cy}) rotate(-90)`}>
+        <TeethRow />
+      </g>
+      <g transform={`translate(${cx + discR + 17} ${cy}) rotate(90)`}>
+        <TeethRow />
+      </g>
+
+      {/* Solid white painted disc at the centre */}
+      <circle cx={cx} cy={cy} r={discR} fill={PAINT} />
+
+      {/* Curved clockwise direction arrow around the disc */}
+      <g fill="none" stroke={ROAD} strokeWidth="3" opacity="0.85">
+        <path d={`M ${cx + discR - 2} ${cy - 4} A ${discR - 4} ${discR - 4} 0 1 1 ${cx - 4} ${cy - discR + 2}`} />
+      </g>
+      <polygon
+        points={`${cx - 8},${cy - discR + 2} ${cx - 2},${cy - discR - 4} ${cx + 2},${cy - discR + 4}`}
+        fill={ROAD}
+      />
+      {/* Suppress the unused-armWidth constant (kept for future tuning) */}
+      <g style={{ display: "none" }} data-arm-width={armWidth} />
+    </Frame>
   );
 }
 

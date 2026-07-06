@@ -65,53 +65,67 @@ export const signs: Sign[] = [
   { id: "w-rocks", name: "Falling or fallen rocks", meaning: "Rocks may fall on to the road, or fallen rocks may be lying on it. Watch the road surface and look ahead.", category: "warning", variant: { kind: "warning", symbol: "falling-rocks" } },
   { id: "w-exclaim", name: "Other danger — plate below explains", meaning: "General danger warning. A separate plate underneath the triangle explains the specific hazard (e.g. flood, ice).", category: "warning", variant: { kind: "warning", symbol: "exclaim" } },
 
-  // ── Give way / stop ────────────────────────────────────
-  { id: "p-giveway", name: "Give way", meaning: "Give way to traffic on the major road. You may go on without stopping if it is clear.", category: "prohibitory", variant: { kind: "giveway" } },
-  { id: "p-stop", name: "STOP", meaning: "You MUST stop completely at the line and give way — even if the road is clear.", category: "prohibitory", variant: { kind: "stop" } },
+  // ── Order signs — give way / stop / police stop ────────
+  // Order signs are the only regulatory signs that are NOT circular. STOP is
+  // an octagon and GIVE WAY is an inverted triangle so they can still be
+  // recognised if dirty or covered (Highway Code Rule 109).
+  { id: "p-giveway", name: "Give way to traffic on the major road", meaning: "Slow down and be ready to stop. Give way to traffic on the major road; you may proceed without stopping only if the way is clear. Usually marked on the road by a triangle and double broken white line (Rule 172).", category: "prohibitory", variant: { kind: "giveway" } },
+  { id: "p-stop", name: "STOP and give way", meaning: "You MUST stop completely at the solid white line, whether or not there is any traffic, and then give way to traffic on the major road before moving off (Rule 171).", category: "prohibitory", variant: { kind: "stop" } },
+  { id: "p-police-stop", name: "Stop when directed by police", meaning: "Held up at the roadside by a police or traffic officer. You MUST stop when directed and only move on when signalled to do so (Rule 105).", category: "prohibitory", variant: { kind: "stop" } },
 
-  // ── Prohibition ────────────────────────────────────────
-  { id: "p-no-entry", name: "No entry for vehicular traffic", meaning: "You must not enter — one-way street the other way.", category: "prohibitory", variant: { kind: "no-entry" } },
-  { id: "p-no-vehicles", name: "No motor vehicles", meaning: "No cars, motorbikes or other motor vehicles.", category: "prohibitory", variant: { kind: "prohibition", symbol: "car" } },
-  { id: "p-no-hgv", name: "No goods vehicles over max weight", meaning: "Heavy goods vehicles above the shown weight prohibited.", category: "prohibitory", variant: { kind: "prohibition", symbol: "truck" } },
-  { id: "p-no-bikes", name: "No cycling", meaning: "Cycling is not allowed beyond this sign.", category: "prohibitory", variant: { kind: "prohibition", symbol: "bike" } },
-  { id: "p-no-peds", name: "No pedestrians", meaning: "Pedestrians must not enter.", category: "prohibitory", variant: { kind: "prohibition", symbol: "pedestrian-solo" } },
-  { id: "p-no-left", name: "No left turn", meaning: "You must not turn left.", category: "prohibitory", variant: { kind: "prohibition", symbol: "turn-left", slash: true } },
-  { id: "p-no-right", name: "No right turn", meaning: "You must not turn right.", category: "prohibitory", variant: { kind: "prohibition", symbol: "turn-right", slash: true } },
-  { id: "p-no-uturn", name: "No U-turn", meaning: "U-turns are not permitted.", category: "prohibitory", variant: { kind: "prohibition", symbol: "u-turn", slash: true } },
-  { id: "p-no-overtake", name: "No overtaking", meaning: "You must not overtake other vehicles.", category: "prohibitory", variant: { kind: "prohibition", symbol: "overtake" } },
-  { id: "p-end-overtake", name: "End of no-overtaking zone", meaning: "The no-overtaking restriction ends.", category: "prohibitory", variant: { kind: "end-restriction", symbol: "overtake" } },
+  // ── Prohibition (red circle) ───────────────────────────
+  // Red circles tell you what you MUST NOT do.
+  { id: "p-no-entry", name: "No entry for vehicular traffic", meaning: "You MUST NOT enter beyond this sign. Typically marks the wrong-way end of a one-way street (Rule 129).", category: "prohibitory", variant: { kind: "no-entry" } },
+  { id: "p-no-vehicles", name: "No motor vehicles", meaning: "No cars, motorcycles or other motor vehicles beyond this sign. Cycles are allowed.", category: "prohibitory", variant: { kind: "prohibition", symbol: "car" } },
+  { id: "p-no-hgv", name: "No goods vehicles over the weight shown", meaning: "Goods vehicles with a maximum gross weight above the figure on the sign (e.g. 7.5 t) MUST NOT proceed beyond it.", category: "prohibitory", variant: { kind: "prohibition", symbol: "truck" } },
+  { id: "p-no-bikes", name: "No cycling", meaning: "Cycling is not permitted beyond this sign — riders must dismount.", category: "prohibitory", variant: { kind: "prohibition", symbol: "bike" } },
+  { id: "p-no-peds", name: "No pedestrians", meaning: "Pedestrians MUST NOT proceed beyond this sign.", category: "prohibitory", variant: { kind: "prohibition", symbol: "pedestrian-solo" } },
+  { id: "p-no-left", name: "No left turn", meaning: "You MUST NOT turn left at the junction ahead.", category: "prohibitory", variant: { kind: "prohibition", symbol: "turn-left", slash: true } },
+  { id: "p-no-right", name: "No right turn", meaning: "You MUST NOT turn right at the junction ahead.", category: "prohibitory", variant: { kind: "prohibition", symbol: "turn-right", slash: true } },
+  { id: "p-no-uturn", name: "No U-turn", meaning: "You MUST NOT make a U-turn.", category: "prohibitory", variant: { kind: "prohibition", symbol: "u-turn", slash: true } },
+  { id: "p-no-overtake", name: "No overtaking", meaning: "You MUST NOT overtake the vehicle in front. The restriction runs until you pass an 'end of prohibition' sign, or the sign is repealed by another (Rule 129).", category: "prohibitory", variant: { kind: "prohibition", symbol: "overtake" } },
+  { id: "p-end-overtake", name: "End of no-overtaking restriction", meaning: "The no-overtaking restriction ends. Shown as the no-overtaking sign with a diagonal grey line through it (diagram 833).", category: "prohibitory", variant: { kind: "end-restriction", symbol: "overtake" } },
 
-  // ── Speed limits ───────────────────────────────────────
-  { id: "s-20", name: "20 mph maximum speed limit", meaning: "You must not exceed 20 mph.", category: "speed", variant: { kind: "speed-limit", text: "20" } },
-  { id: "s-30", name: "30 mph maximum speed limit", meaning: "You must not exceed 30 mph — usually default in built-up areas.", category: "speed", variant: { kind: "speed-limit", text: "30" } },
-  { id: "s-40", name: "40 mph maximum speed limit", meaning: "You must not exceed 40 mph.", category: "speed", variant: { kind: "speed-limit", text: "40" } },
-  { id: "s-50", name: "50 mph maximum speed limit", meaning: "You must not exceed 50 mph.", category: "speed", variant: { kind: "speed-limit", text: "50" } },
-  { id: "s-60", name: "60 mph maximum speed limit", meaning: "You must not exceed 60 mph.", category: "speed", variant: { kind: "speed-limit", text: "60" } },
-  { id: "s-70", name: "70 mph maximum speed limit", meaning: "Maximum speed on motorways and dual carriageways for cars.", category: "speed", variant: { kind: "speed-limit", text: "70" } },
-  { id: "s-national", name: "National speed limit applies", meaning: "60 mph on single carriageways, 70 mph on dual carriageways and motorways (for cars).", category: "speed", variant: { kind: "national-speed" } },
+  // ── Speed limits (red circle, black number) ───────────
+  // The number is the maximum speed in mph. Exceeding it is an offence
+  // (Rule 124).
+  { id: "s-20", name: "20 mph maximum speed limit", meaning: "You MUST NOT exceed 20 mph. Common in residential areas, near schools and in town centres.", category: "speed", variant: { kind: "speed-limit", text: "20" } },
+  { id: "s-30", name: "30 mph maximum speed limit", meaning: "You MUST NOT exceed 30 mph. This is the default limit in a built-up area (a road with a system of street lighting) unless signs say otherwise.", category: "speed", variant: { kind: "speed-limit", text: "30" } },
+  { id: "s-40", name: "40 mph maximum speed limit", meaning: "You MUST NOT exceed 40 mph.", category: "speed", variant: { kind: "speed-limit", text: "40" } },
+  { id: "s-50", name: "50 mph maximum speed limit", meaning: "You MUST NOT exceed 50 mph.", category: "speed", variant: { kind: "speed-limit", text: "50" } },
+  { id: "s-60", name: "60 mph maximum speed limit", meaning: "You MUST NOT exceed 60 mph.", category: "speed", variant: { kind: "speed-limit", text: "60" } },
+  { id: "s-70", name: "70 mph maximum speed limit", meaning: "You MUST NOT exceed 70 mph. This is the maximum for cars and motorcycles on dual carriageways and motorways.", category: "speed", variant: { kind: "speed-limit", text: "70" } },
+  { id: "s-national", name: "National speed limit applies", meaning: "The national speed limit applies from this sign. For cars and motorcycles that is 60 mph on single carriageways and 70 mph on dual carriageways and motorways. Lower limits apply to vehicles towing trailers and to larger vehicles (Rule 124).", category: "speed", variant: { kind: "national-speed" } },
 
   // ── Mandatory (blue circle) ────────────────────────────
-  { id: "m-ahead", name: "Ahead only", meaning: "You must go straight ahead.", category: "mandatory", variant: { kind: "mandatory", symbol: "arrow-up" } },
-  { id: "m-turn-left", name: "Turn left ahead", meaning: "You must turn left at the junction ahead.", category: "mandatory", variant: { kind: "mandatory", symbol: "turn-left" } },
-  { id: "m-turn-right", name: "Turn right ahead", meaning: "You must turn right at the junction ahead.", category: "mandatory", variant: { kind: "mandatory", symbol: "turn-right" } },
-  { id: "m-keep-left", name: "Keep left", meaning: "You must pass this side of the sign.", category: "mandatory", variant: { kind: "mandatory", symbol: "keep-left" } },
-  { id: "m-keep-right", name: "Keep right", meaning: "You must pass this side of the sign.", category: "mandatory", variant: { kind: "mandatory", symbol: "keep-right" } },
-  { id: "m-mini-r", name: "Mini-roundabout", meaning: "Give way to traffic from the right — go clockwise around the marking.", category: "mandatory", variant: { kind: "mandatory", symbol: "mini-roundabout" } },
-  { id: "m-bus", name: "Buses and cycles only", meaning: "Route restricted to buses and cycles.", category: "mandatory", variant: { kind: "mandatory", symbol: "bus" } },
-  { id: "m-cycle", name: "Cycle route only", meaning: "Route for pedal cycles only.", category: "mandatory", variant: { kind: "mandatory", symbol: "bike" } },
+  // Blue circles tell you what you MUST do — usually giving positive
+  // instruction (turn, keep to one side, use a route).
+  { id: "m-ahead", name: "Ahead only", meaning: "You MUST proceed straight ahead — no turning left or right.", category: "mandatory", variant: { kind: "mandatory", symbol: "arrow-up" } },
+  { id: "m-turn-left", name: "Turn left ahead", meaning: "You MUST turn left at the junction ahead (compare with 'Keep left', which points to a bollard or island).", category: "mandatory", variant: { kind: "mandatory", symbol: "turn-left" } },
+  { id: "m-turn-right", name: "Turn right ahead", meaning: "You MUST turn right at the junction ahead.", category: "mandatory", variant: { kind: "mandatory", symbol: "turn-right" } },
+  { id: "m-keep-left", name: "Keep left", meaning: "You MUST pass the island, bollard or obstruction on the side shown by the arrow (i.e. keep to the left of it).", category: "mandatory", variant: { kind: "mandatory", symbol: "keep-left" } },
+  { id: "m-keep-right", name: "Keep right", meaning: "You MUST pass the island, bollard or obstruction on the side shown by the arrow (i.e. keep to the right of it).", category: "mandatory", variant: { kind: "mandatory", symbol: "keep-right" } },
+  { id: "m-mini-r", name: "Mini-roundabout", meaning: "Mini-roundabout ahead. Give way to traffic already on the roundabout, normally from the right; travel round the central marking clockwise (Rule 188).", category: "mandatory", variant: { kind: "mandatory", symbol: "mini-roundabout" } },
+  { id: "m-bus", name: "Buses and cycles only", meaning: "Route restricted to local buses and pedal cycles. Other motor traffic MUST NOT use it.", category: "mandatory", variant: { kind: "mandatory", symbol: "bus" } },
+  { id: "m-cycle", name: "Route for pedal cycles only", meaning: "The route may only be used by pedal cycles. Pedestrians and motor vehicles MUST NOT use it.", category: "mandatory", variant: { kind: "mandatory", symbol: "bike" } },
 
   // ── Information (blue rectangle) ───────────────────────
-  { id: "i-parking", name: "Parking place", meaning: "Public parking area.", category: "information", variant: { kind: "info-blue", symbol: "parking" } },
-  { id: "i-hospital", name: "Hospital with A&E", meaning: "Hospital with an accident and emergency department.", category: "information", variant: { kind: "info-blue", symbol: "hospital" } },
-  { id: "i-fuel", name: "Fuel station", meaning: "Petrol / diesel filling station.", category: "information", variant: { kind: "info-blue", symbol: "petrol" } },
-  { id: "i-info", name: "Tourist information", meaning: "Tourist information point.", category: "information", variant: { kind: "info-blue", symbol: "info-i" } },
-  { id: "i-phone", name: "Emergency telephone", meaning: "Emergency roadside phone available.", category: "information", variant: { kind: "info-blue", symbol: "phone" } },
-  { id: "i-food", name: "Refreshments / services", meaning: "Refreshments or motorway services.", category: "information", variant: { kind: "info-blue", symbol: "food" } },
+  // Information signs give you useful non-mandatory information — services,
+  // parking, tourist facilities.
+  { id: "i-parking", name: "Parking place", meaning: "Public parking place. Check any plate underneath for restrictions on times, vehicle type or payment.", category: "information", variant: { kind: "info-blue", symbol: "parking" } },
+  { id: "i-hospital", name: "Hospital with Accident & Emergency", meaning: "Hospital ahead with a 24-hour accident and emergency (A&E) department.", category: "information", variant: { kind: "info-blue", symbol: "hospital" } },
+  { id: "i-fuel", name: "Fuel station", meaning: "Petrol / diesel / EV filling station ahead.", category: "information", variant: { kind: "info-blue", symbol: "petrol" } },
+  { id: "i-info", name: "Tourist information point", meaning: "Tourist information available at the location shown.", category: "information", variant: { kind: "info-blue", symbol: "info-i" } },
+  { id: "i-phone", name: "Emergency telephone", meaning: "Roadside emergency telephone available — mostly on motorways and some trunk roads.", category: "information", variant: { kind: "info-blue", symbol: "phone" } },
+  { id: "i-food", name: "Refreshments / services", meaning: "Refreshments or motorway services available at the exit or location shown.", category: "information", variant: { kind: "info-blue", symbol: "food" } },
 
-  // ── Direction ──────────────────────────────────────────
-  { id: "d-primary", name: "Primary route direction sign", meaning: "Green background = primary A-road direction.", category: "direction", variant: { kind: "info-green", label: "A40  West End" } },
-  { id: "d-motorway", name: "Motorway direction sign", meaning: "Blue background with white text = motorway route.", category: "direction", variant: { kind: "motorway", label: "M25  The North" } },
-  { id: "d-local", name: "Non-primary / local route sign", meaning: "White with black border = local / non-primary route.", category: "direction", variant: { kind: "info-white", label: "Notting Hill" } },
+  // ── Direction (colour tells you the road class) ────────
+  // BLUE background = motorway. GREEN background with white text = primary
+  // route (A-road). WHITE background with black text and border = non-primary
+  // route (minor / local roads). Brown = tourist attractions.
+  { id: "d-primary", name: "Primary route direction sign (green)", meaning: "Green background with white text = a primary route (A-road). Route numbers are usually shown in yellow.", category: "direction", variant: { kind: "info-green", label: "A40  West End" } },
+  { id: "d-motorway", name: "Motorway direction sign (blue)", meaning: "Blue background with white text = motorway. Route numbers begin with M (e.g. M25) or A(M).", category: "direction", variant: { kind: "motorway", label: "M25  The North" } },
+  { id: "d-local", name: "Non-primary / local route sign (white)", meaning: "White background with black text and border = a non-primary route — usually minor or local roads.", category: "direction", variant: { kind: "info-white", label: "Notting Hill" } },
 
   // Countdown markers before a motorway exit — Highway Code, "Motorway signals and signs"
   { id: "d-count-300", name: "Countdown marker — 300 yards to exit", meaning: "Three diagonal bars. You are 300 yards from the start of the slip road at the next exit. Get into the left-hand lane in good time.", category: "direction", variant: { kind: "countdown-marker", distance: 300, background: "motorway" } },
