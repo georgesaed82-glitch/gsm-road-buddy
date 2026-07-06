@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 import { evaluateAttemptState, fingerprintCode, guardCodeAttempt, logCodeAttempt } from "./auth-guard.functions";
 
 async function admin() {
@@ -18,6 +17,7 @@ async function admin() {
  */
 export async function verifyAdminPasswordServer(_password?: string): Promise<boolean> {
   try {
+    const { getRequest } = await import("@tanstack/react-start/server");
     const req = getRequest();
     const header = req?.headers.get("authorization") || req?.headers.get("Authorization");
     if (!header) return false;
