@@ -292,12 +292,13 @@ export function Header() {
                     Learner portal
                   </div>
                   <nav className="grid grid-cols-2 gap-2">
-                    {portalLinks.map((link) => {
+                    {portalLinks.map((link, index) => {
                       const Icon = link.icon;
                       const active =
                         link.to.startsWith("/#")
                           ? pathname === "/"
                           : pathname === link.to || pathname.startsWith(link.to + "/");
+                      const isLastOdd = index === portalLinks.length - 1 && portalLinks.length % 2 === 1;
                       return (
                         <Link
                           key={link.to}
@@ -305,6 +306,7 @@ export function Header() {
                           onClick={() => setOpen(false)}
                           className={cn(
                             "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-2 text-center font-display text-sm leading-tight transition-colors",
+                            isLastOdd && "col-span-2",
                             active
                               ? "border-accent/40 bg-accent/10 text-primary"
                               : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
