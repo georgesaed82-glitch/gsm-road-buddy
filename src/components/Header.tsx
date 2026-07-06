@@ -1,6 +1,26 @@
 import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Menu, Mail, Lock, LogOut, ChevronDown, ChevronUp, BookOpen, Eye, GraduationCap, LayoutDashboard, Download } from "lucide-react";
+import {
+  Menu,
+  Mail,
+  Lock,
+  LogOut,
+  ChevronDown,
+  ChevronUp,
+  BookOpen,
+  Eye,
+  GraduationCap,
+  LayoutDashboard,
+  Download,
+  Info,
+  Car,
+  CreditCard,
+  Star,
+  MessageSquare,
+  Newspaper,
+  HelpCircle,
+  ArrowRight,
+} from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
@@ -11,18 +31,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 const DEFAULT_NAV_LINKS = [
-  { to: "/about", label: "About" },
-  { to: "/services", label: "Practical" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/reviews", label: "Reviews" },
-  { to: "/contact", label: "Contact" },
+  { to: "/about", label: "About", icon: Info },
+  { to: "/services", label: "Practical", icon: Car },
+  { to: "/pricing", label: "Pricing", icon: CreditCard },
+  { to: "/reviews", label: "Reviews", icon: Star },
+  { to: "/contact", label: "Contact", icon: MessageSquare },
 ];
 
 const portalLinks = [
@@ -32,6 +53,30 @@ const portalLinks = [
   { to: "/lessons", label: "Lessons & progress", icon: GraduationCap },
   { to: "/#download-app", label: "Download app", icon: Download },
 ];
+
+const MOBILE_ICON_MAP: Record<string, typeof BookOpen> = {
+  about: Info,
+  services: Car,
+  practical: Car,
+  pricing: CreditCard,
+  reviews: Star,
+  contact: MessageSquare,
+  blog: Newspaper,
+  faq: HelpCircle,
+  dashboard: LayoutDashboard,
+  theory: BookOpen,
+  "hazard-perception": Eye,
+  lessons: GraduationCap,
+  "download-app": Download,
+};
+
+function getMobileIcon(href: string, label?: string) {
+  const segment = href.replace(/^\//, "").split("/")[0].toLowerCase();
+  if (segment && MOBILE_ICON_MAP[segment]) return MOBILE_ICON_MAP[segment];
+  const labelKey = (label ?? "").toLowerCase().replace(/\s+/g, "-");
+  if (labelKey && MOBILE_ICON_MAP[labelKey]) return MOBILE_ICON_MAP[labelKey];
+  return ArrowRight;
+}
 
 function Monogram() {
   return (
@@ -75,11 +120,10 @@ function PortalMenuItem({
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const [portalOpen, setPortalOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const { business } = useSiteSettings();
+  const { business, footer } = useSiteSettings();
   const { items: dbNav } = useNavItems("header");
   const navLinks = dbNav.length > 0 ? dbNav.map((n) => ({ to: n.href, label: n.label })) : DEFAULT_NAV_LINKS;
   const whatsappHref = `https://wa.me/${business.phone_intl}`;
@@ -200,9 +244,11 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] overflow-y-auto overscroll-contain bg-background pb-24">
+            <SheetContent side="right" className="flex w-[300px] flex-col overflow-hidden overscroll-contain bg-background p-0">
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
-              <div className="flex flex-col gap-6 pt-6">
+
+              {/* Header: branding stays fixed at the top of the sheet */}
+              <div className="shrink-0 px-5 py-4">
                 <Link to="/" className="flex items-center gap-3 text-primary" onClick={() => setOpen(false)}>
                   <Monogram />
                   <div className="leading-tight">
@@ -210,76 +256,72 @@ export function Header() {
                     <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{business.tagline}</div>
                   </div>
                 </Link>
-                <nav className="flex flex-col">
-                  {navLinks.map((link) => {
-                    const Icon = (link as { icon?: typeof Download }).icon;
+              </div>
+
+              {/* Scrollable menu body */}
+              <div className="flex-1 overflow-y-auto px-5">
+                {/* Public pages grid */}
+                <nav className="grid grid-cols-2 gap-1.5">
+                  {navLinks.map((link, index) => {
+                    const Icon = (link as { icon?: typeof Download }).icon ?? getMobileIcon(link.to, link.label);
                     const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
+                    const isLastOdd = index === navLinks.length - 1 && navLinks.length % 2 === 1;
                     return (
                       <Link
                         key={link.to}
                         to={link.to}
                         onClick={() => setOpen(false)}
                         className={cn(
-                          "flex items-center gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors",
-                          active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                          "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-1.5 text-center font-display text-sm leading-tight transition-colors",
+                          isLastOdd && "col-span-2",
+                          active
+                            ? "border-accent/40 bg-accent/10 text-primary"
+                            : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
                         )}
                       >
-                        {Icon && <Icon className="h-4 w-4" aria-hidden="true" />}
-                        {link.label}
+                        <Icon className={cn("h-3.5 w-3.5", active ? "text-primary" : "text-muted-foreground")} />
+                        <span>{link.label}</span>
                       </Link>
                     );
                   })}
-
-                  <Collapsible open={portalOpen} onOpenChange={setPortalOpen}>
-                    <CollapsibleTrigger asChild>
-                      <button
-                        className={cn(
-                          "flex w-full items-center justify-between gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors outline-none",
-                          isPortalActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                        )}
-                        aria-label="Learner portal menu"
-                      >
-                        <span className="flex items-center gap-2">
-                          <Lock className="h-4 w-4" aria-hidden="true" />
-                          <span>Learner portal</span>
-                        </span>
-                        {portalOpen ? (
-                          <ChevronUp className="h-4 w-4" aria-hidden="true" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                        )}
-                      </button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="flex flex-col border-b border-border/60 pb-2">
-                        {portalLinks.map((link) => {
-                          const Icon = link.icon;
-                          const active =
-                            link.to.startsWith("/#")
-                              ? pathname === "/"
-                              : pathname === link.to || pathname.startsWith(link.to + "/");
-                          return (
-                            <Link
-                              key={link.to}
-                              to={link.to}
-                              onClick={() => setOpen(false)}
-                              className={cn(
-                                "flex items-center gap-2 py-2.5 pl-7 text-sm transition-colors",
-                                active
-                                  ? "font-semibold text-primary"
-                                  : "text-muted-foreground hover:text-foreground",
-                              )}
-                            >
-                              <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
-                              <span>{link.label}</span>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
                 </nav>
-                <div className="flex flex-col gap-3 pt-2">
+
+                {/* Learner portal grid */}
+                <div className="mt-4">
+                  <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    Learner portal
+                  </div>
+                  <nav className="grid grid-cols-2 gap-1.5">
+                    {portalLinks.map((link, index) => {
+                      const Icon = link.icon;
+                      const active =
+                        link.to.startsWith("/#")
+                          ? pathname === "/"
+                          : pathname === link.to || pathname.startsWith(link.to + "/");
+                      const isLastOdd = index === portalLinks.length - 1 && portalLinks.length % 2 === 1;
+                      return (
+                        <Link
+                          key={link.to}
+                          to={link.to}
+                          onClick={() => setOpen(false)}
+                          className={cn(
+                            "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-1.5 text-center font-display text-sm leading-tight transition-colors",
+                            isLastOdd && "col-span-2",
+                            active
+                              ? "border-accent/40 bg-accent/10 text-primary"
+                              : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
+                          )}
+                        >
+                          <Icon className={cn("h-3.5 w-3.5", active ? "text-primary" : "text-muted-foreground")} />
+                          <span>{link.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                {/* Admin / Sign out */}
+                <div className="mt-2 pb-1">
                   {isAuthed ? (
                     <Button className="w-full" variant="ghost" onClick={handleSignOut}>
                       <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
@@ -291,27 +333,13 @@ export function Header() {
                       </Link>
                     </Button>
                   )}
-                  <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`WhatsApp ${business.phone}`}
-                    onClick={() => trackContactClick("whatsapp", "Header (mobile)")}
-                    className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
-                  >
-                    <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
-                    <span>WhatsApp {business.phone}</span>
-                  </a>
-                  <a
-                    href={emailHref}
-                    aria-label={`Email ${business.email}`}
-                    onClick={() => trackContactClick("email", "Header (mobile)")}
-                    className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground hover:text-primary"
-                  >
-                    <Mail className="h-3.5 w-3.5 text-accent" />
-                    <span>{business.email}</span>
-                  </a>
                 </div>
+              </div>
+
+              {/* Footer: disclaimer and legal info pinned at the bottom */}
+              <div className="shrink-0 border-t border-border/60 bg-background px-5 py-3">
+                <DVSADisclaimer variant="compact" />
+                {footer.copy && <p className="mt-1.5 text-[10px] text-muted-foreground">{footer.copy}</p>}
               </div>
             </SheetContent>
           </Sheet>
