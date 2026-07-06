@@ -18,6 +18,7 @@ import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { useEffect } from "react";
 import { saveAttempt, type QuizAttemptItem } from "@/lib/quizAttempts";
 import { useSignsCms } from "@/hooks/useSignsCms";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 export const Route = createFileRoute("/_authenticated/road-signs")({
   head: () => ({ meta: [{ title: "Road signs · GSM" }] }),
@@ -69,6 +70,9 @@ function RoadSignsPage() {
       ) : (
         <QuizRunner pool={pool} key={group} overrideFor={imageFor} />
       )}
+      <div className="mt-8">
+        <DVSADisclaimer />
+      </div>
     </PortalShell>
   );
 }
