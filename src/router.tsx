@@ -1,14 +1,21 @@
 import { QueryClient, QueryCache, MutationCache } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { clearAdminUnlock, isAdminUnauthorizedError } from "@/lib/admin-gate";
 
+/**
+ * When any admin server function rejects with "Unauthorized" (missing session
+ * or missing admin role), bounce the user to the admin sign-in page.
+ */
 function handleAdminUnauthorized(err: unknown) {
   if (typeof window === "undefined") return;
   if (!window.location.pathname.startsWith("/admin")) return;
-  if (!isAdminUnauthorizedError(err)) return;
-  // Scrub any legacy admin-unlock state and send the user to admin sign-in.
-  clearAdminUnlock();
+  const msg = err instanceof Error ? err.message : String(err ?? "");
+  if (!/unauthorized/i.test(msg)) return;
+  // Best-effort scrub of any legacy localStorage keys from older builds.
+  try {
+    window.localStorage.removeItem("admin_unlocked");
+    window.localStorage.removeItem("admin_password");
+  } catch {}
   const target = "/auth?admin=1";
   if (window.location.pathname + window.location.search !== target) {
     window.location.replace(target);
