@@ -67,7 +67,7 @@ function Monogram() {
     <img
       src={gsmLogo.url}
       alt="GSM Driving School logo"
-      className="h-11 w-11 rounded-full object-cover ring-1 ring-primary/20"
+      className="h-12 w-12 rounded-full object-cover shadow-sm ring-1 ring-primary/20 sm:h-11 sm:w-11"
     />
   );
 }
@@ -101,12 +101,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-auto min-h-[68px] items-center justify-between px-4 py-2.5 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-3 text-primary">
+      <div className="mx-auto flex h-auto min-h-[68px] items-center justify-between gap-3 px-4 py-2.5 sm:gap-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex min-w-0 items-center gap-3 text-primary sm:gap-3.5">
           <Monogram />
-          <div className="leading-tight">
-            <div className="font-display text-[17px] font-semibold tracking-tight">{business.name}</div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{business.tagline}</div>
+          <div className="min-w-0 leading-tight">
+            <div className="truncate font-display text-[17px] font-semibold tracking-tight sm:text-[18px]">{business.name}</div>
+            <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{business.tagline}</div>
           </div>
         </Link>
 
@@ -192,8 +192,13 @@ export function Header() {
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon" aria-label="Open menu">
-                <Menu className="h-5 w-5" />
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open menu"
+                className="h-11 w-11 rounded-full border border-border/70 bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/10"
+              >
+                <Menu className="h-5 w-5 text-accent" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="flex w-[300px] flex-col overflow-hidden overscroll-contain bg-background p-0">
