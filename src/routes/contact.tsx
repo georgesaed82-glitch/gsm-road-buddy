@@ -63,52 +63,10 @@ function ContactPage() {
               <CardHeader className="pb-4 text-center">
                 <CardTitle className="font-display text-2xl">Talk to us instantly</CardTitle>
               </CardHeader>
-              <CardContent className="grid gap-3 sm:grid-cols-2">
-                <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">
-                  <a
-                    href={waHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")}
-                  >
-                    <WhatsAppIcon className="h-5 w-5" />
-                    WhatsApp {business.phone}
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="h-14 w-full justify-center gap-2 rounded-none">
-                  <a
-                    href={telHref}
-                    onClick={() => trackContactClick("phone", "Contact page – instant CTA")}
-                  >
-                    <Phone className="h-5 w-5" />
-                    Call {business.phone}
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="h-14 w-full justify-center gap-2 rounded-none">
-                  <a
-                    href={mailHref}
-                    onClick={() => trackContactClick("email", "Contact page – instant CTA")}
-                  >
-                    <Mail className="h-5 w-5" />
-                    {business.email}
-                  </a>
-                </Button>
-                {social.instagram && (
-                  <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] text-white hover:opacity-90">
-                    <a href={social.instagram} target="_blank" rel="noopener noreferrer">
-                      <InstagramBrandIcon className="h-5 w-5" />
-                      Follow us on Instagram
-                    </a>
-                  </Button>
-                )}
-                {social.facebook && (
-                  <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#1877F2] text-white hover:bg-[#166fe5] sm:col-span-2">
-                    <a href={social.facebook} target="_blank" rel="noopener noreferrer">
-                      <FacebookBrandIcon className="h-5 w-5" />
-                      Follow us on Facebook
-                    </a>
-                  </Button>
-                )}
+              <CardContent className="grid gap-3 sm:grid-cols-3">
+                <WhatsAppButton phoneIntl={business.phone_intl} />
+                <CallButton phoneIntl={business.phone_intl} />
+                <DownloadAppButton />
               </CardContent>
             </Card>
 
