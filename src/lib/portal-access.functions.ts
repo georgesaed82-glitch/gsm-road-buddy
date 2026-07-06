@@ -48,7 +48,7 @@ async function requireAdmin() {
 }
 
 export const verifyPortalAccess = createServerFn({ method: "POST" })
-  .inputValidator((d: { mode: "learner" | "admin"; captchaToken?: string | null; email?: string | null }) => d)
+  .inputValidator((d: { password: string; mode: "learner" | "admin"; captchaToken?: string | null; email?: string | null }) => d)
   .handler(async ({ data }): Promise<{
     ok: boolean;
     reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed" | "email_mismatch";
