@@ -317,7 +317,7 @@ export function Header() {
                 </div>
 
                 {/* Admin / Sign out */}
-                <div className="mt-4 pb-4">
+                <div className="mt-3 pb-2">
                   {isAuthed ? (
                     <Button className="w-full" variant="ghost" onClick={handleSignOut}>
                       <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
