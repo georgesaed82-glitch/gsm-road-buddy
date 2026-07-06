@@ -8,7 +8,6 @@ import type { ReactElement } from "react";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { MarkingsQuiz } from "@/components/MarkingsQuiz";
 import { cn } from "@/lib/utils";
-import dualCarriagewayAsset from "@/assets/dual-carriageway-join.jpeg.asset.json";
 import hatchedPhotoAsset from "@/assets/hatched-area-photo.jpeg.asset.json";
 import { useContentOverrides } from "@/hooks/useContentOverrides";
 
