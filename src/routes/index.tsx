@@ -124,8 +124,21 @@ function Home() {
 
 type SectionProps = { s: Partial<HomeSectionRow> };
 
+function renderHeroTitle(title: string) {
+  if (!title.includes("Succeed")) return title;
+  const [before, after] = title.split("Succeed");
+  return (
+    <>
+      {before}
+      <span className="italic text-accent">Succeed</span>
+      {after}
+    </>
+  );
+}
+
 function HeroSection({ s }: SectionProps) {
   const rating = useSiteRating();
+  const heroTitle = s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-8 lg:pb-24 lg:pt-20">
@@ -135,7 +148,7 @@ function HeroSection({ s }: SectionProps) {
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
           <h1 className="mt-6 text-balance font-display text-[44px] font-medium leading-[1.05] text-foreground sm:text-6xl lg:text-[72px]">
-            {s.title && s.title.trim().length > 0 ? s.title : (<>Drive today. <span className="italic" style={{ color: "#C87445" }}>Succeed</span> tomorrow.</>)}
+            {renderHeroTitle(heroTitle)}
           </h1>
           <a href="https://maps.google.com/?cid=12315071950298926858" target="_blank" rel="noopener noreferrer" className="mt-6 flex items-center gap-3 hover:opacity-80">
             <div className="flex text-accent">
