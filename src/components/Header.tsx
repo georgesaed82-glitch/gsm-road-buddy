@@ -119,13 +119,23 @@ export function Header() {
                 key={link.to}
                 to={link.to}
                 className={cn(
-                  "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  "group relative inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-all duration-200",
+                  active
+                    ? "bg-accent/10 text-primary"
+                    : "text-muted-foreground hover:-translate-y-0.5 hover:bg-accent/5 hover:text-primary",
                 )}
               >
-                {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
+                {Icon && (
+                  <Icon
+                    className={cn(
+                      "h-3.5 w-3.5 transition-colors",
+                      active ? "text-accent" : "text-muted-foreground group-hover:text-accent",
+                    )}
+                    aria-hidden="true"
+                  />
+                )}
                 {link.label}
-                {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
+                {active && <span className="absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-accent" />}
               </Link>
             );
           })}
@@ -134,13 +144,14 @@ export function Header() {
             to="/auth"
             aria-label="Learner portal login"
             className={cn(
-              "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
-              isPortalActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+              "group relative ml-1 inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/[0.03] px-3.5 py-2 text-sm font-medium transition-all duration-200",
+              isPortalActive
+                ? "border-accent/40 bg-accent/10 text-primary shadow-sm"
+                : "text-primary hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/10 hover:shadow-sm",
             )}
           >
-            <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+            <Lock className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
             <span>Learner portal</span>
-            {isPortalActive && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
           </Link>
         </nav>
 
