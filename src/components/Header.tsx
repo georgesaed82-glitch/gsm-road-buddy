@@ -120,7 +120,6 @@ function PortalMenuItem({
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const [portalOpen, setPortalOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
