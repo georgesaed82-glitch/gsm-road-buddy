@@ -469,7 +469,7 @@ function AdminTheoryCms() {
       };
     });
     try {
-      const res = await importFn({ data: { password: p, rows: rowsOut } });
+      const res = await importFn({ data: { rows: rowsOut } });
       toast.success(`Imported ${res.inserted} questions`);
       await refresh();
     } catch (e) {
