@@ -31,3 +31,11 @@ export function getBearerToken(): string | null {
     return null;
   }
 }
+
+export function getRequestOrigin(): string {
+  try {
+    return new URL(getRequest().url).origin;
+  } catch {
+    return "";
+  }
+}
