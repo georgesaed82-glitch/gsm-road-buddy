@@ -178,49 +178,47 @@ function AuthPage() {
           </CardTitle>
           <CardDescription>
             <Badge variant="secondary" className="mt-2">
-              {isAdmin ? "Admin only" : "Email + PIN login"}
+              {isAdmin ? "Admin sign-in" : "Email + PIN login"}
             </Badge>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             {isAdmin
-              ? "Enter the admin access code to view site analytics, payments, and learner progress."
+              ? "Sign in with your admin email and password. Access to the admin area is granted to users with the admin role."
               : "Enter your email address and the PIN George sent you. Your progress saves automatically to your account."}
           </p>
           <form onSubmit={handleSubmit} className="space-y-3 text-left">
-            {!isAdmin && (
-              <div className="space-y-1">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <User className="h-4 w-4" /> Email address
-                </label>
-                <Input
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={submitting}
-                />
-              </div>
-            )}
+            <div className="space-y-1">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <User className="h-4 w-4" /> Email address
+              </label>
+              <Input
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
+              />
+            </div>
             <label className="text-sm font-medium flex items-center gap-2">
-              <Lock className="h-4 w-4" /> {isAdmin ? "Access code" : "PIN"}
+              <Lock className="h-4 w-4" /> {isAdmin ? "Password" : "PIN"}
             </label>
             <div className="flex gap-2">
               <Input
                 type="password"
                 required
-                inputMode="numeric"
+                inputMode={isAdmin ? "text" : "numeric"}
                 autoComplete="off"
-                placeholder={isAdmin ? "Enter code" : "Enter your PIN"}
+                placeholder={isAdmin ? "Your password" : "Enter your PIN"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={submitting}
               />
               <Button type="submit" disabled={submitting}>
-                {submitting ? "..." : "Enter"}
+                {submitting ? "..." : isAdmin ? "Sign in" : "Enter"}
               </Button>
             </div>
             {codeCaptchaRequired && siteKey ? (
