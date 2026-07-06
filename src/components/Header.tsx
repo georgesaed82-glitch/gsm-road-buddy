@@ -302,7 +302,7 @@ export function Header() {
                           to={link.to}
                           onClick={() => setOpen(false)}
                           className={cn(
-                            "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-2.5 text-center font-display text-sm leading-tight transition-colors",
+                            "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-2 text-center font-display text-sm leading-tight transition-colors",
                             active
                               ? "border-accent/40 bg-accent/10 text-primary"
                               : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
