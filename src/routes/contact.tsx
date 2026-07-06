@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, MapPin, Clock, Phone } from "lucide-react";
+import { Mail, MapPin, Clock, Phone, Download } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
-import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
-import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { BookingForm } from "@/components/BookingForm";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { triggerPwaInstallPrompt } from "@/components/PWAInstallTracker";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -35,7 +35,7 @@ const DAY_LABELS: Record<string, string> = {
 };
 
 function ContactPage() {
-  const { business, social, opening_hours } = useSiteSettings();
+  const { business, opening_hours } = useSiteSettings();
   const hours = (["mon","tue","wed","thu","fri","sat","sun"] as const)
     .filter((k) => opening_hours[k])
     .map((k) => ({ day: DAY_LABELS[k], time: opening_hours[k] }));
@@ -63,52 +63,10 @@ function ContactPage() {
               <CardHeader className="pb-4 text-center">
                 <CardTitle className="font-display text-2xl">Talk to us instantly</CardTitle>
               </CardHeader>
-              <CardContent className="grid gap-3 sm:grid-cols-2">
-                <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">
-                  <a
-                    href={waHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")}
-                  >
-                    <WhatsAppIcon className="h-5 w-5" />
-                    WhatsApp {business.phone}
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="h-14 w-full justify-center gap-2 rounded-none">
-                  <a
-                    href={telHref}
-                    onClick={() => trackContactClick("phone", "Contact page – instant CTA")}
-                  >
-                    <Phone className="h-5 w-5" />
-                    Call {business.phone}
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="h-14 w-full justify-center gap-2 rounded-none">
-                  <a
-                    href={mailHref}
-                    onClick={() => trackContactClick("email", "Contact page – instant CTA")}
-                  >
-                    <Mail className="h-5 w-5" />
-                    {business.email}
-                  </a>
-                </Button>
-                {social.instagram && (
-                  <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-gradient-to-r from-[#fccc63] via-[#e1306c] to-[#833ab4] text-white hover:opacity-90">
-                    <a href={social.instagram} target="_blank" rel="noopener noreferrer">
-                      <InstagramBrandIcon className="h-5 w-5" />
-                      Follow us on Instagram
-                    </a>
-                  </Button>
-                )}
-                {social.facebook && (
-                  <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-none bg-[#1877F2] text-white hover:bg-[#166fe5] sm:col-span-2">
-                    <a href={social.facebook} target="_blank" rel="noopener noreferrer">
-                      <FacebookBrandIcon className="h-5 w-5" />
-                      Follow us on Facebook
-                    </a>
-                  </Button>
-                )}
+              <CardContent className="grid gap-3 sm:grid-cols-3">
+                <WhatsAppButton phoneIntl={business.phone_intl} />
+                <CallButton phoneIntl={business.phone_intl} />
+                <DownloadAppButton />
               </CardContent>
             </Card>
 
@@ -204,5 +162,100 @@ function AreasCovered() {
         <p className="text-sm text-muted-foreground">{footer.areas_covered}</p>
       </div>
     </div>
+  );
+}
+
+function WhatsAppButton({ phoneIntl }: { phoneIntl: string }) {
+  return (
+    <Button
+      asChild
+      size="lg"
+      className="h-14 w-full justify-center gap-2 rounded-xl bg-primary text-primary-foreground shadow-md transition-transform hover:bg-primary/90 hover:shadow-lg"
+    >
+      <a
+        href={`https://wa.me/${phoneIntl}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")}
+      >
+        <WhatsAppIcon className="h-5 w-5" />
+        WhatsApp
+      </a>
+    </Button>
+  );
+}
+
+function CallButton({ phoneIntl }: { phoneIntl: string }) {
+  return (
+    <Button
+      asChild
+      size="lg"
+      variant="outline"
+      className="h-14 w-full justify-center gap-2 rounded-xl border-primary bg-background text-primary shadow-md transition-transform hover:bg-secondary hover:text-primary"
+    >
+      <a
+        href={`tel:+${phoneIntl}`}
+        onClick={() => trackContactClick("phone", "Contact page – instant CTA")}
+      >
+        <Phone className="h-5 w-5" />
+        Call
+      </a>
+    </Button>
+  );
+}
+
+function detectPlatform() {
+  if (typeof navigator === "undefined") return { ios: false, android: false, standalone: false };
+  const ua = navigator.userAgent || "";
+  const ios = /iPhone|iPad|iPod/i.test(ua);
+  const android = /Android/i.test(ua);
+  const standalone =
+    (typeof window !== "undefined" && window.matchMedia?.("(display-mode: standalone)").matches) ||
+    (navigator as Navigator & { standalone?: boolean }).standalone === true;
+  return { ios, android, standalone };
+}
+
+function DownloadAppButton() {
+  const [platform, setPlatform] = useState({ ios: false, android: false, standalone: false });
+  const [showHelp, setShowHelp] = useState(false);
+
+  useEffect(() => {
+    setPlatform(detectPlatform());
+  }, []);
+
+  const handleClick = async () => {
+    if (platform.ios || platform.standalone) {
+      setShowHelp(true);
+      return;
+    }
+    const shown = await triggerPwaInstallPrompt();
+    if (!shown) setShowHelp(true);
+  };
+
+  return (
+    <>
+      <Button
+        size="lg"
+        onClick={handleClick}
+        className="h-14 w-full justify-center gap-2 rounded-xl bg-accent text-accent-foreground shadow-md transition-transform hover:bg-accent/90 hover:shadow-lg"
+      >
+        <Download className="h-5 w-5" />
+        Download the App
+      </Button>
+      {showHelp && (
+        <div className="col-span-full rounded-lg border border-border bg-muted p-4 text-sm text-muted-foreground">
+          <p className="font-medium text-foreground">Install the GSM app</p>
+          {platform.ios ? (
+            <p className="mt-1">
+              Tap the Share button in Safari, then choose <strong className="text-foreground">Add to Home Screen</strong>.
+            </p>
+          ) : (
+            <p className="mt-1">
+              Open this site in Chrome, Edge or Samsung Internet, then choose <strong className="text-foreground">Install app</strong> or <strong className="text-foreground">Add to Home screen</strong> from the browser menu.
+            </p>
+          )}
+        </div>
+      )}
+    </>
   );
 }
