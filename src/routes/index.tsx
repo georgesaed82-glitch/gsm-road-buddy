@@ -431,30 +431,63 @@ function PortalSection({ s }: SectionProps) {
 
 function CtaSection({ s }: SectionProps) {
   return (
-    <section className="border-t border-border bg-accent text-accent-foreground">
-      <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <h2 className="max-w-xl font-display text-4xl font-medium leading-[1.05]">
-          {or(s.title, "Ready to start? Get in Touch.")}
-        </h2>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button asChild size="lg" className="h-14 rounded-none bg-[#25D366] px-8 text-white hover:bg-[#1ebe57]">
-            <a href="https://wa.me/447961585231" target="_blank" rel="noopener noreferrer" onClick={() => trackContactClick("whatsapp", "Home bottom CTA")} className="inline-flex items-center gap-3">
-              <WhatsAppIcon className="h-5 w-5" />
-              WhatsApp 07961 585231
-            </a>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="h-14 rounded-none border-accent-foreground/30 bg-transparent px-8 text-accent-foreground hover:bg-accent-foreground hover:text-accent">
-            <a href="tel:+447961585231" onClick={() => trackContactClick("phone", "Home bottom CTA")} className="inline-flex items-center gap-3">
-              <Phone className="h-5 w-5" />
-              Call 07961 585231
-            </a>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="h-14 rounded-none border-accent-foreground/30 bg-transparent px-8 text-accent-foreground hover:bg-accent-foreground hover:text-accent">
-            <Link to="/" hash="download-app" className="inline-flex items-center gap-3">
-              <Download className="h-5 w-5" />
-              {or(s.cta_primary_label, "Download the App")}
-            </Link>
-          </Button>
+    <section className="border-t border-border bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              <span className="h-px w-8 bg-accent" />
+              Ready to start
+            </div>
+            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl">
+              {or(s.title, "Ready to start? Get in Touch.")}
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+              Message us on WhatsApp, give us a call, or download the app to book your first lesson today.
+            </p>
+          </div>
+          <div className="grid w-full gap-3 sm:grid-cols-3 lg:w-auto">
+            <Button
+              asChild
+              size="lg"
+              className="h-14 rounded-xl bg-primary px-6 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
+            >
+              <a
+                href="https://wa.me/447961585231"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackContactClick("whatsapp", "Home bottom CTA")}
+                className="inline-flex items-center justify-center gap-2 font-medium"
+              >
+                <WhatsAppIcon className="h-5 w-5" />
+                WhatsApp
+              </a>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              className="h-14 rounded-xl border border-primary/20 bg-background px-6 text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/5 hover:shadow-lg active:translate-y-0"
+            >
+              <a
+                href="tel:+447961585231"
+                onClick={() => trackContactClick("phone", "Home bottom CTA")}
+                className="inline-flex items-center justify-center gap-2 font-medium"
+              >
+                <Phone className="h-5 w-5" />
+                Call
+              </a>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              className="h-14 rounded-xl bg-accent px-6 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
+            >
+              <Link to="/" hash="download-app" className="inline-flex items-center justify-center gap-2 font-medium">
+                <Download className="h-5 w-5" />
+                {or(s.cta_primary_label, "Download the App")}
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </section>
