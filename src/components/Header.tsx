@@ -119,13 +119,23 @@ export function Header() {
                 key={link.to}
                 to={link.to}
                 className={cn(
-                  "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  "group relative inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-all duration-200",
+                  active
+                    ? "bg-accent/10 text-primary"
+                    : "text-muted-foreground hover:-translate-y-0.5 hover:bg-accent/5 hover:text-primary",
                 )}
               >
-                {Icon && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
+                {Icon && (
+                  <Icon
+                    className={cn(
+                      "h-3.5 w-3.5 transition-colors",
+                      active ? "text-accent" : "text-muted-foreground group-hover:text-accent",
+                    )}
+                    aria-hidden="true"
+                  />
+                )}
                 {link.label}
-                {active && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
+                {active && <span className="absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-accent" />}
               </Link>
             );
           })}
@@ -134,13 +144,14 @@ export function Header() {
             to="/auth"
             aria-label="Learner portal login"
             className={cn(
-              "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
-              isPortalActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+              "group relative ml-1 inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/[0.03] px-3.5 py-2 text-sm font-medium transition-all duration-200",
+              isPortalActive
+                ? "border-accent/40 bg-accent/10 text-primary shadow-sm"
+                : "text-primary hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/10 hover:shadow-sm",
             )}
           >
-            <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+            <Lock className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
             <span>Learner portal</span>
-            {isPortalActive && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
           </Link>
         </nav>
 
@@ -213,14 +224,14 @@ export function Header() {
                         to={link.to}
                         onClick={() => setOpen(false)}
                         className={cn(
-                          "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-1.5 text-center font-display text-sm leading-tight transition-colors",
+                          "flex flex-col items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card p-3 text-center font-display text-sm leading-tight transition-all duration-200 active:scale-[0.98]",
                           isLastOdd && "col-span-2",
                           active
-                            ? "border-accent/40 bg-accent/10 text-primary"
-                            : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
+                            ? "border-accent/50 bg-accent/10 text-primary shadow-sm"
+                            : "text-foreground hover:border-accent/40 hover:bg-accent/5 hover:text-primary",
                         )}
                       >
-                        <Icon className={cn("h-3.5 w-3.5", active ? "text-primary" : "text-muted-foreground")} />
+                        <Icon className={cn("h-4 w-4", active ? "text-accent" : "text-accent/70")} />
                         <span>{link.label}</span>
                       </Link>
                     );
@@ -233,13 +244,13 @@ export function Header() {
                     to="/auth"
                     onClick={() => setOpen(false)}
                     className={cn(
-                      "flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-3 text-center font-display text-sm leading-tight transition-colors",
+                      "flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/[0.04] p-3 text-center font-display text-sm leading-tight text-primary transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 active:scale-[0.99]",
                       isPortalActive
-                        ? "border-accent/40 bg-accent/10 text-primary"
-                        : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
+                        ? "border-accent/50 bg-accent/10 shadow-sm"
+                        : "",
                     )}
                   >
-                    <Lock className="h-3.5 w-3.5" />
+                    <Lock className="h-4 w-4 text-accent" />
                     <span>Learner portal login</span>
                   </Link>
                 </div>
