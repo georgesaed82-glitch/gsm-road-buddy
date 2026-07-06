@@ -19,7 +19,7 @@ const learningGroup: Group = {
   items: [
     { to: "/gsm-method", label: "GSM Driving Method", icon: Compass },
     { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
-    { to: "/driving-clips/", label: "Practical animations", icon: Film },
+    { to: "/driving-clips/", label: "Practical strategy videos", icon: Film },
   ],
 };
 
