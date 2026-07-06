@@ -182,7 +182,7 @@ const speedAdjustment: Lesson = {
   ],
   keyTakeaway:
     "Always adjust your speed to what you can see, the space available and the developing hazards — not simply the number on the speed limit sign.",
-  durationMs: 14000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "40 mph road ahead", detail: "You're cruising at the limit. Speed limit sign confirmed." },
     { at: 0.25, label: "Grey car ahead is slower", detail: "Reading the road: the vehicle ahead is at ~35 mph." },
@@ -417,7 +417,7 @@ const twoSecondRule: Lesson = {
   ],
   keyTakeaway:
     "Two seconds in the dry, four in the wet, ten on ice — the gap in front of you is the time you have to think, react and stop.",
-  durationMs: 15000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "Dry road, following a grey car", detail: "You settle in behind at a comfortable speed." },
     { at: 0.25, label: "The gap is closing", detail: "The counter is dropping below 2 seconds — you're getting too close." },
@@ -639,7 +639,7 @@ const zebraCrossing: Lesson = {
   ],
   keyTakeaway:
     "Zebra crossings belong to the pedestrian. Your job is to see them early, stop smoothly and only move off when the crossing is completely clear.",
-  durationMs: 15000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "Beacons and zig-zags visible ahead", detail: "Ease off the accelerator — start scanning the pavement." },
     { at: 0.25, label: "Pedestrian at the kerb", detail: "They're looking at the crossing — assume they will step on." },
@@ -812,7 +812,7 @@ const goingUphill: Lesson = {
     "Ease off before the crest — the view opens up suddenly",
   ],
   keyTakeaway: "Gravity slows you down uphill — accelerate early, drive smoothly and never crawl.",
-  durationMs: 12000,
+  durationMs: 18000,
   captions: [
     { at: 0, label: "Hill ahead — plan the climb", detail: "Look at the incline before you get to it." },
     { at: 0.35, label: "Speed sagging", detail: "Gravity is winning — you needed more accelerator earlier." },
@@ -920,7 +920,7 @@ const goingDownhill: Lesson = {
     "Bigger gap downhill",
   ],
   keyTakeaway: "Gravity increases speed downhill — use a lower gear and gentle brake, never allow the hill to control the car.",
-  durationMs: 12000,
+  durationMs: 18000,
   captions: [
     { at: 0, label: "Descent begins", detail: "Change down now — before the hill takes over." },
     { at: 0.35, label: "Speed climbing fast", detail: "Gravity is doing the work — you need to intervene." },
@@ -1034,7 +1034,7 @@ const meetingTraffic: Lesson = {
     "Eye contact with the oncoming driver — read their intent",
   ],
   keyTakeaway: "Less space, less speed — the gap decides the mph, not the sign at the end of the road.",
-  durationMs: 13000,
+  durationMs: 36000,
   captions: [
     { at: 0, label: "Approaching parked cars", detail: "Scan the row ahead — pick your smallest gap." },
     { at: 0.3, label: "Oncoming car approaching", detail: "You'll meet somewhere in the middle." },
@@ -1148,7 +1148,7 @@ const laneDiscipline: Lesson = {
     "Never undertake — change lane properly",
   ],
   keyTakeaway: "The left lane is your normal driving lane on every dual carriageway. Overtake when needed, then get back left.",
-  durationMs: 14000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "Cruising in the left lane", detail: "Correct — your normal driving lane." },
     { at: 0.25, label: "Slow lorry ahead — plan to overtake", detail: "Mirror, signal, move out." },
@@ -1255,7 +1255,7 @@ const laneMerging: Lesson = {
     "Let competitive drivers go — the next gap is yours",
   ],
   keyTakeaway: "Mirror, Signal, Position, Speed, Merge — early, smooth and shared.",
-  durationMs: 13000,
+  durationMs: 36000,
   captions: [
     { at: 0, label: "Lane ends ahead", detail: "Read the chevrons — plan the merge now." },
     { at: 0.35, label: "Signal on, matching speed", detail: "Give other drivers time to see and react." },
@@ -1379,6 +1379,19 @@ function ChangingLanesScene(t: number) {
   // ── Current step ──────────────────────────────────────────
   const step = stepAt(t);
 
+  // ── Which mirror is being checked right now (for on-canvas cones) ──
+  const activeMirror: "interior" | "right" | null =
+    t >= 0.08 && t < 0.18 ? "interior"
+    : t >= 0.18 && t < 0.34 ? "right"
+    : null;
+
+  // ── Safe-to-move status banner ──
+  const showWait = t >= 0.10 && t < 0.24 && !inBothMirrors;
+  const showSafe = t >= 0.24 && t < 0.42 && inBothMirrors;
+
+  // Distance in metres from ego to follower (screen px ~= 0.5 m).
+  const distMetres = Math.max(5, Math.round((egoX - followerX) * 0.9));
+
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
       <defs>
@@ -1390,6 +1403,14 @@ function ChangingLanesScene(t: number) {
           <stop offset="0" stopColor="#0f1116" />
           <stop offset="1" stopColor="#0a0b0f" />
         </linearGradient>
+        <radialGradient id="cone-int-cl" cx="0.5" cy="0" r="1">
+          <stop offset="0" stopColor="#fbbf24" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#fbbf24" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="cone-right-cl" cx="1" cy="0" r="1.2">
+          <stop offset="0" stopColor="#38bdf8" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#38bdf8" stopOpacity="0" />
+        </radialGradient>
       </defs>
 
       {/* Sky / background */}
@@ -1463,6 +1484,108 @@ function ChangingLanesScene(t: number) {
 
       {/* Ego car */}
       <Car2 x={egoX} y={egoY} color="#2f6bf0" indicator={signalOn ? "right" : null} braking={false} />
+
+      {/* Field-of-vision cone from ego, in the direction of the mirror being checked */}
+      {activeMirror === "interior" && (
+        <g pointerEvents="none">
+          <path
+            d={`M ${egoX - 12} ${egoY} L 0 ${egoY - 80} L 0 ${egoY + 80} Z`}
+            fill="url(#cone-int-cl)"
+          />
+          <path
+            d={`M ${egoX - 12} ${egoY} L 0 ${egoY - 80} L 0 ${egoY + 80} Z`}
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth={1}
+            strokeDasharray="4 4"
+            opacity={0.7}
+          />
+          <text x={20} y={egoY - 84} fontSize={9} fontWeight={800} fill="#fbbf24" fontFamily="sans-serif">
+            INTERIOR MIRROR VIEW
+          </text>
+        </g>
+      )}
+      {activeMirror === "right" && (
+        <g pointerEvents="none">
+          <path
+            d={`M ${egoX - 8} ${egoY - 6} L 0 ${egoY - 60} L 0 ${egoY - 10} Z`}
+            fill="url(#cone-right-cl)"
+          />
+          <path
+            d={`M ${egoX - 8} ${egoY - 6} L 0 ${egoY - 60} L 0 ${egoY - 10} Z`}
+            fill="none"
+            stroke="#38bdf8"
+            strokeWidth={1}
+            strokeDasharray="4 4"
+            opacity={0.75}
+          />
+          <text x={20} y={egoY - 62} fontSize={9} fontWeight={800} fill="#38bdf8" fontFamily="sans-serif">
+            RIGHT DOOR MIRROR VIEW
+          </text>
+          {/* Distance readout to the follower while it is in the right-mirror view */}
+          {followerX < egoX && (
+            <g>
+              <line
+                x1={followerX + 14}
+                y1={followerY - 14}
+                x2={egoX - 14}
+                y2={egoY - 14}
+                stroke="#38bdf8"
+                strokeWidth={1.4}
+                strokeDasharray="4 4"
+                opacity={0.9}
+              />
+              <rect
+                x={(followerX + egoX) / 2 - 26}
+                y={followerY - 34}
+                width={52}
+                height={18}
+                rx={3}
+                fill="#0b1b2b"
+                opacity={0.92}
+              />
+              <text
+                x={(followerX + egoX) / 2}
+                y={followerY - 21}
+                textAnchor="middle"
+                fontSize={10}
+                fontWeight={800}
+                fill="#38bdf8"
+                fontFamily="sans-serif"
+              >
+                ~{distMetres} m
+              </text>
+            </g>
+          )}
+        </g>
+      )}
+
+      {/* On-canvas WAIT / SAFE decision banner (mirrors the HUD verdict) */}
+      {(showWait || showSafe) && (
+        <g pointerEvents="none">
+          <rect
+            x={40}
+            y={roadTop + 8}
+            width={260}
+            height={30}
+            rx={5}
+            fill={showSafe ? "#155e2b" : "#7a1215"}
+            opacity={0.95}
+          />
+          <text
+            x={170}
+            y={roadTop + 28}
+            textAnchor="middle"
+            fontSize={13}
+            fontWeight={900}
+            fill="#ffffff"
+            fontFamily="sans-serif"
+            letterSpacing="1"
+          >
+            {showSafe ? "SAFE TO MOVE" : "WAIT — TOO CLOSE"}
+          </text>
+        </g>
+      )}
 
       {/* Motorway sign — subtle 70 limit ahead */}
       <g transform="translate(340 70)">
@@ -1729,7 +1852,7 @@ const changingLanes: Lesson = {
   ],
   keyTakeaway:
     "Trust the system — Observe, Mirror, Reference point, Signal, Blind spot, Match speed, Move, Cancel, Scan. Same routine every lane, every time.",
-  durationMs: 20000,
+  durationMs: 36000,
   captions: [
     { at: 0.00, label: "Observe ahead", detail: "Slower HGV in Lane 1 — plan the move now, not later." },
     { at: 0.08, label: "Interior mirror", detail: "Assess the traffic behind you. What is coming up?" },
@@ -1892,7 +2015,7 @@ const keepingJunctionsClear: Lesson = {
     "What we do for others, they do for us",
   ],
   keyTakeaway: "Only enter a junction — especially a yellow box — if your exit is completely clear.",
-  durationMs: 14000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "Traffic queue ahead", detail: "The exit past the junction is blocked." },
     { at: 0.35, label: "Common mistake — moving in anyway", detail: "You've blocked the side road." },
@@ -2211,7 +2334,7 @@ const closedJunction: Lesson = {
   ],
   keyTakeaway:
     "Closed junction — you MUST stop. Only after a full stop can you creep, look and go.",
-  durationMs: 15000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "Approaching — this is a CLOSED junction", detail: "Parked cars both sides, tall hedges, houses close to the road." },
     { at: 0.35, label: "MUST STOP at the give-way line", detail: "Full stop — wheels still. No rolling into it." },
@@ -2367,7 +2490,7 @@ const openJunction: Lesson = {
   ],
   keyTakeaway:
     "Open junction, open view — coast through. Closed view — stop. The road decides.",
-  durationMs: 14000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "Approaching an OPEN junction", detail: "Wide view, no parked cars, houses set well back." },
     { at: 0.35, label: "Look early — right, left, right", detail: "Three checks minimum — green cones, I can already see both directions." },
@@ -2473,7 +2596,7 @@ const overtaking: Lesson = {
     "Never overtake on a solid white line",
   ],
   keyTakeaway: "Overtake only when it is both necessary and safe — the speed limit is not a reason on its own.",
-  durationMs: 14000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "Lead car doing 35 in a 40", detail: "Slightly under the limit — no reason to overtake." },
     { at: 0.35, label: "Stay behind, keep the gap", detail: "Necessary? No." },
@@ -2583,7 +2706,7 @@ const blindSpots: Lesson = {
     "Lorry blind spots are HUGE — stay out of them",
   ],
   keyTakeaway: "Blind spots are where mirrors don't reach — check over your shoulder, never sit alongside.",
-  durationMs: 12000,
+  durationMs: 18000,
   captions: [
     { at: 0, label: "Other vehicle behind — visible in mirror", detail: "Everything's fine." },
     { at: 0.4, label: "Vehicle now in your blind spot", detail: "Mirror shows nothing — but they're there." },
@@ -2726,7 +2849,7 @@ const stretchVision: Lesson = {
     "Don't chase the bonnet",
   ],
   keyTakeaway: "Stretch your vision using GSM 15–70–15 — look high, look far, look low, keep moving.",
-  durationMs: 12000,
+  durationMs: 18000,
   captions: [
     { at: 0, label: "15% HIGH — signs and lights", detail: "Scan the top of the scene first." },
     { at: 0.33, label: "70% AHEAD — the big picture", detail: "Most of your attention lives here." },
@@ -2866,7 +2989,7 @@ const planStopLookGo: Lesson = {
     "One decision, one clean move",
   ],
   keyTakeaway: "Plan to stop, look to go — every junction, every time.",
-  durationMs: 15000,
+  durationMs: 22000,
   captions: [
     { at: 0, label: "SLOW — off the accelerator", detail: "Ease your speed on approach." },
     { at: 0.35, label: "OBSERVE — right, left, right", detail: "Actively scan both directions." },
@@ -3166,7 +3289,7 @@ const roundabouts: Lesson = {
   ],
   keyTakeaway:
     "Right exit: signal right, give way to the right, signal left before leaving — every roundabout, every time.",
-  durationMs: 16000,
+  durationMs: 24000,
   captions: [
     { at: 0, label: "APPROACH — signal right", detail: "Right exit needs a right signal on approach." },
     { at: 0.22, label: "GIVE WAY — traffic from the right", detail: "The red car has priority. Wait for a safe gap." },

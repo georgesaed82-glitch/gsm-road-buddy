@@ -119,7 +119,7 @@ const turningRight: ClipDef = {
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -175,7 +175,7 @@ const meetingTraffic: ClipDef = {
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -250,7 +250,7 @@ const zebra: ClipDef = {
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -335,7 +335,7 @@ const spiralRoundabout: ClipDef = {
       </svg>
     );
   },
-  durationMs: 16000,
+  durationMs: 24000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -402,90 +402,242 @@ const yellowBox: ClipDef = {
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
-// 6. Smart motorway — vertical layout, cars heading north.
-// Three lanes + hard shoulder on the far LEFT. Red X closes the right (fast) lane.
+// 6. Motorway lane change (MSPSL + mirrors)
+// Vertical 3-lane motorway, all cars heading north.
+// Ego in lane 1 wants to overtake a slower vehicle ahead. Full DVSA
+// mirror–signal–manoeuvre sequence: interior mirror → right door mirror →
+// wait for a following vehicle to pass → mirrors again → signal → blind-
+// spot check → smooth change → cancel signal.
 // ─────────────────────────────────────────────────────────────
 const smartMotorway: ClipDef = {
   slug: "smart-motorway",
-  title: "Smart motorways (all-lane running)",
-  rule: "Rules 258, 269, 274–278",
-  summary: "Obey the overhead gantry — variable limits, red X closed lanes, refuge areas for breakdowns.",
+  title: "Motorway lane change — mirrors, signal, manoeuvre",
+  rule: "Rules 133, 161, 267",
+  summary: "Interior mirror first, then door mirror, wait if unsafe, signal, blind-spot check, then move — one lane at a time.",
   explanation: {
-    what: "We are reading smart motorway signs, obeying lane closures, and matching the displayed speed limit.",
-    when: "Use this on motorways with overhead gantries, variable speed limits, red X lane closures, or no permanent hard shoulder.",
-    why: "The signs respond to incidents ahead. Ignoring a red X or speed limit can put you into a closed lane where people, debris, or emergency services may be present.",
+    what: "Changing from lane 1 to lane 2 on a motorway to overtake a slower vehicle.",
+    when: "Any time you need to move out on a multi-lane road — motorway, dual carriageway, or wide urban route.",
+    why: "Mirrors in the right order let you judge speed and distance of following traffic before you commit. Rushing the sequence is the top DVSA fault on faster roads.",
     steps: [
-      "Look well ahead at the gantry above your lane.",
-      "Match the mandatory speed shown above your lane.",
-      "If you see a red X, leave that lane safely as soon as possible.",
-      "Keep left unless overtaking and maintain a safe following gap.",
-      "If you break down, reach a refuge area if possible; if not, get behind the barrier and call for help.",
+      "Interior mirror — check overall traffic behind.",
+      "Right door mirror — check the lane you are moving into.",
+      "If a vehicle is closing fast, wait for it to pass, then re-check.",
+      "Signal right in good time so others can react.",
+      "Quick blind-spot glance over your right shoulder.",
+      "Steer smoothly into lane 2 — one lane, one steady movement.",
+      "Cancel the signal and settle centred in the new lane.",
     ],
   },
   beats: [
-    { at: 0, label: "Read the overhead gantry", detail: "Variable speed limits above your lane are mandatory (Rule 258)." },
-    { at: 0.3, label: "Red X above a lane — do not drive in it", detail: "The lane is closed. Move out safely well before you reach it." },
-    { at: 0.6, label: "50 mph — enforced by ANPR cameras", detail: "Match the displayed limit; do not undershoot dramatically either." },
-    { at: 0.85, label: "Break down? Reach a refuge area if possible", detail: "If not, get behind the barrier on the left and call 999 (Rules 274–278)." },
+    { at: 0.00, label: "Plan — slower vehicle ahead", detail: "You are in lane 1 with a slower car ahead. Decide early that you will overtake." },
+    { at: 0.10, label: "Interior mirror first", detail: "Check overall traffic behind. This gives the big picture before any specific-lane check." },
+    { at: 0.22, label: "Right door mirror", detail: "Judge the speed and distance of anything already in lane 2 behind you." },
+    { at: 0.34, label: "Not safe — vehicle closing in lane 2", detail: "A faster car is approaching in the lane you want. Hold your position and let it pass." },
+    { at: 0.52, label: "Vehicle has passed — mirrors again", detail: "Re-check interior, then right door mirror. Never rely on your first check." },
+    { at: 0.64, label: "Signal right", detail: "Give a full, clear signal in good time so drivers behind can plan around you." },
+    { at: 0.72, label: "Blind-spot check", detail: "Quick glance over your right shoulder — mirrors alone cannot see the blind spot." },
+    { at: 0.80, label: "Smooth change into lane 2", detail: "One steady steering movement. Keep the same speed or accelerate slightly." },
+    { at: 0.92, label: "Cancel signal, settle centred", detail: "Cancel the indicator and centre the car in lane 2." },
   ],
   render: (t) => {
-    // Vertical motorway. Lanes:
-    //  Hard shoulder x=80..140
-    //  Lane 1 (left)  x=140..220
-    //  Lane 2 (mid)   x=220..300
-    //  Lane 3 (right, closed by Red X) x=300..380
-    const dashOffset = (t * 640 * 0.6) % 40;
-    // Ego stays in lane 2 (middle) at x=260, scrolling illusion via dashed lines.
-    // A blue car starts in lane 3 (x=340) and merges LEFT into lane 2 by t=0.6.
-    const blueX = segment(t, [
-      [0, 340],
-      [0.3, 340],
-      [0.6, 260],
-      [1, 260],
+    // Lane geometry.
+    //  Hard shoulder x=60..120
+    //  Lane 1 (inside)  x=120..200  centre 160
+    //  Lane 2 (middle)  x=200..280  centre 240
+    //  Lane 3 (outside) x=280..360  centre 320
+    const laneEdges = [60, 120, 200, 280, 360];
+    const dashOffset = (t * 640 * 0.9) % 40; // faster scroll = motorway speed
+
+    // Ego position — sits mostly fixed in lane 1 (x=160, y=270) then moves
+    // to lane 2 (x=240) between t=0.80 and t=0.90.
+    const changeT = Math.min(1, Math.max(0, (t - 0.80) / 0.10));
+    const egoX = 160 + (240 - 160) * easeInOut(changeT);
+    const egoY = 270;
+
+    // Slower silver car ahead in lane 1 (y=140) — stays roughly on screen.
+    const silverY = 140 + Math.sin(t * Math.PI * 2) * 3;
+
+    // Following blue car in lane 2. Starts off-screen bottom, closes on ego
+    // between 0.15 and 0.34, passes ego on the right 0.34..0.52, then gone.
+    const blueY = segment(t, [
+      [0.00, 460],
+      [0.15, 420],
+      [0.34, 320],
+      [0.52, -40],
+      [1.00, -40],
     ]);
-    // Simulate downward scroll of the road: cars stay put on screen, road lines move.
+    const blueVisible = t < 0.55;
+
+    // Mirror-check schedule.
+    type Mirror = "interior" | "right" | null;
+    const activeMirror: Mirror =
+      t >= 0.10 && t < 0.22 ? "interior" :
+      t >= 0.22 && t < 0.34 ? "right" :
+      t >= 0.52 && t < 0.60 ? "interior" :
+      t >= 0.60 && t < 0.66 ? "right" :
+      null;
+    const showBlindSpot = t >= 0.72 && t < 0.80;
+    const showSignal = t >= 0.64 && t < 0.92;
+    const showWaitBadge = t >= 0.34 && t < 0.50;
+    const showSafeBadge = t >= 0.60 && t < 0.66;
+
+    // Approach-distance readout while the blue car is visible in the right mirror.
+    const distMetres = Math.max(5, Math.round((blueY - egoY) * 0.6));
+
     return (
       <svg viewBox={CLIP_VIEWBOX} className="absolute inset-0 h-full w-full">
         <RoadDefs />
+        <defs>
+          <radialGradient id="cone-int" cx="0.5" cy="1" r="1">
+            <stop offset="0" stopColor="#ffd166" stopOpacity="0.55" />
+            <stop offset="1" stopColor="#ffd166" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="cone-right" cx="0" cy="1" r="1.2">
+            <stop offset="0" stopColor="#7ad2ff" stopOpacity="0.55" />
+            <stop offset="1" stopColor="#7ad2ff" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
         <rect width="640" height="360" fill={GRASS} />
         {/* Carriageway */}
-        <rect x="80" y="0" width="300" height="360" fill="url(#tarmac-g)" />
-        {/* Hard shoulder (solid line inner edge) */}
-        <line x1="140" y1="0" x2="140" y2="360" stroke={PAINT} strokeWidth="2" />
-        {/* Lane dividers */}
-        <line x1="220" y1="0" x2="220" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="20 20" strokeDashoffset={-dashOffset} />
-        <line x1="300" y1="0" x2="300" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="20 20" strokeDashoffset={-dashOffset} />
+        <rect x={laneEdges[0]} y="0" width={laneEdges[4] - laneEdges[0]} height="360" fill="url(#tarmac-g)" />
+        {/* Hard-shoulder inner solid line */}
+        <line x1={laneEdges[1]} y1="0" x2={laneEdges[1]} y2="360" stroke={PAINT} strokeWidth="2" />
+        {/* Lane dividers (dashed, scrolling) */}
+        <line x1={laneEdges[2]} y1="0" x2={laneEdges[2]} y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="24 22" strokeDashoffset={-dashOffset} />
+        <line x1={laneEdges[3]} y1="0" x2={laneEdges[3]} y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="24 22" strokeDashoffset={-dashOffset} />
         {/* Outer edges */}
-        <line x1="80" y1="0" x2="80" y2="360" stroke={PAINT} strokeWidth="2" />
-        <line x1="380" y1="0" x2="380" y2="360" stroke={PAINT} strokeWidth="2" />
-        {/* Emergency refuge on hard shoulder */}
-        <rect x="80" y="200" width="60" height="90" fill="#f5a300" opacity="0.35" />
-        <text x="110" y="250" textAnchor="middle" fill={PAINT} fontFamily="Arial" fontSize="10" fontWeight="700">SOS</text>
-        {/* Gantry across all lanes near the top */}
-        <rect x="80" y="30" width="300" height="34" fill="#111" />
-        <line x1="80" y1="30" x2="380" y2="30" stroke="#555" strokeWidth="1" />
-        {/* Signs per lane */}
-        <rect x="150" y="36" width="60" height="22" fill="#000" stroke="#333" />
-        <text x="180" y="53" textAnchor="middle" fill="#ffb020" fontFamily="monospace" fontWeight="700" fontSize="16">50</text>
-        <rect x="230" y="36" width="60" height="22" fill="#000" stroke="#333" />
-        <text x="260" y="53" textAnchor="middle" fill="#ffb020" fontFamily="monospace" fontWeight="700" fontSize="16">50</text>
-        <rect x="310" y="36" width="60" height="22" fill="#000" stroke="#333" />
-        <text x="340" y="55" textAnchor="middle" fill="#e5484d" fontFamily="monospace" fontWeight="900" fontSize="22">✕</text>
-        {/* Gantry posts */}
-        <rect x="76" y="30" width="6" height="120" fill="#222" />
-        <rect x="378" y="30" width="6" height="120" fill="#222" />
-        {/* Ego — lane 2 (middle) */}
-        <CarToken x={260} y={230} heading={0} color="#e5484d" />
-        {/* Blue car — starts lane 3 (closed), merges left into lane 2 */}
-        <CarToken x={blueX} y={170} heading={0} color="#4a90e2" indicator={t < 0.6 ? "left" : null} />
+        <line x1={laneEdges[0]} y1="0" x2={laneEdges[0]} y2="360" stroke={PAINT} strokeWidth="2" />
+        <line x1={laneEdges[4]} y1="0" x2={laneEdges[4]} y2="360" stroke={PAINT} strokeWidth="2" />
+
+        {/* Lane numbers (subtle) */}
+        <text x="160" y="24" textAnchor="middle" fill={PAINT} opacity="0.5" fontSize="10" fontFamily="Arial" fontWeight="700">LANE 1</text>
+        <text x="240" y="24" textAnchor="middle" fill={PAINT} opacity="0.5" fontSize="10" fontFamily="Arial" fontWeight="700">LANE 2</text>
+        <text x="320" y="24" textAnchor="middle" fill={PAINT} opacity="0.5" fontSize="10" fontFamily="Arial" fontWeight="700">LANE 3</text>
+
+        {/* Silver slower car ahead in lane 1 */}
+        <CarToken x={160} y={silverY} heading={0} color="#9aa0a6" />
+
+        {/* Blue following car in lane 2 */}
+        {blueVisible && <CarToken x={240} y={blueY} heading={0} color="#4a90e2" />}
+
+        {/* Field-of-vision cone for the currently checked mirror. */}
+        {activeMirror === "interior" && (
+          <g>
+            {/* Wide rear cone from ego */}
+            <path
+              d={`M ${egoX} ${egoY + 12} L ${egoX - 130} 360 L ${egoX + 130} 360 Z`}
+              fill="url(#cone-int)"
+            />
+            <path
+              d={`M ${egoX} ${egoY + 12} L ${egoX - 130} 360 L ${egoX + 130} 360 Z`}
+              fill="none"
+              stroke="#ffd166"
+              strokeWidth="1"
+              strokeDasharray="4 4"
+              opacity="0.6"
+            />
+          </g>
+        )}
+        {activeMirror === "right" && (
+          <g>
+            {/* Narrower cone from ego's right-rear, aimed back-right */}
+            <path
+              d={`M ${egoX + 6} ${egoY + 8} L ${egoX + 40} 360 L ${egoX + 220} 360 Z`}
+              fill="url(#cone-right)"
+            />
+            <path
+              d={`M ${egoX + 6} ${egoY + 8} L ${egoX + 40} 360 L ${egoX + 220} 360 Z`}
+              fill="none"
+              stroke="#7ad2ff"
+              strokeWidth="1"
+              strokeDasharray="4 4"
+              opacity="0.7"
+            />
+          </g>
+        )}
+
+        {/* Blind-spot ring (right side of ego). */}
+        {showBlindSpot && (
+          <g>
+            <circle
+              cx={egoX + 22}
+              cy={egoY + 4}
+              r={18}
+              fill="none"
+              stroke="#ffd166"
+              strokeWidth="2.5"
+              strokeDasharray="4 4"
+            >
+              <animate attributeName="r" values="14;22;14" dur="1s" repeatCount="indefinite" />
+            </circle>
+            <text x={egoX + 46} y={egoY + 8} fill="#ffd166" fontSize="10" fontWeight="800" fontFamily="Arial">BLIND SPOT</text>
+          </g>
+        )}
+
+        {/* Distance readout to closing car while it is visible in the right mirror */}
+        {activeMirror === "right" && blueVisible && blueY > egoY && (
+          <g>
+            <line x1={egoX + 40} y1={egoY + 6} x2={240} y2={blueY - 12} stroke="#7ad2ff" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.9" />
+            <rect x={260} y={(egoY + blueY) / 2 - 10} width={70} height={20} rx={3} fill="#0b1b2b" opacity="0.9" />
+            <text x={295} y={(egoY + blueY) / 2 + 4} textAnchor="middle" fill="#7ad2ff" fontSize="11" fontWeight="800" fontFamily="Arial">~{distMetres} m</text>
+          </g>
+        )}
+
+        {/* Ego */}
+        <CarToken x={egoX} y={egoY} heading={0} color="#e5484d" indicator={showSignal ? "right" : null} />
+
+        {/* Mirror HUD — top-right corner */}
+        <g transform="translate(470 40)">
+          <rect x="0" y="0" width="150" height="70" rx="6" fill="#0a0a0a" opacity="0.85" />
+          <text x="75" y="14" textAnchor="middle" fill="#bbb" fontSize="8" fontWeight="800" fontFamily="Arial" letterSpacing="1">MIRROR CHECK</text>
+          {/* Interior */}
+          <g transform="translate(18 24)">
+            <rect width="36" height="20" rx="3"
+              fill={activeMirror === "interior" ? "#ffd166" : "#1a1a1a"}
+              stroke={activeMirror === "interior" ? "#ffd166" : "#555"} />
+            <text x="18" y="14" textAnchor="middle" fontSize="8" fontWeight="800"
+              fill={activeMirror === "interior" ? "#0a0a0a" : "#bbb"} fontFamily="Arial">INT</text>
+            <text x="18" y="56" textAnchor="middle" fill="#888" fontSize="7" fontFamily="Arial">interior</text>
+          </g>
+          {/* Left door (never active in this clip — shown for context) */}
+          <g transform="translate(58 24)" opacity="0.55">
+            <rect width="36" height="20" rx="3" fill="#1a1a1a" stroke="#555" />
+            <text x="18" y="14" textAnchor="middle" fontSize="8" fontWeight="800" fill="#bbb" fontFamily="Arial">L</text>
+            <text x="18" y="56" textAnchor="middle" fill="#666" fontSize="7" fontFamily="Arial">left</text>
+          </g>
+          {/* Right door */}
+          <g transform="translate(98 24)">
+            <rect width="36" height="20" rx="3"
+              fill={activeMirror === "right" ? "#7ad2ff" : "#1a1a1a"}
+              stroke={activeMirror === "right" ? "#7ad2ff" : "#555"} />
+            <text x="18" y="14" textAnchor="middle" fontSize="8" fontWeight="800"
+              fill={activeMirror === "right" ? "#0a0a0a" : "#bbb"} fontFamily="Arial">R</text>
+            <text x="18" y="56" textAnchor="middle" fill="#888" fontSize="7" fontFamily="Arial">right door</text>
+          </g>
+        </g>
+
+        {/* Status banner: WAIT vs SAFE */}
+        {showWaitBadge && (
+          <g>
+            <rect x="180" y="300" width="280" height="34" rx="6" fill="#7a1215" />
+            <text x="320" y="322" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="900" fontFamily="Arial" letterSpacing="1">WAIT — VEHICLE CLOSING</text>
+          </g>
+        )}
+        {showSafeBadge && (
+          <g>
+            <rect x="200" y="300" width="240" height="34" rx="6" fill="#155e2b" />
+            <text x="320" y="322" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="900" fontFamily="Arial" letterSpacing="1">SAFE TO MOVE</text>
+          </g>
+        )}
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 30000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -586,7 +738,7 @@ const laneDiscipline: ClipDef = {
       </svg>
     );
   },
-  durationMs: 15000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -701,7 +853,7 @@ const slipRoadJoin: ClipDef = {
       </svg>
     );
   },
-  durationMs: 16000,
+  durationMs: 24000,
 };
 
 export const drivingClips: ClipDef[] = [
