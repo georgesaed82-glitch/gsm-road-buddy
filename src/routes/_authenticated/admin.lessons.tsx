@@ -151,7 +151,7 @@ const qc = useQueryClient();
   const q = useQuery({
     queryKey: ["admin", "lessons"],
     queryFn: () => listFn({ data: {} }),
-    enabled: !!password,
+    enabled: true,
   });
 
   const [search, setSearch] = useState("");

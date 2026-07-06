@@ -156,7 +156,7 @@ const qc = useQueryClient();
   const codes = useQuery({
     queryKey: ["access-codes"],
     queryFn: () => fetchList({ data: {} }),
-    enabled: !!password,
+    enabled: true,
   });
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["access-codes"] });
@@ -250,7 +250,6 @@ const qc = useQueryClient();
             ) : (
               <CodesTable
                 rows={subs}
-                password={}
                 fetchUses={fetchUses}
                 exportUses={exportUses}
                 onRevoke={(id) => revokeMut.mutate(id)}
@@ -269,7 +268,6 @@ const qc = useQueryClient();
             <CardContent>
               <CodesTable
                 rows={[...admins, ...learners]}
-                password={}
                 fetchUses={fetchUses}
                 exportUses={exportUses}
                 masterView
@@ -441,11 +439,11 @@ function IssueForm({
 }
 
 type FetchUsesFn = (args: {
-  data: { password: string; codeId: string; limit?: number };
+  data: { codeId: string; limit?: number };
 }) => Promise<Array<{ id: string; used_at: string; mode: string; user_agent: string | null }>>;
 
 type ExportUsesFn = (args: {
-  data: { password: string; codeId: string };
+  data: { codeId: string };
 }) => Promise<{ filename: string; csv: string }>;
 
 function CodesTable({
@@ -457,7 +455,6 @@ function CodesTable({
   masterView,
 }: {
   rows: AccessCodeRow[];
-  password: string;
   fetchUses: FetchUsesFn;
   exportUses: ExportUsesFn;
   onRevoke?: (id: string) => void;
@@ -493,7 +490,6 @@ function CodesTable({
             <CodeRow
               key={r.id}
               row={r}
-              password={}
               fetchUses={fetchUses}
               exportUses={exportUses}
               onRevoke={onRevoke ? () => onRevoke(r.id) : undefined}
@@ -516,7 +512,6 @@ function CodeRow({
   masterView,
 }: {
   row: AccessCodeRow;
-  password: string;
   fetchUses: FetchUsesFn;
   exportUses: ExportUsesFn;
   onRevoke?: () => void;
@@ -530,7 +525,7 @@ function CodeRow({
   const uses = useQuery({
     queryKey: ["access-uses", row.id],
     queryFn: () => fetchUses({ data: { codeId: row.id, limit: 100 } }),
-    enabled: open && !!password,
+    enabled: open,
   });
 
   const handleExport = async () => {

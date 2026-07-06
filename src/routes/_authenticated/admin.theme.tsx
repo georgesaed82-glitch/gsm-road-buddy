@@ -122,7 +122,7 @@ const qc = useQueryClient();
   const settings = useQuery({
     queryKey: ["admin", "theme"],
     queryFn: () => getSettingsFn({ data: {} }),
-    enabled: !!password,
+    enabled: true,
   });
 
   const assets = useQuery({
