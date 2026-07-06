@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { AdminShell } from "@/components/AdminShell";
 import { listErrorLogs, getErrorStats, clearResolvedErrors, type ErrorLogRow } from "@/lib/error-logs.functions";
@@ -12,27 +12,20 @@ export const Route = createFileRoute("/_authenticated/admin/errors")({
 });
 
 function AdminErrorsPage() {
-  const navigate = useNavigate();
-const fetchLogs = useServerFn(listErrorLogs);
+  const fetchLogs = useServerFn(listErrorLogs);
   const fetchStats = useServerFn(getErrorStats);
   const clearOld = useServerFn(clearResolvedErrors);
   const qc = useQueryClient();
   const [days, setDays] = useState<1 | 7 | 30>(7);
 
-  useEffect(() => {
-    if (!password) navigate({ to: "/auth", search: { admin: 1 } as never, replace: true });
-  }, [password, navigate]);
-
   const logs = useQuery({
     queryKey: ["admin", "error-logs", days],
     queryFn: () => fetchLogs({ data: { days, limit: 300 } }),
-    enabled: Boolean(password),
     refetchInterval: 30_000,
   });
   const stats = useQuery({
     queryKey: ["admin", "error-stats", days],
     queryFn: () => fetchStats({ data: { days } }),
-    enabled: Boolean(password),
     refetchInterval: 30_000,
   });
 
