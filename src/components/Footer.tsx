@@ -4,6 +4,7 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
+import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 const DAY_LABELS: Record<string, string> = {
   mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun",
@@ -119,6 +120,9 @@ export function Footer() {
         </div>
 
         <p className="mt-10 text-center text-xs opacity-70">{footer.copy}</p>
+        <div className="mt-3 border-t border-primary-foreground/10 pt-4">
+          <DVSADisclaimer variant="footer" />
+        </div>
       </div>
     </footer>
   );
