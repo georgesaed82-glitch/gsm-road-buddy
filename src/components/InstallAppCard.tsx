@@ -109,7 +109,7 @@ export function InstallAppCard() {
                     disabled
                     variant="outline"
                     size="sm"
-                    className="w-full justify-center rounded-none opacity-60"
+                    className="w-full justify-center rounded-xl border-primary/20 text-primary opacity-60"
                   >
                     <Apple className="mr-2 h-4 w-4" /> App Store
                   </Button>
@@ -117,20 +117,20 @@ export function InstallAppCard() {
                     disabled
                     variant="outline"
                     size="sm"
-                    className="w-full justify-center rounded-none opacity-60"
+                    className="w-full justify-center rounded-xl border-primary/20 text-primary opacity-60"
                   >
                     <Play className="mr-2 h-4 w-4" /> Google Play
                   </Button>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 lg:items-end">
+              <div className="flex w-full flex-col gap-3 lg:w-auto lg:items-end">
                 <Button
                   size="lg"
                   onClick={handleInstall}
-                  className="h-14 rounded-none bg-accent px-8 text-sm uppercase tracking-[0.22em] text-accent-foreground hover:bg-accent/90"
+                  className="h-14 w-full rounded-xl bg-primary px-7 font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg hover:ring-2 hover:ring-accent/50 active:translate-y-0"
                 >
-                  <Download className="mr-2 h-5 w-5" />
+                  <Download className="mr-2 h-5 w-5 text-accent" />
                   {platform.ios ? "Add to Home Screen" : "Install the GSM app"}
                 </Button>
                 {platform.ios ? (
