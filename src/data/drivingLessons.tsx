@@ -1379,6 +1379,19 @@ function ChangingLanesScene(t: number) {
   // ── Current step ──────────────────────────────────────────
   const step = stepAt(t);
 
+  // ── Which mirror is being checked right now (for on-canvas cones) ──
+  const activeMirror: "interior" | "right" | null =
+    t >= 0.08 && t < 0.18 ? "interior"
+    : t >= 0.18 && t < 0.34 ? "right"
+    : null;
+
+  // ── Safe-to-move status banner ──
+  const showWait = t >= 0.10 && t < 0.24 && !inBothMirrors;
+  const showSafe = t >= 0.24 && t < 0.42 && inBothMirrors;
+
+  // Distance in metres from ego to follower (screen px ~= 0.5 m).
+  const distMetres = Math.max(5, Math.round((egoX - followerX) * 0.9));
+
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
       <defs>
@@ -1390,6 +1403,14 @@ function ChangingLanesScene(t: number) {
           <stop offset="0" stopColor="#0f1116" />
           <stop offset="1" stopColor="#0a0b0f" />
         </linearGradient>
+        <radialGradient id="cone-int-cl" cx="0.5" cy="0" r="1">
+          <stop offset="0" stopColor="#fbbf24" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#fbbf24" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="cone-right-cl" cx="1" cy="0" r="1.2">
+          <stop offset="0" stopColor="#38bdf8" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#38bdf8" stopOpacity="0" />
+        </radialGradient>
       </defs>
 
       {/* Sky / background */}
@@ -1463,6 +1484,108 @@ function ChangingLanesScene(t: number) {
 
       {/* Ego car */}
       <Car2 x={egoX} y={egoY} color="#2f6bf0" indicator={signalOn ? "right" : null} braking={false} />
+
+      {/* Field-of-vision cone from ego, in the direction of the mirror being checked */}
+      {activeMirror === "interior" && (
+        <g pointerEvents="none">
+          <path
+            d={`M ${egoX - 12} ${egoY} L 0 ${egoY - 80} L 0 ${egoY + 80} Z`}
+            fill="url(#cone-int-cl)"
+          />
+          <path
+            d={`M ${egoX - 12} ${egoY} L 0 ${egoY - 80} L 0 ${egoY + 80} Z`}
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth={1}
+            strokeDasharray="4 4"
+            opacity={0.7}
+          />
+          <text x={20} y={egoY - 84} fontSize={9} fontWeight={800} fill="#fbbf24" fontFamily="sans-serif">
+            INTERIOR MIRROR VIEW
+          </text>
+        </g>
+      )}
+      {activeMirror === "right" && (
+        <g pointerEvents="none">
+          <path
+            d={`M ${egoX - 8} ${egoY - 6} L 0 ${egoY - 60} L 0 ${egoY - 10} Z`}
+            fill="url(#cone-right-cl)"
+          />
+          <path
+            d={`M ${egoX - 8} ${egoY - 6} L 0 ${egoY - 60} L 0 ${egoY - 10} Z`}
+            fill="none"
+            stroke="#38bdf8"
+            strokeWidth={1}
+            strokeDasharray="4 4"
+            opacity={0.75}
+          />
+          <text x={20} y={egoY - 62} fontSize={9} fontWeight={800} fill="#38bdf8" fontFamily="sans-serif">
+            RIGHT DOOR MIRROR VIEW
+          </text>
+          {/* Distance readout to the follower while it is in the right-mirror view */}
+          {followerX < egoX && (
+            <g>
+              <line
+                x1={followerX + 14}
+                y1={followerY - 14}
+                x2={egoX - 14}
+                y2={egoY - 14}
+                stroke="#38bdf8"
+                strokeWidth={1.4}
+                strokeDasharray="4 4"
+                opacity={0.9}
+              />
+              <rect
+                x={(followerX + egoX) / 2 - 26}
+                y={followerY - 34}
+                width={52}
+                height={18}
+                rx={3}
+                fill="#0b1b2b"
+                opacity={0.92}
+              />
+              <text
+                x={(followerX + egoX) / 2}
+                y={followerY - 21}
+                textAnchor="middle"
+                fontSize={10}
+                fontWeight={800}
+                fill="#38bdf8"
+                fontFamily="sans-serif"
+              >
+                ~{distMetres} m
+              </text>
+            </g>
+          )}
+        </g>
+      )}
+
+      {/* On-canvas WAIT / SAFE decision banner (mirrors the HUD verdict) */}
+      {(showWait || showSafe) && (
+        <g pointerEvents="none">
+          <rect
+            x={40}
+            y={roadTop + 8}
+            width={260}
+            height={30}
+            rx={5}
+            fill={showSafe ? "#155e2b" : "#7a1215"}
+            opacity={0.95}
+          />
+          <text
+            x={170}
+            y={roadTop + 28}
+            textAnchor="middle"
+            fontSize={13}
+            fontWeight={900}
+            fill="#ffffff"
+            fontFamily="sans-serif"
+            letterSpacing="1"
+          >
+            {showSafe ? "SAFE TO MOVE" : "WAIT — TOO CLOSE"}
+          </text>
+        </g>
+      )}
 
       {/* Motorway sign — subtle 70 limit ahead */}
       <g transform="translate(340 70)">
