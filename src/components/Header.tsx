@@ -192,8 +192,13 @@ export function Header() {
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon" aria-label="Open menu">
-                <Menu className="h-5 w-5" />
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open menu"
+                className="h-11 w-11 rounded-full border border-border/70 bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/10"
+              >
+                <Menu className="h-5 w-5 text-accent" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="flex w-[300px] flex-col overflow-hidden overscroll-contain bg-background p-0">
