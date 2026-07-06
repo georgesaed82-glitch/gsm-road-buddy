@@ -39,11 +39,11 @@ import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 const DEFAULT_NAV_LINKS = [
-  { to: "/about", label: "About" },
-  { to: "/services", label: "Practical" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/reviews", label: "Reviews" },
-  { to: "/contact", label: "Contact" },
+  { to: "/about", label: "About", icon: Info },
+  { to: "/services", label: "Practical", icon: Car },
+  { to: "/pricing", label: "Pricing", icon: CreditCard },
+  { to: "/reviews", label: "Reviews", icon: Star },
+  { to: "/contact", label: "Contact", icon: MessageSquare },
 ];
 
 const portalLinks = [
@@ -53,6 +53,30 @@ const portalLinks = [
   { to: "/lessons", label: "Lessons & progress", icon: GraduationCap },
   { to: "/#download-app", label: "Download app", icon: Download },
 ];
+
+const MOBILE_ICON_MAP: Record<string, typeof BookOpen> = {
+  about: Info,
+  services: Car,
+  practical: Car,
+  pricing: CreditCard,
+  reviews: Star,
+  contact: MessageSquare,
+  blog: Newspaper,
+  faq: HelpCircle,
+  dashboard: LayoutDashboard,
+  theory: BookOpen,
+  "hazard-perception": Eye,
+  lessons: GraduationCap,
+  "download-app": Download,
+};
+
+function getMobileIcon(href: string, label?: string) {
+  const segment = href.replace(/^\//, "").split("/")[0].toLowerCase();
+  if (segment && MOBILE_ICON_MAP[segment]) return MOBILE_ICON_MAP[segment];
+  const labelKey = (label ?? "").toLowerCase().replace(/\s+/g, "-");
+  if (labelKey && MOBILE_ICON_MAP[labelKey]) return MOBILE_ICON_MAP[labelKey];
+  return ArrowRight;
+}
 
 function Monogram() {
   return (
