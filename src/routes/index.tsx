@@ -160,14 +160,22 @@ function HeroSection({ s }: SectionProps) {
             {or(s.body, "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.")}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg" className="h-12 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90">
-              <a href={or(s.cta_primary_href, "/contact")} className="inline-flex items-center gap-2">
+            <Button
+              asChild
+              size="lg"
+              className="h-14 rounded-xl bg-primary px-7 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
+            >
+              <a href={or(s.cta_primary_href, "/contact")} className="inline-flex items-center gap-2 font-medium">
                 {or(s.cta_primary_label, "Get in touch")}
                 <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
-            <Button asChild size="lg" className="h-12 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90">
-              <a href={or(s.cta_secondary_href, "/#download-app")} className="inline-flex items-center gap-2">
+            <Button
+              asChild
+              size="lg"
+              className="h-14 rounded-xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
+            >
+              <a href={or(s.cta_secondary_href, "/#download-app")} className="inline-flex items-center gap-2 font-medium">
                 {or(s.cta_secondary_label, "Download the App")}
                 <ArrowRight className="h-4 w-4" />
               </a>
