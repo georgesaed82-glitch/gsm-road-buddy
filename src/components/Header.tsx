@@ -244,9 +244,11 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] overflow-y-auto overscroll-contain bg-background pb-24">
+            <SheetContent side="right" className="flex w-[300px] flex-col overflow-hidden overscroll-contain bg-background p-0">
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
-              <div className="flex flex-col gap-6 pt-6">
+
+              {/* Header: branding stays fixed at the top of the sheet */}
+              <div className="shrink-0 px-5 py-5">
                 <Link to="/" className="flex items-center gap-3 text-primary" onClick={() => setOpen(false)}>
                   <Monogram />
                   <div className="leading-tight">
@@ -254,9 +256,14 @@ export function Header() {
                     <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{business.tagline}</div>
                   </div>
                 </Link>
-                <nav className="flex flex-col">
+              </div>
+
+              {/* Scrollable menu body */}
+              <div className="flex-1 overflow-y-auto px-5">
+                {/* Public pages grid */}
+                <nav className="grid grid-cols-2 gap-2">
                   {navLinks.map((link) => {
-                    const Icon = (link as { icon?: typeof Download }).icon;
+                    const Icon = (link as { icon?: typeof Download }).icon ?? getMobileIcon(link.to, link.label);
                     const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
                     return (
                       <Link
@@ -264,66 +271,53 @@ export function Header() {
                         to={link.to}
                         onClick={() => setOpen(false)}
                         className={cn(
-                          "flex items-center gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors",
-                          active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                          "flex flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center font-display text-sm leading-tight transition-colors",
+                          active
+                            ? "border-accent/40 bg-accent/10 text-primary"
+                            : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
                         )}
                       >
-                        {Icon && <Icon className="h-4 w-4" aria-hidden="true" />}
-                        {link.label}
+                        <Icon className={cn("h-5 w-5", active ? "text-primary" : "text-muted-foreground")} />
+                        <span>{link.label}</span>
                       </Link>
                     );
                   })}
-
-                  <Collapsible open={portalOpen} onOpenChange={setPortalOpen}>
-                    <CollapsibleTrigger asChild>
-                      <button
-                        className={cn(
-                          "flex w-full items-center justify-between gap-2 border-b border-border/60 py-3 font-display text-lg transition-colors outline-none",
-                          isPortalActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                        )}
-                        aria-label="Learner portal menu"
-                      >
-                        <span className="flex items-center gap-2">
-                          <Lock className="h-4 w-4" aria-hidden="true" />
-                          <span>Learner portal</span>
-                        </span>
-                        {portalOpen ? (
-                          <ChevronUp className="h-4 w-4" aria-hidden="true" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                        )}
-                      </button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="flex flex-col border-b border-border/60 pb-2">
-                        {portalLinks.map((link) => {
-                          const Icon = link.icon;
-                          const active =
-                            link.to.startsWith("/#")
-                              ? pathname === "/"
-                              : pathname === link.to || pathname.startsWith(link.to + "/");
-                          return (
-                            <Link
-                              key={link.to}
-                              to={link.to}
-                              onClick={() => setOpen(false)}
-                              className={cn(
-                                "flex items-center gap-2 py-2.5 pl-7 text-sm transition-colors",
-                                active
-                                  ? "font-semibold text-primary"
-                                  : "text-muted-foreground hover:text-foreground",
-                              )}
-                            >
-                              <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
-                              <span>{link.label}</span>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
                 </nav>
-                <div className="flex flex-col gap-3 pt-2">
+
+                {/* Learner portal grid */}
+                <div className="mt-5">
+                  <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    Learner portal
+                  </div>
+                  <nav className="grid grid-cols-2 gap-2">
+                    {portalLinks.map((link) => {
+                      const Icon = link.icon;
+                      const active =
+                        link.to.startsWith("/#")
+                          ? pathname === "/"
+                          : pathname === link.to || pathname.startsWith(link.to + "/");
+                      return (
+                        <Link
+                          key={link.to}
+                          to={link.to}
+                          onClick={() => setOpen(false)}
+                          className={cn(
+                            "flex flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center font-display text-sm leading-tight transition-colors",
+                            active
+                              ? "border-accent/40 bg-accent/10 text-primary"
+                              : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
+                          )}
+                        >
+                          <Icon className={cn("h-5 w-5", active ? "text-primary" : "text-muted-foreground")} />
+                          <span>{link.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                {/* Admin / Sign out */}
+                <div className="mt-4 pb-4">
                   {isAuthed ? (
                     <Button className="w-full" variant="ghost" onClick={handleSignOut}>
                       <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
@@ -335,27 +329,13 @@ export function Header() {
                       </Link>
                     </Button>
                   )}
-                  <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`WhatsApp ${business.phone}`}
-                    onClick={() => trackContactClick("whatsapp", "Header (mobile)")}
-                    className="flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
-                  >
-                    <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
-                    <span>WhatsApp {business.phone}</span>
-                  </a>
-                  <a
-                    href={emailHref}
-                    aria-label={`Email ${business.email}`}
-                    onClick={() => trackContactClick("email", "Header (mobile)")}
-                    className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground hover:text-primary"
-                  >
-                    <Mail className="h-3.5 w-3.5 text-accent" />
-                    <span>{business.email}</span>
-                  </a>
                 </div>
+              </div>
+
+              {/* Footer: disclaimer and legal info pinned at the bottom */}
+              <div className="shrink-0 border-t border-border/60 bg-background px-5 py-4">
+                <DVSADisclaimer variant="footer" />
+                {footer.copy && <p className="mt-2 text-[10px] text-muted-foreground">{footer.copy}</p>}
               </div>
             </SheetContent>
           </Sheet>
