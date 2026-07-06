@@ -38,7 +38,10 @@ export const officialSignImages: Record<string, string> = {
   "w-tunnel": "/__l5e/assets-v1/978d506a-0e73-4a25-8b96-61a24e5c46d2/UK_traffic_sign_529.1.svg",
   "w-quayside": "/__l5e/assets-v1/2af9ba96-2e15-42e2-86a1-906e7f2150f2/UK_traffic_sign_555.svg",
   "w-steep-down": "/__l5e/assets-v1/25b145ba-cd8b-4f93-af93-a2d730a7e8c7/UK_traffic_sign_524.1.svg",
-  "w-steep-up": "/__l5e/assets-v1/8ea7032b-a4a2-45e8-b23e-4ed2d6f165be/UK_traffic_sign_525.svg",
+  // Diagram 525 is the rectangular "Low gear now" supplementary plate — NOT
+  // the steep-hill-upwards warning triangle (diagram 523). To avoid showing
+  // the wrong image for w-steep-up, we let it fall back to the hand-drawn
+  // SignVisual "steep-up" pictogram until a verified 523 SVG is added.
   "w-rocks": "/__l5e/assets-v1/60283443-7630-45ef-a450-028d4483955b/UK_traffic_sign_559__left_.svg",
   "w-exclaim": "/__l5e/assets-v1/a0b1401b-ba10-4776-afcf-e555a90d0f36/UK_traffic_sign_562.svg",
   "p-giveway": "/__l5e/assets-v1/3fa3da0a-b1da-422d-a729-dc64098dcbb1/UK_traffic_sign_602.svg",
