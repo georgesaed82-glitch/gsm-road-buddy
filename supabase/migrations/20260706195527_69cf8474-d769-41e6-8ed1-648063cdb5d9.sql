@@ -1,0 +1,1 @@
+DELETE FROM public.portal_access_codes WHERE kind = 'admin';
