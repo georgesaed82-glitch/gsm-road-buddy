@@ -101,21 +101,21 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
 
   const linkClass = (active: boolean) =>
     cn(
-      "flex items-center gap-3 px-3 py-2.5 text-sm transition-colors",
+      "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200",
       active
-        ? "bg-primary text-primary-foreground"
-        : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+        ? "bg-primary text-primary-foreground shadow-sm"
+        : "text-muted-foreground hover:translate-x-0.5 hover:bg-accent/10 hover:text-primary",
     );
 
   const sidebarInner = (
-    <div className="border border-border bg-card p-2">
-      <div className="border-b border-border px-3 py-3">
+    <div className="overflow-hidden rounded-2xl border border-border/70 bg-card p-2 shadow-sm">
+      <div className="border-b border-border/70 px-3 py-3">
         <div className="text-[10px] uppercase tracking-[0.2em] text-accent">Admin portal</div>
         <div className="mt-1 font-display text-lg text-foreground">GSM control</div>
       </div>
       <nav className="mt-2 flex flex-col gap-0.5">
         <Link to={overview.to} className={linkClass(pathname === overview.to)}>
-          <overview.icon className="h-4 w-4" />
+          <overview.icon className={cn("h-4 w-4", pathname === overview.to ? "" : "text-accent/80")} />
           {overview.label}
         </Link>
         {groups.map((group) => {
@@ -128,39 +128,47 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
                 onClick={() => toggleGroup(group.id)}
                 aria-expanded={open}
                 className={cn(
-                  "flex w-full items-center gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors",
+                  "flex w-full items-center gap-2 rounded-md px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors hover:bg-accent/5",
                   groupActive ? "text-accent" : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <span className="flex-1 text-left">{group.label}</span>
                 <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open ? "rotate-180" : "rotate-0")} />
               </button>
-              {open && (
-                <div className="flex flex-col gap-0.5">
-                  {group.items.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <Link key={item.to} to={item.to} className={linkClass(pathname === item.to)}>
-                        <Icon className="h-4 w-4" />
-                        {item.label}
-                      </Link>
-                    );
-                  })}
+              <div
+                className={cn(
+                  "grid transition-[grid-template-rows] duration-300 ease-out",
+                  open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+                )}
+              >
+                <div className="overflow-hidden">
+                  <div className="flex flex-col gap-0.5 pt-0.5">
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      const active = pathname === item.to;
+                      return (
+                        <Link key={item.to} to={item.to} className={linkClass(active)}>
+                          <Icon className={cn("h-4 w-4", active ? "" : "text-accent/80")} />
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
       </nav>
       <Link
         to="/dashboard"
-        className="mt-2 flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-accent/5 hover:text-primary"
       >
         ← Learner portal
       </Link>
       <button
         onClick={onSignOut}
-        className="flex w-full items-center gap-3 border-t border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="mt-1 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-accent/5 hover:text-primary"
       >
         <LogOut className="h-4 w-4" /> Sign out
       </button>
@@ -185,10 +193,10 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
           <div className="mb-3 flex items-center gap-2">
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetTrigger
-                className="inline-flex items-center gap-2 border border-border bg-card px-3 py-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+                className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:text-primary"
                 aria-label="Open admin portal menu"
               >
-                <Menu className="h-4 w-4" />
+                <Menu className="h-4 w-4 text-accent" />
                 Menu
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] overflow-y-auto p-3 sm:w-[320px]">
