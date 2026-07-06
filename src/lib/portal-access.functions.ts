@@ -204,9 +204,8 @@ async function mintSessionForEmail(
     }
     link = await supabase.auth.admin.generateLink({ type: "magiclink", email: normalized });
   }
-  const linkErr = link.error;
-  if (linkErr || !link?.properties?.hashed_token) {
-    console.error("[portal-access] generateLink failed", linkErr);
+  if (link.error || !link.data?.properties?.hashed_token) {
+    console.error("[portal-access] generateLink failed", link.error);
     return null;
   }
 
@@ -222,13 +221,12 @@ async function mintSessionForEmail(
   });
   const { data: verified, error: verifyErr } = await stateless.auth.verifyOtp({
     type: "magiclink",
-    token_hash: link.properties.hashed_token,
+    token_hash: link.data.properties.hashed_token,
   });
   if (verifyErr || !verified?.session) {
     console.error("[portal-access] verifyOtp failed", verifyErr);
     return null;
   }
-  void userId;
   return {
     access_token: verified.session.access_token,
     refresh_token: verified.session.refresh_token,
