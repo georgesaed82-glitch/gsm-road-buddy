@@ -73,18 +73,45 @@ function AuthPage() {
     setSubmitting(true);
     const pw = password.trim();
     const emailValue = email.trim();
-    if (!isAdmin && !emailValue) {
+    if (!emailValue) {
       toast.error("Enter your email address.");
       setSubmitting(false);
+      return;
+    }
+    if (isAdmin) {
+      // Admin login is now a normal Supabase email+password sign-in. Access to
+      // /admin is decided by the `admin` role in public.user_roles, not by a
+      // shared password stored in localStorage.
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: emailValue,
+          password: pw,
+        });
+        if (error) {
+          toast.error(error.message || "Sign-in failed. Check your email and password.");
+          setSubmitting(false);
+          return;
+        }
+        // Scrub any legacy admin-unlock state left over from the old build.
+        try {
+          window.localStorage.removeItem("admin_unlocked");
+          window.localStorage.removeItem("admin_password");
+        } catch {}
+        toast.success("Signed in. Checking admin access...");
+        navigate({ to: "/admin" });
+      } catch {
+        toast.error("Sign-in failed. Please try again.");
+        setSubmitting(false);
+      }
       return;
     }
     try {
       const res = await verify({
         data: {
           password: pw,
-          mode: isAdmin ? "admin" : "learner",
+          mode: "learner",
           captchaToken: codeCaptchaToken,
-          email: isAdmin ? null : emailValue,
+          email: emailValue,
         },
       });
       if (!res.ok) {
@@ -107,27 +134,21 @@ function AuthPage() {
         return;
       }
       window.sessionStorage.setItem("portal_unlocked", "1");
-      if (isAdmin) {
-        window.localStorage.setItem("admin_unlocked", "1");
-        window.localStorage.setItem("admin_password", pw);
-      }
       // Persist / clear the remembered learner credentials
-      if (!isAdmin) {
-        try {
-          if (remember) {
-            window.localStorage.setItem(
-              "gsm_remember_learner",
-              JSON.stringify({ email: emailValue, pin: pw }),
-            );
-          } else {
-            window.localStorage.removeItem("gsm_remember_learner");
-          }
-        } catch {}
-      }
+      try {
+        if (remember) {
+          window.localStorage.setItem(
+            "gsm_remember_learner",
+            JSON.stringify({ email: emailValue, pin: pw }),
+          );
+        } else {
+          window.localStorage.removeItem("gsm_remember_learner");
+        }
+      } catch {}
       // Subscription codes carry a student email — link the code login to
       // that Supabase account so progress persists across devices.
       let linked = false;
-      if (!isAdmin && res.session?.access_token && res.session?.refresh_token) {
+      if (res.session?.access_token && res.session?.refresh_token) {
         const { error: setErr } = await supabase.auth.setSession({
           access_token: res.session.access_token,
           refresh_token: res.session.refresh_token,
@@ -135,15 +156,13 @@ function AuthPage() {
         if (!setErr) linked = true;
       }
       toast.success(
-        isAdmin
-          ? "Admin access granted."
-          : linked && res.subscription?.email
+        linked && res.subscription?.email
           ? `Signed in as ${res.subscription.email}. Progress will save to your account.`
           : res.subscription?.expires_at
           ? `Access granted until ${new Date(res.subscription.expires_at).toLocaleDateString()}.`
           : "Access granted. Welcome to the learner portal.",
       );
-      navigate({ to: isAdmin ? "/admin" : "/dashboard" });
+      navigate({ to: "/dashboard" });
     } catch {
       toast.error("Could not verify code. Please try again.");
       setSubmitting(false);
