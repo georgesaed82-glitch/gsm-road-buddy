@@ -224,14 +224,14 @@ export function Header() {
                         to={link.to}
                         onClick={() => setOpen(false)}
                         className={cn(
-                          "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-1.5 text-center font-display text-sm leading-tight transition-colors",
+                          "flex flex-col items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card p-3 text-center font-display text-sm leading-tight transition-all duration-200 active:scale-[0.98]",
                           isLastOdd && "col-span-2",
                           active
-                            ? "border-accent/40 bg-accent/10 text-primary"
-                            : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
+                            ? "border-accent/50 bg-accent/10 text-primary shadow-sm"
+                            : "text-foreground hover:border-accent/40 hover:bg-accent/5 hover:text-primary",
                         )}
                       >
-                        <Icon className={cn("h-3.5 w-3.5", active ? "text-primary" : "text-muted-foreground")} />
+                        <Icon className={cn("h-4 w-4", active ? "text-accent" : "text-accent/70")} />
                         <span>{link.label}</span>
                       </Link>
                     );
@@ -244,13 +244,13 @@ export function Header() {
                     to="/auth"
                     onClick={() => setOpen(false)}
                     className={cn(
-                      "flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-3 text-center font-display text-sm leading-tight transition-colors",
+                      "flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/[0.04] p-3 text-center font-display text-sm leading-tight text-primary transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 active:scale-[0.99]",
                       isPortalActive
-                        ? "border-accent/40 bg-accent/10 text-primary"
-                        : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
+                        ? "border-accent/50 bg-accent/10 shadow-sm"
+                        : "",
                     )}
                   >
-                    <Lock className="h-3.5 w-3.5" />
+                    <Lock className="h-4 w-4 text-accent" />
                     <span>Learner portal login</span>
                   </Link>
                 </div>
