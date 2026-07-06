@@ -5,8 +5,6 @@ import {
   Mail,
   Lock,
   LogOut,
-  ChevronDown,
-  ChevronUp,
   BookOpen,
   Eye,
   GraduationCap,
@@ -25,12 +23,6 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,14 +36,6 @@ const DEFAULT_NAV_LINKS = [
   { to: "/pricing", label: "Pricing", icon: CreditCard },
   { to: "/reviews", label: "Reviews", icon: Star },
   { to: "/contact", label: "Contact", icon: MessageSquare },
-];
-
-const portalLinks = [
-  { to: "/dashboard", label: "Learner portal", icon: LayoutDashboard },
-  { to: "/theory", label: "Theory practice", icon: BookOpen },
-  { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
-  { to: "/lessons", label: "Lessons & progress", icon: GraduationCap },
-  { to: "/#download-app", label: "Download app", icon: Download },
 ];
 
 const MOBILE_ICON_MAP: Record<string, typeof BookOpen> = {
@@ -85,36 +69,6 @@ function Monogram() {
       alt="GSM Driving School logo"
       className="h-11 w-11 rounded-full object-cover ring-1 ring-primary/20"
     />
-  );
-}
-
-function PortalMenuItem({
-  to,
-  label,
-  icon: Icon,
-  active,
-  onClick,
-}: {
-  to: string;
-  label: string;
-  icon: typeof BookOpen;
-  active?: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <DropdownMenuItem asChild className={cn("cursor-pointer p-0")}>
-      <Link
-        to={to}
-        onClick={onClick}
-        className={cn(
-          "flex items-center gap-2 px-2 py-2 text-sm outline-none transition-colors",
-          active ? "bg-accent/50 font-medium text-primary" : "text-muted-foreground hover:text-foreground",
-        )}
-      >
-        <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
-        <span>{label}</span>
-      </Link>
-    </DropdownMenuItem>
   );
 }
 
@@ -176,31 +130,18 @@ export function Header() {
             );
           })}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className={cn(
-                  "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors outline-none",
-                  isPortalActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
-                )}
-                aria-label="Learner portal menu"
-              >
-                <Lock className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>Learner portal</span>
-                <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
-                {isPortalActive && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[11rem]">
-              {portalLinks.map((link) => {
-                const active =
-                  link.to.startsWith("/#")
-                    ? pathname === "/"
-                    : pathname === link.to || pathname.startsWith(link.to + "/");
-                return <PortalMenuItem key={link.to} {...link} active={active} />;
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link
+            to="/auth"
+            aria-label="Learner portal login"
+            className={cn(
+              "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
+              isPortalActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>Learner portal</span>
+            {isPortalActive && <span className="absolute inset-x-3 -bottom-0.5 h-px bg-accent" />}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -286,38 +227,21 @@ export function Header() {
                   })}
                 </nav>
 
-                {/* Learner portal grid */}
+                {/* Learner portal login */}
                 <div className="mt-4">
-                  <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                    Learner portal
-                  </div>
-                  <nav className="grid grid-cols-2 gap-1.5">
-                    {portalLinks.map((link, index) => {
-                      const Icon = link.icon;
-                      const active =
-                        link.to.startsWith("/#")
-                          ? pathname === "/"
-                          : pathname === link.to || pathname.startsWith(link.to + "/");
-                      const isLastOdd = index === portalLinks.length - 1 && portalLinks.length % 2 === 1;
-                      return (
-                        <Link
-                          key={link.to}
-                          to={link.to}
-                          onClick={() => setOpen(false)}
-                          className={cn(
-                            "flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-card p-1.5 text-center font-display text-sm leading-tight transition-colors",
-                            isLastOdd && "col-span-2",
-                            active
-                              ? "border-accent/40 bg-accent/10 text-primary"
-                              : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
-                          )}
-                        >
-                          <Icon className={cn("h-3.5 w-3.5", active ? "text-primary" : "text-muted-foreground")} />
-                          <span>{link.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </nav>
+                  <Link
+                    to="/auth"
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      "flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-3 text-center font-display text-sm leading-tight transition-colors",
+                      isPortalActive
+                        ? "border-accent/40 bg-accent/10 text-primary"
+                        : "text-muted-foreground hover:bg-accent/5 hover:text-foreground",
+                    )}
+                  >
+                    <Lock className="h-3.5 w-3.5" />
+                    <span>Learner portal login</span>
+                  </Link>
                 </div>
 
                 {/* Admin / Sign out */}
