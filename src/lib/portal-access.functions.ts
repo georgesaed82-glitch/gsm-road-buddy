@@ -2,32 +2,42 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { evaluateAttemptState, fingerprintCode, guardCodeAttempt, logCodeAttempt } from "./auth-guard.functions";
 
-const BOOTSTRAP_CODE = "7777";
-
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
-/** Returns true if `password` is a valid active admin code (or bootstrap if no admin row set). */
-export async function verifyAdminPasswordServer(password: string): Promise<boolean> {
-  if (!password) return false;
-  const supabase = await admin();
-  const { data } = await supabase
-    .from("portal_access_codes")
-    .select("id")
-    .eq("kind", "admin")
-    .eq("code", password)
-    .eq("revoked", false)
-    .maybeSingle();
-  if (data) return true;
-  const { count } = await supabase
-    .from("portal_access_codes")
-    .select("id", { count: "exact", head: true })
-    .eq("kind", "admin")
-    .eq("revoked", false);
-  if ((count ?? 0) === 0 && password === (process.env.ADMIN_PASSWORD || BOOTSTRAP_CODE)) return true;
-  return false;
+/**
+ * Server-side admin auth. Reads the Supabase bearer token from the current
+ * request (attached by `attachSupabaseAuth` client middleware) and confirms
+ * the caller has the `admin` role in `public.user_roles`.
+ *
+ * The `password` argument is IGNORED — retained only so existing server-fn
+ * signatures (which still declare a `password` field for backwards compat)
+ * continue to compile. Do not use the argument for any auth decision.
+ */
+export async function verifyAdminPasswordServer(_password?: string): Promise<boolean> {
+  try {
+    const req = getRequest();
+    const header = req?.headers.get("authorization") || req?.headers.get("Authorization");
+    if (!header) return false;
+    const token = header.replace(/^Bearer\s+/i, "").trim();
+    if (!token) return false;
+    const supabase = await admin();
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+    const uid = userData?.user?.id;
+    if (userErr || !uid) return false;
+    const { data: role, error: roleErr } = await supabase
+      .from("user_roles")
+      .select("user_id")
+      .eq("user_id", uid)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (roleErr) return false;
+    return !!role;
+  } catch {
+    return false;
+  }
 }
 
 async function requireAdmin(password: string) {
