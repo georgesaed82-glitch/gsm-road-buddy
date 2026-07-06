@@ -30,6 +30,25 @@ async function reqMeta(): Promise<{ ip: string | null; ua: string | null }> {
   }
 }
 
+/**
+ * Cloudflare Turnstile site keys always start with `0x` and are ~24 chars.
+ * Reject anything else (placeholder values like "george", empty strings) so
+ * a misconfigured secret can never wedge the login flow behind a captcha
+ * that will never render.
+ */
+function validTurnstileSiteKey(): string | null {
+  const k = (process.env.TURNSTILE_SITE_KEY || "").trim();
+  if (!k) return null;
+  if (!k.startsWith("0x") || k.length < 10) return null;
+  return k;
+}
+function validTurnstileSecretKey(): string | null {
+  const k = (process.env.TURNSTILE_SECRET_KEY || "").trim();
+  if (!k) return null;
+  if (!k.startsWith("0x") || k.length < 10) return null;
+  return k;
+}
+
 export type CaptchaState = {
   siteKey: string | null;
   required: boolean;
@@ -67,7 +86,7 @@ export async function evaluateAttemptState(identifier: string): Promise<CaptchaS
   ]);
 
   const failures = Math.max(byId.count ?? 0, (byIp as { count: number }).count ?? 0);
-  const siteKey = process.env.TURNSTILE_SITE_KEY || null;
+  const siteKey = validTurnstileSiteKey();
   return {
     siteKey,
     required: failures >= CAPTCHA_AFTER && !!siteKey,
@@ -105,7 +124,7 @@ async function recordAttempt(
  * siteverify endpoint. Returns true only on cryptographically valid tokens.
  */
 export async function verifyTurnstileToken(token: string | null | undefined): Promise<boolean> {
-  const secret = process.env.TURNSTILE_SECRET_KEY;
+  const secret = validTurnstileSecretKey();
   if (!secret) return false;
   if (!token) return false;
   try {
@@ -130,7 +149,7 @@ export async function verifyTurnstileToken(token: string | null | undefined): Pr
 
 /** Expose the Turnstile site key to the client (public value, safe). */
 export const getCaptchaConfig = createServerFn({ method: "GET" }).handler(async () => {
-  return { siteKey: process.env.TURNSTILE_SITE_KEY || null };
+  return { siteKey: validTurnstileSiteKey() };
 });
 
 /** Peek at attempt state for a given identifier (email or "code"). */
@@ -140,7 +159,7 @@ export const getAttemptState = createServerFn({ method: "POST" })
     const id = (data.identifier || "").trim().toLowerCase();
     if (!id) {
       return {
-        siteKey: process.env.TURNSTILE_SITE_KEY || null,
+        siteKey: validTurnstileSiteKey(),
         required: false,
         locked: false,
         retryAfterSeconds: WINDOW_MINUTES * 60,
