@@ -21,7 +21,6 @@ function DiagnosticsPage() {
   const run = useServerFn(runDiagnostics);
   const mut = useMutation({
     mutationFn: async () => {
-if (!password) throw new Error("Admin session not unlocked");
       return run({ data: {} });
     },
   });
