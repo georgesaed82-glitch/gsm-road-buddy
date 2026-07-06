@@ -71,7 +71,12 @@ export type SignVariant =
   | { kind: "motorway"; label: string }
   | { kind: "traffic-light"; state: "red" | "amber" | "green" | "red-amber" }
   | { kind: "zebra-crossing" }
-  | { kind: "signal-crossing"; state: "red-man" | "green-man" }
+  | {
+      kind: "signal-crossing";
+      state: "red-man" | "green-man";
+      /** Crossing type — changes the head unit & any extra symbol drawn alongside. */
+      type?: "pelican" | "puffin" | "toucan" | "pegasus";
+    }
   | { kind: "countdown-marker"; distance: 300 | 200 | 100; background?: "motorway" | "primary" }
   | {
       kind: "roundabout-ads";
