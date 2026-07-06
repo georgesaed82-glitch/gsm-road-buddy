@@ -18,8 +18,6 @@ import {
   reorderPackages,
   type PackageRow,
 } from "@/lib/catalog.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/pricing")({
   head: () => ({ meta: [{ title: "Pricing packages · Admin" }] }),
   component: PricingAdmin,
@@ -66,14 +64,11 @@ function PricingAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    setSavingId(d.id || "new");
+setSavingId(d.id || "new");
     try {
       const features = d.featuresText.split("\n").map((s) => s.trim()).filter(Boolean);
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id || undefined,
             name: d.name,
@@ -98,10 +93,8 @@ function PricingAdmin() {
 
   const remove = async (id: string) => {
     if (!confirm("Delete this package?")) return;
-    const password = getAdminPassword();
-    if (!password) return;
-    try {
-      await delFn({ data: { password, id } });
+try {
+      await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {
@@ -110,16 +103,14 @@ function PricingAdmin() {
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-    const password = getAdminPassword();
-    if (!password) return;
-    const next = [...drafts];
+const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];
     setDrafts(next.map((r, i) => ({ ...r, order_index: i })));
     const order = next.map((r, i) => ({ id: r.id, order_index: i })).filter((r) => r.id);
     try {
-      await orderFn({ data: { password, order } });
+      await orderFn({ data: { order } });
       invalidate();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reorder failed");

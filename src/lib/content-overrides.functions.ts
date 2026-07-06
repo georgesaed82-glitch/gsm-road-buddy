@@ -110,7 +110,6 @@ export const listContentOverrides = createServerFn({ method: "GET" }).handler(
 );
 
 const upsertSchema = z.object({
-  password: z.string(),
   kind: z.enum(KIND_VALUES),
   item_id: z.string().min(1).max(120),
   name: z.string().trim().min(1).max(300).nullable().optional(),
@@ -127,7 +126,7 @@ const upsertSchema = z.object({
 export const upsertContentOverride = createServerFn({ method: "POST" })
   .inputValidator((d) => upsertSchema.parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const row = {
       kind: data.kind,
@@ -153,7 +152,6 @@ export const upsertContentOverride = createServerFn({ method: "POST" })
 // and writes their sort_order. Missing rows are upserted so base-catalogue
 // items get a row on first reorder.
 const reorderSchema = z.object({
-  password: z.string(),
   kind: z.enum(KIND_VALUES),
   item_ids: z.array(z.string().min(1).max(120)).max(500),
 });
@@ -161,7 +159,7 @@ const reorderSchema = z.object({
 export const reorderContentOverrides = createServerFn({ method: "POST" })
   .inputValidator((d) => reorderSchema.parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const rows = data.item_ids.map((item_id, i) => ({
       kind: data.kind,
@@ -179,13 +177,12 @@ export const reorderContentOverrides = createServerFn({ method: "POST" })
 export const deleteContentOverride = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z.object({
-      password: z.string(),
       kind: z.enum(KIND_VALUES),
       item_id: z.string(),
     }).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Remove any stored image too.
@@ -211,7 +208,6 @@ export const deleteContentOverride = createServerFn({ method: "POST" })
 // Accepts a base64-encoded image (data URL or plain base64) and stores it.
 // Returns the storage path so the caller can upsert it onto the override.
 const uploadSchema = z.object({
-  password: z.string(),
   kind: z.enum(KIND_VALUES),
   item_id: z.string().min(1).max(120),
   filename: z.string().min(1).max(200),
@@ -222,7 +218,7 @@ const uploadSchema = z.object({
 export const uploadContentImage = createServerFn({ method: "POST" })
   .inputValidator((d) => uploadSchema.parse(d))
   .handler(async ({ data }): Promise<{ image_path: string; image_url: string }> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Strip a possible data-URL prefix.

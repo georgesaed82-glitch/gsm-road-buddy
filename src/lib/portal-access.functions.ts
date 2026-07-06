@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 import { evaluateAttemptState, fingerprintCode, guardCodeAttempt, logCodeAttempt } from "./auth-guard.functions";
 
 async function admin() {
@@ -18,6 +17,7 @@ async function admin() {
  */
 export async function verifyAdminPasswordServer(_password?: string): Promise<boolean> {
   try {
+    const { getRequest } = await import("@tanstack/react-start/server");
     const req = getRequest();
     const header = req?.headers.get("authorization") || req?.headers.get("Authorization");
     if (!header) return false;
@@ -40,8 +40,8 @@ export async function verifyAdminPasswordServer(_password?: string): Promise<boo
   }
 }
 
-async function requireAdmin(password: string) {
-  if (!(await verifyAdminPasswordServer(password))) {
+async function requireAdmin() {
+  if (!(await verifyAdminPasswordServer())) {
     throw new Error("Unauthorized");
   }
   return admin();
@@ -68,6 +68,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     const captchaVerified = guard.captchaVerified;
     let req: Request | undefined;
     try {
+      const { getRequest } = await import("@tanstack/react-start/server");
       req = getRequest();
     } catch {
       req = undefined;
@@ -115,7 +116,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     };
 
     if (data.mode === "admin") {
-      const ok = await verifyAdminPasswordServer(password);
+      const ok = await verifyAdminPasswordServer();
       await logCodeAttempt(fingerprint, "admin", ok, captchaVerified);
       if (ok) {
         const supabase = await admin();
@@ -248,9 +249,9 @@ export type AccessCodeRow = {
 };
 
 export const listAccessCodes = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string }) => d)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }): Promise<AccessCodeRow[]> => {
-    const supabase = await requireAdmin(data.password);
+    const supabase = await requireAdmin();
     const { data: rows, error } = await supabase
       .from("portal_access_codes")
       .select("id,code,kind,email,label,expires_at,revoked,created_at,use_count,last_used_at")
@@ -275,9 +276,9 @@ export type AccessUse = {
 };
 
 export const listAccessUses = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; codeId: string; limit?: number }) => d)
+  .inputValidator((d: { codeId: string; limit?: number }) => d)
   .handler(async ({ data }): Promise<AccessUse[]> => {
-    const supabase = await requireAdmin(data.password);
+    const supabase = await requireAdmin();
     const limit = Math.min(500, Math.max(1, data.limit ?? 100));
     const { data: rows, error } = await supabase
       .from("portal_access_uses")
@@ -297,9 +298,9 @@ function csvEscape(value: unknown): string {
 }
 
 export const exportAccessUsesCsv = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; codeId: string }) => d)
+  .inputValidator((d: { codeId: string }) => d)
   .handler(async ({ data }): Promise<{ filename: string; csv: string }> => {
-    const supabase = await requireAdmin(data.password);
+    const supabase = await requireAdmin();
     const { data: codeRow, error: codeErr } = await supabase
       .from("portal_access_codes")
       .select("id,code,kind,email,label,expires_at,revoked,created_at,use_count,last_used_at")
@@ -364,9 +365,9 @@ function validateCode(code: string) {
 
 /** Replace (or create) the active code for kind = admin | learner. Old codes of that kind are revoked. */
 export const setMasterPassword = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; kind: "admin" | "learner"; newCode: string }) => d)
+  .inputValidator((d: { kind: "admin" | "learner"; newCode: string }) => d)
   .handler(async ({ data }) => {
-    const supabase = await requireAdmin(data.password);
+    const supabase = await requireAdmin();
     const newCode = validateCode(data.newCode);
 
     const { data: dup } = await supabase
@@ -403,9 +404,9 @@ function generateCode(): string {
 
 /** Issue a time-limited subscription code for a learner email. */
 export const createSubscriptionCode = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; email: string; days: number; label?: string; code?: string }) => d)
+  .inputValidator((d: { email: string; days: number; label?: string; code?: string }) => d)
   .handler(async ({ data }) => {
-    const supabase = await requireAdmin(data.password);
+    const supabase = await requireAdmin();
     const email = (data.email || "").trim().toLowerCase();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
       throw new Error("Invalid email");
@@ -443,9 +444,9 @@ export const createSubscriptionCode = createServerFn({ method: "POST" })
   });
 
 export const revokeAccessCode = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; id: string }) => d)
+  .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
-    const supabase = await requireAdmin(data.password);
+    const supabase = await requireAdmin();
     const { error } = await supabase
       .from("portal_access_codes")
       .update({ revoked: true })
@@ -455,9 +456,9 @@ export const revokeAccessCode = createServerFn({ method: "POST" })
   });
 
 export const deleteAccessCode = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; id: string }) => d)
+  .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
-    const supabase = await requireAdmin(data.password);
+    const supabase = await requireAdmin();
     const { error } = await supabase.from("portal_access_codes").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };

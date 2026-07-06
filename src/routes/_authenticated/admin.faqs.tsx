@@ -12,8 +12,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { listFaqs, upsertFaq, deleteFaq, type FaqRow } from "@/lib/blog.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/faqs")({
   head: () => ({ meta: [{ title: "FAQs · Admin" }] }),
   component: FaqsAdmin,
@@ -40,12 +38,9 @@ function FaqsAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    try {
+try {
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id && !d._new ? d.id : undefined,
             question: d.question,
@@ -68,11 +63,9 @@ function FaqsAdmin() {
       setDrafts((cur) => cur.filter((_, i) => i !== idx));
       return;
     }
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    if (!confirm("Delete this FAQ?")) return;
+if (!confirm("Delete this FAQ?")) return;
     try {
-      await delFn({ data: { password, id: d.id } });
+      await delFn({ data: { id: d.id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {

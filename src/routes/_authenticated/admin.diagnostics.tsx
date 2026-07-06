@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect } from "react";
 import { CheckCircle2, XCircle, AlertTriangle, RefreshCw, Activity } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
-import { getAdminPassword } from "@/lib/admin-gate";
 import { runDiagnostics, type CheckResult } from "@/lib/diagnostics.functions";
 import { cn } from "@/lib/utils";
 
@@ -22,9 +21,7 @@ function DiagnosticsPage() {
   const run = useServerFn(runDiagnostics);
   const mut = useMutation({
     mutationFn: async () => {
-      const password = getAdminPassword();
-      if (!password) throw new Error("Admin session not unlocked");
-      return run({ data: { password } });
+      return run({ data: {} });
     },
   });
 

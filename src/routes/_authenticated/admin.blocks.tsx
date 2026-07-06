@@ -24,8 +24,6 @@ import {
   type ContentOverrideRow,
   type OverrideBlock,
 } from "@/lib/content-overrides.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/blocks")({
   head: () => ({ meta: [{ title: "Edit George's methods, tips & reviews · Admin" }] }),
   component: AdminBlocksPage,
@@ -183,27 +181,15 @@ function AdminBlocksPage() {
     }
   }, [section, currentItem, existing, spec]);
 
-  const requirePassword = (): string | null => {
-    const p = getAdminPassword();
-    if (!p) {
-      toast.error("Admin password missing. Sign in via /auth?admin=1.");
-      return null;
-    }
-    return p;
-  };
-
   const [saving, setSaving] = useState(false);
 
   const save = async () => {
     if (!currentItem) return;
-    const password = requirePassword();
-    if (!password) return;
     setSaving(true);
     try {
       const usePerItemMeta = !!spec.perItemMeta;
       await upsertFn({
         data: {
-          password,
           kind: section as ContentKind,
           item_id: currentItem.id,
           name: usePerItemMeta ? meta.name.trim() || null : null,
@@ -243,11 +229,9 @@ function AdminBlocksPage() {
 
   const removeOverride = async () => {
     if (!existing || !currentItem) return;
-    const password = requirePassword();
-    if (!password) return;
     if (!window.confirm("Remove this override and restore the original?")) return;
     try {
-      await deleteFn({ data: { password, kind: section as ContentKind, item_id: currentItem.id } });
+      await deleteFn({ data: { kind: section as ContentKind, item_id: currentItem.id } });
       toast.success("Removed");
       await qc.invalidateQueries({ queryKey: ["content-overrides"] });
     } catch (e) {
@@ -339,8 +323,6 @@ function AdminBlocksPage() {
                 fields={spec.fields}
                 onUploadImage={async (file) => {
                   if (!currentItem) throw new Error("No item selected");
-                  const password = requirePassword();
-                  if (!password) throw new Error("Missing admin password");
                   if (file.size > 5 * 1024 * 1024) throw new Error("Image too large — max 5 MB.");
                   const dataUrl = await new Promise<string>((resolve, reject) => {
                     const r = new FileReader();
@@ -350,7 +332,6 @@ function AdminBlocksPage() {
                   });
                   const res = await uploadFn({
                     data: {
-                      password,
                       kind: section as ContentKind,
                       item_id: currentItem.id,
                       filename: file.name,

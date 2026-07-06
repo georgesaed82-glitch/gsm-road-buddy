@@ -38,8 +38,8 @@ export function classifyReferrer(ref: string | null | undefined): string {
   return host;
 }
 
-async function adminClient(password: string) {
-  if (!(await verifyAdminPasswordServer(password))) {
+async function adminClient() {
+  if (!(await verifyAdminPasswordServer())) {
     throw new Error("Unauthorized");
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -89,9 +89,9 @@ export type AdminOverview = {
 };
 
 export const getAdminOverview = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; rangeDays: number }) => d)
+  .inputValidator((d: { rangeDays: number }) => d)
   .handler(async ({ data }): Promise<AdminOverview> => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const range = [7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 30;
     const sinceCurrent = dayAgo(range);
     const sincePrevious = dayAgo(range * 2);
@@ -312,9 +312,9 @@ export type ContactClickRow = {
 };
 
 export const getContactClicks = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string }) => d)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }): Promise<ContactClickRow[]> => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const { data: rows, error } = await supabase
       .from("contact_clicks")
       .select("id,package,channel,page,created_at")
@@ -345,9 +345,9 @@ export type PwaFunnel = {
 };
 
 export const getPwaEvents = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string }) => d)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }): Promise<PwaFunnel> => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const { data: rows, error } = await supabase
       .from("pwa_events")
       .select("id,event,platform,user_agent,session_id,created_at")
@@ -383,9 +383,9 @@ export const getPwaEvents = createServerFn({ method: "POST" })
   });
 
 export const listAdminAlertSubscribers = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string }) => d)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }): Promise<AdminAlertSubscriber[]> => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const { data: rows, error } = await supabase
       .from("admin_alert_subscribers")
       .select("id,email,created_at")
@@ -395,9 +395,9 @@ export const listAdminAlertSubscribers = createServerFn({ method: "POST" })
   });
 
 export const subscribeAdminAlert = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; email: string }) => d)
+  .inputValidator((d: { email: string }) => d)
   .handler(async ({ data }) => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const email = data.email.trim().toLowerCase();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
       throw new Error("Invalid email");
@@ -410,9 +410,9 @@ export const subscribeAdminAlert = createServerFn({ method: "POST" })
   });
 
 export const unsubscribeAdminAlert = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; id: string }) => d)
+  .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const { error } = await supabase.from("admin_alert_subscribers").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -440,9 +440,9 @@ function ymd(d: Date) {
 }
 
 export const exportAdminCsv = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; dataset: AdminCsvDataset; rangeDays: number }) => d)
+  .inputValidator((d: { dataset: AdminCsvDataset; rangeDays: number }) => d)
   .handler(async ({ data }): Promise<AdminCsvResult> => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const range = [7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 30;
     const toDate = new Date();
     const fromDate = new Date();
@@ -588,9 +588,9 @@ export type SectionBreakdown = {
 };
 
 export const getSectionBreakdown = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; rangeDays: number; path: string }) => d)
+  .inputValidator((d: { rangeDays: number; path: string }) => d)
   .handler(async ({ data }): Promise<SectionBreakdown> => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const range = [1, 7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 7;
     const sinceIso = new Date(Date.now() - range * 24 * 60 * 60 * 1000).toISOString();
 
@@ -700,9 +700,9 @@ export const getSectionBreakdown = createServerFn({ method: "POST" })
   });
 
 export const getTrafficStats = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; rangeDays: number }) => d)
+  .inputValidator((d: { rangeDays: number }) => d)
   .handler(async ({ data }): Promise<TrafficStats> => {
-    const supabase = await adminClient(data.password);
+    const supabase = await adminClient();
     const range = [1, 7, 30, 90].includes(data.rangeDays) ? data.rangeDays : 7;
     const sinceIso = new Date(Date.now() - range * 24 * 60 * 60 * 1000).toISOString();
 

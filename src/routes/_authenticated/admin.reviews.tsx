@@ -19,8 +19,6 @@ import {
   seedLocalContent,
   type ReviewRow,
 } from "@/lib/local-content.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/reviews")({
   head: () => ({ meta: [{ title: "Reviews · Admin" }] }),
   component: ReviewsAdmin,
@@ -51,13 +49,10 @@ function ReviewsAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    setSavingId(d.id || "new");
+setSavingId(d.id || "new");
     try {
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id || undefined,
             name: d.name,
@@ -80,10 +75,8 @@ function ReviewsAdmin() {
 
   const remove = async (id: string) => {
     if (!confirm("Delete this review?")) return;
-    const password = getAdminPassword();
-    if (!password) return;
-    try {
-      await delFn({ data: { password, id } });
+try {
+      await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {
@@ -92,26 +85,22 @@ function ReviewsAdmin() {
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-    const password = getAdminPassword();
-    if (!password) return;
-    const next = [...drafts];
+const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];
     setDrafts(next.map((r, i) => ({ ...r, order_index: i })));
     const order = next.map((r, i) => ({ id: r.id, order_index: i })).filter((r) => r.id);
-    try { await orderFn({ data: { password, order } }); invalidate(); }
+    try { await orderFn({ data: { order } }); invalidate(); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Reorder failed"); }
   };
 
   const addNew = () => setDrafts([...drafts, { ...EMPTY, order_index: drafts.length }]);
 
   const seed = async () => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    if (!confirm("Import all default reviews from the built-in list? (Only runs if table is empty.)")) return;
+if (!confirm("Import all default reviews from the built-in list? (Only runs if table is empty.)")) return;
     try {
-      const res = await seedFn({ data: { password, target: "reviews" } });
+      const res = await seedFn({ data: { target: "reviews" } });
       toast.success(`Imported ${res.inserted.reviews ?? 0} reviews`);
       invalidate();
     } catch (e) {

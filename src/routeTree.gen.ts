@@ -13,6 +13,7 @@ import { Route as TheoryRouteImport } from './routes/theory'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as InstructorsRouteImport } from './routes/instructors'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -98,6 +99,11 @@ const ServicesRoute = ServicesRouteImport.update({
 const ReviewsRoute = ReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -468,6 +474,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -539,6 +546,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -611,6 +619,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
   '/pricing': typeof PricingRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -684,6 +693,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/instructors'
     | '/pricing'
+    | '/reset-password'
     | '/reviews'
     | '/services'
     | '/sitemap.xml'
@@ -755,6 +765,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/instructors'
     | '/pricing'
+    | '/reset-password'
     | '/reviews'
     | '/services'
     | '/sitemap.xml'
@@ -826,6 +837,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/instructors'
     | '/pricing'
+    | '/reset-password'
     | '/reviews'
     | '/services'
     | '/sitemap.xml'
@@ -899,6 +911,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   InstructorsRoute: typeof InstructorsRoute
   PricingRoute: typeof PricingRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ReviewsRoute: typeof ReviewsRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -941,6 +954,13 @@ declare module '@tanstack/react-router' {
       path: '/reviews'
       fullPath: '/reviews'
       preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -1546,6 +1566,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   InstructorsRoute: InstructorsRoute,
   PricingRoute: PricingRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ReviewsRoute: ReviewsRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

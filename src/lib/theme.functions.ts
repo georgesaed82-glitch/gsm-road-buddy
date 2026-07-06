@@ -67,9 +67,9 @@ export const getPublishedTheme = createServerFn({ method: "GET" }).handler(
 
 // Admin read — draft + published for the editor.
 export const getThemeSettings = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string() }).parse(d))
+  .inputValidator((d) => z.object({}).parse(d))
   .handler(async ({ data }): Promise<ThemeSettings> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("theme_settings")
@@ -86,10 +86,10 @@ export const getThemeSettings = createServerFn({ method: "POST" })
 
 export const saveThemeDraft = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), draft: z.record(z.string(), z.any()) }).parse(d),
+    z.object({ draft: z.record(z.string(), z.any()) }).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("theme_settings")
@@ -100,9 +100,9 @@ export const saveThemeDraft = createServerFn({ method: "POST" })
   });
 
 export const publishTheme = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string() }).parse(d))
+  .inputValidator((d) => z.object({}).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Merge published <- published deep-merged with draft (draft wins where set).
     const { data: row } = await supabaseAdmin
@@ -129,9 +129,9 @@ export const publishTheme = createServerFn({ method: "POST" })
   });
 
 export const resetThemeDraft = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string() }).parse(d))
+  .inputValidator((d) => z.object({}).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("theme_settings")
@@ -173,7 +173,6 @@ export const uploadBrandAsset = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         name: z.string().trim().min(1).max(200),
         kind: z.string().trim().min(1).max(40).optional(),
         tags: z.array(z.string().trim().min(1).max(40)).max(20).optional(),
@@ -184,7 +183,7 @@ export const uploadBrandAsset = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }): Promise<BrandAsset> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const b64 = data.base64.includes(",") ? data.base64.split(",", 2)[1] : data.base64;
     const buf = Buffer.from(b64, "base64");
@@ -216,9 +215,9 @@ export const uploadBrandAsset = createServerFn({ method: "POST" })
   });
 
 export const deleteBrandAsset = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("brand_assets").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -229,7 +228,6 @@ export const updateBrandAsset = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         id: z.string().uuid(),
         name: z.string().trim().min(1).max(200).optional(),
         tags: z.array(z.string().trim().min(1).max(40)).max(20).optional(),
@@ -238,7 +236,7 @@ export const updateBrandAsset = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const patch: { name?: string; tags?: string[]; kind?: string } = {};
     if (data.name !== undefined) patch.name = data.name;

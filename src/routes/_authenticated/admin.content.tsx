@@ -34,8 +34,6 @@ import {
   type ContentKind,
   type ContentOverrideRow,
 } from "@/lib/content-overrides.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/content")({
   head: () => ({ meta: [{ title: "Edit signs, markings & arm signals · Admin" }] }),
   component: AdminContentPage,
@@ -182,18 +180,7 @@ function AdminContentPage() {
 
   const dirty = existing ? !overrideMatchesDraft : !originalMatchesDraft;
 
-  const requirePassword = (): string | null => {
-    const p = getAdminPassword();
-    if (!p) {
-      toast.error("Admin password missing. Sign in via /auth?admin=1.");
-      return null;
-    }
-    return p;
-  };
-
   const save = async () => {
-    const password = requirePassword();
-    if (!password) return;
     if (!draft.name.trim() || !draft.description.trim()) {
       toast.error("Name and description are required.");
       return;
@@ -202,7 +189,6 @@ function AdminContentPage() {
     try {
       await upsertFn({
         data: {
-          password,
           kind,
           item_id: current.id,
           name: draft.name.trim(),
@@ -224,11 +210,9 @@ function AdminContentPage() {
 
   const removeOverride = async () => {
     if (!existing) return;
-    const password = requirePassword();
-    if (!password) return;
     if (!window.confirm("Remove this override and restore the original?")) return;
     try {
-      await deleteFn({ data: { password, kind, item_id: current.id } });
+      await deleteFn({ data: { kind, item_id: current.id } });
       toast.success("Removed");
       await qc.invalidateQueries({ queryKey: ["content-overrides"] });
     } catch (e) {
@@ -250,14 +234,11 @@ function AdminContentPage() {
       toast.error("Image too large — max 5 MB.");
       return;
     }
-    const password = requirePassword();
-    if (!password) return;
     setUploading(true);
     try {
       const dataUrl = await readFileAsBase64(file);
       const res = await uploadFn({
         data: {
-          password,
           kind,
           item_id: current.id,
           filename: file.name,

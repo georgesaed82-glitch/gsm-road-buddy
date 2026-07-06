@@ -40,7 +40,6 @@ export const getLegalPage = createServerFn({ method: "GET" })
   });
 
 const upsertInput = z.object({
-  password: z.string(),
   item: z.object({
     slug: z.string().trim().min(1).max(60).regex(/^[a-z0-9-]+$/),
     title: z.string().trim().min(1).max(160),
@@ -55,7 +54,7 @@ const upsertInput = z.object({
 export const upsertLegalPage = createServerFn({ method: "POST" })
   .inputValidator((d) => upsertInput.parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("legal_pages")
@@ -65,9 +64,9 @@ export const upsertLegalPage = createServerFn({ method: "POST" })
   });
 
 export const deleteLegalPage = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), slug: z.string().min(1).max(60) }).parse(d))
+  .inputValidator((d) => z.object({ slug: z.string().min(1).max(60) }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("legal_pages").delete().eq("slug", data.slug);
     if (error) throw new Error(error.message);

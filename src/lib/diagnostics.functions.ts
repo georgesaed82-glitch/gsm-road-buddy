@@ -45,11 +45,11 @@ async function timed<T>(fn: () => Promise<T>): Promise<{ value: T; ms: number }>
 }
 
 export const runDiagnostics = createServerFn({ method: "POST" })
-  .inputValidator((data: { password: string }) => data)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }) => {
     const results: CheckResult[] = [];
     try {
-      if (!(await verifyAdminPasswordServer(data.password))) {
+      if (!(await verifyAdminPasswordServer())) {
         return { results: [], ranAt: new Date().toISOString(), origin: "", error: "Unauthorized" };
       }
     } catch (e) {

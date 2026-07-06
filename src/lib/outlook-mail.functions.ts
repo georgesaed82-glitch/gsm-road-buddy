@@ -6,7 +6,6 @@ const GATEWAY_URL = "https://connector-gateway.lovable.dev/microsoft_outlook";
 export const sendOutlookMail = createServerFn({ method: "POST" })
   .inputValidator(
     (d: {
-      password: string;
       to: string;
       subject: string;
       body: string;
@@ -14,7 +13,7 @@ export const sendOutlookMail = createServerFn({ method: "POST" })
     }) => d,
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) {
+    if (!(await verifyAdminPasswordServer())) {
       throw new Error("Unauthorized");
     }
     const lovableKey = process.env.LOVABLE_API_KEY;

@@ -19,8 +19,6 @@ import {
   uploadInstructorImage,
   type InstructorRow,
 } from "@/lib/catalog.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/instructors")({
   head: () => ({ meta: [{ title: "Instructors · Admin" }] }),
   component: InstructorsAdmin,
@@ -71,14 +69,11 @@ function InstructorsAdmin() {
   };
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    setSavingId(d.id || "new");
+setSavingId(d.id || "new");
     try {
       const badges = d.badgesText.split(",").map((s) => s.trim()).filter(Boolean);
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id || undefined,
             name: d.name,
@@ -107,10 +102,8 @@ function InstructorsAdmin() {
 
   const remove = async (id: string) => {
     if (!confirm("Delete this instructor?")) return;
-    const password = getAdminPassword();
-    if (!password) return;
-    try {
-      await delFn({ data: { password, id } });
+try {
+      await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
     } catch (e) {
@@ -119,16 +112,14 @@ function InstructorsAdmin() {
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-    const password = getAdminPassword();
-    if (!password) return;
-    const next = [...drafts];
+const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];
     const order = next.map((r, i) => ({ id: r.id, order_index: i })).filter((r) => r.id);
     setDrafts(next.map((r, i) => ({ ...r, order_index: i })));
     try {
-      await orderFn({ data: { password, order } });
+      await orderFn({ data: { order } });
       invalidate();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reorder failed");
@@ -136,8 +127,7 @@ function InstructorsAdmin() {
   };
 
   const upload = async (id: string, file: File) => {
-    const password = getAdminPassword();
-    if (!password || !id) return toast.error("Save the instructor first, then upload an image.");
+    if (!id) return toast.error("Save the instructor first, then upload an image.");
     const b64 = await new Promise<string>((res, rej) => {
       const r = new FileReader();
       r.onload = () => res(String(r.result));
@@ -145,7 +135,7 @@ function InstructorsAdmin() {
       r.readAsDataURL(file);
     });
     try {
-      await uploadFn({ data: { password, id, filename: file.name, content_type: file.type, base64: b64 } });
+      await uploadFn({ data: { id, filename: file.name, content_type: file.type, base64: b64 } });
       toast.success("Image uploaded");
       invalidate();
     } catch (e) {

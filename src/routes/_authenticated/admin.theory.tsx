@@ -42,8 +42,6 @@ import {
   type TheoryQuestionRow,
   type TheoryDifficulty,
 } from "@/lib/theory-cms.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/theory")({
   head: () => ({ meta: [{ title: "Theory questions CMS · Admin" }] }),
   component: AdminTheoryCms,
@@ -257,12 +255,6 @@ function AdminTheoryCms() {
     setSelected(next);
   };
 
-  const password = () => {
-    const p = getAdminPassword();
-    if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    return p;
-  };
-
   const refresh = () => qc.invalidateQueries({ queryKey: ["theory-cms"] });
 
   const openNew = () => setDraft({ ...EMPTY_DRAFT });
@@ -270,8 +262,6 @@ function AdminTheoryCms() {
 
   const save = async () => {
     if (!draft) return;
-    const p = password();
-    if (!p) return;
     if (!draft.question.trim()) {
       toast.error("Question is required.");
       return;
@@ -291,7 +281,6 @@ function AdminTheoryCms() {
       if (draft.id) {
         await updateFn({
           data: {
-            password: p,
             id: draft.id,
             source_id: draft.source_id,
             category: draft.category,
@@ -308,7 +297,6 @@ function AdminTheoryCms() {
       } else {
         await createFn({
           data: {
-            password: p,
             source_id: draft.source_id,
             category: draft.category,
             tags: draft.tags,
@@ -337,14 +325,11 @@ function AdminTheoryCms() {
       toast.error("Save the question first to attach an image.");
       return;
     }
-    const p = password();
-    if (!p) return;
     const reader = new FileReader();
     reader.onload = async () => {
       try {
         const res = await uploadFn({
           data: {
-            password: p,
             question_id: draft.id!,
             filename: file.name,
             content_type: file.type || "image/png",
@@ -362,11 +347,10 @@ function AdminTheoryCms() {
   };
 
   const doDelete = async (ids: string[]) => {
-    const p = password();
-    if (!p || !ids.length) return;
+    if (!ids.length) return;
     if (!window.confirm(`Delete ${ids.length} question${ids.length > 1 ? "s" : ""}?`)) return;
     try {
-      await deleteFn({ data: { password: p, ids } });
+      await deleteFn({ data: { ids } });
       toast.success("Deleted");
       setSelected(new Set());
       await refresh();
@@ -376,10 +360,8 @@ function AdminTheoryCms() {
   };
 
   const doDuplicate = async (id: string) => {
-    const p = password();
-    if (!p) return;
     try {
-      await dupFn({ data: { password: p, id } });
+      await dupFn({ data: { id } });
       toast.success("Duplicated");
       await refresh();
     } catch (e) {
@@ -388,10 +370,8 @@ function AdminTheoryCms() {
   };
 
   const doReorder = async (id: string, direction: "up" | "down") => {
-    const p = password();
-    if (!p) return;
     try {
-      await reorderFn({ data: { password: p, id, direction } });
+      await reorderFn({ data: { id, direction } });
       await refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reorder failed");
@@ -399,11 +379,10 @@ function AdminTheoryCms() {
   };
 
   const doBulkPublish = async (is_published: boolean) => {
-    const p = password();
     const ids = [...selected];
-    if (!p || !ids.length) return;
+    if (!ids.length) return;
     try {
-      await bulkFn({ data: { password: p, ids, patch: { is_published } } });
+      await bulkFn({ data: { ids, patch: { is_published } } });
       toast.success(is_published ? "Published" : "Unpublished");
       await refresh();
     } catch (e) {
@@ -412,11 +391,10 @@ function AdminTheoryCms() {
   };
 
   const doBulkCategory = async (cat: string) => {
-    const p = password();
     const ids = [...selected];
-    if (!p || !ids.length) return;
+    if (!ids.length) return;
     try {
-      await bulkFn({ data: { password: p, ids, patch: { category: cat } } });
+      await bulkFn({ data: { ids, patch: { category: cat } } });
       toast.success("Category updated");
       await refresh();
     } catch (e) {
@@ -425,11 +403,10 @@ function AdminTheoryCms() {
   };
 
   const doBulkDifficulty = async (d: TheoryDifficulty) => {
-    const p = password();
     const ids = [...selected];
-    if (!p || !ids.length) return;
+    if (!ids.length) return;
     try {
-      await bulkFn({ data: { password: p, ids, patch: { difficulty: d } } });
+      await bulkFn({ data: { ids, patch: { difficulty: d } } });
       toast.success("Difficulty updated");
       await refresh();
     } catch (e) {
@@ -449,8 +426,6 @@ function AdminTheoryCms() {
   };
 
   const doImport = async (file: File) => {
-    const p = password();
-    if (!p) return;
     const text = await file.text();
     const parsed = parseCsv(text).filter((r) => r.some((c) => c.trim()));
     if (parsed.length < 2) {
@@ -494,7 +469,7 @@ function AdminTheoryCms() {
       };
     });
     try {
-      const res = await importFn({ data: { password: p, rows: rowsOut } });
+      const res = await importFn({ data: { rows: rowsOut } });
       toast.success(`Imported ${res.inserted} questions`);
       await refresh();
     } catch (e) {

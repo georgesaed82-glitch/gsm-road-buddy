@@ -9,8 +9,11 @@ export const Route = createFileRoute("/_authenticated")({
     if (typeof window === "undefined") return;
 
     if (isAdminRoute) {
-      const unlocked = window.localStorage.getItem("admin_unlocked") === "1";
-      if (!unlocked) throw redirect({ to: "/auth", search: { admin: 1 } });
+      // Admin routes require a real Supabase session; the role check
+      // (has_role('admin')) is enforced inside /_authenticated/admin.tsx
+      // and server-side by every admin server function.
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) throw redirect({ to: "/auth", search: { admin: 1 } });
       return;
     }
 

@@ -20,7 +20,6 @@ import {
   type AccessCodeRow,
 } from "@/lib/portal-access.functions";
 import { sendOutlookMail } from "@/lib/outlook-mail.functions";
-import { getAdminPassword, setAdminPassword as cacheAdminPassword } from "@/lib/admin-gate";
 import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight, Download, Send } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/access")({
@@ -145,8 +144,7 @@ function ExpiryCell({ row }: { row: AccessCodeRow }) {
 }
 
 function AdminAccessPage() {
-  const password = getAdminPassword();
-  const qc = useQueryClient();
+const qc = useQueryClient();
   const fetchList = useServerFn(listAccessCodes);
   const fetchUses = useServerFn(listAccessUses);
   const exportUses = useServerFn(exportAccessUsesCsv);
@@ -157,18 +155,18 @@ function AdminAccessPage() {
 
   const codes = useQuery({
     queryKey: ["access-codes"],
-    queryFn: () => fetchList({ data: { password } }),
-    enabled: !!password,
+    queryFn: () => fetchList({ data: {} }),
+    enabled: true,
   });
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["access-codes"] });
 
   const changeMaster = useMutation({
     mutationFn: (vars: { kind: "admin" | "learner"; newCode: string }) =>
-      setMaster({ data: { password, ...vars } }),
+      setMaster({ data: { ...vars } }),
     onSuccess: (res, vars) => {
       toast.success(`${vars.kind === "admin" ? "Admin" : "Learner"} password updated.`);
-      if (vars.kind === "admin" && res?.newCode) cacheAdminPassword(res.newCode);
+      if (vars.kind === "admin" && res?.newCode) 
       invalidate();
     },
     onError: (e: any) => toast.error(e?.message || "Could not update password."),
@@ -176,7 +174,7 @@ function AdminAccessPage() {
 
   const issueSub = useMutation({
     mutationFn: (vars: { email: string; days: number; label?: string; code?: string }) =>
-      createSub({ data: { password, ...vars } }),
+      createSub({ data: { ...vars } }),
     onSuccess: (row: any) => {
       toast.success(`Code ${row.code} issued for ${row.email}.`);
       invalidate();
@@ -185,7 +183,7 @@ function AdminAccessPage() {
   });
 
   const revokeMut = useMutation({
-    mutationFn: (id: string) => revoke({ data: { password, id } }),
+    mutationFn: (id: string) => revoke({ data: { id } }),
     onSuccess: () => {
       toast.success("Code revoked.");
       invalidate();
@@ -193,7 +191,7 @@ function AdminAccessPage() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id: string) => del({ data: { password, id } }),
+    mutationFn: (id: string) => del({ data: { id } }),
     onSuccess: () => {
       toast.success("Code deleted.");
       invalidate();
@@ -252,7 +250,6 @@ function AdminAccessPage() {
             ) : (
               <CodesTable
                 rows={subs}
-                password={password}
                 fetchUses={fetchUses}
                 exportUses={exportUses}
                 onRevoke={(id) => revokeMut.mutate(id)}
@@ -271,7 +268,6 @@ function AdminAccessPage() {
             <CardContent>
               <CodesTable
                 rows={[...admins, ...learners]}
-                password={password}
                 fetchUses={fetchUses}
                 exportUses={exportUses}
                 masterView
@@ -443,16 +439,15 @@ function IssueForm({
 }
 
 type FetchUsesFn = (args: {
-  data: { password: string; codeId: string; limit?: number };
+  data: { codeId: string; limit?: number };
 }) => Promise<Array<{ id: string; used_at: string; mode: string; user_agent: string | null }>>;
 
 type ExportUsesFn = (args: {
-  data: { password: string; codeId: string };
+  data: { codeId: string };
 }) => Promise<{ filename: string; csv: string }>;
 
 function CodesTable({
   rows,
-  password,
   fetchUses,
   exportUses,
   onRevoke,
@@ -460,7 +455,6 @@ function CodesTable({
   masterView,
 }: {
   rows: AccessCodeRow[];
-  password: string;
   fetchUses: FetchUsesFn;
   exportUses: ExportUsesFn;
   onRevoke?: (id: string) => void;
@@ -496,7 +490,6 @@ function CodesTable({
             <CodeRow
               key={r.id}
               row={r}
-              password={password}
               fetchUses={fetchUses}
               exportUses={exportUses}
               onRevoke={onRevoke ? () => onRevoke(r.id) : undefined}
@@ -512,7 +505,6 @@ function CodesTable({
 
 function CodeRow({
   row,
-  password,
   fetchUses,
   exportUses,
   onRevoke,
@@ -520,7 +512,6 @@ function CodeRow({
   masterView,
 }: {
   row: AccessCodeRow;
-  password: string;
   fetchUses: FetchUsesFn;
   exportUses: ExportUsesFn;
   onRevoke?: () => void;
@@ -533,15 +524,15 @@ function CodeRow({
   const sendMail = useServerFn(sendOutlookMail);
   const uses = useQuery({
     queryKey: ["access-uses", row.id],
-    queryFn: () => fetchUses({ data: { password, codeId: row.id, limit: 100 } }),
-    enabled: open && !!password,
+    queryFn: () => fetchUses({ data: { codeId: row.id, limit: 100 } }),
+    enabled: open,
   });
 
   const handleExport = async () => {
     if (exporting) return;
     setExporting(true);
     try {
-      const { filename, csv } = await exportUses({ data: { password, codeId: row.id } });
+      const { filename, csv } = await exportUses({ data: { codeId: row.id } });
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -571,7 +562,6 @@ function CodeRow({
     try {
       await sendMail({
         data: {
-          password,
           to: row.email,
           subject: emailSubject,
           body: emailBody,

@@ -81,9 +81,9 @@ const instructorInput = z.object({
 });
 
 export const upsertInstructor = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), item: instructorInput }).parse(d))
+  .inputValidator((d) => z.object({ item: instructorInput }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, ...rest } = data.item;
     if (id) {
@@ -101,9 +101,9 @@ export const upsertInstructor = createServerFn({ method: "POST" })
   });
 
 export const deleteInstructor = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: existing } = await supabaseAdmin
       .from("instructors")
@@ -122,13 +122,12 @@ export const reorderInstructors = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         order: z.array(z.object({ id: z.string().uuid(), order_index: z.number().int() })).max(200),
       })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     for (const it of data.order) {
       const { error } = await supabaseAdmin
@@ -144,7 +143,6 @@ export const uploadInstructorImage = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         id: z.string().uuid(),
         filename: z.string().min(1).max(200),
         content_type: z.string().min(1).max(80),
@@ -153,7 +151,7 @@ export const uploadInstructorImage = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }): Promise<{ image_path: string; image_url: string }> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const b64 = data.base64.includes(",") ? data.base64.split(",", 2)[1] : data.base64;
     const buf = Buffer.from(b64, "base64");
@@ -211,9 +209,9 @@ const packageInput = z.object({
 });
 
 export const upsertPackage = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), item: packageInput }).parse(d))
+  .inputValidator((d) => z.object({ item: packageInput }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, ...rest } = data.item;
     if (id) {
@@ -231,9 +229,9 @@ export const upsertPackage = createServerFn({ method: "POST" })
   });
 
 export const deletePackage = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("packages").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -244,13 +242,12 @@ export const reorderPackages = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         order: z.array(z.object({ id: z.string().uuid(), order_index: z.number().int() })).max(200),
       })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     for (const it of data.order) {
       const { error } = await supabaseAdmin

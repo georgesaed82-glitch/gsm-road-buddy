@@ -14,8 +14,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { listPageSeo, upsertPageSeo, deletePageSeo, listSiteSettings, upsertSiteSetting } from "@/lib/cms.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/seo")({
   head: () => ({ meta: [{ title: "SEO editor · Admin" }] }),
   component: SeoPage,
@@ -60,11 +58,9 @@ function SeoPage() {
   }, [ratingRow?.updated_at]);
 
   const saveRating = async () => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    setSavingRating(true);
+setSavingRating(true);
     try {
-      await upsertSettingFn({ data: { password, key: "site_rating", value: { rating: Number(rating.rating), review_count: Math.round(Number(rating.review_count)), show: rating.show } } });
+      await upsertSettingFn({ data: { key: "site_rating", value: { rating: Number(rating.rating), review_count: Math.round(Number(rating.review_count)), show: rating.show } } });
       toast.success("Rating saved");
       await qc.invalidateQueries({ queryKey: ["site-settings"] });
     } catch (e) {
@@ -95,13 +91,10 @@ function SeoPage() {
   }, [existing, current.path]);
 
   const save = async () => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    setSaving(true);
+setSaving(true);
     try {
       await saveFn({
         data: {
-          password,
           route: current.path,
           title: form.title.trim() || null,
           description: form.description.trim() || null,
@@ -124,10 +117,8 @@ function SeoPage() {
   const removeOverride = async () => {
     if (!existing) return;
     if (!window.confirm("Remove this SEO override and use the built-in defaults?")) return;
-    const password = getAdminPassword();
-    if (!password) return;
-    try {
-      await delFn({ data: { password, route: current.path } });
+try {
+      await delFn({ data: { route: current.path } });
       toast.success("Removed");
       await qc.invalidateQueries({ queryKey: ["page-seo"] });
     } catch (e) {

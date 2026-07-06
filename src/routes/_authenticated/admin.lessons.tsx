@@ -37,7 +37,6 @@ import {
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { getAdminPassword } from "@/lib/admin-gate";
 import {
   listLessonsAdmin,
   createLesson,
@@ -139,8 +138,7 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 function AdminLessonsCms() {
-  const password = getAdminPassword();
-  const qc = useQueryClient();
+const qc = useQueryClient();
   const listFn = useServerFn(listLessonsAdmin);
   const createFn = useServerFn(createLesson);
   const updateFn = useServerFn(updateLesson);
@@ -152,8 +150,8 @@ function AdminLessonsCms() {
 
   const q = useQuery({
     queryKey: ["admin", "lessons"],
-    queryFn: () => listFn({ data: { password } }),
-    enabled: !!password,
+    queryFn: () => listFn({ data: {} }),
+    enabled: true,
   });
 
   const [search, setSearch] = useState("");
@@ -214,10 +212,10 @@ function AdminLessonsCms() {
     try {
       if (editing.id) {
         const { id, ...patch } = editing;
-        await updateFn({ data: { password, id, ...patch } });
+        await updateFn({ data: { id, ...patch } });
         toast.success("Lesson saved");
       } else {
-        await createFn({ data: { password, ...editing } });
+        await createFn({ data: { ...editing } });
         toast.success("Lesson created");
       }
       setEditing(null);
@@ -233,7 +231,7 @@ function AdminLessonsCms() {
     if (!ids.length) return;
     if (!confirm(`Delete ${ids.length} lesson${ids.length > 1 ? "s" : ""}?`)) return;
     try {
-      await deleteFn({ data: { password, ids } });
+      await deleteFn({ data: { ids } });
       toast.success("Deleted");
       setSelected(new Set());
       refresh();
@@ -245,7 +243,7 @@ function AdminLessonsCms() {
   const onBulk = async (patch: { status?: LessonStatus; show_web?: boolean; show_app?: boolean; category?: string }) => {
     if (!selected.size) return;
     try {
-      await bulkFn({ data: { password, ids: [...selected], patch } });
+      await bulkFn({ data: { ids: [...selected], patch } });
       toast.success("Updated");
       refresh();
     } catch (e) {
@@ -255,7 +253,7 @@ function AdminLessonsCms() {
 
   const onDuplicate = async (id: string) => {
     try {
-      await duplicateFn({ data: { password, id } });
+      await duplicateFn({ data: { id } });
       toast.success("Duplicated");
       refresh();
     } catch (e) {
@@ -265,7 +263,7 @@ function AdminLessonsCms() {
 
   const onReorder = async (id: string, direction: "up" | "down") => {
     try {
-      await reorderFn({ data: { password, id, direction } });
+      await reorderFn({ data: { id, direction } });
       refresh();
     } catch (e) {
       toast.error((e as Error).message);
@@ -432,7 +430,6 @@ function AdminLessonsCms() {
             const b64 = await fileToBase64(file);
             const res = await uploadFn({
               data: {
-                password,
                 lesson_id: editing.id,
                 kind,
                 filename: file.name,

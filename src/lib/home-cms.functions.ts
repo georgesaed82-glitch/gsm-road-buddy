@@ -74,9 +74,9 @@ export const listPublicHomeSections = createServerFn({ method: "GET" })
 
 // Admin: list all
 export const listHomeSectionsAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string() }).parse(d))
+  .inputValidator((d) => z.object({}).parse(d))
   .handler(async ({ data }): Promise<HomeSectionRow[]> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("home_sections")
@@ -109,9 +109,9 @@ const sectionInput = z.object({
 });
 
 export const createHomeSection = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), section: sectionInput }).parse(d))
+  .inputValidator((d) => z.object({ section: sectionInput }).parse(d))
   .handler(async ({ data }): Promise<HomeSectionRow> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("home_sections")
@@ -124,10 +124,10 @@ export const createHomeSection = createServerFn({ method: "POST" })
 
 export const updateHomeSection = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), id: z.string().uuid(), patch: sectionInput.partial() }).parse(d),
+    z.object({ id: z.string().uuid(), patch: sectionInput.partial() }).parse(d),
   )
   .handler(async ({ data }): Promise<HomeSectionRow> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("home_sections")
@@ -140,9 +140,9 @@ export const updateHomeSection = createServerFn({ method: "POST" })
   });
 
 export const deleteHomeSection = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }): Promise<{ ok: true }> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("home_sections").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -150,9 +150,9 @@ export const deleteHomeSection = createServerFn({ method: "POST" })
   });
 
 export const duplicateHomeSection = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), id: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }): Promise<HomeSectionRow> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: src, error: e1 } = await supabaseAdmin
       .from("home_sections")
@@ -193,10 +193,10 @@ export const duplicateHomeSection = createServerFn({ method: "POST" })
 // Reorder: swap sort_order with neighbour (arrow up/down)
 export const reorderHomeSection = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({ password: z.string(), id: z.string().uuid(), direction: z.enum(["up", "down"]) }).parse(d),
+    z.object({ id: z.string().uuid(), direction: z.enum(["up", "down"]) }).parse(d),
   )
   .handler(async ({ data }): Promise<{ ok: true }> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("home_sections")
@@ -231,7 +231,6 @@ export const uploadHomeSectionMedia = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         filename: z.string(),
         content_type: z.string(),
         base64: z.string(),
@@ -239,7 +238,7 @@ export const uploadHomeSectionMedia = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }): Promise<{ url: string }> => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const bytes = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
     if (bytes.byteLength > 20 * 1024 * 1024) throw new Error("File too large (max 20MB)");

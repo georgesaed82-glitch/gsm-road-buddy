@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getAdminPassword } from "@/lib/admin-gate";
 import {
   getThemeSettings,
   saveThemeDraft,
@@ -111,8 +110,7 @@ function mergeDeep(base: ThemeTokens, patch: Partial<ThemeTokens>): ThemeTokens 
 }
 
 function AdminThemePage() {
-  const password = getAdminPassword();
-  const qc = useQueryClient();
+const qc = useQueryClient();
   const getSettingsFn = useServerFn(getThemeSettings);
   const saveDraftFn = useServerFn(saveThemeDraft);
   const publishFn = useServerFn(publishTheme);
@@ -123,8 +121,8 @@ function AdminThemePage() {
 
   const settings = useQuery({
     queryKey: ["admin", "theme"],
-    queryFn: () => getSettingsFn({ data: { password } }),
-    enabled: !!password,
+    queryFn: () => getSettingsFn({ data: {} }),
+    enabled: true,
   });
 
   const assets = useQuery({
@@ -167,7 +165,7 @@ function AdminThemePage() {
 
   const onSaveDraft = async () => {
     try {
-      await saveDraftFn({ data: { password, draft: tokens as unknown as Record<string, unknown> } });
+      await saveDraftFn({ data: { draft: tokens as unknown as Record<string, unknown> } });
       toast.success("Draft saved");
       setDirty(false);
       qc.invalidateQueries({ queryKey: ["admin", "theme"] });
@@ -179,8 +177,8 @@ function AdminThemePage() {
   const onPublish = async () => {
     try {
       // Save current UI state as draft first, then publish.
-      await saveDraftFn({ data: { password, draft: tokens as unknown as Record<string, unknown> } });
-      await publishFn({ data: { password } });
+      await saveDraftFn({ data: { draft: tokens as unknown as Record<string, unknown> } });
+      await publishFn({ data: {} });
       toast.success("Theme published — live site updated");
       setDirty(false);
       qc.invalidateQueries({ queryKey: ["admin", "theme"] });
@@ -192,7 +190,7 @@ function AdminThemePage() {
   const onReset = async () => {
     if (!confirm("Discard draft changes and return to the published theme?")) return;
     try {
-      await resetFn({ data: { password } });
+      await resetFn({ data: {} });
       toast.success("Draft cleared");
       qc.invalidateQueries({ queryKey: ["admin", "theme"] });
     } catch (e) {
@@ -309,7 +307,6 @@ function AdminThemePage() {
                   const b64 = await fileToBase64(file);
                   await uploadAssetFn({
                     data: {
-                      password,
                       name,
                       filename: file.name,
                       content_type: file.type || "image/png",
@@ -321,7 +318,7 @@ function AdminThemePage() {
                 }}
                 onDelete={async (id) => {
                   if (!confirm("Delete asset?")) return;
-                  await deleteAssetFn({ data: { password, id } });
+                  await deleteAssetFn({ data: { id } });
                   qc.invalidateQueries({ queryKey: ["admin", "brand-assets"] });
                 }}
               />

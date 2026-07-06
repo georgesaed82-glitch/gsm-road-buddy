@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getTrafficStats, getSectionBreakdown, type TrafficStats, type SectionBreakdown } from "@/lib/admin-stats.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -47,7 +46,7 @@ function TrafficPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin_traffic", rangeDays],
     queryFn: async (): Promise<TrafficStats> =>
-      (await fetchStats({ data: { password: getAdminPassword(), rangeDays } })) as TrafficStats,
+      (await fetchStats({ data: { rangeDays } })) as TrafficStats,
     retry: false,
   });
   const fetchSection = useServerFn(getSectionBreakdown);
@@ -55,7 +54,7 @@ function TrafficPage() {
     queryKey: ["admin_traffic_section", rangeDays, selectedPath],
     enabled: !!selectedPath,
     queryFn: async (): Promise<SectionBreakdown> =>
-      (await fetchSection({ data: { password: getAdminPassword(), rangeDays, path: selectedPath! } })) as SectionBreakdown,
+      (await fetchSection({ data: { rangeDays, path: selectedPath! } })) as SectionBreakdown,
     retry: false,
   });
 

@@ -23,8 +23,6 @@ import {
   type BlogPostRow,
   type BlogCategoryRow,
 } from "@/lib/blog.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/blog")({
   head: () => ({ meta: [{ title: "Blog · Admin" }] }),
   component: BlogAdmin,
@@ -112,9 +110,7 @@ function BlogAdmin() {
 
   const save = async () => {
     if (!editing) return;
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    if (!editing.slug) editing.slug = slugify(editing.title);
+if (!editing.slug) editing.slug = slugify(editing.title);
     try {
       const related = editing.relatedText
         .split(",")
@@ -122,7 +118,6 @@ function BlogAdmin() {
         .filter(Boolean);
       const res = await saveFn({
         data: {
-          password,
           item: {
             id: editing.id || undefined,
             slug: editing.slug,
@@ -149,11 +144,9 @@ function BlogAdmin() {
   };
 
   const remove = async (id: string) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    if (!confirm("Delete this post permanently?")) return;
+if (!confirm("Delete this post permanently?")) return;
     try {
-      await delFn({ data: { password, id } });
+      await delFn({ data: { id } });
       toast.success("Deleted");
       if (editing?.id === id) setEditing(null);
       invalidate();
@@ -164,14 +157,11 @@ function BlogAdmin() {
 
   const upload = async (file: File) => {
     if (!editing?.id) return toast.error("Save the post first, then upload a cover.");
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    const reader = new FileReader();
+const reader = new FileReader();
     reader.onload = async () => {
       try {
         const res = await uploadFn({
           data: {
-            password,
             id: editing.id,
             filename: file.name,
             content_type: file.type || "application/octet-stream",
@@ -234,10 +224,8 @@ function BlogAdmin() {
           <CategoryEditor
             categories={categories}
             onSave={async (item) => {
-              const password = getAdminPassword();
-              if (!password) return toast.error("Admin password missing.");
-              try {
-                await saveCatFn({ data: { password, item } });
+try {
+                await saveCatFn({ data: { item } });
                 toast.success("Category saved");
                 invalidate();
               } catch (e) {
@@ -245,11 +233,9 @@ function BlogAdmin() {
               }
             }}
             onDelete={async (id) => {
-              const password = getAdminPassword();
-              if (!password) return toast.error("Admin password missing.");
-              if (!confirm("Delete category? Posts keep their content but lose the category link.")) return;
+if (!confirm("Delete category? Posts keep their content but lose the category link.")) return;
               try {
-                await delCatFn({ data: { password, id } });
+                await delCatFn({ data: { id } });
                 toast.success("Deleted");
                 invalidate();
               } catch (e) {

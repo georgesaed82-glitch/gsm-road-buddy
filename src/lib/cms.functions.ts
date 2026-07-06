@@ -65,14 +65,13 @@ export const upsertSiteSetting = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         key: z.string().min(1).max(60),
         value: z.record(z.string(), z.any()) as z.ZodType<{ [key: string]: JsonValue }>,
       })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("site_settings")
@@ -109,14 +108,13 @@ export const saveNavItems = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         items: z.array(navItemInput).max(60),
         delete_ids: z.array(z.string().uuid()).max(60).optional(),
       })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (data.delete_ids?.length) {
       const { error } = await supabaseAdmin.from("nav_items").delete().in("id", data.delete_ids);
@@ -158,7 +156,6 @@ export const upsertPageSeo = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        password: z.string(),
         route: z.string().trim().min(1).max(200),
         title: z.string().trim().max(200).nullable().optional(),
         description: z.string().trim().max(400).nullable().optional(),
@@ -171,18 +168,18 @@ export const upsertPageSeo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { password: _p, ...row } = data;
+    const row = data;
     const { error } = await supabaseAdmin.from("page_seo").upsert(row, { onConflict: "route" });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
 
 export const deletePageSeo = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ password: z.string(), route: z.string() }).parse(d))
+  .inputValidator((d) => z.object({ route: z.string() }).parse(d))
   .handler(async ({ data }) => {
-    if (!(await verifyAdminPasswordServer(data.password))) throw new Error("Unauthorized");
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("page_seo").delete().eq("route", data.route);
     if (error) throw new Error(error.message);

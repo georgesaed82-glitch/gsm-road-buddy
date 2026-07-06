@@ -11,8 +11,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { listSiteSettings, upsertSiteSetting } from "@/lib/cms.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/site-settings")({
   head: () => ({ meta: [{ title: "Site settings · Admin" }] }),
   component: SiteSettingsPage,
@@ -47,11 +45,9 @@ function SiteSettingsPage() {
   }, [rows]);
 
   const save = async (key: string, value: object) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    setSaving(key);
+setSaving(key);
     try {
-      await saveFn({ data: { password, key, value: value as Record<string, never> } });
+      await saveFn({ data: { key, value: value as Record<string, never> } });
       toast.success("Saved");
       await qc.invalidateQueries({ queryKey: ["site-settings"] });
     } catch (e) {

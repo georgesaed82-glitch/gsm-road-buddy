@@ -12,8 +12,6 @@ import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { listNavItems, saveNavItems, type NavItemRow } from "@/lib/cms.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/navigation")({
   head: () => ({ meta: [{ title: "Navigation menus · Admin" }] }),
   component: NavigationPage,
@@ -79,13 +77,10 @@ function NavigationPage() {
   };
 
   const save = async () => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    setSaving(true);
+setSaving(true);
     try {
       await saveFn({
         data: {
-          password,
           items: items.map((it) => ({
             id: it._new ? undefined : it.id,
             location: it.location,

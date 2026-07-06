@@ -37,8 +37,6 @@ import {
   uploadContentImage,
   reorderContentOverrides,
 } from "@/lib/content-overrides.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/police-signals")({
   head: () => ({ meta: [{ title: "Arm signals library · Admin" }] }),
   component: AdminPoliceSignalsPage,
@@ -111,7 +109,7 @@ function AdminPoliceSignalsPage() {
     if (target < 0 || target >= fullIds.length) return;
     [fullIds[idx], fullIds[target]] = [fullIds[target], fullIds[idx]];
     try {
-      await reorder({ data: { password: getAdminPassword(), kind: "signal", item_ids: fullIds } });
+      await reorder({ data: { kind: "signal", item_ids: fullIds } });
       invalidate();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reorder failed");
@@ -123,7 +121,6 @@ function AdminPoliceSignalsPage() {
     try {
       await upsert({
         data: {
-          password: getAdminPassword(),
           kind: "signal",
           item_id: row.id,
           enabled: nextEnabled,
@@ -141,7 +138,6 @@ function AdminPoliceSignalsPage() {
     try {
       await upsert({
         data: {
-          password: getAdminPassword(),
           kind: "signal",
           item_id: id,
           name: "New custom signal",
@@ -164,7 +160,6 @@ function AdminPoliceSignalsPage() {
     try {
       await upsert({
         data: {
-          password: getAdminPassword(),
           kind: "signal",
           item_id: id,
           name: `${ov?.name ?? row.name} (copy)`,
@@ -243,7 +238,7 @@ function AdminPoliceSignalsPage() {
             onDeleteCustom={async () => {
               if (!confirm(`Delete "${row.name}"?`)) return;
               try {
-                await del({ data: { password: getAdminPassword(), kind: "signal", item_id: row.id } });
+                await del({ data: { kind: "signal", item_id: row.id } });
                 invalidate();
                 toast.success("Deleted");
               } catch (e) {
@@ -253,7 +248,7 @@ function AdminPoliceSignalsPage() {
             onResetOverride={async () => {
               if (!confirm("Reset back to the built-in diagram and text?")) return;
               try {
-                await del({ data: { password: getAdminPassword(), kind: "signal", item_id: row.id } });
+                await del({ data: { kind: "signal", item_id: row.id } });
                 invalidate();
                 toast.success("Reset");
               } catch (e) {
@@ -264,7 +259,6 @@ function AdminPoliceSignalsPage() {
               try {
                 await upsert({
                   data: {
-                    password: getAdminPassword(),
                     kind: "signal",
                     item_id: row.id,
                     name: draft.name,
@@ -283,7 +277,6 @@ function AdminPoliceSignalsPage() {
               try {
                 const uploaded = await upload({
                   data: {
-                    password: getAdminPassword(),
                     kind: "signal",
                     item_id: row.id,
                     filename: file.name,
@@ -293,7 +286,6 @@ function AdminPoliceSignalsPage() {
                 });
                 await upsert({
                   data: {
-                    password: getAdminPassword(),
                     kind: "signal",
                     item_id: row.id,
                     image_path: uploaded.image_path,

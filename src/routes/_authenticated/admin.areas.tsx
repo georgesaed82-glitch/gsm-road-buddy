@@ -19,8 +19,6 @@ import {
   seedLocalContent,
   type AreaRow,
 } from "@/lib/local-content.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/areas")({
   head: () => ({ meta: [{ title: "Areas · Admin" }] }),
   component: AreasAdmin,
@@ -79,16 +77,13 @@ function AreasAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    setSavingId(d.id || "new");
+setSavingId(d.id || "new");
     try {
       const nearby = d.nearbyText.split(/[,\s]+/).map((s) => s.trim()).filter(Boolean);
       const highlights = d.highlightsText.split("\n").map((s) => s.trim()).filter(Boolean);
       const faqs = parseFaqs(d.faqsText);
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id || undefined,
             slug: d.slug,
@@ -115,33 +110,27 @@ function AreasAdmin() {
 
   const remove = async (id: string) => {
     if (!confirm("Delete this area page?")) return;
-    const password = getAdminPassword();
-    if (!password) return;
-    try { await delFn({ data: { password, id } }); toast.success("Deleted"); invalidate(); }
+try { await delFn({ data: { id } }); toast.success("Deleted"); invalidate(); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Delete failed"); }
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-    const password = getAdminPassword();
-    if (!password) return;
-    const next = [...drafts];
+const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];
     setDrafts(next.map((r, i) => ({ ...r, order_index: i })));
     const order = next.map((r, i) => ({ id: r.id, order_index: i })).filter((r) => r.id);
-    try { await orderFn({ data: { password, order } }); invalidate(); }
+    try { await orderFn({ data: { order } }); invalidate(); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Reorder failed"); }
   };
 
   const addNew = () => setDrafts([...drafts, { ...EMPTY, order_index: drafts.length }]);
 
   const seed = async () => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
-    if (!confirm("Import all default area pages? (Only runs if table is empty.)")) return;
+if (!confirm("Import all default area pages? (Only runs if table is empty.)")) return;
     try {
-      const res = await seedFn({ data: { password, target: "areas" } });
+      const res = await seedFn({ data: { target: "areas" } });
       toast.success(`Imported ${res.inserted.areas ?? 0} areas`);
       invalidate();
     } catch (e) {
