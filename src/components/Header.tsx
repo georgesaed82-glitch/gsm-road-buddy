@@ -124,7 +124,7 @@ export function Header() {
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const { business } = useSiteSettings();
+  const { business, footer } = useSiteSettings();
   const { items: dbNav } = useNavItems("header");
   const navLinks = dbNav.length > 0 ? dbNav.map((n) => ({ to: n.href, label: n.label })) : DEFAULT_NAV_LINKS;
   const whatsappHref = `https://wa.me/${business.phone_intl}`;
