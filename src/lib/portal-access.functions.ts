@@ -173,15 +173,6 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
         session,
       };
     }
-    const { count } = await supabase
-      .from("portal_access_codes")
-      .select("id", { count: "exact", head: true })
-      .eq("kind", "learner")
-      .eq("revoked", false);
-    if ((count ?? 0) === 0 && password === BOOTSTRAP_CODE) {
-      await logCodeAttempt(fingerprint, "learner", true, captchaVerified);
-      return { ok: true };
-    }
     await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
     const after = await evaluateAttemptState(fingerprint);
     return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
@@ -199,29 +190,21 @@ async function mintSessionForEmail(
   const supabase = await admin();
   const normalized = email.trim().toLowerCase();
 
-  // Look up or create the user.
-  let userId: string | null = null;
-  const { data: list } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
-  const existing = list?.users?.find((u) => (u.email || "").toLowerCase() === normalized);
-  if (existing) {
-    userId = existing.id;
-  } else {
-    const { data: created, error: createErr } = await supabase.auth.admin.createUser({
+  // Try to mint a magiclink directly (O(1) lookup — no user pagination).
+  // If the user doesn't exist yet, create it and retry.
+  let link = await supabase.auth.admin.generateLink({ type: "magiclink", email: normalized });
+  if (link.error || !link.data?.properties?.hashed_token) {
+    const { error: createErr } = await supabase.auth.admin.createUser({
       email: normalized,
       email_confirm: true,
     });
-    if (createErr || !created?.user) {
+    if (createErr && !/registered|exists/i.test(createErr.message)) {
       console.error("[portal-access] createUser failed", createErr);
       return null;
     }
-    userId = created.user.id;
+    link = await supabase.auth.admin.generateLink({ type: "magiclink", email: normalized });
   }
-
-  // Generate a magiclink so we can exchange its hashed_token for a session.
-  const { data: link, error: linkErr } = await supabase.auth.admin.generateLink({
-    type: "magiclink",
-    email: normalized,
-  });
+  const linkErr = link.error;
   if (linkErr || !link?.properties?.hashed_token) {
     console.error("[portal-access] generateLink failed", linkErr);
     return null;
