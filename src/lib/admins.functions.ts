@@ -2,8 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { verifyAdminPasswordServer } from "./portal-access.functions";
 
-async function requireAdmin(password: string) {
-  if (!(await verifyAdminPasswordServer(password))) {
+async function requireAdmin() {
+  if (!(await verifyAdminPasswordServer())) {
     throw new Error("Unauthorized");
   }
 }

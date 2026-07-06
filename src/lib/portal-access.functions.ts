@@ -40,8 +40,8 @@ export async function verifyAdminPasswordServer(_password?: string): Promise<boo
   }
 }
 
-async function requireAdmin(password: string) {
-  if (!(await verifyAdminPasswordServer(password))) {
+async function requireAdmin() {
+  if (!(await verifyAdminPasswordServer())) {
     throw new Error("Unauthorized");
   }
   return admin();
@@ -116,7 +116,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     };
 
     if (data.mode === "admin") {
-      const ok = await verifyAdminPasswordServer(password);
+      const ok = await verifyAdminPasswordServer();
       await logCodeAttempt(fingerprint, "admin", ok, captchaVerified);
       if (ok) {
         const supabase = await admin();

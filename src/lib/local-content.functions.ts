@@ -40,8 +40,8 @@ export type HazardClipRow = {
   enabled: boolean;
 };
 
-async function requireAdmin(password: string) {
-  if (!(await verifyAdminPasswordServer(password))) throw new Error("Unauthorized");
+async function requireAdmin() {
+  if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
 }
 
 // ---------- Areas ----------
