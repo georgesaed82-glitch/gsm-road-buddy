@@ -82,7 +82,10 @@ export const officialSignImages: Record<string, string> = {
   "t-red-amber": "/__l5e/assets-v1/5857526d-92b4-4060-8d58-54614e49c641/Traffic_lights_red-yellow.svg",
   "t-amber": "/__l5e/assets-v1/d63e6eca-058d-4d34-819f-3e88d61882bc/Traffic_lights_yellow.svg",
   "t-green": "/__l5e/assets-v1/a59f9bd0-bb6b-41da-abb9-9f41b6782a2c/Traffic_lights_green.svg",
-  "i-phone": "/__l5e/assets-v1/d7f6994f-7ae4-437d-8575-fa93973b5dc4/UK_traffic_sign_2306.svg",
+  // Diagram 2306 is the BROWN direction sign ("emergency telephone 150 yds ➜"),
+  // not the standard blue emergency-telephone info panel (diagram 2307). To
+  // avoid misleading learners, i-phone renders from the SignVisual info-blue
+  // + phone symbol until a verified 2307 SVG is added.
 };
 
 export function officialSignImageFor(id: string): string | undefined {
