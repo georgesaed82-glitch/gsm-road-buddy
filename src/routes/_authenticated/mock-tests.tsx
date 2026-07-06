@@ -210,6 +210,9 @@ function MockRunner({ onRestart }: { onRestart: () => void }) {
           </Button>
           <Button variant="outline" className="rounded-none" onClick={onRestart}>Retake mock</Button>
         </div>
+        <div className="mt-8">
+          <DVSADisclaimer />
+        </div>
       </PortalShell>
     );
   }
