@@ -291,7 +291,7 @@ export function Header() {
                   <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     Learner portal
                   </div>
-                  <nav className="grid grid-cols-2 gap-2">
+                  <nav className="grid grid-cols-2 gap-1.5">
                     {portalLinks.map((link, index) => {
                       const Icon = link.icon;
                       const active =
