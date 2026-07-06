@@ -119,7 +119,7 @@ const turningRight: ClipDef = {
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -175,7 +175,7 @@ const meetingTraffic: ClipDef = {
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -250,7 +250,7 @@ const zebra: ClipDef = {
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -335,7 +335,7 @@ const spiralRoundabout: ClipDef = {
       </svg>
     );
   },
-  durationMs: 16000,
+  durationMs: 24000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -402,7 +402,7 @@ const yellowBox: ClipDef = {
       </svg>
     );
   },
-  durationMs: 14000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -738,7 +738,7 @@ const laneDiscipline: ClipDef = {
       </svg>
     );
   },
-  durationMs: 15000,
+  durationMs: 22000,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -853,7 +853,7 @@ const slipRoadJoin: ClipDef = {
       </svg>
     );
   },
-  durationMs: 16000,
+  durationMs: 24000,
 };
 
 export const drivingClips: ClipDef[] = [
