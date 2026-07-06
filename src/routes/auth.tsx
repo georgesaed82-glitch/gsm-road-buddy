@@ -75,43 +75,24 @@ function AuthPage() {
     setSubmitting(true);
     const pw = password.trim();
     const emailValue = email.trim();
-    if (!emailValue) {
-      const msg = "Enter your email address.";
-      setAuthMessage({ type: "error", text: msg });
-      toast.error(msg);
-      setSubmitting(false);
-      return;
-    }
     if (isAdmin) {
-      // Prefer normal account sign-in, but keep the portal-code path available
-      // so the recent auth hardening cannot strand an existing admin account.
+      if (!pw) {
+        const msg = "Enter the admin PIN/password.";
+        setAuthMessage({ type: "error", text: msg });
+        toast.error(msg);
+        setSubmitting(false);
+        return;
+      }
       try {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: emailValue,
-          password: pw,
-        });
-        if (!error) {
-          // Scrub any legacy admin-unlock state left over from the old build.
-          try {
-            window.localStorage.removeItem("admin_unlocked");
-            window.localStorage.removeItem("admin_password");
-          } catch {}
-          const msg = "Signed in. Checking admin access...";
-          setAuthMessage({ type: "success", text: msg });
-          toast.success(msg);
-          navigate({ to: "/admin" });
-          return;
-        }
         const res = await verify({
           data: {
             password: pw,
             mode: "admin",
             captchaToken: codeCaptchaToken,
-            email: emailValue,
           },
         });
         if (!res.ok || !res.session?.access_token || !res.session?.refresh_token) {
-          const msg = "Sign-in failed. Check your email and password.";
+          const msg = "The admin PIN/password is incorrect.";
           setAuthMessage({ type: "error", text: msg });
           toast.error(msg);
           setCodeCaptchaToken(null);
@@ -133,7 +114,7 @@ function AuthPage() {
           window.localStorage.removeItem("admin_unlocked");
           window.localStorage.removeItem("admin_password");
         } catch {}
-        const msg = "Signed in. Checking admin access...";
+        const msg = "Signed in. Opening admin portal...";
         setAuthMessage({ type: "success", text: msg });
         toast.success(msg);
         navigate({ to: "/admin" });
@@ -143,6 +124,13 @@ function AuthPage() {
         toast.error(msg);
         setSubmitting(false);
       }
+      return;
+    }
+    if (!emailValue) {
+      const msg = "Enter your email address.";
+      setAuthMessage({ type: "error", text: msg });
+      toast.error(msg);
+      setSubmitting(false);
       return;
     }
     try {
@@ -223,33 +211,35 @@ function AuthPage() {
           </CardTitle>
           <CardDescription>
             <Badge variant="secondary" className="mt-2">
-              {isAdmin ? "Admin sign-in" : "Email + PIN login"}
+              {isAdmin ? "PIN/password login" : "Email + PIN login"}
             </Badge>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             {isAdmin
-              ? "Sign in with your admin email and password. Access to the admin area is granted to users with the admin role."
+              ? "Enter the admin PIN/password to open the admin portal."
               : "Enter your email address and the PIN George sent you. Your progress saves automatically to your account."}
           </p>
           <form onSubmit={handleSubmit} className="space-y-3 text-left">
-            <div className="space-y-1">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <User className="h-4 w-4" /> Email address
-              </label>
-              <Input
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={submitting}
-              />
-            </div>
+            {!isAdmin && (
+              <div className="space-y-1">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <User className="h-4 w-4" /> Email address
+                </label>
+                <Input
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={submitting}
+                />
+              </div>
+            )}
             <label className="text-sm font-medium flex items-center gap-2">
-              <Lock className="h-4 w-4" /> {isAdmin ? "Password" : "PIN"}
+              <Lock className="h-4 w-4" /> {isAdmin ? "Admin PIN/password" : "PIN"}
             </label>
             <div className="flex gap-2">
               <Input
@@ -257,7 +247,7 @@ function AuthPage() {
                 required
                 inputMode={isAdmin ? "text" : "numeric"}
                 autoComplete="off"
-                placeholder={isAdmin ? "Your password" : "Enter your PIN"}
+                placeholder={isAdmin ? "Enter admin PIN/password" : "Enter your PIN"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={submitting}
@@ -297,45 +287,7 @@ function AuthPage() {
               </label>
             )}
           </form>
-          {isAdmin ? (
-            <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left space-y-2">
-              <div className="flex items-center gap-2 font-medium">
-                <Mail className="h-4 w-4 text-primary" /> Forgot or setting up your password?
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Enter your admin email above, then click below to email yourself a
-                password reset link. First-time admins use the same flow to set
-                their initial password.
-              </p>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={submitting}
-                onClick={async () => {
-                  const emailValue = email.trim();
-                  if (!emailValue) {
-                    toast.error("Enter your admin email address above first.");
-                    return;
-                  }
-                  try {
-                    const { error } = await supabase.auth.resetPasswordForEmail(emailValue, {
-                      redirectTo: `${window.location.origin}/reset-password`,
-                    });
-                    if (error) {
-                      toast.error(error.message || "Could not send reset email.");
-                      return;
-                    }
-                    toast.success("Reset email sent. Check your inbox.");
-                  } catch {
-                    toast.error("Could not send reset email. Try again.");
-                  }
-                }}
-              >
-                Email me a reset link
-              </Button>
-            </div>
-          ) : (
+          {!isAdmin ? (
           <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left">
             <div className="flex items-center gap-2 font-medium">
               <Mail className="h-4 w-4 text-primary" /> Don't have a PIN yet?
@@ -351,7 +303,7 @@ function AuthPage() {
               to request a PIN for the learner portal.
             </p>
           </div>
-          )}
+          ) : null}
           <Button asChild variant="outline" className="w-full">
             <Link to="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
