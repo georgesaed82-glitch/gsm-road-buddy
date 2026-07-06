@@ -68,6 +68,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     const captchaVerified = guard.captchaVerified;
     let req: Request | undefined;
     try {
+      const { getRequest } = await import("@tanstack/react-start/server");
       req = getRequest();
     } catch {
       req = undefined;
