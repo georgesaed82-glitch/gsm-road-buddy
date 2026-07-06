@@ -391,11 +391,10 @@ function AdminTheoryCms() {
   };
 
   const doBulkCategory = async (cat: string) => {
-    const p = password();
     const ids = [...selected];
-    if (!p || !ids.length) return;
+    if (!ids.length) return;
     try {
-      await bulkFn({ data: { password: p, ids, patch: { category: cat } } });
+      await bulkFn({ data: { ids, patch: { category: cat } } });
       toast.success("Category updated");
       await refresh();
     } catch (e) {
@@ -404,11 +403,10 @@ function AdminTheoryCms() {
   };
 
   const doBulkDifficulty = async (d: TheoryDifficulty) => {
-    const p = password();
     const ids = [...selected];
-    if (!p || !ids.length) return;
+    if (!ids.length) return;
     try {
-      await bulkFn({ data: { password: p, ids, patch: { difficulty: d } } });
+      await bulkFn({ data: { ids, patch: { difficulty: d } } });
       toast.success("Difficulty updated");
       await refresh();
     } catch (e) {
@@ -428,8 +426,7 @@ function AdminTheoryCms() {
   };
 
   const doImport = async (file: File) => {
-    const p = password();
-const text = await file.text();
+    const text = await file.text();
     const parsed = parseCsv(text).filter((r) => r.some((c) => c.trim()));
     if (parsed.length < 2) {
       toast.error("CSV has no rows.");
