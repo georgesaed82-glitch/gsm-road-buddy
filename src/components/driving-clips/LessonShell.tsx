@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote, ArrowRight, ChevronDown } from "lucide-react";
+import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote, ArrowRight, ArrowLeft, ChevronDown, Circle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { useLessonProgress } from "@/lib/lessonProgress";
 
 // ─────────────────────────────────────────────────────────────
 // GSM standard lesson engine.
@@ -43,13 +44,23 @@ export type Lesson = {
   render: (t: number) => ReactNode;
 };
 
-export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: string; title: string } | null }) {
+export function LessonShell({
+  lesson,
+  next,
+  prev,
+}: {
+  lesson: Lesson;
+  next?: { slug: string; title: string } | null;
+  prev?: { slug: string; title: string } | null;
+}) {
   const durationMs = lesson.durationMs ?? 14000;
   const [playing, setPlaying] = useState(true);
   const [t, setT] = useState(0);
   const raf = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
   const baseRef = useRef(0);
+  const { isDone, toggle } = useLessonProgress();
+  const done = isDone(lesson.slug);
 
   const questions = lesson.questions ?? [];
   const [answered, setAnswered] = useState<Record<number, number>>({});
@@ -366,19 +377,69 @@ export function LessonShell({ lesson, next }: { lesson: Lesson; next?: { slug: s
       </div>
 
       {/* 11. NEXT LESSON */}
-      {next && (
-        <Link
-          to="/driving-clips/$slug"
-          params={{ slug: next.slug }}
-          className="group flex items-center justify-between gap-4 rounded-xl border border-accent/40 bg-accent/5 p-5 shadow-sm transition-colors hover:border-accent hover:bg-accent/10"
+      {/* 11. MARK COMPLETED + PREV/NEXT */}
+      <div className="space-y-3">
+        <button
+          type="button"
+          onClick={() => toggle(lesson.slug)}
+          className={cn(
+            "flex w-full items-center justify-center gap-2 rounded-xl border p-4 text-sm font-semibold transition-colors",
+            done
+              ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/15"
+              : "border-accent bg-accent text-accent-foreground hover:opacity-90",
+          )}
+          aria-pressed={done}
         >
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Next lesson</div>
-            <div className="mt-1 font-display text-lg leading-snug">{next.title}</div>
-          </div>
-          <ArrowRight className="h-5 w-5 shrink-0 text-accent transition-transform group-hover:translate-x-1" />
-        </Link>
-      )}
+          {done ? (
+            <>
+              <CheckCircle2 className="h-5 w-5" />
+              Lesson completed — tap to unmark
+            </>
+          ) : (
+            <>
+              <Circle className="h-5 w-5" />
+              Mark as completed
+            </>
+          )}
+        </button>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          {prev ? (
+            <Link
+              to="/driving-clips/$slug"
+              params={{ slug: prev.slug }}
+              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:border-accent"
+            >
+              <ArrowLeft className="h-5 w-5 shrink-0 text-accent transition-transform group-hover:-translate-x-1" />
+              <div className="min-w-0">
+                <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                  Previous
+                </div>
+                <div className="mt-1 truncate font-display text-base leading-snug">
+                  {prev.title}
+                </div>
+              </div>
+            </Link>
+          ) : (
+            <div className="hidden sm:block" />
+          )}
+          {next && (
+            <Link
+              to="/driving-clips/$slug"
+              params={{ slug: next.slug }}
+              className="group flex items-center justify-between gap-3 rounded-xl border border-accent/40 bg-accent/5 p-4 shadow-sm transition-colors hover:border-accent hover:bg-accent/10 sm:text-right"
+            >
+              <div className="min-w-0 sm:order-2">
+                <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Next</div>
+                <div className="mt-1 truncate font-display text-base leading-snug">
+                  {next.title}
+                </div>
+              </div>
+              <ArrowRight className="h-5 w-5 shrink-0 text-accent transition-transform group-hover:translate-x-1 sm:order-3" />
+            </Link>
+          )}
+        </div>
+      </div>
     </article>
   );
 }

@@ -3,6 +3,7 @@ import { ChevronLeft } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { LessonShell } from "@/components/driving-clips/LessonShell";
 import { getLesson, drivingLessons } from "@/data/drivingLessons";
+import { orderedReadySlugs } from "@/data/lessonGroups";
 
 export const Route = createFileRoute("/_authenticated/driving-clips/$slug")({
   head: ({ params }) => {
@@ -29,19 +30,24 @@ export const Route = createFileRoute("/_authenticated/driving-clips/$slug")({
 function LessonPage() {
   const { slug } = Route.useParams();
   const lesson = getLesson(slug)!;
-  const idx = drivingLessons.findIndex((l) => l.slug === slug);
-  const nextLesson = idx >= 0 && idx < drivingLessons.length - 1 ? drivingLessons[idx + 1] : null;
+  const ordered = orderedReadySlugs();
+  const idx = ordered.indexOf(slug);
+  const nextSlug = idx >= 0 && idx < ordered.length - 1 ? ordered[idx + 1] : null;
+  const prevSlug = idx > 0 ? ordered[idx - 1] : null;
+  const nextLesson = nextSlug ? getLesson(nextSlug) ?? null : null;
+  const prevLesson = prevSlug ? getLesson(prevSlug) ?? null : null;
   return (
     <PortalShell eyebrow="Practical" title={lesson.title}>
       <Link
         to="/driving-clips"
         className="mb-6 inline-flex items-center gap-1 text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
       >
-        <ChevronLeft className="h-4 w-4" /> All animated lessons
+        <ChevronLeft className="h-4 w-4" /> All practical animations
       </Link>
       <LessonShell
         lesson={lesson}
         next={nextLesson ? { slug: nextLesson.slug, title: nextLesson.title } : null}
+        prev={prevLesson ? { slug: prevLesson.slug, title: prevLesson.title } : null}
       />
     </PortalShell>
   );
