@@ -5,7 +5,6 @@ import {
   Mail,
   Lock,
   LogOut,
-  ChevronUp,
   BookOpen,
   Eye,
   GraduationCap,
