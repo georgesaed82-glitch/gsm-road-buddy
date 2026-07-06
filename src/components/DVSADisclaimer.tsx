@@ -9,7 +9,14 @@ import { Info } from "lucide-react";
 export const DVSA_DISCLAIMER_TEXT =
   "This app is an independent learning resource for UK driving theory. It is not affiliated with or endorsed by the Driver and Vehicle Standards Agency (DVSA). All questions have been independently written using the current Highway Code and UK road traffic regulations as reference material.";
 
-export function DVSADisclaimer({ variant = "card" }: { variant?: "card" | "inline" | "footer" }) {
+export function DVSADisclaimer({ variant = "card" }: { variant?: "card" | "inline" | "footer" | "compact" }) {
+  if (variant === "compact") {
+    return (
+      <p className="text-[10px] leading-relaxed opacity-70">
+        Independent UK driving theory resource. Not affiliated with or endorsed by the DVSA.
+      </p>
+    );
+  }
   if (variant === "footer") {
     return (
       <p className="text-[11px] leading-relaxed opacity-70">{DVSA_DISCLAIMER_TEXT}</p>
