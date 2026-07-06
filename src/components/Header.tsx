@@ -248,7 +248,7 @@ export function Header() {
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
 
               {/* Header: branding stays fixed at the top of the sheet */}
-              <div className="shrink-0 px-5 py-5">
+              <div className="shrink-0 px-5 py-4">
                 <Link to="/" className="flex items-center gap-3 text-primary" onClick={() => setOpen(false)}>
                   <Monogram />
                   <div className="leading-tight">
