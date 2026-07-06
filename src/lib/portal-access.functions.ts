@@ -110,19 +110,45 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
     };
 
     if (data.mode === "admin") {
-      const ok = await verifyAdminPasswordServer();
+      const supabase = await admin();
+      const nowIso = new Date().toISOString();
+      const { data: row } = await supabase
+        .from("portal_access_codes")
+        .select("id,email,expires_at")
+        .eq("kind", "admin")
+        .eq("code", password)
+        .eq("revoked", false)
+        .maybeSingle();
+
+      let ok = false;
+      let session: { access_token: string; refresh_token: string } | null = null;
+      if (row && (!row.expires_at || row.expires_at > nowIso)) {
+        const adminEmail = submittedEmail || row.email?.trim().toLowerCase() || "";
+        if (adminEmail) {
+          const minted = await mintSessionForEmail(adminEmail, false);
+          if (minted) {
+            const { data: userData } = await supabase.auth.getUser(minted.access_token);
+            const uid = userData?.user?.id;
+            const { data: role } = uid
+              ? await supabase
+                  .from("user_roles")
+                  .select("user_id")
+                  .eq("user_id", uid)
+                  .eq("role", "admin")
+                  .maybeSingle()
+              : { data: null };
+            if (role?.user_id) {
+              session = minted;
+              ok = true;
+            }
+          }
+        }
+      }
+
       await logCodeAttempt(fingerprint, "admin", ok, captchaVerified);
       if (ok) {
-        const supabase = await admin();
-        const { data: row } = await supabase
-          .from("portal_access_codes")
-          .select("id")
-          .eq("kind", "admin")
-          .eq("code", password)
-          .eq("revoked", false)
-          .maybeSingle();
         if (row?.id) await logUsage(row.id, "admin");
-        return { ok: true };
+        return { ok: true, session };
       }
       const after = await evaluateAttemptState(fingerprint);
       return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
@@ -181,6 +207,7 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
  */
 async function mintSessionForEmail(
   email: string,
+  createIfMissing = true,
 ): Promise<{ access_token: string; refresh_token: string } | null> {
   const supabase = await admin();
   const normalized = email.trim().toLowerCase();
@@ -189,6 +216,7 @@ async function mintSessionForEmail(
   // If the user doesn't exist yet, create it and retry.
   let link = await supabase.auth.admin.generateLink({ type: "magiclink", email: normalized });
   if (link.error || !link.data?.properties?.hashed_token) {
+    if (!createIfMissing) return null;
     const { error: createErr } = await supabase.auth.admin.createUser({
       email: normalized,
       email_confirm: true,

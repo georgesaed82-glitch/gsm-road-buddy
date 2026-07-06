@@ -22,6 +22,7 @@ import { PageSeoOverride } from "../components/PageSeoOverride";
 import { registerServiceWorker } from "../lib/register-sw";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { getSiteRating, type SiteRatingValue } from "../lib/cms.functions";
+import { Toaster } from "../components/ui/sonner";
 
 
 function NotFoundComponent() {
@@ -274,6 +275,7 @@ function RootComponent() {
         </main>
         <Footer />
         <AIChatWidget />
+        <Toaster />
         <PageViewTracker />
         <PWAInstallTracker />
         <PageSeoOverride />

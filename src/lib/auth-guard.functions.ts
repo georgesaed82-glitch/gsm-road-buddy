@@ -87,10 +87,11 @@ export async function evaluateAttemptState(identifier: string): Promise<CaptchaS
 
   const failures = Math.max(byId.count ?? 0, (byIp as { count: number }).count ?? 0);
   const siteKey = validTurnstileSiteKey();
+  const captchaConfigured = !!siteKey && !!validTurnstileSecretKey();
   return {
     siteKey,
-    required: failures >= CAPTCHA_AFTER && !!siteKey,
-    locked: failures >= LOCK_AFTER,
+    required: failures >= CAPTCHA_AFTER && captchaConfigured,
+    locked: failures >= LOCK_AFTER && captchaConfigured,
     retryAfterSeconds: WINDOW_MINUTES * 60,
     failures,
   };

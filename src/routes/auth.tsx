@@ -40,6 +40,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [remember, setRemember] = useState(false);
+  const [authMessage, setAuthMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const tracked = useRef(false);
   const verify = useServerFn(verifyPortalAccess);
   const runCaptchaConfig = useServerFn(getCaptchaConfig);
@@ -70,37 +71,76 @@ function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAuthMessage(null);
     setSubmitting(true);
     const pw = password.trim();
     const emailValue = email.trim();
     if (!emailValue) {
-      toast.error("Enter your email address.");
+      const msg = "Enter your email address.";
+      setAuthMessage({ type: "error", text: msg });
+      toast.error(msg);
       setSubmitting(false);
       return;
     }
     if (isAdmin) {
-      // Admin login is now a normal Supabase email+password sign-in. Access to
-      // /admin is decided by the `admin` role in public.user_roles, not by a
-      // shared password stored in localStorage.
+      // Prefer normal account sign-in, but keep the portal-code path available
+      // so the recent auth hardening cannot strand an existing admin account.
       try {
         const { error } = await supabase.auth.signInWithPassword({
           email: emailValue,
           password: pw,
         });
-        if (error) {
-          toast.error(error.message || "Sign-in failed. Check your email and password.");
+        if (!error) {
+          // Scrub any legacy admin-unlock state left over from the old build.
+          try {
+            window.localStorage.removeItem("admin_unlocked");
+            window.localStorage.removeItem("admin_password");
+          } catch {}
+          const msg = "Signed in. Checking admin access...";
+          setAuthMessage({ type: "success", text: msg });
+          toast.success(msg);
+          navigate({ to: "/admin" });
+          return;
+        }
+        const res = await verify({
+          data: {
+            password: pw,
+            mode: "admin",
+            captchaToken: codeCaptchaToken,
+            email: emailValue,
+          },
+        });
+        if (!res.ok || !res.session?.access_token || !res.session?.refresh_token) {
+          const msg = "Sign-in failed. Check your email and password.";
+          setAuthMessage({ type: "error", text: msg });
+          toast.error(msg);
+          setCodeCaptchaToken(null);
           setSubmitting(false);
           return;
         }
-        // Scrub any legacy admin-unlock state left over from the old build.
+        const { error: setErr } = await supabase.auth.setSession({
+          access_token: res.session.access_token,
+          refresh_token: res.session.refresh_token,
+        });
+        if (setErr) {
+          const msg = "Sign-in failed. Please try again.";
+          setAuthMessage({ type: "error", text: msg });
+          toast.error(msg);
+          setSubmitting(false);
+          return;
+        }
         try {
           window.localStorage.removeItem("admin_unlocked");
           window.localStorage.removeItem("admin_password");
         } catch {}
-        toast.success("Signed in. Checking admin access...");
+        const msg = "Signed in. Checking admin access...";
+        setAuthMessage({ type: "success", text: msg });
+        toast.success(msg);
         navigate({ to: "/admin" });
       } catch {
-        toast.error("Sign-in failed. Please try again.");
+        const msg = "Sign-in failed. Please try again.";
+        setAuthMessage({ type: "error", text: msg });
+        toast.error(msg);
         setSubmitting(false);
       }
       return;
@@ -115,19 +155,22 @@ function AuthPage() {
         },
       });
       if (!res.ok) {
+        let msg: string;
         if (res.reason === "locked") {
-          toast.error("Too many attempts. Try again in 15 minutes.");
+          msg = "Too many attempts. Try again in 15 minutes.";
         } else if (res.reason === "captcha_required") {
           setCodeCaptchaRequired(true);
-          toast.error("Please complete the verification below and try again.");
+          msg = "Please complete the verification below and try again.";
         } else if (res.reason === "captcha_failed") {
           setCodeCaptchaToken(null);
-          toast.error("Verification failed. Try the check again.");
+          msg = "Verification failed. Try the check again.";
         } else if (res.reason === "email_mismatch") {
-          toast.error("That PIN isn't linked to this email. Check both and try again.");
+          msg = "That PIN isn't linked to this email. Check both and try again.";
         } else {
-          toast.error("The PIN is incorrect. Please use the PIN George sent you.");
+          msg = "The PIN is incorrect. Please use the PIN George sent you.";
         }
+        setAuthMessage({ type: "error", text: msg });
+        toast.error(msg);
         if (res.captchaRequiredNext) setCodeCaptchaRequired(true);
         setCodeCaptchaToken(null);
         setSubmitting(false);
@@ -155,16 +198,18 @@ function AuthPage() {
         });
         if (!setErr) linked = true;
       }
-      toast.success(
-        linked && res.subscription?.email
+      const successMessage = linked && res.subscription?.email
           ? `Signed in as ${res.subscription.email}. Progress will save to your account.`
           : res.subscription?.expires_at
           ? `Access granted until ${new Date(res.subscription.expires_at).toLocaleDateString()}.`
-          : "Access granted. Welcome to the learner portal.",
-      );
+          : "Access granted. Welcome to the learner portal.";
+      setAuthMessage({ type: "success", text: successMessage });
+      toast.success(successMessage);
       navigate({ to: "/dashboard" });
     } catch {
-      toast.error("Could not verify code. Please try again.");
+      const msg = "Could not verify code. Please try again.";
+      setAuthMessage({ type: "error", text: msg });
+      toast.error(msg);
       setSubmitting(false);
     }
   };
@@ -228,6 +273,18 @@ function AuthPage() {
                 </p>
                 <TurnstileWidget siteKey={siteKey} onToken={setCodeCaptchaToken} />
               </div>
+            ) : null}
+            {authMessage ? (
+              <p
+                role={authMessage.type === "error" ? "alert" : "status"}
+                className={
+                  authMessage.type === "error"
+                    ? "rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                    : "rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-primary"
+                }
+              >
+                {authMessage.text}
+              </p>
             ) : null}
             {!isAdmin && (
               <label className="flex items-center gap-2 pt-1 text-sm text-muted-foreground">
