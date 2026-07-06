@@ -673,78 +673,161 @@ export function SignVisual({ variant, size = 160 }: { variant: SignVariant; size
       );
     }
     case "zebra-crossing": {
-      const w = px * 1.3;
-      const h = px * 0.95;
-      const stripes = 7;
-      const stripeH = 100 / (stripes * 2 - 1);
+      // Schematic top-down view of a zebra crossing between two kerbs, with a
+      // Belisha beacon on a black-and-white banded pole at each end.
+      const w = px * 1.6;
+      const h = px * 1.1;
+      const VB_W = 160;
+      const VB_H = 110;
+      const stripeCount = 8;
+      const crossingLeft = 34;
+      const crossingRight = 126;
+      const crossingTop = 12;
+      const crossingBottom = 98;
+      const roadW = crossingRight - crossingLeft;
+      const stripeH = (crossingBottom - crossingTop) / (stripeCount * 2 - 1);
       return (
-        <div className="relative" style={{ width: w, height: h }}>
-          {/* Road */}
-          <div className="absolute inset-y-3 left-[18%] right-[18%] overflow-hidden bg-[#2a2a2a]">
-            {Array.from({ length: stripes }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute left-0 right-0 bg-white"
-                style={{ top: `${i * stripeH * 2}%`, height: `${stripeH}%` }}
-              />
-            ))}
-          </div>
-          {/* Belisha beacons */}
-          {[
-            { side: "left" as const, left: "3%" },
-            { side: "right" as const, right: "3%" },
-          ].map((p, i) => (
-            <div
+        <svg
+          width={w}
+          height={h}
+          viewBox={`0 0 ${VB_W} ${VB_H}`}
+          role="img"
+          aria-label="Zebra crossing"
+        >
+          {/* Kerbs / pavement */}
+          <rect x="0" y="0" width={VB_W} height={VB_H} fill="#d9d5cc" />
+          {/* Carriageway */}
+          <rect x={crossingLeft} y="0" width={roadW} height={VB_H} fill="#3a3a3a" />
+          {/* White stripes */}
+          {Array.from({ length: stripeCount }).map((_, i) => (
+            <rect
               key={i}
-              className="absolute top-0 bottom-0 flex flex-col items-center"
-              style={p.side === "left" ? { left: p.left } : { right: p.right }}
-            >
-              <div
-                className="rounded-full"
-                style={{
-                  width: px * 0.2,
-                  height: px * 0.2,
-                  background: "#f5a623",
-                  boxShadow: "0 0 14px #f5a623",
-                }}
-              />
-              <div className="flex-1 overflow-hidden" style={{ width: px * 0.07 }}>
-                <div className="h-1/4 bg-white" />
-                <div className="h-1/4 bg-black" />
-                <div className="h-1/4 bg-white" />
-                <div className="h-1/4 bg-black" />
-              </div>
-            </div>
+              x={crossingLeft + 1}
+              y={crossingTop + i * stripeH * 2}
+              width={roadW - 2}
+              height={stripeH}
+              fill="#ffffff"
+            />
           ))}
-        </div>
+          {/* Zig-zag give-way lines on approach (both sides) */}
+          {[crossingLeft - 5, crossingRight + 5].map((cx, side) => {
+            const dir = side === 0 ? -1 : 1;
+            const pts: string[] = [];
+            for (let y = 6; y <= VB_H - 6; y += 8) {
+              pts.push(`${cx},${y}`);
+              pts.push(`${cx + dir * 4},${y + 4}`);
+            }
+            return (
+              <polyline
+                key={side}
+                points={pts.join(" ")}
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="1.4"
+              />
+            );
+          })}
+          {/* Belisha beacons — top and bottom of the crossing */}
+          {[
+            { cx: (crossingLeft + crossingRight) / 2, cy: 6 },
+            { cx: (crossingLeft + crossingRight) / 2, cy: VB_H - 6 },
+          ].map((b, i) => (
+            <g key={i}>
+              {/* banded pole */}
+              <rect x={b.cx - 1.8} y={b.cy - 1} width="3.6" height="14" fill="#000" />
+              <rect x={b.cx - 1.8} y={b.cy + 2} width="3.6" height="3" fill="#fff" />
+              <rect x={b.cx - 1.8} y={b.cy + 8} width="3.6" height="3" fill="#fff" />
+              {/* amber globe */}
+              <circle cx={b.cx} cy={b.cy} r="4.5" fill="#f5a623" stroke="#000" strokeWidth="0.6" />
+            </g>
+          ))}
+        </svg>
       );
     }
     case "signal-crossing": {
       const isGreen = variant.state === "green-man";
-      const bg = isGreen ? "#22c55e" : "#ef4444";
+      const type = variant.type;
+      const litColor = isGreen ? "#2fbd4b" : "#e0301e";
+      const dimColor = "#111";
+      const boxW = px * 0.85;
+      const boxH = px * 1.15;
       return (
-        <div
-          className="flex items-center justify-center rounded-md bg-[#111] p-3"
-          style={{ width: px * 0.7, height: px }}
-        >
+        <div className="flex flex-col items-center" style={{ gap: px * 0.05 }}>
           <div
-            className="flex items-center justify-center"
-            style={{ width: "100%", height: "100%", background: "#050505" }}
+            className="relative flex flex-col items-center justify-center rounded-[6px]"
+            style={{
+              width: boxW,
+              height: boxH,
+              background: "#1c1c1c",
+              padding: px * 0.06,
+              boxShadow: "inset 0 0 0 2px #000",
+            }}
           >
-            <svg width={px * 0.5} height={px * 0.8} viewBox="0 0 100 150" fill={bg}>
-              {isGreen ? (
-                <g>
-                  <circle cx="55" cy="18" r="12" />
-                  <path d="M40 34 L68 32 L76 68 L66 72 L74 116 L74 140 L60 140 L54 100 L44 140 L32 140 L44 92 L34 72 L26 50 Z" />
-                </g>
-              ) : (
-                <g>
-                  <circle cx="50" cy="22" r="12" />
-                  <path d="M32 40 L68 40 L76 100 L60 100 L58 140 L42 140 L40 100 L24 100 Z" />
-                </g>
-              )}
-            </svg>
+            {/* Two-aspect signal head (top = red man dim/lit, bottom = green man dim/lit) */}
+            <div
+              className="flex flex-1 items-center justify-center rounded-[3px]"
+              style={{
+                width: "100%",
+                background: !isGreen ? "#e0301e" : "#050505",
+                marginBottom: px * 0.04,
+              }}
+            >
+              <svg viewBox="0 0 60 90" width="70%" height="80%" fill={!isGreen ? "#050505" : "transparent"}>
+                {/* DfT standing figure */}
+                <circle cx="30" cy="14" r="8" />
+                <path d="M18 26 h24 v10 l-4 26 h-6 v18 h-8 v-18 h-6 l-4 -26 z" />
+              </svg>
+            </div>
+            <div
+              className="flex flex-1 items-center justify-center rounded-[3px]"
+              style={{ width: "100%", background: isGreen ? "#2fbd4b" : "#050505" }}
+            >
+              <svg viewBox="0 0 60 90" width="70%" height="80%" fill={isGreen ? "#050505" : "transparent"}>
+                {/* DfT walking figure */}
+                <circle cx="34" cy="12" r="7.5" />
+                <path d="M14 40 l14 -14 l10 2 l6 16 l-8 4 l6 24 l-2 14 h-8 l-2 -14 l-8 8 l-8 -8 l14 -14 l-6 -14 z" />
+              </svg>
+            </div>
+            {/* Puffin: extra "wait" indicator on the near-side box */}
+            {type === "puffin" && (
+              <div
+                className="absolute -right-1 top-1/2 -translate-y-1/2 rounded-sm px-1 py-[2px] text-[8px] font-bold uppercase tracking-wide"
+                style={{ background: "#000", color: "#fff", fontFamily: "Arial, sans-serif" }}
+              >
+                Wait
+              </div>
+            )}
           </div>
+          {/* Type badge underneath so each crossing type is visually distinct */}
+          {type && (
+            <div
+              className="flex items-center gap-1 rounded-full border border-black/20 bg-white px-2 py-[2px] text-[10px] font-semibold uppercase tracking-wide text-black"
+              style={{ fontFamily: "Arial, sans-serif" }}
+            >
+              {type === "pelican" && <span>Pelican · flashing amber</span>}
+              {type === "puffin" && <span>Puffin · near-side</span>}
+              {type === "toucan" && (
+                <>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="6" cy="17" r="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                    <circle cx="18" cy="17" r="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                    <path d="M6 17 L11 8 L16 8 L18 17" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                    <circle cx="14" cy="4.5" r="1.5" />
+                  </svg>
+                  <span>Toucan · cycles + pedestrians</span>
+                </>
+              )}
+              {type === "pegasus" && (
+                <>
+                  <svg width="14" height="12" viewBox="0 0 24 20" fill="currentColor">
+                    <path d="M2 16 L6 10 L10 10 L12 6 L16 6 L18 10 L22 12 L22 16 L18 16 L18 14 L14 14 L14 16 L10 16 L10 14 L6 14 L6 16 Z" />
+                    <circle cx="17" cy="5" r="1.2" />
+                  </svg>
+                  <span>Pegasus · equestrian</span>
+                </>
+              )}
+            </div>
+          )}
         </div>
       );
     }
