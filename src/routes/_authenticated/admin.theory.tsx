@@ -255,11 +255,6 @@ function AdminTheoryCms() {
     setSelected(next);
   };
 
-  const password = () => {
-if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    return p;
-  };
-
   const refresh = () => qc.invalidateQueries({ queryKey: ["theory-cms"] });
 
   const openNew = () => setDraft({ ...EMPTY_DRAFT });
@@ -267,8 +262,7 @@ if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
 
   const save = async () => {
     if (!draft) return;
-    const p = password();
-if (!draft.question.trim()) {
+    if (!draft.question.trim()) {
       toast.error("Question is required.");
       return;
     }
@@ -331,8 +325,7 @@ if (!draft.question.trim()) {
       toast.error("Save the question first to attach an image.");
       return;
     }
-    const p = password();
-const reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = async () => {
       try {
         const res = await uploadFn({
@@ -354,11 +347,10 @@ const reader = new FileReader();
   };
 
   const doDelete = async (ids: string[]) => {
-    const p = password();
-    if (!p || !ids.length) return;
+    if (!ids.length) return;
     if (!window.confirm(`Delete ${ids.length} question${ids.length > 1 ? "s" : ""}?`)) return;
     try {
-      await deleteFn({ data: { password: p, ids } });
+      await deleteFn({ data: { ids } });
       toast.success("Deleted");
       setSelected(new Set());
       await refresh();
@@ -368,9 +360,8 @@ const reader = new FileReader();
   };
 
   const doDuplicate = async (id: string) => {
-    const p = password();
-try {
-      await dupFn({ data: { password: p, id } });
+    try {
+      await dupFn({ data: { id } });
       toast.success("Duplicated");
       await refresh();
     } catch (e) {
@@ -379,9 +370,8 @@ try {
   };
 
   const doReorder = async (id: string, direction: "up" | "down") => {
-    const p = password();
-try {
-      await reorderFn({ data: { password: p, id, direction } });
+    try {
+      await reorderFn({ data: { id, direction } });
       await refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reorder failed");
@@ -389,11 +379,10 @@ try {
   };
 
   const doBulkPublish = async (is_published: boolean) => {
-    const p = password();
     const ids = [...selected];
-    if (!p || !ids.length) return;
+    if (!ids.length) return;
     try {
-      await bulkFn({ data: { password: p, ids, patch: { is_published } } });
+      await bulkFn({ data: { ids, patch: { is_published } } });
       toast.success(is_published ? "Published" : "Unpublished");
       await refresh();
     } catch (e) {
