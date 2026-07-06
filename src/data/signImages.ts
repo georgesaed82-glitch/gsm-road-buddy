@@ -52,7 +52,11 @@ export const officialSignImages: Record<string, string> = {
   "p-no-right": "/__l5e/assets-v1/8e2c8401-5a66-4376-a9ea-bc0d3cd9db7a/UK_traffic_sign_612.svg",
   "p-no-uturn": "/__l5e/assets-v1/858b7beb-204f-4c5e-81b7-c6e86fe9c5e7/UK_traffic_sign_614.svg",
   "p-no-overtake": "/__l5e/assets-v1/43c50fd8-3a8a-4d0a-94d1-3c0c6239b6a0/UK_traffic_sign_632.svg",
-  "p-end-overtake": "/__l5e/assets-v1/44b9aae2-49bb-4347-b856-9eaf63f53121/UK_traffic_sign_633.svg",
+  // Diagram 633 is the "Stop when directed by a police / traffic officer"
+  // sign, NOT end-of-no-overtaking (which is diagram 833). Kept for the new
+  // p-police-stop entry; p-end-overtake now falls back to the SignVisual
+  // end-restriction pictogram until a verified 833 SVG is added.
+  "p-police-stop": "/__l5e/assets-v1/44b9aae2-49bb-4347-b856-9eaf63f53121/UK_traffic_sign_633.svg",
   "s-20": "/__l5e/assets-v1/04b2e685-cb42-4a5e-9833-a1adf6dc555f/UK_traffic_sign_670V20.svg",
   "s-30": "/__l5e/assets-v1/d627778e-73a0-4089-8249-d54f589b1452/UK_traffic_sign_670V30.svg",
   "s-40": "/__l5e/assets-v1/05a32b5f-379f-46ca-a8ed-03cee442b919/UK_traffic_sign_670V40.svg",

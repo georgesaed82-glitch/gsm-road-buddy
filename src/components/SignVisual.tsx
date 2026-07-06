@@ -832,34 +832,34 @@ export function SignVisual({ variant, size = 160 }: { variant: SignVariant; size
       );
     }
     case "countdown-marker": {
+      // Real UK countdown markers (TSRGD diagrams 2101.1/2/3) are a plain
+      // rectangle with 3, 2 or 1 diagonal white bar — no distance text.
+      // Blue background on motorways, green on primary all-purpose roads.
       const bg = variant.background === "primary" ? "#0e7c3a" : "#0033a0";
       const bars = variant.distance === 300 ? 3 : variant.distance === 200 ? 2 : 1;
-      const w = px * 0.9;
-      const h = px * 1.1;
+      const w = px * 0.85;
+      const h = px * 1.15;
       return (
-        <div
-          className="flex flex-col items-center justify-center gap-[6%] border-2 border-white text-white shadow-md"
-          style={{ width: w, height: h, background: bg, padding: "6% 8%" }}
+        <svg
+          width={w}
+          height={h}
+          viewBox="0 0 60 82"
+          role="img"
+          aria-label={`Countdown marker: ${variant.distance} yards to exit`}
         >
-          {Array.from({ length: bars }).map((_, i) => (
-            <div
-              key={i}
-              style={{
-                width: "70%",
-                height: h * 0.11,
-                background: "#fff",
-                transform: "skewX(-28deg)",
-                borderRadius: 1,
-              }}
-            />
-          ))}
-          <div
-            className="mt-[8%] font-bold leading-none"
-            style={{ fontSize: px * 0.12, fontFamily: "Arial, sans-serif" }}
-          >
-            {variant.distance} yds
-          </div>
-        </div>
+          {/* Rounded rectangle sign face with white border */}
+          <rect x="1.5" y="1.5" width="57" height="79" rx="3" ry="3" fill={bg} stroke="#fff" strokeWidth="2" />
+          {/* Diagonal white bars, evenly spaced */}
+          {Array.from({ length: bars }).map((_, i) => {
+            const rowH = 62 / bars;
+            const cy = 10 + rowH * (i + 0.5);
+            return (
+              <g key={i} transform={`translate(30 ${cy}) skewX(-24)`}>
+                <rect x={-19} y={-3.5} width="38" height="7" rx="1" fill="#fff" />
+              </g>
+            );
+          })}
+        </svg>
       );
     }
     case "roundabout-ads": {
