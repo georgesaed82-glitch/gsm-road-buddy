@@ -450,7 +450,6 @@ type ExportUsesFn = (args: {
 
 function CodesTable({
   rows,
-  password,
   fetchUses,
   exportUses,
   onRevoke,
@@ -510,7 +509,6 @@ function CodesTable({
 
 function CodeRow({
   row,
-  password,
   fetchUses,
   exportUses,
   onRevoke,
@@ -569,7 +567,6 @@ function CodeRow({
     try {
       await sendMail({
         data: {
-          password,
           to: row.email,
           subject: emailSubject,
           body: emailBody,

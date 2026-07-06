@@ -69,13 +69,11 @@ function InstructorsAdmin() {
   };
 
   const save = async (d: Draft) => {
-if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    setSavingId(d.id || "new");
+setSavingId(d.id || "new");
     try {
       const badges = d.badgesText.split(",").map((s) => s.trim()).filter(Boolean);
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id || undefined,
             name: d.name,
@@ -104,8 +102,7 @@ if (!password) return toast.error("Admin password missing. Sign in via /auth?adm
 
   const remove = async (id: string) => {
     if (!confirm("Delete this instructor?")) return;
-if (!password) return;
-    try {
+try {
       await delFn({ data: { password, id } });
       toast.success("Deleted");
       invalidate();
@@ -115,8 +112,7 @@ if (!password) return;
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-if (!password) return;
-    const next = [...drafts];
+const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];

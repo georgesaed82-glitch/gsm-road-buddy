@@ -42,11 +42,9 @@ function LegalAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-if (!password) return toast.error("Admin password missing.");
-    try {
+try {
       await saveFn({
         data: {
-          password,
           item: {
             slug: d.slug,
             title: d.title,
@@ -70,8 +68,7 @@ if (!password) return toast.error("Admin password missing.");
       setDrafts((cur) => cur.filter((_, i) => i !== idx));
       return;
     }
-if (!password) return toast.error("Admin password missing.");
-    if (!confirm(`Delete /legal/${d.slug}?`)) return;
+if (!confirm(`Delete /legal/${d.slug}?`)) return;
     try {
       await delFn({ data: { password, slug: d.slug } });
       toast.success("Deleted");

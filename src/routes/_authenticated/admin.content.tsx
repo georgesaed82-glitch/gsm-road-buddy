@@ -190,8 +190,7 @@ if (!p) {
 
   const save = async () => {
     const password = requirePassword();
-    if (!password) return;
-    if (!draft.name.trim() || !draft.description.trim()) {
+if (!draft.name.trim() || !draft.description.trim()) {
       toast.error("Name and description are required.");
       return;
     }
@@ -199,7 +198,6 @@ if (!p) {
     try {
       await upsertFn({
         data: {
-          password,
           kind,
           item_id: current.id,
           name: draft.name.trim(),
@@ -222,8 +220,7 @@ if (!p) {
   const removeOverride = async () => {
     if (!existing) return;
     const password = requirePassword();
-    if (!password) return;
-    if (!window.confirm("Remove this override and restore the original?")) return;
+if (!window.confirm("Remove this override and restore the original?")) return;
     try {
       await deleteFn({ data: { password, kind, item_id: current.id } });
       toast.success("Removed");
@@ -248,13 +245,11 @@ if (!p) {
       return;
     }
     const password = requirePassword();
-    if (!password) return;
-    setUploading(true);
+setUploading(true);
     try {
       const dataUrl = await readFileAsBase64(file);
       const res = await uploadFn({
         data: {
-          password,
           kind,
           item_id: current.id,
           filename: file.name,

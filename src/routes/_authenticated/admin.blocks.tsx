@@ -194,13 +194,11 @@ if (!p) {
   const save = async () => {
     if (!currentItem) return;
     const password = requirePassword();
-    if (!password) return;
-    setSaving(true);
+setSaving(true);
     try {
       const usePerItemMeta = !!spec.perItemMeta;
       await upsertFn({
         data: {
-          password,
           kind: section as ContentKind,
           item_id: currentItem.id,
           name: usePerItemMeta ? meta.name.trim() || null : null,
@@ -241,8 +239,7 @@ if (!p) {
   const removeOverride = async () => {
     if (!existing || !currentItem) return;
     const password = requirePassword();
-    if (!password) return;
-    if (!window.confirm("Remove this override and restore the original?")) return;
+if (!window.confirm("Remove this override and restore the original?")) return;
     try {
       await deleteFn({ data: { password, kind: section as ContentKind, item_id: currentItem.id } });
       toast.success("Removed");
@@ -347,7 +344,6 @@ if (!p) {
                   });
                   const res = await uploadFn({
                     data: {
-                      password,
                       kind: section as ContentKind,
                       item_id: currentItem.id,
                       filename: file.name,

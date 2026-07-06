@@ -58,8 +58,7 @@ function SeoPage() {
   }, [ratingRow?.updated_at]);
 
   const saveRating = async () => {
-if (!password) return toast.error("Admin password missing.");
-    setSavingRating(true);
+setSavingRating(true);
     try {
       await upsertSettingFn({ data: { password, key: "site_rating", value: { rating: Number(rating.rating), review_count: Math.round(Number(rating.review_count)), show: rating.show } } });
       toast.success("Rating saved");
@@ -92,12 +91,10 @@ if (!password) return toast.error("Admin password missing.");
   }, [existing, current.path]);
 
   const save = async () => {
-if (!password) return toast.error("Admin password missing.");
-    setSaving(true);
+setSaving(true);
     try {
       await saveFn({
         data: {
-          password,
           route: current.path,
           title: form.title.trim() || null,
           description: form.description.trim() || null,
@@ -120,8 +117,7 @@ if (!password) return toast.error("Admin password missing.");
   const removeOverride = async () => {
     if (!existing) return;
     if (!window.confirm("Remove this SEO override and use the built-in defaults?")) return;
-if (!password) return;
-    try {
+try {
       await delFn({ data: { password, route: current.path } });
       toast.success("Removed");
       await qc.invalidateQueries({ queryKey: ["page-seo"] });

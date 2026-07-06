@@ -49,12 +49,10 @@ function ReviewsAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-if (!password) return toast.error("Admin password missing.");
-    setSavingId(d.id || "new");
+setSavingId(d.id || "new");
     try {
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id || undefined,
             name: d.name,
@@ -77,8 +75,7 @@ if (!password) return toast.error("Admin password missing.");
 
   const remove = async (id: string) => {
     if (!confirm("Delete this review?")) return;
-if (!password) return;
-    try {
+try {
       await delFn({ data: { password, id } });
       toast.success("Deleted");
       invalidate();
@@ -88,8 +85,7 @@ if (!password) return;
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-if (!password) return;
-    const next = [...drafts];
+const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];
@@ -102,8 +98,7 @@ if (!password) return;
   const addNew = () => setDrafts([...drafts, { ...EMPTY, order_index: drafts.length }]);
 
   const seed = async () => {
-if (!password) return toast.error("Admin password missing.");
-    if (!confirm("Import all default reviews from the built-in list? (Only runs if table is empty.)")) return;
+if (!confirm("Import all default reviews from the built-in list? (Only runs if table is empty.)")) return;
     try {
       const res = await seedFn({ data: { password, target: "reviews" } });
       toast.success(`Imported ${res.inserted.reviews ?? 0} reviews`);

@@ -307,7 +307,6 @@ const qc = useQueryClient();
                   const b64 = await fileToBase64(file);
                   await uploadAssetFn({
                     data: {
-                      password,
                       name,
                       filename: file.name,
                       content_type: file.type || "image/png",

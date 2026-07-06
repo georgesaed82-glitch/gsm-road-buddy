@@ -430,7 +430,6 @@ const qc = useQueryClient();
             const b64 = await fileToBase64(file);
             const res = await uploadFn({
               data: {
-                password,
                 lesson_id: editing.id,
                 kind,
                 filename: file.name,

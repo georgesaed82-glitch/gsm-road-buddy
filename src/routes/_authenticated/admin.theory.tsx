@@ -268,8 +268,7 @@ if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
   const save = async () => {
     if (!draft) return;
     const p = password();
-    if (!p) return;
-    if (!draft.question.trim()) {
+if (!draft.question.trim()) {
       toast.error("Question is required.");
       return;
     }
@@ -333,8 +332,7 @@ if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
       return;
     }
     const p = password();
-    if (!p) return;
-    const reader = new FileReader();
+const reader = new FileReader();
     reader.onload = async () => {
       try {
         const res = await uploadFn({
@@ -371,8 +369,7 @@ if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
 
   const doDuplicate = async (id: string) => {
     const p = password();
-    if (!p) return;
-    try {
+try {
       await dupFn({ data: { password: p, id } });
       toast.success("Duplicated");
       await refresh();
@@ -383,8 +380,7 @@ if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
 
   const doReorder = async (id: string, direction: "up" | "down") => {
     const p = password();
-    if (!p) return;
-    try {
+try {
       await reorderFn({ data: { password: p, id, direction } });
       await refresh();
     } catch (e) {
@@ -444,8 +440,7 @@ if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
 
   const doImport = async (file: File) => {
     const p = password();
-    if (!p) return;
-    const text = await file.text();
+const text = await file.text();
     const parsed = parseCsv(text).filter((r) => r.some((c) => c.trim()));
     if (parsed.length < 2) {
       toast.error("CSV has no rows.");

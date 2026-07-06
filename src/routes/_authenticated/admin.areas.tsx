@@ -77,15 +77,13 @@ function AreasAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-if (!password) return toast.error("Admin password missing.");
-    setSavingId(d.id || "new");
+setSavingId(d.id || "new");
     try {
       const nearby = d.nearbyText.split(/[,\s]+/).map((s) => s.trim()).filter(Boolean);
       const highlights = d.highlightsText.split("\n").map((s) => s.trim()).filter(Boolean);
       const faqs = parseFaqs(d.faqsText);
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id || undefined,
             slug: d.slug,
@@ -112,14 +110,12 @@ if (!password) return toast.error("Admin password missing.");
 
   const remove = async (id: string) => {
     if (!confirm("Delete this area page?")) return;
-if (!password) return;
-    try { await delFn({ data: { password, id } }); toast.success("Deleted"); invalidate(); }
+try { await delFn({ data: { password, id } }); toast.success("Deleted"); invalidate(); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Delete failed"); }
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-if (!password) return;
-    const next = [...drafts];
+const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];
@@ -132,8 +128,7 @@ if (!password) return;
   const addNew = () => setDrafts([...drafts, { ...EMPTY, order_index: drafts.length }]);
 
   const seed = async () => {
-if (!password) return toast.error("Admin password missing.");
-    if (!confirm("Import all default area pages? (Only runs if table is empty.)")) return;
+if (!confirm("Import all default area pages? (Only runs if table is empty.)")) return;
     try {
       const res = await seedFn({ data: { password, target: "areas" } });
       toast.success(`Imported ${res.inserted.areas ?? 0} areas`);

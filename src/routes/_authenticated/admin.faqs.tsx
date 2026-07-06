@@ -38,11 +38,9 @@ function FaqsAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-if (!password) return toast.error("Admin password missing.");
-    try {
+try {
       await saveFn({
         data: {
-          password,
           item: {
             id: d.id && !d._new ? d.id : undefined,
             question: d.question,
@@ -65,8 +63,7 @@ if (!password) return toast.error("Admin password missing.");
       setDrafts((cur) => cur.filter((_, i) => i !== idx));
       return;
     }
-if (!password) return toast.error("Admin password missing.");
-    if (!confirm("Delete this FAQ?")) return;
+if (!confirm("Delete this FAQ?")) return;
     try {
       await delFn({ data: { password, id: d.id } });
       toast.success("Deleted");

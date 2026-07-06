@@ -45,8 +45,7 @@ function SiteSettingsPage() {
   }, [rows]);
 
   const save = async (key: string, value: object) => {
-if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    setSaving(key);
+setSaving(key);
     try {
       await saveFn({ data: { password, key, value: value as Record<string, never> } });
       toast.success("Saved");

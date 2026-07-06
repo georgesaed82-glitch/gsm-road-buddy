@@ -47,13 +47,11 @@ function DownloadsAdmin() {
 
   const doUpload = async (file: File) => {
     if (!newMeta.title.trim()) return toast.error("Enter a title before uploading.");
-if (!password) return toast.error("Admin password missing.");
-    const reader = new FileReader();
+const reader = new FileReader();
     reader.onload = async () => {
       try {
         await uploadFn({
           data: {
-            password,
             title: newMeta.title.trim(),
             description: newMeta.description,
             category: newMeta.category,
@@ -73,11 +71,9 @@ if (!password) return toast.error("Admin password missing.");
   };
 
   const saveMeta = async (r: DownloadRow) => {
-if (!password) return toast.error("Admin password missing.");
-    try {
+try {
       await saveFn({
         data: {
-          password,
           item: {
             id: r.id,
             title: r.title,
@@ -96,8 +92,7 @@ if (!password) return toast.error("Admin password missing.");
   };
 
   const remove = async (id: string) => {
-if (!password) return toast.error("Admin password missing.");
-    if (!confirm("Delete this file permanently?")) return;
+if (!confirm("Delete this file permanently?")) return;
     try {
       await delFn({ data: { password, id } });
       toast.success("Deleted");

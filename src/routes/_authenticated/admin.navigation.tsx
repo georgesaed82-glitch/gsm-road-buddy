@@ -77,12 +77,10 @@ function NavigationPage() {
   };
 
   const save = async () => {
-if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
-    setSaving(true);
+setSaving(true);
     try {
       await saveFn({
         data: {
-          password,
           items: items.map((it) => ({
             id: it._new ? undefined : it.id,
             location: it.location,
