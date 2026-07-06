@@ -337,9 +337,9 @@ export function Header() {
               </div>
 
               {/* Footer: disclaimer and legal info pinned at the bottom */}
-              <div className="shrink-0 border-t border-border/60 bg-background px-5 py-4">
-                <DVSADisclaimer variant="footer" />
-                {footer.copy && <p className="mt-2 text-[10px] text-muted-foreground">{footer.copy}</p>}
+              <div className="shrink-0 border-t border-border/60 bg-background px-5 py-3">
+                <DVSADisclaimer variant="compact" />
+                {footer.copy && <p className="mt-1.5 text-[10px] text-muted-foreground">{footer.copy}</p>}
               </div>
             </SheetContent>
           </Sheet>
