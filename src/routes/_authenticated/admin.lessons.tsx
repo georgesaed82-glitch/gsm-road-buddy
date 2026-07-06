@@ -37,7 +37,6 @@ import {
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { getAdminPassword } from "@/lib/admin-gate";
 import {
   listLessonsAdmin,
   createLesson,
@@ -139,8 +138,7 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 function AdminLessonsCms() {
-  const password = getAdminPassword();
-  const qc = useQueryClient();
+const qc = useQueryClient();
   const listFn = useServerFn(listLessonsAdmin);
   const createFn = useServerFn(createLesson);
   const updateFn = useServerFn(updateLesson);

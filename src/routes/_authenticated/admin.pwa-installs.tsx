@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getPwaEvents, type PwaFunnel } from "@/lib/admin-stats.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
@@ -37,7 +36,7 @@ function PwaInstallsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["pwa_events"],
     queryFn: async (): Promise<PwaFunnel> =>
-      (await fetchEvents({ data: { password: getAdminPassword() } })) as PwaFunnel,
+      (await fetchEvents({ data: { } })) as PwaFunnel,
     retry: false,
   });
 

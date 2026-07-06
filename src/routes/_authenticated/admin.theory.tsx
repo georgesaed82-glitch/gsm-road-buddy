@@ -42,8 +42,6 @@ import {
   type TheoryQuestionRow,
   type TheoryDifficulty,
 } from "@/lib/theory-cms.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/theory")({
   head: () => ({ meta: [{ title: "Theory questions CMS · Admin" }] }),
   component: AdminTheoryCms,
@@ -258,8 +256,7 @@ function AdminTheoryCms() {
   };
 
   const password = () => {
-    const p = getAdminPassword();
-    if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
+if (!p) toast.error("Admin password missing. Sign in via /auth?admin=1.");
     return p;
   };
 
@@ -291,7 +288,6 @@ function AdminTheoryCms() {
       if (draft.id) {
         await updateFn({
           data: {
-            password: p,
             id: draft.id,
             source_id: draft.source_id,
             category: draft.category,
@@ -308,7 +304,6 @@ function AdminTheoryCms() {
       } else {
         await createFn({
           data: {
-            password: p,
             source_id: draft.source_id,
             category: draft.category,
             tags: draft.tags,
@@ -344,7 +339,6 @@ function AdminTheoryCms() {
       try {
         const res = await uploadFn({
           data: {
-            password: p,
             question_id: draft.id!,
             filename: file.name,
             content_type: file.type || "image/png",

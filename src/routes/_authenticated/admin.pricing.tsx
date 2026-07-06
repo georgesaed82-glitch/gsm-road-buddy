@@ -18,8 +18,6 @@ import {
   reorderPackages,
   type PackageRow,
 } from "@/lib/catalog.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/pricing")({
   head: () => ({ meta: [{ title: "Pricing packages · Admin" }] }),
   component: PricingAdmin,
@@ -66,8 +64,7 @@ function PricingAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
+if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
     setSavingId(d.id || "new");
     try {
       const features = d.featuresText.split("\n").map((s) => s.trim()).filter(Boolean);
@@ -98,8 +95,7 @@ function PricingAdmin() {
 
   const remove = async (id: string) => {
     if (!confirm("Delete this package?")) return;
-    const password = getAdminPassword();
-    if (!password) return;
+if (!password) return;
     try {
       await delFn({ data: { password, id } });
       toast.success("Deleted");
@@ -110,8 +106,7 @@ function PricingAdmin() {
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-    const password = getAdminPassword();
-    if (!password) return;
+if (!password) return;
     const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;

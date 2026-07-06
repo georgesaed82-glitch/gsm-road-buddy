@@ -19,8 +19,6 @@ import {
   seedLocalContent,
   type ReviewRow,
 } from "@/lib/local-content.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/reviews")({
   head: () => ({ meta: [{ title: "Reviews · Admin" }] }),
   component: ReviewsAdmin,
@@ -51,8 +49,7 @@ function ReviewsAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
+if (!password) return toast.error("Admin password missing.");
     setSavingId(d.id || "new");
     try {
       await saveFn({
@@ -80,8 +77,7 @@ function ReviewsAdmin() {
 
   const remove = async (id: string) => {
     if (!confirm("Delete this review?")) return;
-    const password = getAdminPassword();
-    if (!password) return;
+if (!password) return;
     try {
       await delFn({ data: { password, id } });
       toast.success("Deleted");
@@ -92,8 +88,7 @@ function ReviewsAdmin() {
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-    const password = getAdminPassword();
-    if (!password) return;
+if (!password) return;
     const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
@@ -107,8 +102,7 @@ function ReviewsAdmin() {
   const addNew = () => setDrafts([...drafts, { ...EMPTY, order_index: drafts.length }]);
 
   const seed = async () => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
+if (!password) return toast.error("Admin password missing.");
     if (!confirm("Import all default reviews from the built-in list? (Only runs if table is empty.)")) return;
     try {
       const res = await seedFn({ data: { password, target: "reviews" } });

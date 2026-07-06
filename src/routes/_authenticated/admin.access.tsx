@@ -20,7 +20,6 @@ import {
   type AccessCodeRow,
 } from "@/lib/portal-access.functions";
 import { sendOutlookMail } from "@/lib/outlook-mail.functions";
-import { getAdminPassword, setAdminPassword as cacheAdminPassword } from "@/lib/admin-gate";
 import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight, Download, Send } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/access")({
@@ -145,8 +144,7 @@ function ExpiryCell({ row }: { row: AccessCodeRow }) {
 }
 
 function AdminAccessPage() {
-  const password = getAdminPassword();
-  const qc = useQueryClient();
+const qc = useQueryClient();
   const fetchList = useServerFn(listAccessCodes);
   const fetchUses = useServerFn(listAccessUses);
   const exportUses = useServerFn(exportAccessUsesCsv);

@@ -10,7 +10,6 @@ import {
   exportAdminCsv,
   type AdminCsvDataset,
 } from "@/lib/admin-stats.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { theoryCategories } from "@/data/theory";
 import { formatDistanceToNow } from "date-fns";
@@ -78,7 +77,7 @@ function AdminOverviewPage() {
   const downloadDataset = async (dataset: AdminCsvDataset) => {
     try {
       setExporting(dataset);
-      const res = await exportCsv({ data: { password: getAdminPassword(), dataset, rangeDays: range } });
+      const res = await exportCsv({ data: { dataset, rangeDays: range } });
       triggerCsvDownload(res.filename, res.csv);
     } catch (e) {
       console.error("CSV export failed", e);
@@ -89,7 +88,7 @@ function AdminOverviewPage() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-overview-stats", range],
-    queryFn: () => fetchOverview({ data: { password: getAdminPassword(), rangeDays: range } }),
+    queryFn: () => fetchOverview({ data: { rangeDays: range } }),
     refetchInterval: 60_000,
     retry: false,
   });
@@ -98,8 +97,6 @@ function AdminOverviewPage() {
     const status = (error as any)?.status ?? (error as any)?.response?.status;
     if (status === 401) {
       if (typeof window !== "undefined") {
-        window.localStorage.removeItem("admin_unlocked");
-        window.localStorage.removeItem("admin_password");
       }
       navigate({ to: "/auth", search: { admin: 1 } });
     }
@@ -107,7 +104,7 @@ function AdminOverviewPage() {
 
   const { data: subs } = useQuery({
     queryKey: ["admin-alert-subscribers"],
-    queryFn: () => fetchSubs({ data: { password: getAdminPassword() } }),
+    queryFn: () => fetchSubs({ data: { } }),
     retry: false,
   });
 
@@ -118,14 +115,14 @@ function AdminOverviewPage() {
   const [email, setEmail] = useState("");
   const [showSubs, setShowSubs] = useState(false);
   const subMut = useMutation({
-    mutationFn: (e: string) => subscribe({ data: { password: getAdminPassword(), email: e } }),
+    mutationFn: (e: string) => subscribe({ data: { email: e } }),
     onSuccess: () => {
       setEmail("");
       qc.invalidateQueries({ queryKey: ["admin-alert-subscribers"] });
     },
   });
   const unsubMut = useMutation({
-    mutationFn: (id: string) => unsubscribe({ data: { password: getAdminPassword(), id } }),
+    mutationFn: (id: string) => unsubscribe({ data: { id } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-alert-subscribers"] }),
   });
 

@@ -17,8 +17,6 @@ import {
   deleteLegalPage,
   type LegalPageRow,
 } from "@/lib/legal-pages.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/legal")({
   head: () => ({ meta: [{ title: "Legal pages · Admin" }] }),
   component: LegalAdmin,
@@ -44,8 +42,7 @@ function LegalAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
+if (!password) return toast.error("Admin password missing.");
     try {
       await saveFn({
         data: {
@@ -73,8 +70,7 @@ function LegalAdmin() {
       setDrafts((cur) => cur.filter((_, i) => i !== idx));
       return;
     }
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
+if (!password) return toast.error("Admin password missing.");
     if (!confirm(`Delete /legal/${d.slug}?`)) return;
     try {
       await delFn({ data: { password, slug: d.slug } });

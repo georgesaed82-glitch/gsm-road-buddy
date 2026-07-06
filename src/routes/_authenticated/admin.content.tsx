@@ -34,8 +34,6 @@ import {
   type ContentKind,
   type ContentOverrideRow,
 } from "@/lib/content-overrides.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/content")({
   head: () => ({ meta: [{ title: "Edit signs, markings & arm signals · Admin" }] }),
   component: AdminContentPage,
@@ -183,8 +181,7 @@ function AdminContentPage() {
   const dirty = existing ? !overrideMatchesDraft : !originalMatchesDraft;
 
   const requirePassword = (): string | null => {
-    const p = getAdminPassword();
-    if (!p) {
+if (!p) {
       toast.error("Admin password missing. Sign in via /auth?admin=1.");
       return null;
     }

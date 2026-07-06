@@ -37,8 +37,6 @@ import {
   uploadContentImage,
   reorderContentOverrides,
 } from "@/lib/content-overrides.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/road-signs")({
   head: () => ({ meta: [{ title: "Road signs library · Admin" }] }),
   component: AdminRoadSignsPage,
@@ -131,7 +129,7 @@ function AdminRoadSignsPage() {
     void fullOrder;
 
     try {
-      await reorder({ data: { password: getAdminPassword(), kind: "sign", item_ids: fullIds } });
+      await reorder({ data: { kind: "sign", item_ids: fullIds } });
       invalidate();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reorder failed");
@@ -143,7 +141,6 @@ function AdminRoadSignsPage() {
     try {
       await upsert({
         data: {
-          password: getAdminPassword(),
           kind: "sign",
           item_id: row.id,
           enabled: nextEnabled,
@@ -161,7 +158,6 @@ function AdminRoadSignsPage() {
     try {
       await upsert({
         data: {
-          password: getAdminPassword(),
           kind: "sign",
           item_id: id,
           name: "New custom sign",
@@ -229,7 +225,7 @@ function AdminRoadSignsPage() {
             onDeleteCustom={async () => {
               if (!confirm(`Delete "${row.name}"?`)) return;
               try {
-                await del({ data: { password: getAdminPassword(), kind: "sign", item_id: row.id } });
+                await del({ data: { kind: "sign", item_id: row.id } });
                 invalidate();
                 toast.success("Sign deleted");
               } catch (e) {
@@ -239,7 +235,7 @@ function AdminRoadSignsPage() {
             onResetOverride={async () => {
               if (!confirm("Reset this sign back to the built-in artwork and text?")) return;
               try {
-                await del({ data: { password: getAdminPassword(), kind: "sign", item_id: row.id } });
+                await del({ data: { kind: "sign", item_id: row.id } });
                 invalidate();
                 toast.success("Reset to defaults");
               } catch (e) {
@@ -250,7 +246,6 @@ function AdminRoadSignsPage() {
               try {
                 await upsert({
                   data: {
-                    password: getAdminPassword(),
                     kind: "sign",
                     item_id: row.id,
                     name: draft.name,
@@ -269,7 +264,6 @@ function AdminRoadSignsPage() {
               try {
                 const uploaded = await upload({
                   data: {
-                    password: getAdminPassword(),
                     kind: "sign",
                     item_id: row.id,
                     filename: file.name,
@@ -279,7 +273,6 @@ function AdminRoadSignsPage() {
                 });
                 await upsert({
                   data: {
-                    password: getAdminPassword(),
                     kind: "sign",
                     item_id: row.id,
                     image_path: uploaded.image_path,

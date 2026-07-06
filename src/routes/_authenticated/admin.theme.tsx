@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getAdminPassword } from "@/lib/admin-gate";
 import {
   getThemeSettings,
   saveThemeDraft,
@@ -111,8 +110,7 @@ function mergeDeep(base: ThemeTokens, patch: Partial<ThemeTokens>): ThemeTokens 
 }
 
 function AdminThemePage() {
-  const password = getAdminPassword();
-  const qc = useQueryClient();
+const qc = useQueryClient();
   const getSettingsFn = useServerFn(getThemeSettings);
   const saveDraftFn = useServerFn(saveThemeDraft);
   const publishFn = useServerFn(publishTheme);

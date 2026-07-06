@@ -33,7 +33,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { getAdminPassword } from "@/lib/admin-gate";
 import {
   listHomeSectionsAdmin,
   createHomeSection,
@@ -135,8 +134,7 @@ function fromRow(r: HomeSectionRow): Draft {
 
 function AdminHomeCms() {
   const qc = useQueryClient();
-  const password = getAdminPassword() ?? "";
-  const list = useServerFn(listHomeSectionsAdmin);
+const list = useServerFn(listHomeSectionsAdmin);
   const create = useServerFn(createHomeSection);
   const update = useServerFn(updateHomeSection);
   const remove = useServerFn(deleteHomeSection);

@@ -19,8 +19,6 @@ import {
   uploadInstructorImage,
   type InstructorRow,
 } from "@/lib/catalog.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/instructors")({
   head: () => ({ meta: [{ title: "Instructors · Admin" }] }),
   component: InstructorsAdmin,
@@ -71,8 +69,7 @@ function InstructorsAdmin() {
   };
 
   const save = async (d: Draft) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
+if (!password) return toast.error("Admin password missing. Sign in via /auth?admin=1.");
     setSavingId(d.id || "new");
     try {
       const badges = d.badgesText.split(",").map((s) => s.trim()).filter(Boolean);
@@ -107,8 +104,7 @@ function InstructorsAdmin() {
 
   const remove = async (id: string) => {
     if (!confirm("Delete this instructor?")) return;
-    const password = getAdminPassword();
-    if (!password) return;
+if (!password) return;
     try {
       await delFn({ data: { password, id } });
       toast.success("Deleted");
@@ -119,8 +115,7 @@ function InstructorsAdmin() {
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-    const password = getAdminPassword();
-    if (!password) return;
+if (!password) return;
     const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
@@ -136,8 +131,7 @@ function InstructorsAdmin() {
   };
 
   const upload = async (id: string, file: File) => {
-    const password = getAdminPassword();
-    if (!password || !id) return toast.error("Save the instructor first, then upload an image.");
+if (!password || !id) return toast.error("Save the instructor first, then upload an image.");
     const b64 = await new Promise<string>((res, rej) => {
       const r = new FileReader();
       r.onload = () => res(String(r.result));

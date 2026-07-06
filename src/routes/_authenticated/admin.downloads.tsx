@@ -18,8 +18,6 @@ import {
   deleteDownload,
   type DownloadRow,
 } from "@/lib/blog.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
-
 export const Route = createFileRoute("/_authenticated/admin/downloads")({
   head: () => ({ meta: [{ title: "Downloads · Admin" }] }),
   component: DownloadsAdmin,
@@ -49,8 +47,7 @@ function DownloadsAdmin() {
 
   const doUpload = async (file: File) => {
     if (!newMeta.title.trim()) return toast.error("Enter a title before uploading.");
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
+if (!password) return toast.error("Admin password missing.");
     const reader = new FileReader();
     reader.onload = async () => {
       try {
@@ -76,8 +73,7 @@ function DownloadsAdmin() {
   };
 
   const saveMeta = async (r: DownloadRow) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
+if (!password) return toast.error("Admin password missing.");
     try {
       await saveFn({
         data: {
@@ -100,8 +96,7 @@ function DownloadsAdmin() {
   };
 
   const remove = async (id: string) => {
-    const password = getAdminPassword();
-    if (!password) return toast.error("Admin password missing.");
+if (!password) return toast.error("Admin password missing.");
     if (!confirm("Delete this file permanently?")) return;
     try {
       await delFn({ data: { password, id } });

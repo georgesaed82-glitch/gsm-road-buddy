@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getContactClicks } from "@/lib/admin-stats.functions";
-import { getAdminPassword } from "@/lib/admin-gate";
 import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
@@ -24,7 +23,7 @@ function ContactClicksPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["contact_clicks"],
     queryFn: async (): Promise<Click[]> => {
-      const rows = await fetchClicks({ data: { password: getAdminPassword() } });
+      const rows = await fetchClicks({ data: { } });
       return rows as Click[];
     },
     retry: false,

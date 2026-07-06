@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { AdminShell } from "@/components/AdminShell";
-import { getAdminPassword } from "@/lib/admin-gate";
 import { listErrorLogs, getErrorStats, clearResolvedErrors, type ErrorLogRow } from "@/lib/error-logs.functions";
 import { AlertTriangle, Trash2, RefreshCw } from "lucide-react";
 
@@ -14,8 +13,7 @@ export const Route = createFileRoute("/_authenticated/admin/errors")({
 
 function AdminErrorsPage() {
   const navigate = useNavigate();
-  const password = getAdminPassword();
-  const fetchLogs = useServerFn(listErrorLogs);
+const fetchLogs = useServerFn(listErrorLogs);
   const fetchStats = useServerFn(getErrorStats);
   const clearOld = useServerFn(clearResolvedErrors);
   const qc = useQueryClient();
