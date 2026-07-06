@@ -214,6 +214,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isPortal = useIsPortal();
 
   useEffect(() => {
     function handleExternalClick(e: MouseEvent) {
@@ -274,8 +275,8 @@ function RootComponent() {
         <main className="flex-1" suppressHydrationWarning>
           <Outlet />
         </main>
-        <Footer />
-        <AIChatWidget />
+        {!isPortal && <Footer />}
+        {!isPortal && <AIChatWidget />}
         <Toaster />
         <PageViewTracker />
         <PWAInstallTracker />
