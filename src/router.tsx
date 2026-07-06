@@ -7,6 +7,7 @@ function handleAdminUnauthorized(err: unknown) {
   if (typeof window === "undefined") return;
   if (!window.location.pathname.startsWith("/admin")) return;
   if (!isAdminUnauthorizedError(err)) return;
+  // Scrub any legacy admin-unlock state and send the user to admin sign-in.
   clearAdminUnlock();
   const target = "/auth?admin=1";
   if (window.location.pathname + window.location.search !== target) {

@@ -2,32 +2,42 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { evaluateAttemptState, fingerprintCode, guardCodeAttempt, logCodeAttempt } from "./auth-guard.functions";
 
-const BOOTSTRAP_CODE = "7777";
-
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
-/** Returns true if `password` is a valid active admin code (or bootstrap if no admin row set). */
-export async function verifyAdminPasswordServer(password: string): Promise<boolean> {
-  if (!password) return false;
-  const supabase = await admin();
-  const { data } = await supabase
-    .from("portal_access_codes")
-    .select("id")
-    .eq("kind", "admin")
-    .eq("code", password)
-    .eq("revoked", false)
-    .maybeSingle();
-  if (data) return true;
-  const { count } = await supabase
-    .from("portal_access_codes")
-    .select("id", { count: "exact", head: true })
-    .eq("kind", "admin")
-    .eq("revoked", false);
-  if ((count ?? 0) === 0 && password === (process.env.ADMIN_PASSWORD || BOOTSTRAP_CODE)) return true;
-  return false;
+/**
+ * Server-side admin auth. Reads the Supabase bearer token from the current
+ * request (attached by `attachSupabaseAuth` client middleware) and confirms
+ * the caller has the `admin` role in `public.user_roles`.
+ *
+ * The `password` argument is IGNORED — retained only so existing server-fn
+ * signatures (which still declare a `password` field for backwards compat)
+ * continue to compile. Do not use the argument for any auth decision.
+ */
+export async function verifyAdminPasswordServer(_password?: string): Promise<boolean> {
+  try {
+    const req = getRequest();
+    const header = req?.headers.get("authorization") || req?.headers.get("Authorization");
+    if (!header) return false;
+    const token = header.replace(/^Bearer\s+/i, "").trim();
+    if (!token) return false;
+    const supabase = await admin();
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+    const uid = userData?.user?.id;
+    if (userErr || !uid) return false;
+    const { data: role, error: roleErr } = await supabase
+      .from("user_roles")
+      .select("user_id")
+      .eq("user_id", uid)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (roleErr) return false;
+    return !!role;
+  } catch {
+    return false;
+  }
 }
 
 async function requireAdmin(password: string) {
@@ -163,15 +173,6 @@ export const verifyPortalAccess = createServerFn({ method: "POST" })
         session,
       };
     }
-    const { count } = await supabase
-      .from("portal_access_codes")
-      .select("id", { count: "exact", head: true })
-      .eq("kind", "learner")
-      .eq("revoked", false);
-    if ((count ?? 0) === 0 && password === BOOTSTRAP_CODE) {
-      await logCodeAttempt(fingerprint, "learner", true, captchaVerified);
-      return { ok: true };
-    }
     await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
     const after = await evaluateAttemptState(fingerprint);
     return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
@@ -189,31 +190,22 @@ async function mintSessionForEmail(
   const supabase = await admin();
   const normalized = email.trim().toLowerCase();
 
-  // Look up or create the user.
-  let userId: string | null = null;
-  const { data: list } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
-  const existing = list?.users?.find((u) => (u.email || "").toLowerCase() === normalized);
-  if (existing) {
-    userId = existing.id;
-  } else {
-    const { data: created, error: createErr } = await supabase.auth.admin.createUser({
+  // Try to mint a magiclink directly (O(1) lookup — no user pagination).
+  // If the user doesn't exist yet, create it and retry.
+  let link = await supabase.auth.admin.generateLink({ type: "magiclink", email: normalized });
+  if (link.error || !link.data?.properties?.hashed_token) {
+    const { error: createErr } = await supabase.auth.admin.createUser({
       email: normalized,
       email_confirm: true,
     });
-    if (createErr || !created?.user) {
+    if (createErr && !/registered|exists/i.test(createErr.message)) {
       console.error("[portal-access] createUser failed", createErr);
       return null;
     }
-    userId = created.user.id;
+    link = await supabase.auth.admin.generateLink({ type: "magiclink", email: normalized });
   }
-
-  // Generate a magiclink so we can exchange its hashed_token for a session.
-  const { data: link, error: linkErr } = await supabase.auth.admin.generateLink({
-    type: "magiclink",
-    email: normalized,
-  });
-  if (linkErr || !link?.properties?.hashed_token) {
-    console.error("[portal-access] generateLink failed", linkErr);
+  if (link.error || !link.data?.properties?.hashed_token) {
+    console.error("[portal-access] generateLink failed", link.error);
     return null;
   }
 
@@ -229,13 +221,12 @@ async function mintSessionForEmail(
   });
   const { data: verified, error: verifyErr } = await stateless.auth.verifyOtp({
     type: "magiclink",
-    token_hash: link.properties.hashed_token,
+    token_hash: link.data.properties.hashed_token,
   });
   if (verifyErr || !verified?.session) {
     console.error("[portal-access] verifyOtp failed", verifyErr);
     return null;
   }
-  void userId;
   return {
     access_token: verified.session.access_token,
     refresh_token: verified.session.refresh_token,

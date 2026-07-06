@@ -73,18 +73,45 @@ function AuthPage() {
     setSubmitting(true);
     const pw = password.trim();
     const emailValue = email.trim();
-    if (!isAdmin && !emailValue) {
+    if (!emailValue) {
       toast.error("Enter your email address.");
       setSubmitting(false);
+      return;
+    }
+    if (isAdmin) {
+      // Admin login is now a normal Supabase email+password sign-in. Access to
+      // /admin is decided by the `admin` role in public.user_roles, not by a
+      // shared password stored in localStorage.
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: emailValue,
+          password: pw,
+        });
+        if (error) {
+          toast.error(error.message || "Sign-in failed. Check your email and password.");
+          setSubmitting(false);
+          return;
+        }
+        // Scrub any legacy admin-unlock state left over from the old build.
+        try {
+          window.localStorage.removeItem("admin_unlocked");
+          window.localStorage.removeItem("admin_password");
+        } catch {}
+        toast.success("Signed in. Checking admin access...");
+        navigate({ to: "/admin" });
+      } catch {
+        toast.error("Sign-in failed. Please try again.");
+        setSubmitting(false);
+      }
       return;
     }
     try {
       const res = await verify({
         data: {
           password: pw,
-          mode: isAdmin ? "admin" : "learner",
+          mode: "learner",
           captchaToken: codeCaptchaToken,
-          email: isAdmin ? null : emailValue,
+          email: emailValue,
         },
       });
       if (!res.ok) {
@@ -107,27 +134,21 @@ function AuthPage() {
         return;
       }
       window.sessionStorage.setItem("portal_unlocked", "1");
-      if (isAdmin) {
-        window.localStorage.setItem("admin_unlocked", "1");
-        window.localStorage.setItem("admin_password", pw);
-      }
       // Persist / clear the remembered learner credentials
-      if (!isAdmin) {
-        try {
-          if (remember) {
-            window.localStorage.setItem(
-              "gsm_remember_learner",
-              JSON.stringify({ email: emailValue, pin: pw }),
-            );
-          } else {
-            window.localStorage.removeItem("gsm_remember_learner");
-          }
-        } catch {}
-      }
+      try {
+        if (remember) {
+          window.localStorage.setItem(
+            "gsm_remember_learner",
+            JSON.stringify({ email: emailValue, pin: pw }),
+          );
+        } else {
+          window.localStorage.removeItem("gsm_remember_learner");
+        }
+      } catch {}
       // Subscription codes carry a student email — link the code login to
       // that Supabase account so progress persists across devices.
       let linked = false;
-      if (!isAdmin && res.session?.access_token && res.session?.refresh_token) {
+      if (res.session?.access_token && res.session?.refresh_token) {
         const { error: setErr } = await supabase.auth.setSession({
           access_token: res.session.access_token,
           refresh_token: res.session.refresh_token,
@@ -135,15 +156,13 @@ function AuthPage() {
         if (!setErr) linked = true;
       }
       toast.success(
-        isAdmin
-          ? "Admin access granted."
-          : linked && res.subscription?.email
+        linked && res.subscription?.email
           ? `Signed in as ${res.subscription.email}. Progress will save to your account.`
           : res.subscription?.expires_at
           ? `Access granted until ${new Date(res.subscription.expires_at).toLocaleDateString()}.`
           : "Access granted. Welcome to the learner portal.",
       );
-      navigate({ to: isAdmin ? "/admin" : "/dashboard" });
+      navigate({ to: "/dashboard" });
     } catch {
       toast.error("Could not verify code. Please try again.");
       setSubmitting(false);
@@ -159,49 +178,47 @@ function AuthPage() {
           </CardTitle>
           <CardDescription>
             <Badge variant="secondary" className="mt-2">
-              {isAdmin ? "Admin only" : "Email + PIN login"}
+              {isAdmin ? "Admin sign-in" : "Email + PIN login"}
             </Badge>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             {isAdmin
-              ? "Enter the admin access code to view site analytics, payments, and learner progress."
+              ? "Sign in with your admin email and password. Access to the admin area is granted to users with the admin role."
               : "Enter your email address and the PIN George sent you. Your progress saves automatically to your account."}
           </p>
           <form onSubmit={handleSubmit} className="space-y-3 text-left">
-            {!isAdmin && (
-              <div className="space-y-1">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <User className="h-4 w-4" /> Email address
-                </label>
-                <Input
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={submitting}
-                />
-              </div>
-            )}
+            <div className="space-y-1">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <User className="h-4 w-4" /> Email address
+              </label>
+              <Input
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
+              />
+            </div>
             <label className="text-sm font-medium flex items-center gap-2">
-              <Lock className="h-4 w-4" /> {isAdmin ? "Access code" : "PIN"}
+              <Lock className="h-4 w-4" /> {isAdmin ? "Password" : "PIN"}
             </label>
             <div className="flex gap-2">
               <Input
                 type="password"
                 required
-                inputMode="numeric"
+                inputMode={isAdmin ? "text" : "numeric"}
                 autoComplete="off"
-                placeholder={isAdmin ? "Enter code" : "Enter your PIN"}
+                placeholder={isAdmin ? "Your password" : "Enter your PIN"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={submitting}
               />
               <Button type="submit" disabled={submitting}>
-                {submitting ? "..." : "Enter"}
+                {submitting ? "..." : isAdmin ? "Sign in" : "Enter"}
               </Button>
             </div>
             {codeCaptchaRequired && siteKey ? (
