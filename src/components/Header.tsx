@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Menu,
+  Mail,
   Lock,
   LogOut,
   ChevronDown,
