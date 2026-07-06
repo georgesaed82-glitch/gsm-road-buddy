@@ -29,7 +29,7 @@ const theoryItems: Item[] = [
 
 const practicalItems: Item[] = [
   { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
-  { to: "/driving-clips/", label: "Driving clips", icon: Film },
+  { to: "/driving-clips/", label: "Practical animations", icon: Film },
 ];
 
 const bottomItems: Item[] = [
