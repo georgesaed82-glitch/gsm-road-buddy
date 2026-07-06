@@ -63,13 +63,13 @@
   --radius: 0.75rem;
 
   /* Cream, Forest Green & Terracotta — editorial driving-school palette */
-  /* cream #F9F7F2, forest green #2D5A4A, terracotta #C87654 */
-  --background: oklch(0.97 0.01 95);
+  /* warm cream #F7F4EC, forest green #2D5A4A, terracotta #C87654 */
+  --background: oklch(0.958 0.018 88);
   --foreground: oklch(0.25 0.03 155);
 
-  --card: oklch(0.99 0.005 95);
+  --card: oklch(0.972 0.014 88);
   --card-foreground: oklch(0.25 0.03 155);
-  --popover: oklch(0.99 0.005 95);
+  --popover: oklch(0.972 0.014 88);
   --popover-foreground: oklch(0.25 0.03 155);
 
   --primary: oklch(0.45 0.08 155);
