@@ -249,7 +249,7 @@ export type AccessCodeRow = {
 };
 
 export const listAccessCodes = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string }) => d)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }): Promise<AccessCodeRow[]> => {
     const supabase = await requireAdmin();
     const { data: rows, error } = await supabase

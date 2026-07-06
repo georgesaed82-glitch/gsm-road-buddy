@@ -312,7 +312,7 @@ export type ContactClickRow = {
 };
 
 export const getContactClicks = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string }) => d)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }): Promise<ContactClickRow[]> => {
     const supabase = await adminClient();
     const { data: rows, error } = await supabase
@@ -345,7 +345,7 @@ export type PwaFunnel = {
 };
 
 export const getPwaEvents = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string }) => d)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }): Promise<PwaFunnel> => {
     const supabase = await adminClient();
     const { data: rows, error } = await supabase
@@ -383,7 +383,7 @@ export const getPwaEvents = createServerFn({ method: "POST" })
   });
 
 export const listAdminAlertSubscribers = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string }) => d)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }): Promise<AdminAlertSubscriber[]> => {
     const supabase = await adminClient();
     const { data: rows, error } = await supabase

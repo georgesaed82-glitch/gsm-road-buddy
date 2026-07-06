@@ -45,7 +45,7 @@ async function timed<T>(fn: () => Promise<T>): Promise<{ value: T; ms: number }>
 }
 
 export const runDiagnostics = createServerFn({ method: "POST" })
-  .inputValidator((data: { password: string }) => data)
+  .inputValidator((d: Record<string, never>) => d)
   .handler(async ({ data }) => {
     const results: CheckResult[] = [];
     try {
