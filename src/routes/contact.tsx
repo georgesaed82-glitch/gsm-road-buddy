@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, MapPin, Clock, Phone } from "lucide-react";
+import { Mail, MapPin, Clock, Phone, Download } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
-import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
-import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { BookingForm } from "@/components/BookingForm";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { triggerPwaInstallPrompt } from "@/components/PWAInstallTracker";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
