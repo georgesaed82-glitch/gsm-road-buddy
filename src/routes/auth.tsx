@@ -126,7 +126,7 @@ function AuthPage() {
         } else if (res.reason === "email_mismatch") {
           toast.error("That PIN isn't linked to this email. Check both and try again.");
         } else {
-          toast.error("Incorrect or expired code. Email George to request access.");
+          toast.error("The PIN is incorrect. Please use the PIN George sent you.");
         }
         if (res.captchaRequiredNext) setCodeCaptchaRequired(true);
         setCodeCaptchaToken(null);
