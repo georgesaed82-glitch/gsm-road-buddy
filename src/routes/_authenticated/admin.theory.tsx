@@ -640,10 +640,10 @@ function AdminTheoryCms() {
                 </td>
                 <td className="p-3">
                   <div className="flex justify-end gap-1">
-                    <Button size="icon" variant="ghost" onClick={() => doReorder(r.id, "up")} title="Move up"><ArrowUp className="h-4 w-4" /></Button>
-                    <Button size="icon" variant="ghost" onClick={() => doReorder(r.id, "down")} title="Move down"><ArrowDown className="h-4 w-4" /></Button>
-                    <Button size="icon" variant="ghost" onClick={() => doDuplicate(r.id)} title="Duplicate"><Copy className="h-4 w-4" /></Button>
-                    <Button size="icon" variant="ghost" onClick={() => doDelete([r.id])} title="Delete"><Trash2 className="h-4 w-4" /></Button>
+                    <Button aria-label="Move up" size="icon" variant="ghost" onClick={() => doReorder(r.id, "up")} title="Move up"><ArrowUp className="h-4 w-4" /></Button>
+                    <Button aria-label="Move down" size="icon" variant="ghost" onClick={() => doReorder(r.id, "down")} title="Move down"><ArrowDown className="h-4 w-4" /></Button>
+                    <Button aria-label="Copy" size="icon" variant="ghost" onClick={() => doDuplicate(r.id)} title="Duplicate"><Copy className="h-4 w-4" /></Button>
+                    <Button aria-label="Delete" size="icon" variant="ghost" onClick={() => doDelete([r.id])} title="Delete"><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 </td>
               </tr>
