@@ -1097,6 +1097,9 @@ const meetingTraffic: Lesson = {
     "¼ metre → about 7 mph",
     "⅛ metre → 4 mph — walking pace",
     "If in doubt, stop and give way",
+    "Waiting? Stop HALF IN, HALF OUT — never tucked in like a parked car",
+    "Leave ~2 m in front (2.5 m for larger vehicles)",
+    "Before moving off, check RIGHT MIRROR + RIGHT SHOULDER",
   ],
   why: (
     <>
@@ -1112,29 +1115,56 @@ const meetingTraffic: Lesson = {
         <li>Watch the parked cars too — cover the brake for doors and pedestrians.</li>
         <li>Make eye contact with the oncoming driver — read their intent, don't guess.</li>
       </ol>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Waiting position</p>
+      <p>When you have to wait for another vehicle to come through, stop <strong>half in, half out</strong>:</p>
+      <ul className="list-disc space-y-1 pl-5">
+        <li>Too close to the left — you look parked.</li>
+        <li>Too far out — you make the road too narrow.</li>
+        <li>Half in, half out — clearly says “I’m waiting”.</li>
+        <li>Leave about <strong>2 m</strong> in front of you (<strong>2.5 m</strong> for larger vehicles) so you can pull away safely.</li>
+      </ul>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Before you move off</p>
+      <p>Ask yourself: <em>“Who could overtake me?”</em> Anyone on two wheels — cyclists and motorbikes. So always:</p>
+      <ul className="list-disc space-y-1 pl-5">
+        <li>Check the <strong>right mirror</strong>.</li>
+        <li>Check the <strong>right shoulder</strong> (blind spot).</li>
+        <li>Watch for a vehicle emerging from a driveway too.</li>
+      </ul>
     </>
   ),
   georgeExplains:
-    "When you meet oncoming traffic past parked cars, look at the smallest gap — usually between you and the parked car — and match your speed to it. Big gap, keep flowing. Tiny gap, walking pace. And remember: if the obstruction is on your side, you give way. Simple.",
+    "When you meet oncoming traffic past parked cars, look at the smallest gap — usually between you and the parked car — and match your speed to it. Big gap, keep flowing. Tiny gap, walking pace. If you have to wait, sit HALF IN, HALF OUT with about two metres in front of you so everyone knows you’re waiting. And before you move off, always check the RIGHT mirror and RIGHT shoulder — a cyclist or motorbike could easily have slipped past while you were sat there.",
   commonMistakes: [
     "Squeezing through at full speed",
     "Assuming priority when the obstruction is on your side",
     "Stopping so far back you block the road unnecessarily",
     "Watching the oncoming car and forgetting the parked-car door",
+    "Waiting tucked right against the kerb — you look parked",
+    "Waiting too far out — you block the whole road",
+    "Stopping nose-to-tail with the car in front — no room to pull away",
+    "Moving off without a right-shoulder check — cyclists slip past unseen",
   ],
   gsmTips: [
     "Look at the SMALLEST gap and match your speed",
     "Obstruction on your side → you give way",
     "Be ready for a door to open on the parked car",
     "Eye contact with the oncoming driver — read their intent",
+    "Waiting = HALF IN, HALF OUT (never like a parked car)",
+    "Leave ~2 m in front (2.5 m for bigger vehicles)",
+    "Before moving: right mirror + right shoulder — every time",
+    "Ask yourself: “Who could overtake me?” Anyone on two wheels",
   ],
-  keyTakeaway: "Less space, less speed — the gap decides the mph, not the sign at the end of the road.",
-  durationMs: 36000,
+  keyTakeaway:
+    "Less space, less speed. If you have to wait: half in, half out, 2 m in front — and always check right mirror + right shoulder before moving off.",
+  durationMs: 40000,
   captions: [
     { at: 0, label: "Approaching parked cars", detail: "Scan the row ahead — pick your smallest gap." },
     { at: 0.3, label: "Oncoming car approaching", detail: "You'll meet somewhere in the middle." },
-    { at: 0.5, label: "Decision point", detail: "What's your safe speed?" },
-    { at: 0.75, label: "Walking pace through the pinch", detail: "Space is tight — speed drops to match." },
+    { at: 0.45, label: "Waiting position", detail: "Half in, half out — never tucked in like a parked car." },
+    { at: 0.55, label: "Leave a 2 m gap in front", detail: "2 m for cars, 2.5 m for larger vehicles — room to pull away." },
+    { at: 0.7, label: "Who could overtake you?", detail: "Anyone on two wheels — cyclists and motorbikes." },
+    { at: 0.78, label: "Right mirror + right shoulder", detail: "Final check before moving. Blind spot, cyclists, driveway." },
+    { at: 0.92, label: "Move off smoothly", detail: "Signal, mirrors, and go — only when it’s clear." },
   ],
   questions: [
     {
@@ -1144,6 +1174,25 @@ const meetingTraffic: Lesson = {
         { label: "The speed limit — 30 mph", explain: "No. Less space, less speed. 30 mph would leave you no time to react to a door opening." },
         { label: "Around 7 mph — walking pace", correct: true, explain: "Correct. A quarter-metre gap means around 7 mph — walking pace. Enough to react to a door, wobble or pedestrian." },
         { label: "Stop completely and wait", explain: "Not needed here — there IS a gap. Stopping unnecessarily blocks the flow. Filter through slowly." },
+      ],
+    },
+    {
+      at: 0.82,
+      prompt: "You’ve been waiting half in / half out for oncoming traffic to pass. What must you check before moving off again?",
+      options: [
+        {
+          label: "Just the interior mirror — you can see everything from there",
+          explain: "No — the interior mirror won’t show a cyclist alongside your right side. You need the right mirror AND right shoulder.",
+        },
+        {
+          label: "Right mirror and right shoulder (blind spot)",
+          correct: true,
+          explain: "Correct. A cyclist or motorbike could have slipped past while you were waiting, or a vehicle could be emerging from a driveway. Right mirror + right shoulder — every time.",
+        },
+        {
+          label: "Nothing — the road was clear when you stopped",
+          explain: "No. Things change while you’re waiting. Always do a fresh right mirror + right shoulder check before moving.",
+        },
       ],
     },
   ],
