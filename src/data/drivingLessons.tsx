@@ -948,13 +948,56 @@ const goingDownhill: Lesson = {
 // ─────────────────────────────────────────────────────────────
 function MeetingTrafficScene(t: number) {
   const roadY = 200;
-  // Ego moves right, slows as it meets a narrow gap between parked cars and oncoming vehicle.
-  const egoX = -20 + 480 * easeInOut(Math.min(1, t / 0.7));
-  const oncomingX = 660 - 400 * easeInOut(Math.min(1, t / 0.7));
-  // Meeting point around x=340. Gap between parked car edge (y=175) and centre.
-  const meeting = Math.abs(egoX - oncomingX) < 60;
-  const speed = 30 - 22 * (1 - Math.min(1, Math.abs(egoX - 340) / 180));
-  const braking = t > 0.25 && t < 0.6;
+  // Two phases:
+  //  A (0.00–0.45) approach + meet oncoming past parked cars
+  //  B (0.45–1.00) WAITING POSITION — half in, half out, 2 m gap,
+  //     cyclist overtakes, then right mirror + right shoulder check
+  //     before moving off.
+  const kerbY = roadY - 12;          // "fully tucked in" line
+  const halfInY = roadY - 4;         // half-in-half-out line
+
+  // Phase A trajectory: ego rolls to the waiting point at x≈240 and eases half in.
+  const aK = Math.min(1, t / 0.45);
+  const egoXA = -20 + 260 * easeInOut(aK);
+  const egoYA = kerbY + (halfInY - kerbY) * easeInOut(Math.min(1, aK * 1.2));
+  const oncomingX = 660 - 500 * easeInOut(Math.min(1, t / 0.55));
+
+  // Phase B: hold the waiting position, then move away after the check.
+  let egoX = egoXA;
+  let egoY = egoYA;
+  let braking = t > 0.2 && t < 0.5;
+  let indicator: "left" | "right" | null = null;
+  let cyclistX: number | null = null;
+  let showGap2m = false;
+  let showMirrorCheck = false;
+
+  if (t >= 0.45) {
+    egoX = 240;
+    egoY = halfInY;
+    showGap2m = true;
+    braking = false;
+
+    // Cyclist overtakes on the right between 0.5 and 0.72
+    if (t >= 0.5 && t <= 0.75) {
+      const ck = (t - 0.5) / 0.25;
+      cyclistX = -20 + 700 * ck;
+    }
+
+    // Right mirror + right shoulder check pulse before moving
+    if (t >= 0.76 && t < 0.9) {
+      showMirrorCheck = true;
+      indicator = "right";
+    }
+
+    // Move away
+    if (t >= 0.9) {
+      const mk = (t - 0.9) / 0.1;
+      egoX = 240 + 260 * easeInOut(mk);
+      indicator = "right";
+    }
+  }
+
+  const meeting = t < 0.45 && Math.abs(egoX - oncomingX) < 80;
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
       <Sky id="sky-mt" />
@@ -967,17 +1010,67 @@ function MeetingTrafficScene(t: number) {
           <rect x={3} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.5} />
         </g>
       ))}
-      {/* Gap arrows between parked cars and centre line */}
-      <line x1={egoX + 20} y1={186} x2={egoX + 20} y2={198} stroke={meeting ? "#ef4444" : "#f59e0b"} strokeWidth={1.5} strokeDasharray="3 2" />
+      {/* 2-metre gap in front while waiting */}
+      {showGap2m && (
+        <g>
+          <line x1={egoX + 16} y1={halfInY} x2={280 - 14} y2={halfInY} stroke="#22c55e" strokeWidth={1.6} strokeDasharray="4 3" />
+          <rect x={(egoX + 280) / 2 - 22} y={halfInY - 16} width={44} height={13} rx={3} fill="#000" opacity={0.7} />
+          <text x={(egoX + 280) / 2} y={halfInY - 6} textAnchor="middle" fontSize={9} fontWeight={700} fill="#22c55e" fontFamily="sans-serif">
+            2 m
+          </text>
+        </g>
+      )}
       {/* Ego */}
-      <Car2 x={egoX} y={roadY} color="#2f6bf0" braking={braking} />
+      <Car2 x={egoX} y={egoY} color="#2f6bf0" braking={braking} indicator={indicator} />
+      {/* "Half in / half out" markers when waiting */}
+      {showGap2m && (
+        <g opacity={0.85}>
+          <line x1={egoX - 30} y1={halfInY - 14} x2={egoX - 30} y2={halfInY + 14} stroke="#f7c948" strokeWidth={1} strokeDasharray="2 2" />
+          <text x={egoX - 34} y={halfInY - 18} textAnchor="end" fontSize={8} fill="#f7c948" fontFamily="sans-serif" fontWeight={700}>
+            HALF IN / HALF OUT
+          </text>
+        </g>
+      )}
+      {/* Cyclist overtaking on the right */}
+      {cyclistX !== null && (
+        <g transform={`translate(${cyclistX} ${halfInY + 18})`}>
+          <circle cx={-4} cy={0} r={2.4} fill="#111" />
+          <circle cx={6} cy={0} r={2.4} fill="#111" />
+          <rect x={-6} y={-9} width={12} height={7} rx={1.5} fill="#f59e0b" />
+          <circle cx={0} cy={-13} r={2.6} fill="#f59e0b" />
+        </g>
+      )}
+      {/* Right mirror + shoulder check indicator */}
+      {showMirrorCheck && (
+        <g>
+          <circle cx={egoX + 4} cy={egoY - 12} r={9} fill="none" stroke="#C97845" strokeWidth={2}>
+            <animate attributeName="r" values="6;12;6" dur="0.9s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="1;0.3;1" dur="0.9s" repeatCount="indefinite" />
+          </circle>
+          <text x={egoX + 20} y={egoY - 18} fontSize={8.5} fill="#C97845" fontWeight={800} letterSpacing="1.2" fontFamily="sans-serif">
+            RIGHT MIRROR + RIGHT SHOULDER
+          </text>
+        </g>
+      )}
       {/* Oncoming (heading west) */}
-      <g transform={`translate(${oncomingX} ${roadY + 22}) scale(-1 1)`}>
-        <Car2 x={0} y={0} color="#c8102e" braking={t > 0.35 && t < 0.55} />
-      </g>
+      {t < 0.55 && (
+        <g transform={`translate(${oncomingX} ${roadY + 22}) scale(-1 1)`}>
+          <Car2 x={0} y={0} color="#c8102e" braking={t > 0.35 && t < 0.5} />
+        </g>
+      )}
       <Hud
-        label="AVAILABLE SPACE"
-        value={meeting ? "1/4 metre · 7 mph" : Math.abs(egoX - 340) < 120 ? "1/2 metre · 15 mph" : "1 metre · 30 mph"}
+        label={showGap2m ? "WAITING POSITION" : "AVAILABLE SPACE"}
+        value={
+          showGap2m
+            ? showMirrorCheck
+              ? "Check RIGHT before moving"
+              : "Half in / half out · 2 m gap"
+            : meeting
+              ? "1/4 metre · 7 mph"
+              : Math.abs(egoX - 340) < 120
+                ? "1/2 metre · 15 mph"
+                : "1 metre · 30 mph"
+        }
         tone={meeting ? "warn" : "good"}
       />
     </svg>
@@ -1004,6 +1097,9 @@ const meetingTraffic: Lesson = {
     "¼ metre → about 7 mph",
     "⅛ metre → 4 mph — walking pace",
     "If in doubt, stop and give way",
+    "Waiting? Stop HALF IN, HALF OUT — never tucked in like a parked car",
+    "Leave ~2 m in front (2.5 m for larger vehicles)",
+    "Before moving off, check RIGHT MIRROR + RIGHT SHOULDER",
   ],
   why: (
     <>
@@ -1019,29 +1115,56 @@ const meetingTraffic: Lesson = {
         <li>Watch the parked cars too — cover the brake for doors and pedestrians.</li>
         <li>Make eye contact with the oncoming driver — read their intent, don't guess.</li>
       </ol>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Waiting position</p>
+      <p>When you have to wait for another vehicle to come through, stop <strong>half in, half out</strong>:</p>
+      <ul className="list-disc space-y-1 pl-5">
+        <li>Too close to the left — you look parked.</li>
+        <li>Too far out — you make the road too narrow.</li>
+        <li>Half in, half out — clearly says “I’m waiting”.</li>
+        <li>Leave about <strong>2 m</strong> in front of you (<strong>2.5 m</strong> for larger vehicles) so you can pull away safely.</li>
+      </ul>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Before you move off</p>
+      <p>Ask yourself: <em>“Who could overtake me?”</em> Anyone on two wheels — cyclists and motorbikes. So always:</p>
+      <ul className="list-disc space-y-1 pl-5">
+        <li>Check the <strong>right mirror</strong>.</li>
+        <li>Check the <strong>right shoulder</strong> (blind spot).</li>
+        <li>Watch for a vehicle emerging from a driveway too.</li>
+      </ul>
     </>
   ),
   georgeExplains:
-    "When you meet oncoming traffic past parked cars, look at the smallest gap — usually between you and the parked car — and match your speed to it. Big gap, keep flowing. Tiny gap, walking pace. And remember: if the obstruction is on your side, you give way. Simple.",
+    "When you meet oncoming traffic past parked cars, look at the smallest gap — usually between you and the parked car — and match your speed to it. Big gap, keep flowing. Tiny gap, walking pace. If you have to wait, sit HALF IN, HALF OUT with about two metres in front of you so everyone knows you’re waiting. And before you move off, always check the RIGHT mirror and RIGHT shoulder — a cyclist or motorbike could easily have slipped past while you were sat there.",
   commonMistakes: [
     "Squeezing through at full speed",
     "Assuming priority when the obstruction is on your side",
     "Stopping so far back you block the road unnecessarily",
     "Watching the oncoming car and forgetting the parked-car door",
+    "Waiting tucked right against the kerb — you look parked",
+    "Waiting too far out — you block the whole road",
+    "Stopping nose-to-tail with the car in front — no room to pull away",
+    "Moving off without a right-shoulder check — cyclists slip past unseen",
   ],
   gsmTips: [
     "Look at the SMALLEST gap and match your speed",
     "Obstruction on your side → you give way",
     "Be ready for a door to open on the parked car",
     "Eye contact with the oncoming driver — read their intent",
+    "Waiting = HALF IN, HALF OUT (never like a parked car)",
+    "Leave ~2 m in front (2.5 m for bigger vehicles)",
+    "Before moving: right mirror + right shoulder — every time",
+    "Ask yourself: “Who could overtake me?” Anyone on two wheels",
   ],
-  keyTakeaway: "Less space, less speed — the gap decides the mph, not the sign at the end of the road.",
-  durationMs: 36000,
+  keyTakeaway:
+    "Less space, less speed. If you have to wait: half in, half out, 2 m in front — and always check right mirror + right shoulder before moving off.",
+  durationMs: 40000,
   captions: [
     { at: 0, label: "Approaching parked cars", detail: "Scan the row ahead — pick your smallest gap." },
     { at: 0.3, label: "Oncoming car approaching", detail: "You'll meet somewhere in the middle." },
-    { at: 0.5, label: "Decision point", detail: "What's your safe speed?" },
-    { at: 0.75, label: "Walking pace through the pinch", detail: "Space is tight — speed drops to match." },
+    { at: 0.45, label: "Waiting position", detail: "Half in, half out — never tucked in like a parked car." },
+    { at: 0.55, label: "Leave a 2 m gap in front", detail: "2 m for cars, 2.5 m for larger vehicles — room to pull away." },
+    { at: 0.7, label: "Who could overtake you?", detail: "Anyone on two wheels — cyclists and motorbikes." },
+    { at: 0.78, label: "Right mirror + right shoulder", detail: "Final check before moving. Blind spot, cyclists, driveway." },
+    { at: 0.92, label: "Move off smoothly", detail: "Signal, mirrors, and go — only when it’s clear." },
   ],
   questions: [
     {
@@ -1051,6 +1174,25 @@ const meetingTraffic: Lesson = {
         { label: "The speed limit — 30 mph", explain: "No. Less space, less speed. 30 mph would leave you no time to react to a door opening." },
         { label: "Around 7 mph — walking pace", correct: true, explain: "Correct. A quarter-metre gap means around 7 mph — walking pace. Enough to react to a door, wobble or pedestrian." },
         { label: "Stop completely and wait", explain: "Not needed here — there IS a gap. Stopping unnecessarily blocks the flow. Filter through slowly." },
+      ],
+    },
+    {
+      at: 0.82,
+      prompt: "You’ve been waiting half in / half out for oncoming traffic to pass. What must you check before moving off again?",
+      options: [
+        {
+          label: "Just the interior mirror — you can see everything from there",
+          explain: "No — the interior mirror won’t show a cyclist alongside your right side. You need the right mirror AND right shoulder.",
+        },
+        {
+          label: "Right mirror and right shoulder (blind spot)",
+          correct: true,
+          explain: "Correct. A cyclist or motorbike could have slipped past while you were waiting, or a vehicle could be emerging from a driveway. Right mirror + right shoulder — every time.",
+        },
+        {
+          label: "Nothing — the road was clear when you stopped",
+          explain: "No. Things change while you’re waiting. Always do a fresh right mirror + right shoulder check before moving.",
+        },
       ],
     },
   ],
