@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalSearch } from "@/components/PortalSearch";
+import { PortalFooter } from "@/components/PortalFooter";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
