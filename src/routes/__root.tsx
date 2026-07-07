@@ -25,7 +25,6 @@ import { getSiteRating, type SiteRatingValue } from "../lib/cms.functions";
 import { Toaster } from "../components/ui/sonner";
 import { useIsPortal } from "../hooks/useIsPortal";
 
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
