@@ -118,7 +118,7 @@ export const lessonGroups: LessonGroup[] = [
     title: "Parking",
     blurb: "Every test manoeuvre plus the parking situations you'll meet in real driving.",
     lessons: [
-      planned("parallel-parking", "Parallel parking", "Rule 239"),
+      existing("parallel-parking") ?? planned("parallel-parking", "Parallel parking", "Rule 239"),
       planned("reverse-bay-parking", "Reverse bay parking", "Rule 239"),
       planned("forward-bay-parking", "Forward bay parking", "Rule 239"),
       planned("pull-up-on-right", "Pull up on the right", "Rules 200, 239"),
