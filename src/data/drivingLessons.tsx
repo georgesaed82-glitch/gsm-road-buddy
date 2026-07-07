@@ -1,6 +1,7 @@
 import type { Lesson } from "@/components/driving-clips/LessonShell";
 import { parallelParking } from "@/data/lessons/parallelParking";
 import { pullUpOnLeft } from "@/data/lessons/pullUpOnLeft";
+import { pomRoutine } from "@/data/lessons/pomRoutine";
 
 // ─────────────────────────────────────────────────────────────
 // GSM lesson library. Each lesson uses the standard LessonShell
@@ -3486,6 +3487,7 @@ export const drivingLessons: Lesson[] = [
   roundabouts,
   parallelParking,
   pullUpOnLeft,
+  pomRoutine,
 ];
 
 export function getLesson(slug: string): Lesson | undefined {
