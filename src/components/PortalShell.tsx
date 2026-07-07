@@ -157,78 +157,83 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
   );
 
   return (
-    <div
-      className={cn(
-        "mx-auto grid max-w-7xl gap-8 px-4 py-10 transition-[grid-template-columns] duration-300 ease-out sm:px-6 lg:px-8",
-        isOverview ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-[1fr]",
-      )}
-    >
-      {isOverview && (
-        <aside className="hidden animate-fade-in lg:sticky lg:top-24 lg:block lg:h-fit">
-          {sidebarInner}
-        </aside>
-      )}
+    <div className="flex min-h-full flex-col">
+      <div
+        className={cn(
+          "mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 transition-[grid-template-columns] duration-300 ease-out sm:px-6 lg:px-8",
+          isOverview ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-[1fr]",
+        )}
+      >
+        {isOverview && (
+          <aside className="hidden animate-fade-in lg:sticky lg:top-24 lg:block lg:h-fit">
+            {sidebarInner}
+          </aside>
+        )}
 
-      <main className="min-w-0">
-        <header className="border-b border-border pb-6">
-          <div className="mb-3 flex items-center gap-2">
-            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetTrigger
-                className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:text-primary"
-                aria-label="Open learner portal menu"
-              >
-                <Menu className="h-4 w-4 text-accent" />
-                Menu
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] overflow-y-auto p-3 sm:w-[320px]">
-                <SheetTitle className="sr-only">Learner portal navigation</SheetTitle>
-                <SheetDescription className="sr-only">Choose a topic to open.</SheetDescription>
-                {sidebarInner}
-              </SheetContent>
-            </Sheet>
-          </div>
-          {eyebrow && (
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-              <span className="h-px w-6 bg-accent" />
-              {eyebrow}
+        <main className="min-w-0">
+          <header className="border-b border-border pb-6">
+            <div className="mb-3 flex items-center gap-2">
+              <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                <SheetTrigger
+                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:text-primary"
+                  aria-label="Open learner portal menu"
+                >
+                  <Menu className="h-4 w-4 text-accent" />
+                  Menu
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[300px] overflow-y-auto p-3 sm:w-[320px]">
+                  <SheetTitle className="sr-only">Learner portal navigation</SheetTitle>
+                  <SheetDescription className="sr-only">Choose a topic to open.</SheetDescription>
+                  {sidebarInner}
+                </SheetContent>
+              </Sheet>
+            </div>
+            {eyebrow && (
+              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                <span className="h-px w-6 bg-accent" />
+                {eyebrow}
+              </div>
+            )}
+            <h1 className="mt-2 font-display text-4xl font-medium leading-tight text-foreground">{title}</h1>
+          </header>
+          {showCopyright && (
+            <div
+              role="note"
+              aria-label="Copyright notice"
+              className="mt-6 flex items-start gap-3 border border-accent/60 bg-accent/10 px-4 py-4 text-sm leading-relaxed text-foreground"
+            >
+              <Copyright className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+              <div>
+                <p className="font-semibold text-foreground">
+                  Important: copyright protected learning material — personal learning use only
+                </p>
+                <p className="mt-1">
+                  <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
+                  All images, videos, diagrams, notes, quizzes and audio on this learner portal
+                  are the exclusive property of George School of Motoring (GSM Driving School)
+                  and are protected by copyright.
+                </p>
+                <p className="mt-2">
+                  You may view and study this material for your <strong>own personal learning only</strong>.
+                  You may <strong>not</strong> download, screenshot, screen-record, copy, share,
+                  republish, resell, upload to other websites or social media, distribute to other
+                  learners, or reuse any part of it in any other course, training material, app,
+                  video or publication.
+                </p>
+                <p className="mt-2 text-muted-foreground">
+                  Any other use requires prior written permission from George School of Motoring
+                  (GSM Driving School). Unauthorised use is a breach of copyright and will be
+                  enforced.
+                </p>
+              </div>
             </div>
           )}
-          <h1 className="mt-2 font-display text-4xl font-medium leading-tight text-foreground">{title}</h1>
-        </header>
-        {showCopyright && (
-          <div
-            role="note"
-            aria-label="Copyright notice"
-            className="mt-6 flex items-start gap-3 border border-accent/60 bg-accent/10 px-4 py-4 text-sm leading-relaxed text-foreground"
-          >
-            <Copyright className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
-            <div>
-              <p className="font-semibold text-foreground">
-                Important: copyright protected learning material — personal learning use only
-              </p>
-              <p className="mt-1">
-                <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
-                All images, videos, diagrams, notes, quizzes and audio on this learner portal
-                are the exclusive property of George School of Motoring (GSM Driving School)
-                and are protected by copyright.
-              </p>
-              <p className="mt-2">
-                You may view and study this material for your <strong>own personal learning only</strong>.
-                You may <strong>not</strong> download, screenshot, screen-record, copy, share,
-                republish, resell, upload to other websites or social media, distribute to other
-                learners, or reuse any part of it in any other course, training material, app,
-                video or publication.
-              </p>
-              <p className="mt-2 text-muted-foreground">
-                Any other use requires prior written permission from George School of Motoring
-                (GSM Driving School). Unauthorised use is a breach of copyright and will be
-                enforced.
-              </p>
-            </div>
-          </div>
-        )}
-        <div className={showCopyright ? "portal-watermark-wrap pt-8" : "pt-8"}>{children}</div>
-      </main>
+          <div className={showCopyright ? "portal-watermark-wrap pt-8" : "pt-8"}>{children}</div>
+        </main>
+      </div>
+      <div className="mt-auto">
+        <PortalFooter />
+      </div>
     </div>
   );
 }
