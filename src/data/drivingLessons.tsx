@@ -948,13 +948,56 @@ const goingDownhill: Lesson = {
 // ─────────────────────────────────────────────────────────────
 function MeetingTrafficScene(t: number) {
   const roadY = 200;
-  // Ego moves right, slows as it meets a narrow gap between parked cars and oncoming vehicle.
-  const egoX = -20 + 480 * easeInOut(Math.min(1, t / 0.7));
-  const oncomingX = 660 - 400 * easeInOut(Math.min(1, t / 0.7));
-  // Meeting point around x=340. Gap between parked car edge (y=175) and centre.
-  const meeting = Math.abs(egoX - oncomingX) < 60;
-  const speed = 30 - 22 * (1 - Math.min(1, Math.abs(egoX - 340) / 180));
-  const braking = t > 0.25 && t < 0.6;
+  // Two phases:
+  //  A (0.00–0.45) approach + meet oncoming past parked cars
+  //  B (0.45–1.00) WAITING POSITION — half in, half out, 2 m gap,
+  //     cyclist overtakes, then right mirror + right shoulder check
+  //     before moving off.
+  const kerbY = roadY - 12;          // "fully tucked in" line
+  const halfInY = roadY - 4;         // half-in-half-out line
+
+  // Phase A trajectory: ego rolls to the waiting point at x≈240 and eases half in.
+  const aK = Math.min(1, t / 0.45);
+  const egoXA = -20 + 260 * easeInOut(aK);
+  const egoYA = kerbY + (halfInY - kerbY) * easeInOut(Math.min(1, aK * 1.2));
+  const oncomingX = 660 - 500 * easeInOut(Math.min(1, t / 0.55));
+
+  // Phase B: hold the waiting position, then move away after the check.
+  let egoX = egoXA;
+  let egoY = egoYA;
+  let braking = t > 0.2 && t < 0.5;
+  let indicator: "left" | "right" | null = null;
+  let cyclistX: number | null = null;
+  let showGap2m = false;
+  let showMirrorCheck = false;
+
+  if (t >= 0.45) {
+    egoX = 240;
+    egoY = halfInY;
+    showGap2m = true;
+    braking = false;
+
+    // Cyclist overtakes on the right between 0.5 and 0.72
+    if (t >= 0.5 && t <= 0.75) {
+      const ck = (t - 0.5) / 0.25;
+      cyclistX = -20 + 700 * ck;
+    }
+
+    // Right mirror + right shoulder check pulse before moving
+    if (t >= 0.76 && t < 0.9) {
+      showMirrorCheck = true;
+      indicator = "right";
+    }
+
+    // Move away
+    if (t >= 0.9) {
+      const mk = (t - 0.9) / 0.1;
+      egoX = 240 + 260 * easeInOut(mk);
+      indicator = "right";
+    }
+  }
+
+  const meeting = t < 0.45 && Math.abs(egoX - oncomingX) < 80;
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
       <Sky id="sky-mt" />
@@ -967,17 +1010,67 @@ function MeetingTrafficScene(t: number) {
           <rect x={3} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.5} />
         </g>
       ))}
-      {/* Gap arrows between parked cars and centre line */}
-      <line x1={egoX + 20} y1={186} x2={egoX + 20} y2={198} stroke={meeting ? "#ef4444" : "#f59e0b"} strokeWidth={1.5} strokeDasharray="3 2" />
+      {/* 2-metre gap in front while waiting */}
+      {showGap2m && (
+        <g>
+          <line x1={egoX + 16} y1={halfInY} x2={280 - 14} y2={halfInY} stroke="#22c55e" strokeWidth={1.6} strokeDasharray="4 3" />
+          <rect x={(egoX + 280) / 2 - 22} y={halfInY - 16} width={44} height={13} rx={3} fill="#000" opacity={0.7} />
+          <text x={(egoX + 280) / 2} y={halfInY - 6} textAnchor="middle" fontSize={9} fontWeight={700} fill="#22c55e" fontFamily="sans-serif">
+            2 m
+          </text>
+        </g>
+      )}
       {/* Ego */}
-      <Car2 x={egoX} y={roadY} color="#2f6bf0" braking={braking} />
+      <Car2 x={egoX} y={egoY} color="#2f6bf0" braking={braking} indicator={indicator} />
+      {/* "Half in / half out" markers when waiting */}
+      {showGap2m && (
+        <g opacity={0.85}>
+          <line x1={egoX - 30} y1={halfInY - 14} x2={egoX - 30} y2={halfInY + 14} stroke="#f7c948" strokeWidth={1} strokeDasharray="2 2" />
+          <text x={egoX - 34} y={halfInY - 18} textAnchor="end" fontSize={8} fill="#f7c948" fontFamily="sans-serif" fontWeight={700}>
+            HALF IN / HALF OUT
+          </text>
+        </g>
+      )}
+      {/* Cyclist overtaking on the right */}
+      {cyclistX !== null && (
+        <g transform={`translate(${cyclistX} ${halfInY + 18})`}>
+          <circle cx={-4} cy={0} r={2.4} fill="#111" />
+          <circle cx={6} cy={0} r={2.4} fill="#111" />
+          <rect x={-6} y={-9} width={12} height={7} rx={1.5} fill="#f59e0b" />
+          <circle cx={0} cy={-13} r={2.6} fill="#f59e0b" />
+        </g>
+      )}
+      {/* Right mirror + shoulder check indicator */}
+      {showMirrorCheck && (
+        <g>
+          <circle cx={egoX + 4} cy={egoY - 12} r={9} fill="none" stroke="#C97845" strokeWidth={2}>
+            <animate attributeName="r" values="6;12;6" dur="0.9s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="1;0.3;1" dur="0.9s" repeatCount="indefinite" />
+          </circle>
+          <text x={egoX + 20} y={egoY - 18} fontSize={8.5} fill="#C97845" fontWeight={800} letterSpacing="1.2" fontFamily="sans-serif">
+            RIGHT MIRROR + RIGHT SHOULDER
+          </text>
+        </g>
+      )}
       {/* Oncoming (heading west) */}
-      <g transform={`translate(${oncomingX} ${roadY + 22}) scale(-1 1)`}>
-        <Car2 x={0} y={0} color="#c8102e" braking={t > 0.35 && t < 0.55} />
-      </g>
+      {t < 0.55 && (
+        <g transform={`translate(${oncomingX} ${roadY + 22}) scale(-1 1)`}>
+          <Car2 x={0} y={0} color="#c8102e" braking={t > 0.35 && t < 0.5} />
+        </g>
+      )}
       <Hud
-        label="AVAILABLE SPACE"
-        value={meeting ? "1/4 metre · 7 mph" : Math.abs(egoX - 340) < 120 ? "1/2 metre · 15 mph" : "1 metre · 30 mph"}
+        label={showGap2m ? "WAITING POSITION" : "AVAILABLE SPACE"}
+        value={
+          showGap2m
+            ? showMirrorCheck
+              ? "Check RIGHT before moving"
+              : "Half in / half out · 2 m gap"
+            : meeting
+              ? "1/4 metre · 7 mph"
+              : Math.abs(egoX - 340) < 120
+                ? "1/2 metre · 15 mph"
+                : "1 metre · 30 mph"
+        }
         tone={meeting ? "warn" : "good"}
       />
     </svg>
