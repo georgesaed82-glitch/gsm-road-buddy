@@ -56,6 +56,7 @@ export const lessonGroups: LessonGroup[] = [
       existing("stretch-your-vision"),
       existing("plan-to-stop-look-to-go"),
       existing("pull-up-on-left"),
+      existing("pom-routine"),
     ]),
   },
   {
