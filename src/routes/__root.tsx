@@ -24,6 +24,7 @@ import { ThemeProvider } from "../components/ThemeProvider";
 import { getSiteRating, type SiteRatingValue } from "../lib/cms.functions";
 import { Toaster } from "../components/ui/sonner";
 import { useIsPortal } from "../hooks/useIsPortal";
+import { BackToTop } from "../components/BackToTop";
 
 function NotFoundComponent() {
   return (
@@ -276,6 +277,7 @@ function RootComponent() {
         </main>
         {!isPortal && <Footer />}
         {!isPortal && <AIChatWidget />}
+        {isPortal && <BackToTop />}
         <Toaster />
         <PageViewTracker />
         <PWAInstallTracker />
