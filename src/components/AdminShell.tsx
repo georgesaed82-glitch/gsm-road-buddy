@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity, Download, TrendingUp, AlertTriangle, BookOpen, SignpostBig, Sparkles, Settings, ListTree, Search, Users, Tag, Newspaper, HelpCircle, FileDown, MapPin, Star, Video, Image as ImageIcon, Route as RouteIcon, Hand, Palette, GraduationCap, Home as HomeIcon, ChevronDown, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
+import { PortalFooter } from "@/components/PortalFooter";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
