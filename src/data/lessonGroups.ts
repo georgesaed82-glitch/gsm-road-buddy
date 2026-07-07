@@ -55,6 +55,7 @@ export const lessonGroups: LessonGroup[] = [
     lessons: compact([
       existing("stretch-your-vision"),
       existing("plan-to-stop-look-to-go"),
+      existing("pull-up-on-left"),
     ]),
   },
   {
