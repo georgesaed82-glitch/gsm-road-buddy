@@ -1,10 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, ChevronDown, Copyright, History, Film, Compass, Menu } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, ChevronDown, Copyright, History, Film, Compass, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { PortalSearch } from "@/components/PortalSearch";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
