@@ -23,7 +23,7 @@ import { registerServiceWorker } from "../lib/register-sw";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { getSiteRating, type SiteRatingValue } from "../lib/cms.functions";
 import { Toaster } from "../components/ui/sonner";
-
+import { useIsPortal } from "../hooks/useIsPortal";
 
 function NotFoundComponent() {
   return (
@@ -213,6 +213,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isPortal = useIsPortal();
 
   useEffect(() => {
     function handleExternalClick(e: MouseEvent) {
@@ -273,8 +274,8 @@ function RootComponent() {
         <main className="flex-1" suppressHydrationWarning>
           <Outlet />
         </main>
-        <Footer />
-        <AIChatWidget />
+        {!isPortal && <Footer />}
+        {!isPortal && <AIChatWidget />}
         <Toaster />
         <PageViewTracker />
         <PWAInstallTracker />
