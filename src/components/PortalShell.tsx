@@ -1,10 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, ShieldCheck, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, ChevronDown, Copyright, History, Film, Compass, Menu } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, ChevronDown, Copyright, History, Film, Compass, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { PortalSearch } from "@/components/PortalSearch";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
@@ -62,7 +61,6 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAdmin } = useIsAdmin();
 
   const activeGroupId = groups.find((g) => g.items.some((i) => pathname === i.to || pathname.startsWith(i.to + "/")))?.id ?? null;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
@@ -148,17 +146,9 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
           );
         })}
       </nav>
-      {isAdmin && (
-        <Link
-          to="/admin"
-          className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-accent transition-colors hover:bg-accent/10"
-        >
-          <ShieldCheck className="h-4 w-4" /> Admin portal
-        </Link>
-      )}
       <button
         onClick={onSignOut}
-        className="mt-1 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-accent/5 hover:text-primary"
+        className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-accent/5 hover:text-primary"
       >
         <LogOut className="h-4 w-4" /> Sign out
       </button>
