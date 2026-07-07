@@ -177,46 +177,51 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
   );
 
   return (
-    <div
-      className={cn(
-        "mx-auto grid max-w-7xl gap-8 px-4 py-10 transition-[grid-template-columns] duration-300 ease-out sm:px-6 lg:px-8",
-        isOverview ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-[1fr]",
-      )}
-    >
-      {isOverview && (
-        <aside className="hidden animate-fade-in lg:sticky lg:top-24 lg:block lg:h-fit">
-          {sidebarInner}
-        </aside>
-      )}
+    <div className="flex min-h-full flex-col">
+      <div
+        className={cn(
+          "mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 transition-[grid-template-columns] duration-300 ease-out sm:px-6 lg:px-8",
+          isOverview ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-[1fr]",
+        )}
+      >
+        {isOverview && (
+          <aside className="hidden animate-fade-in lg:sticky lg:top-24 lg:block lg:h-fit">
+            {sidebarInner}
+          </aside>
+        )}
 
-      <main className="min-w-0">
-        <header className="border-b border-border pb-6">
-          <div className="mb-3 flex items-center gap-2">
-            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetTrigger
-                className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:text-primary"
-                aria-label="Open admin portal menu"
-              >
-                <Menu className="h-4 w-4 text-accent" />
-                Menu
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] overflow-y-auto p-3 sm:w-[320px]">
-                <SheetTitle className="sr-only">Admin portal navigation</SheetTitle>
-                <SheetDescription className="sr-only">Choose an admin section to open.</SheetDescription>
-                {sidebarInner}
-              </SheetContent>
-            </Sheet>
-          </div>
-          {eyebrow && (
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-              <span className="h-px w-6 bg-accent" />
-              {eyebrow}
+        <main className="min-w-0">
+          <header className="border-b border-border pb-6">
+            <div className="mb-3 flex items-center gap-2">
+              <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                <SheetTrigger
+                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:text-primary"
+                  aria-label="Open admin portal menu"
+                >
+                  <Menu className="h-4 w-4 text-accent" />
+                  Menu
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[300px] overflow-y-auto p-3 sm:w-[320px]">
+                  <SheetTitle className="sr-only">Admin portal navigation</SheetTitle>
+                  <SheetDescription className="sr-only">Choose an admin section to open.</SheetDescription>
+                  {sidebarInner}
+                </SheetContent>
+              </Sheet>
             </div>
-          )}
-          <h1 className="mt-2 font-display text-4xl font-medium leading-tight text-foreground">{title}</h1>
-        </header>
-        <div className="pt-8">{children}</div>
-      </main>
+            {eyebrow && (
+              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                <span className="h-px w-6 bg-accent" />
+                {eyebrow}
+              </div>
+            )}
+            <h1 className="mt-2 font-display text-4xl font-medium leading-tight text-foreground">{title}</h1>
+          </header>
+          <div className="pt-8">{children}</div>
+        </main>
+      </div>
+      <div className="mt-auto">
+        <PortalFooter />
+      </div>
     </div>
   );
 }
