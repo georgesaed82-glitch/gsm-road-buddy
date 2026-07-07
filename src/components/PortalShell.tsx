@@ -61,7 +61,6 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAdmin } = useIsAdmin();
 
   const activeGroupId = groups.find((g) => g.items.some((i) => pathname === i.to || pathname.startsWith(i.to + "/")))?.id ?? null;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
