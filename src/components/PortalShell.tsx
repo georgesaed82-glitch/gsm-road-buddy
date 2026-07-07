@@ -146,17 +146,9 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
           );
         })}
       </nav>
-      {isAdmin && (
-        <Link
-          to="/admin"
-          className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-accent transition-colors hover:bg-accent/10"
-        >
-          <ShieldCheck className="h-4 w-4" /> Admin portal
-        </Link>
-      )}
       <button
         onClick={onSignOut}
-        className="mt-1 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-accent/5 hover:text-primary"
+        className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-accent/5 hover:text-primary"
       >
         <LogOut className="h-4 w-4" /> Sign out
       </button>
