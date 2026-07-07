@@ -214,7 +214,7 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
                 {eyebrow}
               </div>
             )}
-            <h1 className="mt-2 font-display text-4xl font-medium leading-tight text-foreground">{title}</h1>
+            <h1 className="mt-2 break-words font-display text-3xl font-medium leading-tight text-foreground sm:text-4xl">{title}</h1>
           </header>
           <div className="pt-8">{children}</div>
         </main>
