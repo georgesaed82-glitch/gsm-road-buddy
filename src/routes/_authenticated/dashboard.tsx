@@ -107,21 +107,19 @@ function DashboardPage() {
     },
   });
 
-  const greeting = profile?.full_name?.split(" ")[0] ?? "there";
-  const displayName = sessionInfo?.email
-    ? sessionInfo.email
-    : profile?.full_name || greeting;
+  const firstName = profile?.full_name?.split(" ")[0];
+  const title = firstName ? `Welcome back, ${firstName}` : "Welcome back";
   const hoursRemaining = Math.max(0, (stats?.hoursPurchased ?? 0) - (stats?.completed ?? 0));
 
   return (
     <PortalShell
-      eyebrow="Welcome back"
-      title={`Welcome, ${displayName}`}
+      eyebrow="Learner portal"
+      title={title}
       showCopyright
     >
-      <p className="-mt-4 mb-6 text-sm text-muted-foreground">
+      <p className="-mt-4 mb-6 max-w-full text-xs text-muted-foreground sm:text-sm">
         {sessionInfo?.email
-          ? <>Signed in with PIN as <span className="font-medium text-foreground">{sessionInfo.email}</span></>
+          ? <>Signed in with PIN as <span className="break-words font-medium text-foreground">{sessionInfo.email}</span></>
           : "You're using a shared access code — sign in with your PIN to save progress to your account."}
       </p>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
