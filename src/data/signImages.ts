@@ -21,12 +21,22 @@ export const officialSignImages: Record<string, string> = {
   "w-road-humps": "/__l5e/assets-v1/d864f503-9a3a-42c5-baf6-8e7704e3e06e/UK_traffic_sign_557.1.svg",
   "w-narrows": "/__l5e/assets-v1/88996f05-0d53-49b4-88c0-c20398d0a262/UK_traffic_sign_517__left_.svg",
   "w-two-way": "/__l5e/assets-v1/9927d4f4-99f4-4b97-9b7f-97ed062a14c0/UK_traffic_sign_521.svg",
-  "w-school": "/__l5e/assets-v1/2b93c7b1-fcfd-4732-8a4a-7603c1ac83d6/UK_traffic_sign_545.svg",
-  "w-pedestrians": "/__l5e/assets-v1/c6ee9ea4-6b85-4271-9032-e82e142e24ca/UK_traffic_sign_544.1.svg",
+  // Children going to or from school (TSRGD diagram 545). Replaced the
+  // Wikimedia SVG upload — that file on Commons is a blank red triangle with
+  // no pictogram, so learners saw an empty sign. This is a high-resolution
+  // DVSA-style rendering of the correct sign.
+  "w-school": "/__l5e/assets-v1/92ff1738-bb23-49e4-a7ef-3494a13b8b1f/dvsa-545-children-crossing.png",
+  // Pedestrians in the road ahead (TSRGD diagram 544.1). Same reason: the
+  // Wikimedia SVG for 544.1 is blank. Replaced with a high-resolution DVSA
+  // rendering showing the single walking pedestrian silhouette.
+  "w-pedestrians": "/__l5e/assets-v1/82b684b7-2429-4c11-8ded-32336feb2c47/dvsa-544-1-pedestrians-in-road.png",
   // Cyclists (or cycle route crosses road) ahead — red-triangle warning,
   // TSRGD diagram 950.
   "w-cyclists": "/__l5e/assets-v1/4f280b61-729b-47ae-a216-58478f477c4a/UK_traffic_sign_950.svg",
-  "w-horse": "/__l5e/assets-v1/02e1af99-77c8-4b5d-899f-cdb204414d93/UK_traffic_sign_550.1.svg",
+  // Accompanied horses or ponies (TSRGD diagram 550.1). Previous upload was
+  // a Wikimedia error page, so learners saw the low-fidelity SignVisual
+  // fallback. Replaced with a high-resolution DVSA rendering.
+  "w-horse": "/__l5e/assets-v1/73813154-2bbf-45a5-82b6-75082c9e0b12/dvsa-550-1-horses.png",
   "w-wild": "/__l5e/assets-v1/9af3afb8-2a0d-4994-81c2-625d9c064389/UK_traffic_sign_551.svg",
   "w-cattle": "/__l5e/assets-v1/273626b6-049c-4249-bf6a-ebac57635c93/UK_traffic_sign_548.svg",
   // Frail (elderly or disabled) pedestrians likely to cross — TSRGD 544.2.
