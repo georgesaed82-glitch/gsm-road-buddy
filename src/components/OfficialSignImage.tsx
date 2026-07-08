@@ -68,6 +68,7 @@ export function OfficialSignImage({
     width: resolvedSize,
     maxWidth: "100%",
     aspectRatio: "1 / 1",
+    verticalAlign: "top",
   };
 
   const content = !src || errored ? (
