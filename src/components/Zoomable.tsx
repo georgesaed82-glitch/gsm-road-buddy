@@ -1,9 +1,13 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
   type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  type WheelEvent as ReactWheelEvent,
+  type MouseEvent as ReactMouseEvent,
 } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
@@ -46,10 +50,36 @@ export function Zoomable({
 }: ZoomableProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [tx, setTx] = useState(0);
+  const [ty, setTy] = useState(0);
+
+  const pointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const pinchStartRef = useRef<{
+    dist: number;
+    scale: number;
+    cx: number;
+    cy: number;
+    tx: number;
+    ty: number;
+  } | null>(null);
+  const panStartRef = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
+  const swipeStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const lastTapRef = useRef<number>(0);
+  const dragRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => setMounted(true), []);
 
-  const close = useCallback(() => setOpen(false), []);
+  const resetTransform = useCallback(() => {
+    setScale(1);
+    setTx(0);
+    setTy(0);
+  }, []);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    resetTransform();
+  }, [resetTransform]);
 
   useEffect(() => {
     if (!open) return;
@@ -70,6 +100,130 @@ export function Zoomable({
       e.preventDefault();
       setOpen(true);
     }
+  };
+
+  const clampScale = (s: number) => Math.min(6, Math.max(1, s));
+
+  const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    dragRef.current = { x: e.clientX, y: e.clientY };
+
+    if (pointersRef.current.size === 2) {
+      const [a, b] = Array.from(pointersRef.current.values());
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      pinchStartRef.current = {
+        dist,
+        scale,
+        cx: (a.x + b.x) / 2,
+        cy: (a.y + b.y) / 2,
+        tx,
+        ty,
+      };
+      panStartRef.current = null;
+      swipeStartRef.current = null;
+    } else if (pointersRef.current.size === 1) {
+      if (scale > 1) {
+        panStartRef.current = { x: e.clientX, y: e.clientY, tx, ty };
+        swipeStartRef.current = null;
+      } else {
+        swipeStartRef.current = { x: e.clientX, y: e.clientY, time: Date.now() };
+        panStartRef.current = null;
+      }
+    }
+  };
+
+  const handlePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!pointersRef.current.has(e.pointerId)) return;
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointersRef.current.size === 2 && pinchStartRef.current) {
+      const [a, b] = Array.from(pointersRef.current.values());
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      const ratio = dist / pinchStartRef.current.dist;
+      const nextScale = clampScale(pinchStartRef.current.scale * ratio);
+      setScale(nextScale);
+      return;
+    }
+
+    if (panStartRef.current && scale > 1) {
+      setTx(panStartRef.current.tx + (e.clientX - panStartRef.current.x));
+      setTy(panStartRef.current.ty + (e.clientY - panStartRef.current.y));
+      return;
+    }
+
+    if (swipeStartRef.current && scale === 1) {
+      const dy = e.clientY - swipeStartRef.current.y;
+      if (dy > 0) setTy(dy);
+    }
+  };
+
+  const handlePointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const start = dragRef.current;
+    const moved =
+      start != null &&
+      (Math.abs(e.clientX - start.x) > 6 || Math.abs(e.clientY - start.y) > 6);
+
+    // Swipe-down to close (single-touch, un-zoomed)
+    if (
+      swipeStartRef.current &&
+      scale === 1 &&
+      pointersRef.current.size === 1
+    ) {
+      const dy = e.clientY - swipeStartRef.current.y;
+      const dx = e.clientX - swipeStartRef.current.x;
+      const dt = Date.now() - swipeStartRef.current.time;
+      if (dy > 120 && Math.abs(dx) < 80 && dt < 800) {
+        pointersRef.current.delete(e.pointerId);
+        swipeStartRef.current = null;
+        panStartRef.current = null;
+        pinchStartRef.current = null;
+        close();
+        return;
+      }
+      setTy(0);
+    }
+
+    pointersRef.current.delete(e.pointerId);
+    if (pointersRef.current.size < 2) pinchStartRef.current = null;
+    if (pointersRef.current.size === 0) {
+      panStartRef.current = null;
+      swipeStartRef.current = null;
+    }
+
+    // Double-tap to toggle zoom (only if this was a tap, not a drag)
+    if (!moved && pointersRef.current.size === 0) {
+      const now = Date.now();
+      if (now - lastTapRef.current < 300) {
+        lastTapRef.current = 0;
+        if (scale > 1) {
+          resetTransform();
+        } else {
+          setScale(2.5);
+          setTx(0);
+          setTy(0);
+        }
+        return;
+      }
+      lastTapRef.current = now;
+    }
+    dragRef.current = null;
+  };
+
+  const handleWheel = (e: ReactWheelEvent<HTMLDivElement>) => {
+    if (!e.ctrlKey && !e.metaKey && Math.abs(e.deltaY) < 20) return;
+    e.preventDefault();
+    const factor = e.deltaY > 0 ? 0.9 : 1.1;
+    setScale((s) => clampScale(s * factor));
+  };
+
+  // Content clicks never close directly — closing is done via the X button,
+  // the backdrop, Escape, or swipe-down on mobile. This keeps double-tap zoom
+  // and pinch/pan gestures reliable. `closeOnContentClick` is retained on the
+  // prop surface for backwards compatibility but is intentionally unused.
+  void closeOnContentClick;
+  const handleContentClick = (e: ReactMouseEvent) => {
+    e.stopPropagation();
   };
 
   return (
@@ -114,14 +268,23 @@ export function Zoomable({
 
             <figure
               className="relative flex max-h-full max-w-[95vw] flex-col items-center"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (closeOnContentClick) close();
-              }}
+              onClick={handleContentClick}
             >
               <div
-                className="flex max-h-[85vh] max-w-full animate-scale-in items-center justify-center overflow-hidden [&>*]:max-h-[85vh] [&>*]:max-w-full [&_img]:max-h-[85vh] [&_img]:w-auto [&_img]:max-w-full [&_img]:object-contain [&_svg]:max-h-[85vh] [&_svg]:w-auto [&_svg]:max-w-full"
-                style={aspectRatio ? { aspectRatio } : undefined}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+                onWheel={handleWheel}
+                className="flex max-h-[85vh] max-w-full animate-scale-in items-center justify-center overflow-hidden touch-none select-none [&>*]:max-h-[85vh] [&>*]:max-w-full [&_img]:max-h-[85vh] [&_img]:w-auto [&_img]:max-w-full [&_img]:object-contain [&_svg]:max-h-[85vh] [&_svg]:w-auto [&_svg]:max-w-full"
+                style={{
+                  ...(aspectRatio ? { aspectRatio } : {}),
+                  transform: `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`,
+                  transition:
+                    pointersRef.current.size === 0 ? "transform 180ms ease-out" : "none",
+                  cursor: scale > 1 ? "grab" : "zoom-in",
+                  willChange: "transform",
+                }}
               >
                 {children}
               </div>
