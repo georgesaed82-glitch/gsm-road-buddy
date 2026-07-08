@@ -1,5 +1,6 @@
 import type { Lesson } from "@/components/driving-clips/LessonShell";
 import giveWayPhoto from "@/assets/give-way-line-stopping-position.jpeg.asset.json";
+import { Zoomable } from "@/components/Zoomable";
 
 // ─────────────────────────────────────────────────────────────
 // Give Way Lines · Emerging safely at junctions
@@ -452,14 +453,20 @@ export const giveWayLines: Lesson = {
         Correct stopping position at the Give Way line
       </p>
       <div className="my-3 overflow-hidden rounded-lg border border-border">
-        <img
-          src={giveWayPhoto.url}
-          alt="Correct stopping position at the Give Way line — bonnet just behind the line"
-          width={1024}
-          height={1365}
-          loading="lazy"
-          className="w-full"
-        />
+        <Zoomable
+          label="Correct stopping position at the Give Way line"
+          className="block"
+          bare
+        >
+          <img
+            src={giveWayPhoto.url}
+            alt="Correct stopping position at the Give Way line — bonnet just behind the line"
+            width={1024}
+            height={1365}
+            loading="lazy"
+            className="w-full"
+          />
+        </Zoomable>
         <div className="border-t border-border bg-secondary/40 px-3 py-2 text-xs text-muted-foreground">
           <span className="font-semibold text-accent">
             Correct stopping position at the Give Way line
