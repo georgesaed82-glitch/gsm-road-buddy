@@ -6,13 +6,14 @@
  * Expected DOM order of <section> heading labels (uppercase eyebrow):
  *   1. Hero            — "Notting Hill Gate..."
  *   2. Why GSM
- *   3. Driving lessons by area (postcodes + areas)
- *   4. Recent pass
- *   5. From our students (gallery)
- *   6. Free theory practice
- *   7. Download the GSM app
- *   8. The learner portal
- *   9. CTA (Ready to start)
+ *   3. Postcodes covered
+ *   4. Driving lessons by area
+ *   5. Recent pass
+ *   6. From our students (gallery)
+ *   7. Free theory practice
+ *   8. GSM mobile app (InstallAppCard eyebrow)
+ *   9. GSM Plus (learner portal — renamed)
+ *  10. CTA (Ready to start)
  *
  * Run with the dev server on http://localhost:8080:
  *     bun tests/section-order/check.ts
@@ -31,12 +32,13 @@ const VIEWPORTS = [
 const EXPECTED = [
   "Notting Hill", // hero eyebrow
   "Why GSM",
+  "Postcodes covered",
   "Driving lessons by area",
   "Recent pass",
   "From our students",
   "Free theory practice",
   "GSM mobile app", // InstallAppCard eyebrow
-  "The learner portal",
+  "GSM Plus", // portal section — renamed from "The learner portal"
   "Ready to start", // CTA h2 (no eyebrow)
 ];
 
