@@ -332,12 +332,18 @@ function DualCarriagewayJoin() {
           </figcaption>
         </figure>
         <figure className="overflow-hidden rounded-sm border border-border bg-neutral-900">
-          <img
-            src={hatchedPhotoAsset.url}
-            alt="Real UK road photograph looking ahead along a dual carriageway. A white chevron-hatched area painted with solid white borders separates the join-in lane on the left from the running lane on the right, with overhead direction gantries and street lighting visible in the distance."
-            className="h-auto w-full"
-            loading="lazy"
-          />
+          <Zoomable
+            label="Chevron hatch separating the join-in lane from the running lane"
+            className="block"
+            bare
+          >
+            <img
+              src={hatchedPhotoAsset.url}
+              alt="Real UK road photograph looking ahead along a dual carriageway. A white chevron-hatched area painted with solid white borders separates the join-in lane on the left from the running lane on the right, with overhead direction gantries and street lighting visible in the distance."
+              className="h-auto w-full"
+              loading="lazy"
+            />
+          </Zoomable>
           <figcaption className="border-t border-border bg-card px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             Photo — the same layout on a UK dual carriageway
           </figcaption>
