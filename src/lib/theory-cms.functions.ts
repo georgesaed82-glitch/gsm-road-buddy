@@ -43,7 +43,7 @@ async function withSignedUrls(rows: RawRow[]): Promise<TheoryQuestionRow[]> {
     ...r,
     tags: r.tags ?? [],
     difficulty: (r.difficulty as TheoryDifficulty) ?? "medium",
-    image_url: r.image_path ? map.get(r.image_path) ?? null : null,
+    image_url: r.image_path ? (map.get(r.image_path) ?? null) : null,
   }));
 }
 
@@ -135,9 +135,7 @@ export const updateTheoryQuestion = createServerFn({ method: "POST" })
   });
 
 export const deleteTheoryQuestions = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
-    z.object({ ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d),
-  )
+  .inputValidator((d) => z.object({ ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d))
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -145,7 +143,9 @@ export const deleteTheoryQuestions = createServerFn({ method: "POST" })
       .from("theory_questions")
       .select("image_path")
       .in("id", data.ids);
-    const paths = (existing ?? []).map((r) => r.image_path as string | null).filter((p): p is string => !!p);
+    const paths = (existing ?? [])
+      .map((r) => r.image_path as string | null)
+      .filter((p): p is string => !!p);
     if (paths.length) await supabaseAdmin.storage.from("content-images").remove(paths);
     const { error } = await supabaseAdmin.from("theory_questions").delete().in("id", data.ids);
     if (error) throw new Error(error.message);
@@ -175,7 +175,10 @@ export const bulkUpdateTheoryQuestions = createServerFn({ method: "POST" })
     if (data.patch.difficulty !== undefined) simple.difficulty = data.patch.difficulty;
     if (data.patch.is_published !== undefined) simple.is_published = data.patch.is_published;
     if (Object.keys(simple).length) {
-      const { error } = await supabaseAdmin.from("theory_questions").update(simple).in("id", data.ids);
+      const { error } = await supabaseAdmin
+        .from("theory_questions")
+        .update(simple)
+        .in("id", data.ids);
       if (error) throw new Error(error.message);
     }
     if (data.patch.tags_add?.length || data.patch.tags_remove?.length) {
@@ -189,7 +192,10 @@ export const bulkUpdateTheoryQuestions = createServerFn({ method: "POST" })
       for (const r of rows ?? []) {
         const tags = new Set(((r.tags as string[] | null) ?? []).filter((t) => !rem.has(t)));
         for (const t of add) tags.add(t);
-        await supabaseAdmin.from("theory_questions").update({ tags: [...tags] }).eq("id", r.id);
+        await supabaseAdmin
+          .from("theory_questions")
+          .update({ tags: [...tags] })
+          .eq("id", r.id);
       }
     }
     return { ok: true };
@@ -202,13 +208,21 @@ export const duplicateTheoryQuestion = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: src, error: e1 } = await supabaseAdmin
       .from("theory_questions")
-      .select("category, tags, difficulty, question, options, correct_index, explanation, option_explanations, is_published, sort_order")
+      .select(
+        "category, tags, difficulty, question, options, correct_index, explanation, option_explanations, is_published, sort_order",
+      )
       .eq("id", data.id)
       .single();
     if (e1) throw new Error(e1.message);
     const { error, data: row } = await supabaseAdmin
       .from("theory_questions")
-      .insert({ ...src, source_id: null, question: `${src.question} (copy)`, is_published: false, sort_order: (src.sort_order ?? 0) + 1 })
+      .insert({
+        ...src,
+        source_id: null,
+        question: `${src.question} (copy)`,
+        is_published: false,
+        sort_order: (src.sort_order ?? 0) + 1,
+      })
       .select("id")
       .single();
     if (error) throw new Error(error.message);
@@ -216,7 +230,9 @@ export const duplicateTheoryQuestion = createServerFn({ method: "POST" })
   });
 
 export const reorderTheoryQuestion = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ id: z.string().uuid(), direction: z.enum(["up", "down"]) }).parse(d))
+  .inputValidator((d) =>
+    z.object({ id: z.string().uuid(), direction: z.enum(["up", "down"]) }).parse(d),
+  )
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -234,11 +250,19 @@ export const reorderTheoryQuestion = createServerFn({ method: "POST" })
       .order("sort_order", { ascending: asc ? false : true })
       .limit(50);
     const neighbour = (neighbours ?? []).find((n) =>
-      asc ? (n.sort_order as number) < (cur.sort_order as number) : (n.sort_order as number) > (cur.sort_order as number),
+      asc
+        ? (n.sort_order as number) < (cur.sort_order as number)
+        : (n.sort_order as number) > (cur.sort_order as number),
     );
     if (!neighbour) return { ok: true };
-    await supabaseAdmin.from("theory_questions").update({ sort_order: neighbour.sort_order }).eq("id", cur.id);
-    await supabaseAdmin.from("theory_questions").update({ sort_order: cur.sort_order }).eq("id", neighbour.id);
+    await supabaseAdmin
+      .from("theory_questions")
+      .update({ sort_order: neighbour.sort_order })
+      .eq("id", cur.id);
+    await supabaseAdmin
+      .from("theory_questions")
+      .update({ sort_order: cur.sort_order })
+      .eq("id", neighbour.id);
     return { ok: true };
   });
 
@@ -274,7 +298,10 @@ export const uploadTheoryQuestionImage = createServerFn({ method: "POST" })
     if (existing?.image_path && existing.image_path !== path) {
       await supabaseAdmin.storage.from("content-images").remove([existing.image_path]);
     }
-    await supabaseAdmin.from("theory_questions").update({ image_path: path }).eq("id", data.question_id);
+    await supabaseAdmin
+      .from("theory_questions")
+      .update({ image_path: path })
+      .eq("id", data.question_id);
     const { data: signed, error: signErr } = await supabaseAdmin.storage
       .from("content-images")
       .createSignedUrl(path, SIGNED_URL_TTL);
@@ -285,9 +312,7 @@ export const uploadTheoryQuestionImage = createServerFn({ method: "POST" })
 // Bulk import — accepts an array of validated question rows from the client.
 const importRow = questionInput.extend({ password: z.string().optional() }).omit({});
 export const importTheoryQuestions = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
-    z.object({ rows: z.array(importRow).min(1).max(2000) }).parse(d),
-  )
+  .inputValidator((d) => z.object({ rows: z.array(importRow).min(1).max(2000) }).parse(d))
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

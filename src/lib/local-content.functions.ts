@@ -63,7 +63,12 @@ export const listAreas = createServerFn({ method: "GET" }).handler(async (): Pro
 
 const areaInput = z.object({
   id: z.string().uuid().optional(),
-  slug: z.string().trim().min(1).max(120).regex(/^[a-z0-9-]+$/),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(120)
+    .regex(/^[a-z0-9-]+$/),
   area: z.string().trim().min(1).max(120),
   postcode: z.string().trim().min(1).max(20),
   nearby_postcodes: z.array(z.string().max(20)).max(20),
@@ -128,15 +133,17 @@ export const reorderAreas = createServerFn({ method: "POST" })
 
 // ---------- Reviews ----------
 
-export const listReviews = createServerFn({ method: "GET" }).handler(async (): Promise<ReviewRow[]> => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("reviews")
-    .select("*")
-    .order("order_index", { ascending: true });
-  if (error) throw new Error(error.message);
-  return (data ?? []) as ReviewRow[];
-});
+export const listReviews = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ReviewRow[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("reviews")
+      .select("*")
+      .order("order_index", { ascending: true });
+    if (error) throw new Error(error.message);
+    return (data ?? []) as ReviewRow[];
+  },
+);
 
 const reviewInput = z.object({
   id: z.string().uuid().optional(),
@@ -215,7 +222,12 @@ export const listHazardClips = createServerFn({ method: "GET" }).handler(
 
 const hazardInput = z.object({
   id: z.string().uuid().optional(),
-  slug: z.string().trim().min(1).max(120).regex(/^[a-z0-9-]+$/),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(120)
+    .regex(/^[a-z0-9-]+$/),
   title: z.string().trim().min(1).max(200),
   scenario: z.string().max(500),
   difficulty: z.enum(["Easy", "Medium", "Hard"]),

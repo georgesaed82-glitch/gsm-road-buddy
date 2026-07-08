@@ -48,18 +48,22 @@ import {
 const LANE2_Y = 130; // overtaking lane centre
 const LANE1_Y = 170; // normal driving lane centre
 const ACCEL_Y = 220; // acceleration lane centre
-const LANE_H = 34;   // lane height
+const LANE_H = 34; // lane height
 const MERGE_START_X = 180;
-const MERGE_END_X = 460;   // where broken-line merge zone ends
+const MERGE_END_X = 460; // where broken-line merge zone ends
 const HATCH_START_X = 460; // taper starts
-const HATCH_END_X = 600;   // taper reaches the edge line
+const HATCH_END_X = 600; // taper reaches the edge line
 
 function slipRoadPos(k: number) {
   // Curved slip road: starts bottom-left (x=-30, y=310) and lands
   // on the acceleration lane (x=180, y=ACCEL_Y).
   const e = easeInOut(k);
-  const startX = -30, startY = 310, endX = MERGE_START_X, endY = ACCEL_Y;
-  const cpX = 70, cpY = 300;                 // curve control point
+  const startX = -30,
+    startY = 310,
+    endX = MERGE_START_X,
+    endY = ACCEL_Y;
+  const cpX = 70,
+    cpY = 300; // curve control point
   const x = (1 - e) * (1 - e) * startX + 2 * (1 - e) * e * cpX + e * e * endX;
   const y = (1 - e) * (1 - e) * startY + 2 * (1 - e) * e * cpY + e * e * endY;
   const dx = 2 * (1 - e) * (cpX - startX) + 2 * e * (endX - cpX);
@@ -74,15 +78,19 @@ function JoiningScene(t: number) {
   const phaseB = t >= 0.16 && t < 0.32;
   const phaseC = t >= 0.32 && t < 0.44;
   const phaseD = t >= 0.44 && t < 0.62;
-  const phaseE = t >= 0.62 && t < 0.80;
-  const phaseF = t >= 0.80;
+  const phaseE = t >= 0.62 && t < 0.8;
+  const phaseF = t >= 0.8;
 
   // Ego position + angle
-  let egoX = 0, egoY = 0, egoAngle = 0;
+  let egoX = 0,
+    egoY = 0,
+    egoAngle = 0;
   if (phaseA) {
     const k = t / 0.16;
     const p = slipRoadPos(k);
-    egoX = p.x; egoY = p.y; egoAngle = p.angle;
+    egoX = p.x;
+    egoY = p.y;
+    egoAngle = p.angle;
   } else if (phaseB || phaseC) {
     // travel along acceleration lane
     const k = phaseB ? (t - 0.16) / 0.16 : 1;
@@ -102,7 +110,7 @@ function JoiningScene(t: number) {
     egoAngle = k * -6; // slight nose-left visual
   } else {
     // continue in Lane 1
-    const k = easeInOut((t - 0.80) / 0.20);
+    const k = easeInOut((t - 0.8) / 0.2);
     egoX = 410 + k * 220;
     egoY = LANE1_Y;
     egoAngle = 0;
@@ -127,21 +135,29 @@ function JoiningScene(t: number) {
     color: c.color,
   }));
 
-  const egoSpeed =
-    phaseA ? 25 + easeInOut(t / 0.16) * 15 :   // 25→40 on slip road
-    phaseB ? 40 + easeInOut((t - 0.16) / 0.16) * 25 : // 40→65
-    phaseC ? 65 :
-    phaseD ? 68 :
-    phaseE ? 68 :
-             68;
+  const egoSpeed = phaseA
+    ? 25 + easeInOut(t / 0.16) * 15 // 25→40 on slip road
+    : phaseB
+      ? 40 + easeInOut((t - 0.16) / 0.16) * 25 // 40→65
+      : phaseC
+        ? 65
+        : phaseD
+          ? 68
+          : phaseE
+            ? 68
+            : 68;
 
-  const banner =
-    phaseA ? "1 · SLIP ROAD — build speed as you approach" :
-    phaseB ? "2 · ACCELERATION LANE — match the traffic speed" :
-    phaseC ? "3 · MIRROR + BLIND SPOT — check right" :
-    phaseD ? "4 · INDICATE + PICK YOUR GAP" :
-    phaseE ? "5 · MERGE smoothly into Lane 1" :
-             "6 · SETTLED — cancel signal, keep left";
+  const banner = phaseA
+    ? "1 · SLIP ROAD — build speed as you approach"
+    : phaseB
+      ? "2 · ACCELERATION LANE — match the traffic speed"
+      : phaseC
+        ? "3 · MIRROR + BLIND SPOT — check right"
+        : phaseD
+          ? "4 · INDICATE + PICK YOUR GAP"
+          : phaseE
+            ? "5 · MERGE smoothly into Lane 1"
+            : "6 · SETTLED — cancel signal, keep left";
 
   // Hatched taper polygon: rectangle-ish wedge at the end of accel lane.
   // Top edge is the solid line under Lane 1 (y = LANE1_Y + LANE_H/2 + 3),
@@ -178,7 +194,12 @@ function JoiningScene(t: number) {
       <EdgeLine x1={HATCH_START_X} x2={640} y={topY} />
 
       {/* Acceleration lane (paved) */}
-      <Road x={MERGE_START_X - 20} y={topY} width={HATCH_END_X - MERGE_START_X + 20} height={botY - topY} />
+      <Road
+        x={MERGE_START_X - 20}
+        y={topY}
+        width={HATCH_END_X - MERGE_START_X + 20}
+        height={botY - topY}
+      />
 
       {/* Slip road (curved paved area from bottom-left) */}
       <path
@@ -187,7 +208,12 @@ function JoiningScene(t: number) {
       />
 
       {/* Hatched taper at end of accel lane (DO NOT drive here) */}
-      <HatchPolygon points={hatchPts} label="HATCHED — NOT A LANE" labelX={(HATCH_START_X + HATCH_END_X) / 2} labelY={topY - 6} />
+      <HatchPolygon
+        points={hatchPts}
+        label="HATCHED — NOT A LANE"
+        labelX={(HATCH_START_X + HATCH_END_X) / 2}
+        labelY={topY - 6}
+      />
 
       {/* Solid outer edge of accel lane / kerb line */}
       <EdgeLine x1={0} x2={HATCH_END_X} y={botY} />
@@ -196,7 +222,12 @@ function JoiningScene(t: number) {
       <EdgeLine x1={0} x2={640} y={LANE2_Y - LANE_H / 2 - 1} />
 
       {/* Direction-of-travel arrow on the carriageway */}
-      <PathArrow d={`M40 ${LANE2_Y - LANE_H / 2 - 12} L120 ${LANE2_Y - LANE_H / 2 - 12}`} color={COLORS.paint} dashed={false} id="dir-arrow" />
+      <PathArrow
+        d={`M40 ${LANE2_Y - LANE_H / 2 - 12} L120 ${LANE2_Y - LANE_H / 2 - 12}`}
+        color={COLORS.paint}
+        dashed={false}
+        id="dir-arrow"
+      />
 
       {/* Safe gap in Lane 1 (highlighted after decision) */}
       {showGap && (
@@ -205,7 +236,11 @@ function JoiningScene(t: number) {
 
       {/* Suggested learner path (dashed accent line during phases D/E) */}
       {(phaseC || phaseD || phaseE) && (
-        <PathArrow d={`M${egoX + 20} ${ACCEL_Y - 2} Q ${egoX + 80} ${ACCEL_Y - 14} ${egoX + 130} ${LANE1_Y}`} color={COLORS.accent} id="ego-path" />
+        <PathArrow
+          d={`M${egoX + 20} ${ACCEL_Y - 2} Q ${egoX + 80} ${ACCEL_Y - 14} ${egoX + 130} ${LANE1_Y}`}
+          color={COLORS.accent}
+          id="ego-path"
+        />
       )}
 
       {/* Mirror + blind-spot pulses in phase C */}
@@ -237,7 +272,12 @@ function JoiningScene(t: number) {
 
       {/* Callout on the hatched area */}
       {(phaseD || phaseE || phaseF) && (
-        <Callout x={(HATCH_START_X + HATCH_END_X) / 2} y={botY + 22} text="Never drive on the hatched area" tone="bad" />
+        <Callout
+          x={(HATCH_START_X + HATCH_END_X) / 2}
+          y={botY + 22}
+          text="Never drive on the hatched area"
+          tone="bad"
+        />
       )}
 
       {/* Banner + speed */}
@@ -274,27 +314,51 @@ export const joiningDualCarriageway: Lesson = {
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
       <p>
-        Joining a dual carriageway or motorway is one of the highest-risk manoeuvres a new driver makes. Every year drivers cause avoidable collisions by joining too slowly, cutting across hatched markings, or forcing traffic in Lane 1 to brake. Done properly it should feel like slotting into a moving conveyor — matched speed, clear signal, smooth curve, no drama.
+        Joining a dual carriageway or motorway is one of the highest-risk manoeuvres a new driver
+        makes. Every year drivers cause avoidable collisions by joining too slowly, cutting across
+        hatched markings, or forcing traffic in Lane 1 to brake. Done properly it should feel like
+        slotting into a moving conveyor — matched speed, clear signal, smooth curve, no drama.
       </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Use the whole acceleration lane</p>
-      <p>
-        The acceleration lane exists for one reason: so you can reach carriageway speed <em>before</em> you merge. Use every metre of it. Joining at 45&nbsp;mph into 70&nbsp;mph traffic forces the driver behind you to brake sharply and every car behind them does the same — that's how motorway pile-ups start.
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Use the whole acceleration lane
       </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Mirrors, then the blind spot</p>
       <p>
-        Interior mirror to see what's on the whole carriageway, right door mirror to see Lane 1 close in, then a <strong>quick right-shoulder glance</strong> — the door pillar hides a whole car in your blind spot. Only when all three agree do you move.
+        The acceleration lane exists for one reason: so you can reach carriageway speed{" "}
+        <em>before</em> you merge. Use every metre of it. Joining at 45&nbsp;mph into 70&nbsp;mph
+        traffic forces the driver behind you to brake sharply and every car behind them does the
+        same — that's how motorway pile-ups start.
       </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">The hatched taper is NOT a lane</p>
-      <p>
-        Where the acceleration lane ends you'll see red-bordered white chevrons (or diagonal hatching). These are surrounded by a solid white line — that means you must not enter unless it is unavoidable in an emergency (Highway Code Rule&nbsp;130). Merge into Lane 1 <em>before</em> the hatched area starts, using the broken white line as your last window to move across.
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Mirrors, then the blind spot
       </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Give way — but don't stop</p>
       <p>
-        Traffic already on the carriageway has priority (Rule&nbsp;259). If Lane 1 is full, ease your speed slightly to slot in behind the next car — never brake to a halt on the acceleration lane, and never stop at the end of the taper.
+        Interior mirror to see what's on the whole carriageway, right door mirror to see Lane 1
+        close in, then a <strong>quick right-shoulder glance</strong> — the door pillar hides a
+        whole car in your blind spot. Only when all three agree do you move.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        The hatched taper is NOT a lane
+      </p>
+      <p>
+        Where the acceleration lane ends you'll see red-bordered white chevrons (or diagonal
+        hatching). These are surrounded by a solid white line — that means you must not enter unless
+        it is unavoidable in an emergency (Highway Code Rule&nbsp;130). Merge into Lane 1{" "}
+        <em>before</em> the hatched area starts, using the broken white line as your last window to
+        move across.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Give way — but don't stop
+      </p>
+      <p>
+        Traffic already on the carriageway has priority (Rule&nbsp;259). If Lane 1 is full, ease
+        your speed slightly to slot in behind the next car — never brake to a halt on the
+        acceleration lane, and never stop at the end of the taper.
       </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Settle down</p>
       <p>
-        Once you're in Lane 1, cancel your indicator, settle to the traffic speed and open a proper two-second following distance. That's your new normal — Lane 1 is home. Overtaking comes later, only when you need to.
+        Once you're in Lane 1, cancel your indicator, settle to the traffic speed and open a proper
+        two-second following distance. That's your new normal — Lane 1 is home. Overtaking comes
+        later, only when you need to.
       </p>
     </>
   ),
@@ -320,17 +384,38 @@ export const joiningDualCarriageway: Lesson = {
     "Use the whole acceleration lane, match the traffic speed, mirror + blind-spot check, indicate, and merge across the dashed line — never across the hatched area.",
   durationMs: 26000,
   captions: [
-    { at: 0.0,  label: "SLIP ROAD — plan the join", detail: "Look far ahead into Lane 1 as you approach the acceleration lane." },
-    { at: 0.18, label: "BUILD SPEED — match the traffic", detail: "Use the full length of the acceleration lane." },
-    { at: 0.34, label: "MIRRORS + right-shoulder blind spot", detail: "Interior mirror, right door mirror, quick shoulder glance." },
-    { at: 0.46, label: "INDICATE + pick the gap", detail: "Signal right early so the driver in Lane 1 has time to react." },
-    { at: 0.64, label: "MERGE across the dashed line", detail: "Smooth curve into Lane 1 — never cut across the hatched taper." },
+    {
+      at: 0.0,
+      label: "SLIP ROAD — plan the join",
+      detail: "Look far ahead into Lane 1 as you approach the acceleration lane.",
+    },
+    {
+      at: 0.18,
+      label: "BUILD SPEED — match the traffic",
+      detail: "Use the full length of the acceleration lane.",
+    },
+    {
+      at: 0.34,
+      label: "MIRRORS + right-shoulder blind spot",
+      detail: "Interior mirror, right door mirror, quick shoulder glance.",
+    },
+    {
+      at: 0.46,
+      label: "INDICATE + pick the gap",
+      detail: "Signal right early so the driver in Lane 1 has time to react.",
+    },
+    {
+      at: 0.64,
+      label: "MERGE across the dashed line",
+      detail: "Smooth curve into Lane 1 — never cut across the hatched taper.",
+    },
     { at: 0.84, label: "SETTLED in Lane 1", detail: "Cancel signal, two-second gap, keep left." },
   ],
   questions: [
     {
       at: 0.44,
-      prompt: "You're near the end of the acceleration lane, matching the speed of traffic in Lane 1. What should you do next?",
+      prompt:
+        "You're near the end of the acceleration lane, matching the speed of traffic in Lane 1. What should you do next?",
       options: [
         {
           label: "Slow down and wait for a very large gap before moving",
@@ -338,7 +423,8 @@ export const joiningDualCarriageway: Lesson = {
             "No — slowing down means you'll never match the traffic and you may run out of acceleration lane. Watch what happens next: match the speed, indicate, and slot in.",
         },
         {
-          label: "Mirrors, right-shoulder blind-spot check, indicate right, then merge across the dashed line",
+          label:
+            "Mirrors, right-shoulder blind-spot check, indicate right, then merge across the dashed line",
           correct: true,
           explain:
             "Correct. Mirror → blind spot → indicator → merge. Watch how the car crosses the broken white line into the safe gap in Lane 1, skirting the hatched taper (which is not a lane).",

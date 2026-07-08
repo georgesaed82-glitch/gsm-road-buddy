@@ -29,9 +29,19 @@ describe("theory content compliance", () => {
     const all = [
       ...homeTheoryQuestions.map((q, i) => ({ id: `home-${i}`, ...q })),
       ...Object.entries(topicQuizzes).flatMap(([slug, qs]) =>
-        qs.map((q, i) => ({ id: `${slug}-${i}`, question: q.q, options: q.options, correctIndex: q.correctIndex })),
+        qs.map((q, i) => ({
+          id: `${slug}-${i}`,
+          question: q.q,
+          options: q.options,
+          correctIndex: q.correctIndex,
+        })),
       ),
-      ...hazardQuestions.map((q) => ({ id: q.id, question: q.question, options: q.options, correctIndex: q.correctIndex })),
+      ...hazardQuestions.map((q) => ({
+        id: q.id,
+        question: q.question,
+        options: q.options,
+        correctIndex: q.correctIndex,
+      })),
     ];
     for (const q of all) {
       expect(q.correctIndex, `id=${q.id}`).toBeGreaterThanOrEqual(0);
@@ -46,15 +56,24 @@ describe("theory content compliance", () => {
     // "DVSA" as a topic label; this only flags copyright notices.
     const forbidden = /(©|\(c\))\s*(crown copyright|dvsa|driver and vehicle standards agency)/i;
     const all = [
-      ...sampleTheoryQuestions.map((q) => ({ id: q.id, text: `${q.question} ${q.explanation} ${q.optionExplanations.join(" ")}` })),
-      ...homeTheoryQuestions.map((q, i) => ({ id: `home-${i}`, text: `${q.question} ${q.explanation}` })),
+      ...sampleTheoryQuestions.map((q) => ({
+        id: q.id,
+        text: `${q.question} ${q.explanation} ${q.optionExplanations.join(" ")}`,
+      })),
+      ...homeTheoryQuestions.map((q, i) => ({
+        id: `home-${i}`,
+        text: `${q.question} ${q.explanation}`,
+      })),
       ...Object.entries(topicQuizzes).flatMap(([slug, qs]) =>
         qs.map((q, i) => ({ id: `${slug}-${i}`, text: `${q.q} ${q.explanation}` })),
       ),
       ...hazardQuestions.map((q) => ({ id: q.id, text: `${q.question} ${q.explanation}` })),
     ];
     for (const q of all) {
-      expect(forbidden.test(q.text), `possible DVSA copyright marker in ${q.id}: "${q.text.slice(0, 120)}"`).toBe(false);
+      expect(
+        forbidden.test(q.text),
+        `possible DVSA copyright marker in ${q.id}: "${q.text.slice(0, 120)}"`,
+      ).toBe(false);
     }
   });
 });

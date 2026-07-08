@@ -124,11 +124,7 @@ function pushInsert(ids: string[]) {
 function pushDelete(ids: string[]) {
   if (!currentUserId || !ids.length) return;
   const userId = currentUserId;
-  void supabase
-    .from("user_mistakes")
-    .delete()
-    .eq("user_id", userId)
-    .in("question_id", ids);
+  void supabase.from("user_mistakes").delete().eq("user_id", userId).in("question_id", ids);
 }
 
 async function hydrateFromServer(userId: string) {
@@ -235,10 +231,7 @@ function writeStats(s: StatsShape) {
 
 export function recordRetry(correct: boolean, category?: string) {
   const s = readStats();
-  const nextAttempts = [
-    ...s.attempts,
-    { t: Date.now(), correct, category },
-  ].slice(-MAX_HISTORY);
+  const nextAttempts = [...s.attempts, { t: Date.now(), correct, category }].slice(-MAX_HISTORY);
   const currentStreak = correct ? s.currentStreak + 1 : 0;
   const bestStreak = Math.max(s.bestStreak, currentStreak);
   writeStats({ attempts: nextAttempts, currentStreak, bestStreak });

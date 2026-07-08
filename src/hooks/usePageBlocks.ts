@@ -31,14 +31,17 @@ export function usePageBlocks(group: string, defaults: PageBlockDefault[]): Page
         id: d.id,
         name: o?.name ?? d.name,
         description: o?.description ?? d.description,
-        key_points: (o?.key_points && o.key_points.length ? o.key_points : d.key_points) ?? undefined,
+        key_points:
+          (o?.key_points && o.key_points.length ? o.key_points : d.key_points) ?? undefined,
         data: (o?.data as Record<string, unknown> | null | undefined) ?? d.data ?? null,
         fromCms: !!o,
       };
     });
     // Append custom rows for this group (admin-added)
     const customs: PageBlockItem[] = (all ?? [])
-      .filter((r) => r.kind === "page-block" && r.group_slug === group && r.item_id.startsWith("custom:"))
+      .filter(
+        (r) => r.kind === "page-block" && r.group_slug === group && r.item_id.startsWith("custom:"),
+      )
       .map((r) => ({
         id: r.item_id,
         name: r.name ?? "Custom",

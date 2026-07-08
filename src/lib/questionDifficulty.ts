@@ -29,7 +29,19 @@ export function questionsByDifficulty(d: Difficulty): TheoryQuestion[] {
 }
 
 export const difficultyMeta: Record<Difficulty, { label: string; blurb: string; color: string }> = {
-  easy: { label: "Easy", blurb: "Warm-up questions covering the essentials of each topic.", color: "bg-emerald-600" },
-  medium: { label: "Medium", blurb: "Standard DVSA-style questions — the bulk of the real theory test.", color: "bg-amber-500" },
-  hard: { label: "Hard", blurb: "Trickier scenarios, edge cases and the questions candidates most often get wrong.", color: "bg-rose-600" },
+  easy: {
+    label: "Easy",
+    blurb: "Warm-up questions covering the essentials of each topic.",
+    color: "bg-emerald-600",
+  },
+  medium: {
+    label: "Medium",
+    blurb: "Standard DVSA-style questions — the bulk of the real theory test.",
+    color: "bg-amber-500",
+  },
+  hard: {
+    label: "Hard",
+    blurb: "Trickier scenarios, edge cases and the questions candidates most often get wrong.",
+    color: "bg-rose-600",
+  },
 };

@@ -1,13 +1,39 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, CalendarCheck, CreditCard, BookOpen, Eye, LogOut, UserCircle2, SignpostBig, HelpCircle, ClipboardCheck, Milestone, Hand, RotateCcw, ChevronDown, Copyright, History, Film, Compass, Menu } from "lucide-react";
+import {
+  LayoutDashboard,
+  CalendarCheck,
+  CreditCard,
+  BookOpen,
+  Eye,
+  LogOut,
+  UserCircle2,
+  SignpostBig,
+  HelpCircle,
+  ClipboardCheck,
+  Milestone,
+  Hand,
+  RotateCcw,
+  ChevronDown,
+  Copyright,
+  History,
+  Film,
+  Compass,
+  Menu,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalSearch } from "@/components/PortalSearch";
 import { PortalFooter } from "@/components/PortalFooter";
 import { GsmPlus } from "@/components/GsmPlus";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
 
@@ -52,19 +78,29 @@ const myLearningGroup: Group = {
 const accountGroup: Group = {
   id: "account",
   label: "Account",
-  items: [
-    { to: "/profile", label: "Profile", icon: UserCircle2 },
-  ],
+  items: [{ to: "/profile", label: "Profile", icon: UserCircle2 }],
 };
 
 const groups: Group[] = [learningGroup, theoryGroup, myLearningGroup, accountGroup];
 
-export function PortalShell({ children, title, eyebrow, showCopyright = false }: { children: ReactNode; title: string; eyebrow?: string; showCopyright?: boolean }) {
+export function PortalShell({
+  children,
+  title,
+  eyebrow,
+  showCopyright = false,
+}: {
+  children: ReactNode;
+  title: string;
+  eyebrow?: string;
+  showCopyright?: boolean;
+}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const activeGroupId = groups.find((g) => g.items.some((i) => pathname === i.to || pathname.startsWith(i.to + "/")))?.id ?? null;
+  const activeGroupId =
+    groups.find((g) => g.items.some((i) => pathname === i.to || pathname.startsWith(i.to + "/")))
+      ?.id ?? null;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(groups.map((g) => [g.id, activeGroupId ? g.id === activeGroupId : true])),
   );
@@ -103,12 +139,16 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
       </div>
       <nav className="mt-2 flex flex-col gap-0.5">
         <Link to={overviewItem.to} className={linkClass(pathname === overviewItem.to)}>
-          <overviewItem.icon className={cn("h-4 w-4", pathname === overviewItem.to ? "" : "text-accent/80")} />
+          <overviewItem.icon
+            className={cn("h-4 w-4", pathname === overviewItem.to ? "" : "text-accent/80")}
+          />
           {overviewItem.label}
         </Link>
         {groups.map((group) => {
           const open = !!openGroups[group.id];
-          const groupActive = group.items.some((i) => pathname === i.to || pathname.startsWith(i.to + "/"));
+          const groupActive = group.items.some(
+            (i) => pathname === i.to || pathname.startsWith(i.to + "/"),
+          );
           return (
             <div key={group.id} className="mt-1">
               <button
@@ -121,7 +161,12 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                 )}
               >
                 <span className="flex-1 text-left">{group.label}</span>
-                <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open ? "rotate-180" : "rotate-0")} />
+                <ChevronDown
+                  className={cn(
+                    "h-3.5 w-3.5 transition-transform",
+                    open ? "rotate-180" : "rotate-0",
+                  )}
+                />
               </button>
               <div
                 className={cn(
@@ -195,7 +240,9 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                 {eyebrow}
               </div>
             )}
-            <h1 className="mt-2 break-words font-display text-3xl font-medium leading-tight text-foreground sm:text-4xl">{title}</h1>
+            <h1 className="mt-2 break-words font-display text-3xl font-medium leading-tight text-foreground sm:text-4xl">
+              {title}
+            </h1>
           </header>
           {showCopyright && (
             <div
@@ -209,17 +256,19 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
                   Important: copyright protected learning material — personal learning use only
                 </p>
                 <p className="mt-1">
-                  <strong>© {new Date().getFullYear()} George School of Motoring (GSM Driving School).</strong>{" "}
-                  All images, videos, diagrams, notes, quizzes and audio on this learner portal
-                  are the exclusive property of George School of Motoring (GSM Driving School)
-                  and are protected by copyright.
+                  <strong>
+                    © {new Date().getFullYear()} George School of Motoring (GSM Driving School).
+                  </strong>{" "}
+                  All images, videos, diagrams, notes, quizzes and audio on this learner portal are
+                  the exclusive property of George School of Motoring (GSM Driving School) and are
+                  protected by copyright.
                 </p>
                 <p className="mt-2">
-                  You may view and study this material for your <strong>own personal learning only</strong>.
-                  You may <strong>not</strong> download, screenshot, screen-record, copy, share,
-                  republish, resell, upload to other websites or social media, distribute to other
-                  learners, or reuse any part of it in any other course, training material, app,
-                  video or publication.
+                  You may view and study this material for your{" "}
+                  <strong>own personal learning only</strong>. You may <strong>not</strong>{" "}
+                  download, screenshot, screen-record, copy, share, republish, resell, upload to
+                  other websites or social media, distribute to other learners, or reuse any part of
+                  it in any other course, training material, app, video or publication.
                 </p>
                 <p className="mt-2 text-muted-foreground">
                   Any other use requires prior written permission from George School of Motoring

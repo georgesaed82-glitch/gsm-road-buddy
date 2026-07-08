@@ -36,7 +36,8 @@ function bodyOf(name: string): string {
 
 type Car = { x: number; y: number; rotate: number; color: string };
 function extractCars(body: string): Car[] {
-  const re = /<Car\s+x=\{(-?\d+(?:\.\d+)?)\}\s+y=\{(-?\d+(?:\.\d+)?)\}\s+rotate=\{(-?\d+(?:\.\d+)?)\}\s+color="([^"]+)"/g;
+  const re =
+    /<Car\s+x=\{(-?\d+(?:\.\d+)?)\}\s+y=\{(-?\d+(?:\.\d+)?)\}\s+rotate=\{(-?\d+(?:\.\d+)?)\}\s+color="([^"]+)"/g;
   const out: Car[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(body))) {
@@ -57,7 +58,8 @@ function extractArrowEndpoints(body: string): Array<{ x: number; y: number }> {
     out.push({ x: n[n.length - 2], y: n[n.length - 1] });
   }
   // Also include straight `<line x1=.. y1=.. x2=.. y2=..>` arrows.
-  const lineRe = /<line\s+x1="(-?\d+(?:\.\d+)?)"\s+y1="(-?\d+(?:\.\d+)?)"\s+x2="(-?\d+(?:\.\d+)?)"\s+y2="(-?\d+(?:\.\d+)?)"/g;
+  const lineRe =
+    /<line\s+x1="(-?\d+(?:\.\d+)?)"\s+y1="(-?\d+(?:\.\d+)?)"\s+x2="(-?\d+(?:\.\d+)?)"\s+y2="(-?\d+(?:\.\d+)?)"/g;
   while ((m = lineRe.exec(body))) {
     out.push({ x: +m[3], y: +m[4] });
   }
@@ -102,11 +104,17 @@ function expectEastArrowAndWestArrow(endpoints: Array<{ x: number; y: number }>)
   expect(westArrows.length, "at least one arrow ends in the WEST exit").toBeGreaterThanOrEqual(1);
   // finish in the destination road's LEFT lane
   for (const p of eastArrows) {
-    expect(p.y, `east-bound arrow endpoint y=${p.y} must be in left (north) lane 100–190`).toBeGreaterThanOrEqual(100);
+    expect(
+      p.y,
+      `east-bound arrow endpoint y=${p.y} must be in left (north) lane 100–190`,
+    ).toBeGreaterThanOrEqual(100);
     expect(p.y).toBeLessThanOrEqual(190);
   }
   for (const p of westArrows) {
-    expect(p.y, `west-bound arrow endpoint y=${p.y} must be in left (south) lane 190–290`).toBeGreaterThanOrEqual(190);
+    expect(
+      p.y,
+      `west-bound arrow endpoint y=${p.y} must be in left (south) lane 190–290`,
+    ).toBeGreaterThanOrEqual(190);
     expect(p.y).toBeLessThanOrEqual(290);
   }
 }
@@ -154,7 +162,8 @@ describe("NearsideTurnSvg (turn IN FRONT, passenger-to-passenger)", () => {
     expect(blue(cars).y, "blue north of centre y<190").toBeLessThan(190);
   });
 
-  it("arrows finish east/west in the correct LEFT lanes", () => expectEastArrowAndWestArrow(arrows));
+  it("arrows finish east/west in the correct LEFT lanes", () =>
+    expectEastArrowAndWestArrow(arrows));
 });
 
 describe("OffsideTurnSvg (swing BEHIND, driver-to-driver)", () => {
@@ -169,7 +178,8 @@ describe("OffsideTurnSvg (swing BEHIND, driver-to-driver)", () => {
     expect(blue(cars).y, "blue south of centre y>190").toBeGreaterThan(190);
   });
 
-  it("arrows finish east/west in the correct LEFT lanes", () => expectEastArrowAndWestArrow(arrows));
+  it("arrows finish east/west in the correct LEFT lanes", () =>
+    expectEastArrowAndWestArrow(arrows));
 });
 
 describe("Extra Rule 181 scenarios", () => {
@@ -185,7 +195,8 @@ describe("Extra Rule 181 scenarios", () => {
       const arrows = extractArrowEndpoints(body);
 
       it("cars have right-turn rotations", () => expectRightTurnRotations(cars));
-      it("arrows finish east/west in the correct LEFT lanes", () => expectEastArrowAndWestArrow(arrows));
+      it("arrows finish east/west in the correct LEFT lanes", () =>
+        expectEastArrowAndWestArrow(arrows));
       it(`car positions match the ${method} technique`, () => {
         if (method === "offside") {
           expect(red(cars).y, "offside: red north of centre").toBeLessThan(190);

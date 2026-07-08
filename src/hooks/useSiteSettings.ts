@@ -1,7 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
-import { listSiteSettings, listNavItems, listPageSeo, type NavItemRow, type PageSeoRow } from "@/lib/cms.functions";
+import {
+  listSiteSettings,
+  listNavItems,
+  listPageSeo,
+  type NavItemRow,
+  type PageSeoRow,
+} from "@/lib/cms.functions";
 
 export type BusinessInfo = {
   name: string;
@@ -52,10 +58,22 @@ export function useSiteSettings() {
   });
   return useMemo(() => {
     const map = new Map((q.data ?? []).map((r) => [r.key, r.value] as const));
-    const business = { ...DEFAULT_BUSINESS, ...(map.get("business") as Partial<BusinessInfo> | undefined) };
-    const social = { ...DEFAULT_SOCIAL, ...(map.get("social") as Partial<SocialLinks> | undefined) };
-    const opening_hours = { ...DEFAULT_HOURS, ...(map.get("opening_hours") as Partial<OpeningHours> | undefined) };
-    const footer = { ...DEFAULT_FOOTER, ...(map.get("footer") as Partial<typeof DEFAULT_FOOTER> | undefined) };
+    const business = {
+      ...DEFAULT_BUSINESS,
+      ...(map.get("business") as Partial<BusinessInfo> | undefined),
+    };
+    const social = {
+      ...DEFAULT_SOCIAL,
+      ...(map.get("social") as Partial<SocialLinks> | undefined),
+    };
+    const opening_hours = {
+      ...DEFAULT_HOURS,
+      ...(map.get("opening_hours") as Partial<OpeningHours> | undefined),
+    };
+    const footer = {
+      ...DEFAULT_FOOTER,
+      ...(map.get("footer") as Partial<typeof DEFAULT_FOOTER> | undefined),
+    };
     return { business, social, opening_hours, footer, isLoading: q.isLoading };
   }, [q.data, q.isLoading]);
 }
@@ -68,7 +86,10 @@ export function useNavItems(location: NavItemRow["location"]) {
     staleTime: 5 * 60_000,
   });
   const items = useMemo(
-    () => (q.data ?? []).filter((r) => r.location === location && r.enabled).sort((a, b) => a.order_index - b.order_index),
+    () =>
+      (q.data ?? [])
+        .filter((r) => r.location === location && r.enabled)
+        .sort((a, b) => a.order_index - b.order_index),
     [q.data, location],
   );
   return { items, isLoading: q.isLoading };

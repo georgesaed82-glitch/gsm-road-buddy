@@ -18,11 +18,13 @@ function assertRound(pool: typeof signs, label: string) {
       // pool size, correctIndex points at the rendered sign.
       expect(options.length).toBeGreaterThanOrEqual(1);
       expect(options.length).toBeLessThanOrEqual(4);
+      expect(new Set(options).size, `[${label}] duplicate options for ${sign.id}`).toBe(
+        options.length,
+      );
       expect(
-        new Set(options).size,
-        `[${label}] duplicate options for ${sign.id}`,
-      ).toBe(options.length);
-      expect(correctIndex, `[${label}] correctIndex out of range for ${sign.id}`).toBeGreaterThanOrEqual(0);
+        correctIndex,
+        `[${label}] correctIndex out of range for ${sign.id}`,
+      ).toBeGreaterThanOrEqual(0);
       expect(correctIndex).toBeLessThan(options.length);
       expect(
         options[correctIndex],

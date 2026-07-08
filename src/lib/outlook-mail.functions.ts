@@ -4,14 +4,7 @@ import { verifyAdminPasswordServer } from "./portal-access.functions";
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/microsoft_outlook";
 
 export const sendOutlookMail = createServerFn({ method: "POST" })
-  .inputValidator(
-    (d: {
-      to: string;
-      subject: string;
-      body: string;
-      html?: boolean;
-    }) => d,
-  )
+  .inputValidator((d: { to: string; subject: string; body: string; html?: boolean }) => d)
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) {
       throw new Error("Unauthorized");

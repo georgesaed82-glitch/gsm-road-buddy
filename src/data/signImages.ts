@@ -4,14 +4,21 @@
 // mirrored to our CDN so quiz renders never depend on Wikimedia rate limits.
 
 export const officialSignImages: Record<string, string> = {
-  "w-bend-right": "/__l5e/assets-v1/8d6f35ad-8a93-422b-8cf4-18f84417c630/UK_traffic_sign_512__right_.svg",
-  "w-bend-left": "/__l5e/assets-v1/d2660d07-fec9-40bc-9205-a4b3092464d1/UK_traffic_sign_512__left_.svg",
-  "w-double-bend": "/__l5e/assets-v1/c674a60b-f663-442c-a382-30357619a1ed/UK_traffic_sign_513__right_.svg",
+  "w-bend-right":
+    "/__l5e/assets-v1/8d6f35ad-8a93-422b-8cf4-18f84417c630/UK_traffic_sign_512__right_.svg",
+  "w-bend-left":
+    "/__l5e/assets-v1/d2660d07-fec9-40bc-9205-a4b3092464d1/UK_traffic_sign_512__left_.svg",
+  "w-double-bend":
+    "/__l5e/assets-v1/c674a60b-f663-442c-a382-30357619a1ed/UK_traffic_sign_513__right_.svg",
   "w-roundabout": "/__l5e/assets-v1/d7b3cfe1-7db5-4d4a-bc50-1593ca71bd1f/UK_traffic_sign_510.svg",
-  "w-crossroads": "/__l5e/assets-v1/3b5067ab-ace1-4dc4-9feb-107b090491ea/UK_traffic_sign_504.1__variant_1_.svg",
-  "w-staggered": "/__l5e/assets-v1/e2f04029-0526-434e-87e1-42f7b1b3a71d/UK_traffic_sign_507.1__variant_1,_left_.svg",
-  "w-t-junction": "/__l5e/assets-v1/e63dd01b-4f26-4fe4-9a9a-1aad6fdeb18a/UK_traffic_sign_505.1__right_.svg",
-  "w-side-road": "/__l5e/assets-v1/506f652f-f546-41a5-b110-97d2699a6b4b/UK_traffic_sign_506.1__variant_1,_right_.svg",
+  "w-crossroads":
+    "/__l5e/assets-v1/3b5067ab-ace1-4dc4-9feb-107b090491ea/UK_traffic_sign_504.1__variant_1_.svg",
+  "w-staggered":
+    "/__l5e/assets-v1/e2f04029-0526-434e-87e1-42f7b1b3a71d/UK_traffic_sign_507.1__variant_1,_left_.svg",
+  "w-t-junction":
+    "/__l5e/assets-v1/e63dd01b-4f26-4fe4-9a9a-1aad6fdeb18a/UK_traffic_sign_505.1__right_.svg",
+  "w-side-road":
+    "/__l5e/assets-v1/506f652f-f546-41a5-b110-97d2699a6b4b/UK_traffic_sign_506.1__variant_1,_right_.svg",
   "w-hump": "/__l5e/assets-v1/aba6b0cd-de31-4ebd-bb1f-3e1f57872b1c/UK_traffic_sign_529.svg",
   "w-slippery": "/__l5e/assets-v1/de785913-dcb7-41ed-944f-4fc2cba4804c/UK_traffic_sign_557.svg",
   // Series of road humps (diagram 557.1). Kept for the "w-road-humps" sign
@@ -19,17 +26,20 @@ export const officialSignImages: Record<string, string> = {
   // 556). No verified 556 SVG is on the CDN, so w-uneven falls back to the
   // hand-drawn SignVisual pictogram until one is added.
   "w-road-humps": "/__l5e/assets-v1/d864f503-9a3a-42c5-baf6-8e7704e3e06e/UK_traffic_sign_557.1.svg",
-  "w-narrows": "/__l5e/assets-v1/88996f05-0d53-49b4-88c0-c20398d0a262/UK_traffic_sign_517__left_.svg",
+  "w-narrows":
+    "/__l5e/assets-v1/88996f05-0d53-49b4-88c0-c20398d0a262/UK_traffic_sign_517__left_.svg",
   "w-two-way": "/__l5e/assets-v1/9927d4f4-99f4-4b97-9b7f-97ed062a14c0/UK_traffic_sign_521.svg",
   // Children going to or from school (TSRGD diagram 545). Replaced the
   // Wikimedia SVG upload — that file on Commons is a blank red triangle with
   // no pictogram, so learners saw an empty sign. This is a high-resolution
   // DVSA-style rendering of the correct sign.
-  "w-school": "/__l5e/assets-v1/92ff1738-bb23-49e4-a7ef-3494a13b8b1f/dvsa-545-children-crossing.png",
+  "w-school":
+    "/__l5e/assets-v1/92ff1738-bb23-49e4-a7ef-3494a13b8b1f/dvsa-545-children-crossing.png",
   // Pedestrians in the road ahead (TSRGD diagram 544.1). Same reason: the
   // Wikimedia SVG for 544.1 is blank. Replaced with a high-resolution DVSA
   // rendering showing the single walking pedestrian silhouette.
-  "w-pedestrians": "/__l5e/assets-v1/82b684b7-2429-4c11-8ded-32336feb2c47/dvsa-544-1-pedestrians-in-road.png",
+  "w-pedestrians":
+    "/__l5e/assets-v1/82b684b7-2429-4c11-8ded-32336feb2c47/dvsa-544-1-pedestrians-in-road.png",
   // Cyclists (or cycle route crosses road) ahead — red-triangle warning,
   // TSRGD diagram 950.
   "w-cyclists": "/__l5e/assets-v1/4f280b61-729b-47ae-a216-58478f477c4a/UK_traffic_sign_950.svg",
@@ -77,22 +87,29 @@ export const officialSignImages: Record<string, string> = {
   "s-60": "/__l5e/assets-v1/eb4f3433-a370-40ce-b395-2eefb7a0e263/UK_traffic_sign_670V60.svg",
   "s-70": "/__l5e/assets-v1/2f43047e-3be3-46ea-94b3-ae4a96e37974/UK_traffic_sign_670V70.svg",
   "s-national": "/__l5e/assets-v1/2af1b8d0-2a04-4070-9333-f0429f7e43ac/UK_traffic_sign_671.svg",
-  "m-ahead": "/__l5e/assets-v1/ef51fa43-b539-49ea-a5b0-1105e5049336/UK_traffic_sign_606__ahead_.svg",
-  "m-turn-left": "/__l5e/assets-v1/524415b1-29c1-49fc-8f03-1472df34337c/UK_traffic_sign_609__left_.svg",
-  "m-turn-right": "/__l5e/assets-v1/0eb5e73a-bf76-4bc1-9b72-cb289c0ef74d/UK_traffic_sign_609__right_.svg",
-  "m-keep-left": "/__l5e/assets-v1/2ecf2120-4838-4c73-944a-73e7e11972bf/UK_traffic_sign_610__left_.svg",
-  "m-keep-right": "/__l5e/assets-v1/b8d25f82-cd58-4d01-8a69-5f9408cc48ec/UK_traffic_sign_610__right_.svg",
+  "m-ahead":
+    "/__l5e/assets-v1/ef51fa43-b539-49ea-a5b0-1105e5049336/UK_traffic_sign_606__ahead_.svg",
+  "m-turn-left":
+    "/__l5e/assets-v1/524415b1-29c1-49fc-8f03-1472df34337c/UK_traffic_sign_609__left_.svg",
+  "m-turn-right":
+    "/__l5e/assets-v1/0eb5e73a-bf76-4bc1-9b72-cb289c0ef74d/UK_traffic_sign_609__right_.svg",
+  "m-keep-left":
+    "/__l5e/assets-v1/2ecf2120-4838-4c73-944a-73e7e11972bf/UK_traffic_sign_610__left_.svg",
+  "m-keep-right":
+    "/__l5e/assets-v1/b8d25f82-cd58-4d01-8a69-5f9408cc48ec/UK_traffic_sign_610__right_.svg",
   "m-mini-r": "/__l5e/assets-v1/8d22b50a-064d-4e09-a3ed-3ea6a855e8f6/UK_traffic_sign_611.1.svg",
   "m-bus": "/__l5e/assets-v1/b1f87646-5377-40c4-b534-a045c7eb67f0/UK_traffic_sign_953.svg",
   "m-cycle": "/__l5e/assets-v1/be04b32f-0939-4c6e-9847-705147ea5a33/UK_traffic_sign_955.svg",
   "i-parking": "/__l5e/assets-v1/31179ec5-68ef-467f-8fe0-56968f6df385/UK_traffic_sign_801.svg",
-  "i-hospital": "/__l5e/assets-v1/50cae835-1777-4671-ba52-145d12b24677/UK_traffic_sign_827.2–V1.svg",
+  "i-hospital":
+    "/__l5e/assets-v1/50cae835-1777-4671-ba52-145d12b24677/UK_traffic_sign_827.2–V1.svg",
   // Crossings (c-*) — removed placeholder mappings. Zebra/pelican/puffin/toucan/
   // pegasus are the crossings themselves, not the red-triangle warning sign, so
   // they render from the purpose-built SignVisual variants (zebra-crossing,
   // signal-crossing, etc.) rather than a mis-labelled triangle.
   "t-red": "/__l5e/assets-v1/5f9941fa-6b61-497a-b5ee-b3a4eb679d79/Traffic_lights_red.svg",
-  "t-red-amber": "/__l5e/assets-v1/5857526d-92b4-4060-8d58-54614e49c641/Traffic_lights_red-yellow.svg",
+  "t-red-amber":
+    "/__l5e/assets-v1/5857526d-92b4-4060-8d58-54614e49c641/Traffic_lights_red-yellow.svg",
   "t-amber": "/__l5e/assets-v1/d63e6eca-058d-4d34-819f-3e88d61882bc/Traffic_lights_yellow.svg",
   "t-green": "/__l5e/assets-v1/a59f9bd0-bb6b-41da-abb9-9f41b6782a2c/Traffic_lights_green.svg",
   // Diagram 2306 is the BROWN direction sign ("emergency telephone 150 yds ➜"),

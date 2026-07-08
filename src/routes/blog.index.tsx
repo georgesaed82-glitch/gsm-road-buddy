@@ -65,7 +65,9 @@ function BlogIndex() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <nav className="mb-4 text-sm text-muted-foreground" aria-label="Breadcrumb">
-        <Link to="/" className="hover:text-foreground">Home</Link>
+        <Link to="/" className="hover:text-foreground">
+          Home
+        </Link>
         <span className="mx-2">/</span>
         <span className="text-foreground">Blog</span>
       </nav>
@@ -78,7 +80,12 @@ function BlogIndex() {
         className="mt-6 flex flex-col gap-2 sm:flex-row"
         onSubmit={(e) => {
           e.preventDefault();
-          navigate({ search: (prev: { q?: string; category?: string }) => ({ ...prev, q: search || undefined }) });
+          navigate({
+            search: (prev: { q?: string; category?: string }) => ({
+              ...prev,
+              q: search || undefined,
+            }),
+          });
         }}
       >
         <Input

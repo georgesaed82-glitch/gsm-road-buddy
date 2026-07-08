@@ -83,29 +83,30 @@ function ServicesPage() {
             {services.map((service) => {
               const Icon = SERVICE_ICONS[service.id] ?? Car;
               return (
-              <Card key={service.id} className="border-border bg-card">
-                <CardHeader className="flex flex-row items-start gap-4 pb-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="font-display text-xl font-semibold">{service.name}</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {service.description}
-                    </p>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <ul className="space-y-2">
-                    {(service.key_points ?? []).map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="h-4 w-4 text-success" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                <Card key={service.id} className="border-border bg-card">
+                  <CardHeader className="flex flex-row items-start gap-4 pb-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="font-display text-xl font-semibold">{service.name}</h2>
+                      <p className="mt-1 text-sm text-muted-foreground">{service.description}</p>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <ul className="space-y-2">
+                      {(service.key_points ?? []).map((feature) => (
+                        <li
+                          key={feature}
+                          className="flex items-center gap-2 text-sm text-muted-foreground"
+                        >
+                          <Check className="h-4 w-4 text-success" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
@@ -114,4 +115,3 @@ function ServicesPage() {
     </div>
   );
 }
-

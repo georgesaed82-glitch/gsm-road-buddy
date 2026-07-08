@@ -63,7 +63,10 @@ function AdminEmail() {
               <Badge variant="secondary">Verified</Badge>
             </div>
             <div className="text-muted-foreground">
-              From: <span className="font-medium text-foreground">notify@notify.gsmdrivingschool.com</span>
+              From:{" "}
+              <span className="font-medium text-foreground">
+                notify@notify.gsmdrivingschool.com
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -107,7 +110,10 @@ function AdminEmail() {
             ) : (
               <div className="divide-y divide-border">
                 {recent.map((row, i) => (
-                  <div key={`${row.message_id}-${i}`} className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div
+                    key={`${row.message_id}-${i}`}
+                    className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between"
+                  >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 text-sm">
                         <StatusBadge status={row.status} />
@@ -136,6 +142,10 @@ function AdminEmail() {
 
 function StatusBadge({ status }: { status: string }) {
   const variant: "default" | "secondary" | "destructive" | "outline" =
-    status === "sent" ? "default" : status === "failed" || status === "dlq" ? "destructive" : "secondary";
+    status === "sent"
+      ? "default"
+      : status === "failed" || status === "dlq"
+        ? "destructive"
+        : "secondary";
   return <Badge variant={variant}>{status}</Badge>;
 }

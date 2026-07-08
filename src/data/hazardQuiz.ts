@@ -37,7 +37,8 @@ export const hazardQuestions: HazardQuestion[] = [
   },
   {
     id: "hq-3",
-    question: "The car in front has its brake lights on and is slowing for no obvious reason. Your safest response is to:",
+    question:
+      "The car in front has its brake lights on and is slowing for no obvious reason. Your safest response is to:",
     options: [
       "Overtake to keep making progress",
       "Ease off the accelerator, increase your following distance and look further ahead for what they can see that you can't",
@@ -49,7 +50,8 @@ export const hazardQuestions: HazardQuestion[] = [
   },
   {
     id: "hq-4",
-    question: "You are approaching a zebra crossing. A pedestrian is waiting on the pavement but has not stepped out yet. You should:",
+    question:
+      "You are approaching a zebra crossing. A pedestrian is waiting on the pavement but has not stepped out yet. You should:",
     options: [
       "Keep your speed — they haven't started to cross",
       "Slow down, be ready to stop and make eye contact so they know it's safe",
@@ -73,7 +75,8 @@ export const hazardQuestions: HazardQuestion[] = [
   },
   {
     id: "hq-6",
-    question: "You are following a bus that has stopped at a bus stop. What is the most likely developing hazard?",
+    question:
+      "You are following a bus that has stopped at a bus stop. What is the most likely developing hazard?",
     options: [
       "The bus reversing",
       "Pedestrians stepping into the road from in front of the bus, or the bus signalling to pull out",
@@ -85,12 +88,9 @@ export const hazardQuestions: HazardQuestion[] = [
   },
   {
     id: "hq-7",
-    question: "You are driving on a wet road at 40 mph. Your stopping distance compared to a dry road is:",
-    options: [
-      "About the same",
-      "Roughly double",
-      "Only slightly longer",
-    ],
+    question:
+      "You are driving on a wet road at 40 mph. Your stopping distance compared to a dry road is:",
+    options: ["About the same", "Roughly double", "Only slightly longer"],
     correctIndex: 1,
     explanation:
       "Highway Code rule 126: braking distances at least double in the wet. Leave a 4-second gap in the wet (double the 2-second dry rule) and brake earlier and more gently.",
@@ -109,7 +109,8 @@ export const hazardQuestions: HazardQuestion[] = [
   },
   {
     id: "hq-9",
-    question: "You are on a motorway and see a lorry pulling into the outside lane to overtake. You should:",
+    question:
+      "You are on a motorway and see a lorry pulling into the outside lane to overtake. You should:",
     options: [
       "Speed up to pass it before it moves out",
       "Ease off — a lorry takes far longer to complete an overtake than a car",
@@ -134,7 +135,8 @@ export const hazardQuestions: HazardQuestion[] = [
   },
   {
     id: "hq-11",
-    question: "A driver behind you is following very closely (tailgating). The safest response is to:",
+    question:
+      "A driver behind you is following very closely (tailgating). The safest response is to:",
     options: [
       "Brake sharply to warn them",
       "Gradually ease off and increase the gap to the vehicle in front, so you have room to brake gently for both of you",

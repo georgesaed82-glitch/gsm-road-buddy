@@ -72,7 +72,9 @@ export function ClipShell({
         <div>
           <div className="text-[10px] uppercase tracking-[0.2em] text-accent">Animated clip</div>
           <div className="mt-1 font-display text-lg leading-tight">{title}</div>
-          <div className="mt-1 text-[11px] uppercase tracking-wider text-muted-foreground">{rule}</div>
+          <div className="mt-1 text-[11px] uppercase tracking-wider text-muted-foreground">
+            {rule}
+          </div>
         </div>
         <div className="flex shrink-0 gap-1">
           <button
@@ -114,9 +116,16 @@ export function ClipShell({
 
       {/* Scrub bar */}
       <div className="relative h-1.5 w-full bg-secondary">
-        <div className="absolute left-0 top-0 h-full bg-accent transition-[width]" style={{ width: `${t * 100}%` }} />
+        <div
+          className="absolute left-0 top-0 h-full bg-accent transition-[width]"
+          style={{ width: `${t * 100}%` }}
+        />
         {beats.map((b) => (
-          <div key={b.at} className="absolute top-0 h-full w-0.5 bg-background/60" style={{ left: `${b.at * 100}%` }} />
+          <div
+            key={b.at}
+            className="absolute top-0 h-full w-0.5 bg-background/60"
+            style={{ left: `${b.at * 100}%` }}
+          />
         ))}
       </div>
 
@@ -146,13 +155,17 @@ export function ClipShell({
             {explanation?.what ?? beats[0]?.detail}
           </TeachingBlock>
           <TeachingBlock label="When we're doing it">
-            {explanation?.when ?? "Use this routine whenever this road layout or hazard develops ahead of you."}
+            {explanation?.when ??
+              "Use this routine whenever this road layout or hazard develops ahead of you."}
           </TeachingBlock>
           <TeachingBlock label="Why we're doing it">
-            {explanation?.why ?? "We do it to keep the car predictable, protect vulnerable road users, and keep traffic flowing without forcing anyone else to brake or swerve."}
+            {explanation?.why ??
+              "We do it to keep the car predictable, protect vulnerable road users, and keep traffic flowing without forcing anyone else to brake or swerve."}
           </TeachingBlock>
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">How we do it — step by step</div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+              How we do it — step by step
+            </div>
             <ol className="mt-2 list-decimal space-y-1 pl-5 text-muted-foreground">
               {(explanation?.steps ?? beats.map((b) => b.label)).map((step, i) => (
                 <li key={i}>{step}</li>
@@ -168,7 +181,9 @@ export function ClipShell({
 function TeachingBlock({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">{label}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+        {label}
+      </div>
       <p className="mt-1 text-muted-foreground">{children}</p>
     </div>
   );
@@ -213,7 +228,16 @@ export function CarToken({
   const h = 26 * scale;
   return (
     <g transform={`translate(${x} ${y}) rotate(${heading}) scale(${scale})`}>
-      <rect x={-7} y={-13} width={14} height={26} rx={2.5} fill={color} stroke="#0a0a0a" strokeWidth={0.6} />
+      <rect
+        x={-7}
+        y={-13}
+        width={14}
+        height={26}
+        rx={2.5}
+        fill={color}
+        stroke="#0a0a0a"
+        strokeWidth={0.6}
+      />
       {/* Windscreen */}
       <rect x={-5.5} y={-9} width={11} height={5} rx={1} fill="#111" opacity={0.7} />
       {/* Rear window */}
@@ -222,8 +246,16 @@ export function CarToken({
       <rect x={-6} y={-13.4} width={3} height={1.5} fill="#fff8c0" />
       <rect x={3} y={-13.4} width={3} height={1.5} fill="#fff8c0" />
       {/* Indicator */}
-      {indicator === "left" && <circle cx={-8} cy={-10} r={1.6} fill="#ffb020"><animate attributeName="opacity" values="1;0.2;1" dur="0.5s" repeatCount="indefinite" /></circle>}
-      {indicator === "right" && <circle cx={8} cy={-10} r={1.6} fill="#ffb020"><animate attributeName="opacity" values="1;0.2;1" dur="0.5s" repeatCount="indefinite" /></circle>}
+      {indicator === "left" && (
+        <circle cx={-8} cy={-10} r={1.6} fill="#ffb020">
+          <animate attributeName="opacity" values="1;0.2;1" dur="0.5s" repeatCount="indefinite" />
+        </circle>
+      )}
+      {indicator === "right" && (
+        <circle cx={8} cy={-10} r={1.6} fill="#ffb020">
+          <animate attributeName="opacity" values="1;0.2;1" dur="0.5s" repeatCount="indefinite" />
+        </circle>
+      )}
     </g>
   );
 }

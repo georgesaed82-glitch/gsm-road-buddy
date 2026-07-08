@@ -8,7 +8,12 @@ async function requireAdmin() {
   }
 }
 
-export type AdminRow = { user_id: string; email: string; full_name: string | null; created_at: string };
+export type AdminRow = {
+  user_id: string;
+  email: string;
+  full_name: string | null;
+  created_at: string;
+};
 
 export const listAdmins = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({}).parse(d))
@@ -34,7 +39,9 @@ export const listAdmins = createServerFn({ method: "POST" })
   });
 
 export const addAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ email: z.string().trim().toLowerCase().email().max(255) }).parse(d))
+  .inputValidator((d) =>
+    z.object({ email: z.string().trim().toLowerCase().email().max(255) }).parse(d),
+  )
   .handler(async ({ data: input }) => {
     await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -42,10 +49,16 @@ export const addAdmin = createServerFn({ method: "POST" })
     // Page through users to find matching email (Auth Admin API has no direct lookup).
     let target: { id: string } | null = null;
     for (let page = 1; page <= 20 && !target; page++) {
-      const { data: list, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+      const { data: list, error } = await supabaseAdmin.auth.admin.listUsers({
+        page,
+        perPage: 200,
+      });
       if (error) throw new Error(error.message);
       const match = list.users.find((u) => (u.email ?? "").toLowerCase() === input.email);
-      if (match) { target = { id: match.id }; break; }
+      if (match) {
+        target = { id: match.id };
+        break;
+      }
       if (list.users.length < 200) break;
     }
     if (!target) throw new Error("No account found for that email. Ask them to sign up first.");

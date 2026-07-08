@@ -3,15 +3,23 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, Loader2, CloudCheck, CloudOff, History, ArrowUp, ArrowDown, Minus, Filter, Save } from "lucide-react";
+import {
+  Star,
+  Check,
+  Loader2,
+  CloudCheck,
+  CloudOff,
+  History,
+  ArrowUp,
+  ArrowDown,
+  Minus,
+  Filter,
+  Save,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Select,
   SelectContent,
@@ -87,7 +95,10 @@ function LessonsPage() {
   const { data: bookings = [] } = useQuery({
     queryKey: ["all-bookings"],
     queryFn: async () => {
-      const { data } = await supabase.from("lesson_bookings").select("*").order("scheduled_at", { ascending: false });
+      const { data } = await supabase
+        .from("lesson_bookings")
+        .select("*")
+        .order("scheduled_at", { ascending: false });
       return data ?? [];
     },
   });
@@ -161,10 +172,7 @@ function LessonsPage() {
     }
     const { error } = await supabase
       .from("skill_ratings")
-      .upsert(
-        { user_id: uid, skill_key: key, rating: clean },
-        { onConflict: "user_id,skill_key" },
-      );
+      .upsert({ user_id: uid, skill_key: key, rating: clean }, { onConflict: "user_id,skill_key" });
     if (error) throw error;
     // If a newer value was queued while we were saving, don't clobber "saved" state prematurely
     if (inFlight.current.get(key) === clean) {
@@ -215,8 +223,12 @@ function LessonsPage() {
   };
 
   const completed = bookings.filter((b) => b.status === "completed").length;
-  const upcoming = bookings.filter((b) => new Date(b.scheduled_at) > new Date() && b.status === "scheduled");
-  const history = bookings.filter((b) => b.status === "completed" || new Date(b.scheduled_at) <= new Date());
+  const upcoming = bookings.filter(
+    (b) => new Date(b.scheduled_at) > new Date() && b.status === "scheduled",
+  );
+  const history = bookings.filter(
+    (b) => b.status === "completed" || new Date(b.scheduled_at) <= new Date(),
+  );
   const allSkills = new Set<string>(bookings.flatMap((b) => b.skills_covered ?? []));
   const totalRating = skillMilestones.reduce((n, m) => n + (ratingMap.get(m.key) ?? 0), 0);
   const mastered = skillMilestones.filter((m) => (ratingMap.get(m.key) ?? 0) >= 10).length;
@@ -237,12 +249,17 @@ function LessonsPage() {
         if (uid) {
           const { error } = await supabase
             .from("skill_ratings")
-            .upsert({ user_id: uid, skill_key: m.key, rating: val }, { onConflict: "user_id,skill_key" });
+            .upsert(
+              { user_id: uid, skill_key: m.key, rating: val },
+              { onConflict: "user_id,skill_key" },
+            );
           if (error) throw error;
         }
       }
       setSaveState("saved");
-      toast.success(uid ? "All scores saved to the student's account." : "All scores saved on this device.");
+      toast.success(
+        uid ? "All scores saved to the student's account." : "All scores saved on this device.",
+      );
       if (savedTimer.current) clearTimeout(savedTimer.current);
       savedTimer.current = setTimeout(() => setSaveState("idle"), 1800);
       qc.invalidateQueries({ queryKey: ["skill-rating-history"] });
@@ -258,14 +275,18 @@ function LessonsPage() {
         <section>
           {sessionInfo && !sessionInfo.signedIn && (
             <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
-              You're using a shared access code, so scores won't save to your account.
-              Log in with your email + the PIN George gave you on the{' '}
-              <a href="/auth" className="font-medium underline">login page</a> to track your personal progress.
+              You're using a shared access code, so scores won't save to your account. Log in with
+              your email + the PIN George gave you on the{" "}
+              <a href="/auth" className="font-medium underline">
+                login page
+              </a>{" "}
+              to track your personal progress.
             </div>
           )}
           {sessionInfo?.signedIn && sessionInfo.email && (
             <div className="mb-4 rounded-md border border-emerald-300 bg-emerald-50 p-3 text-xs text-emerald-900 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-100">
-              Signed in as <span className="font-medium">{sessionInfo.email}</span> · progress saves automatically.
+              Signed in as <span className="font-medium">{sessionInfo.email}</span> · progress saves
+              automatically.
             </div>
           )}
           {/* Progress chart */}
@@ -274,7 +295,9 @@ function LessonsPage() {
               <h2 className="font-display text-2xl">Progress chart</h2>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <SaveIndicator state={saveState} />
-                <span>{mastered}/{skillMilestones.length} mastered · {overallPct}%</span>
+                <span>
+                  {mastered}/{skillMilestones.length} mastered · {overallPct}%
+                </span>
                 <Button
                   size="sm"
                   onClick={saveAll}
@@ -287,7 +310,8 @@ function LessonsPage() {
               </div>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              Every skill is marked 0 – 10. Tap Save &amp; update after grading to lock the scores into this student's account.
+              Every skill is marked 0 – 10. Tap Save &amp; update after grading to lock the scores
+              into this student's account.
             </p>
             <div className="mt-5 space-y-3">
               {skillMilestones.map((m) => {
@@ -302,7 +326,9 @@ function LessonsPage() {
                         style={{ width: `${r * 10}%` }}
                       />
                     </div>
-                    <div className={`w-10 text-right text-sm tabular-nums ${done ? "font-semibold text-emerald-600 dark:text-emerald-400" : ""}`}>
+                    <div
+                      className={`w-10 text-right text-sm tabular-nums ${done ? "font-semibold text-emerald-600 dark:text-emerald-400" : ""}`}
+                    >
                       {r}/10
                     </div>
                   </div>
@@ -315,7 +341,8 @@ function LessonsPage() {
             <div>
               <h2 className="font-display text-2xl">Skills roadmap</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Tap 1 – 10 to record your current standard on each skill. Reach 10 and the section turns green.
+                Tap 1 – 10 to record your current standard on each skill. Reach 10 and the section
+                turns green.
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -327,7 +354,9 @@ function LessonsPage() {
                 <SelectContent>
                   <SelectItem value="all">All skills</SelectItem>
                   {skillMilestones.map((m) => (
-                    <SelectItem key={m.key} value={m.key}>{m.name}</SelectItem>
+                    <SelectItem key={m.key} value={m.key}>
+                      {m.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -337,71 +366,86 @@ function LessonsPage() {
             {skillMilestones
               .filter((m) => skillFilter === "all" || m.key === skillFilter)
               .map((m, i) => {
-              const r = ratingMap.get(m.key) ?? 0;
-              const done = r >= 10;
-              const reached = done || allSkills.has(m.name) || completed >= m.target;
-              return (
-                <li
-                  key={m.key}
-                  className={`border-b border-border px-5 py-4 last:border-b-0 transition-colors ${
-                    done ? "bg-emerald-50 dark:bg-emerald-500/10" : ""
-                  }`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
-                        done
-                          ? "bg-emerald-500 text-white"
-                          : reached
-                            ? "bg-primary text-primary-foreground"
-                            : "border border-border text-muted-foreground"
-                      }`}
-                    >
-                      {done ? <Check className="h-4 w-4" /> : String(i + 1).padStart(2, "0")}
-                    </div>
-                    <div className="flex-1">
-                      <div className={`font-medium ${done ? "text-emerald-800 dark:text-emerald-200" : reached ? "text-foreground" : "text-muted-foreground"}`}>
-                        {m.name}
+                const r = ratingMap.get(m.key) ?? 0;
+                const done = r >= 10;
+                const reached = done || allSkills.has(m.name) || completed >= m.target;
+                return (
+                  <li
+                    key={m.key}
+                    className={`border-b border-border px-5 py-4 last:border-b-0 transition-colors ${
+                      done ? "bg-emerald-50 dark:bg-emerald-500/10" : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
+                          done
+                            ? "bg-emerald-500 text-white"
+                            : reached
+                              ? "bg-primary text-primary-foreground"
+                              : "border border-border text-muted-foreground"
+                        }`}
+                      >
+                        {done ? <Check className="h-4 w-4" /> : String(i + 1).padStart(2, "0")}
                       </div>
-                      <div className="text-xs text-muted-foreground">Typically by lesson {m.target}</div>
-                    </div>
-                    <div className={`text-sm tabular-nums ${done ? "font-semibold text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}>
-                      {r}/10
-                    </div>
-                    {done && <Badge className="bg-emerald-500 text-white hover:bg-emerald-500">Mastered</Badge>}
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {Array.from({ length: 10 }).map((_, n) => {
-                      const value = n + 1;
-                      const active = value <= r;
-                      return (
-                        <button
-                          key={value}
-                          type="button"
-                          onClick={() => setRating(m.key, value === r ? value - 1 : value)}
-                          className={`h-7 w-7 rounded-md border text-xs font-medium transition-colors ${
-                            active
-                              ? done
-                                ? "border-emerald-500 bg-emerald-500 text-white"
-                                : "border-primary bg-primary text-primary-foreground"
-                              : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                          }`}
-                          title={`Mark standard ${value}/10`}
+                      <div className="flex-1">
+                        <div
+                          className={`font-medium ${done ? "text-emerald-800 dark:text-emerald-200" : reached ? "text-foreground" : "text-muted-foreground"}`}
                         >
-                          {value}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <SkillRatingTimeline entries={historyBySkill.get(m.key) ?? []} forceOpen={skillFilter === m.key} />
-                </li>
-              );
-            })}
+                          {m.name}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Typically by lesson {m.target}
+                        </div>
+                      </div>
+                      <div
+                        className={`text-sm tabular-nums ${done ? "font-semibold text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}
+                      >
+                        {r}/10
+                      </div>
+                      {done && (
+                        <Badge className="bg-emerald-500 text-white hover:bg-emerald-500">
+                          Mastered
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {Array.from({ length: 10 }).map((_, n) => {
+                        const value = n + 1;
+                        const active = value <= r;
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() => setRating(m.key, value === r ? value - 1 : value)}
+                            className={`h-7 w-7 rounded-md border text-xs font-medium transition-colors ${
+                              active
+                                ? done
+                                  ? "border-emerald-500 bg-emerald-500 text-white"
+                                  : "border-primary bg-primary text-primary-foreground"
+                                : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                            }`}
+                            title={`Mark standard ${value}/10`}
+                          >
+                            {value}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <SkillRatingTimeline
+                      entries={historyBySkill.get(m.key) ?? []}
+                      forceOpen={skillFilter === m.key}
+                    />
+                  </li>
+                );
+              })}
           </ol>
 
           <h2 className="mt-12 font-display text-2xl">Lesson history</h2>
           {history.length === 0 ? (
-            <p className="mt-4 text-sm text-muted-foreground">Your completed lessons will appear here with your instructor's notes.</p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Your completed lessons will appear here with your instructor's notes.
+            </p>
           ) : (
             <ul className="mt-4 divide-y divide-border border border-border bg-card">
               {history.map((b) => (
@@ -409,7 +453,9 @@ function LessonsPage() {
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
                       <div className="font-medium text-foreground">
-                        {new Date(b.scheduled_at).toLocaleDateString("en-GB", { dateStyle: "full" })}
+                        {new Date(b.scheduled_at).toLocaleDateString("en-GB", {
+                          dateStyle: "full",
+                        })}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {b.instructor_name} · {b.duration_minutes} minutes
@@ -417,14 +463,18 @@ function LessonsPage() {
                     </div>
                     {b.rating && (
                       <div className="flex text-accent">
-                        {Array.from({ length: b.rating }).map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-accent" />)}
+                        {Array.from({ length: b.rating }).map((_, i) => (
+                          <Star key={i} className="h-3.5 w-3.5 fill-accent" />
+                        ))}
                       </div>
                     )}
                   </div>
                   {b.skills_covered && b.skills_covered.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {b.skills_covered.map((s: string) => (
-                        <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
+                        <Badge key={s} variant="outline" className="text-xs">
+                          {s}
+                        </Badge>
                       ))}
                     </div>
                   )}
@@ -441,7 +491,9 @@ function LessonsPage() {
 
         <aside className="space-y-5">
           <div className="border border-border bg-card p-5">
-            <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Snapshot</div>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Snapshot
+            </div>
             <div className="mt-3 grid grid-cols-2 gap-3">
               <Stat label="Completed" value={String(completed)} />
               <Stat label="Upcoming" value={String(upcoming.length)} />
@@ -453,7 +505,8 @@ function LessonsPage() {
             <div className="text-[11px] uppercase tracking-[0.18em] opacity-70">Next milestone</div>
             <div className="mt-2 font-display text-xl">Mock test ready</div>
             <p className="mt-2 text-sm opacity-80">
-              Most learners reach this around 20 hours. Your instructor will book a 90-minute mock when you're close.
+              Most learners reach this around 20 hours. Your instructor will book a 90-minute mock
+              when you're close.
             </p>
           </div>
         </aside>
@@ -496,7 +549,12 @@ function SkillRatingTimeline({
   entries,
   forceOpen = false,
 }: {
-  entries: Array<{ id: string; rating: number; previous_rating: number | null; changed_at: string }>;
+  entries: Array<{
+    id: string;
+    rating: number;
+    previous_rating: number | null;
+    changed_at: string;
+  }>;
   forceOpen?: boolean;
 }) {
   const [open, setOpen] = useState(forceOpen);

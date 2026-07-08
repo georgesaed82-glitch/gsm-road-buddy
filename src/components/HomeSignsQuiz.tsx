@@ -8,19 +8,52 @@ import { cn } from "@/lib/utils";
 // Curated pool: 40 signs across every category, weighted to the most-tested.
 const POOL_IDS = [
   // Warning
-  "w-bend-right", "w-roundabout", "w-crossroads", "w-t-junction", "w-slippery",
-  "w-narrows", "w-school", "w-cyclists", "w-horse", "w-roadworks",
-  "w-signals", "w-level", "w-lowbridge", "w-hump", "w-pedestrians",
+  "w-bend-right",
+  "w-roundabout",
+  "w-crossroads",
+  "w-t-junction",
+  "w-slippery",
+  "w-narrows",
+  "w-school",
+  "w-cyclists",
+  "w-horse",
+  "w-roadworks",
+  "w-signals",
+  "w-level",
+  "w-lowbridge",
+  "w-hump",
+  "w-pedestrians",
   // Prohibitory
-  "p-no-entry", "p-no-vehicles", "p-no-right", "p-no-left", "p-no-uturn",
-  "p-no-overtake", "p-no-hgv", "p-no-bikes", "p-giveway", "p-stop",
+  "p-no-entry",
+  "p-no-vehicles",
+  "p-no-right",
+  "p-no-left",
+  "p-no-uturn",
+  "p-no-overtake",
+  "p-no-hgv",
+  "p-no-bikes",
+  "p-giveway",
+  "p-stop",
   // Mandatory
-  "m-turn-left", "m-turn-right", "m-ahead", "m-keep-left", "m-mini-r",
+  "m-turn-left",
+  "m-turn-right",
+  "m-ahead",
+  "m-keep-left",
+  "m-mini-r",
   // Speed
-  "s-20", "s-30", "s-40", "s-50", "s-national",
+  "s-20",
+  "s-30",
+  "s-40",
+  "s-50",
+  "s-national",
   // Info / direction / signals / crossings
-  "i-parking", "i-hospital", "d-primary", "t-red", "t-green",
-  "c-zebra", "c-pelican",
+  "i-parking",
+  "i-hospital",
+  "d-primary",
+  "t-red",
+  "t-green",
+  "c-zebra",
+  "c-pelican",
 ];
 
 const QUIZ_LENGTH = 10;
@@ -58,7 +91,10 @@ function buildRounds(pool: Sign[], seed: number): Round[] {
   const rng = mulberry32(seed);
   const chosen = shuffle(pool, rng).slice(0, QUIZ_LENGTH);
   return chosen.map((sign) => {
-    const distractors = shuffle(pool.filter((s) => s.id !== sign.id), rng).slice(0, 2);
+    const distractors = shuffle(
+      pool.filter((s) => s.id !== sign.id),
+      rng,
+    ).slice(0, 2);
     const options = shuffle([sign.name, ...distractors.map((d) => d.name)], rng);
     return { sign, options, correctIndex: options.indexOf(sign.name) };
   });
@@ -92,11 +128,14 @@ export function HomeSignsQuiz() {
       <div className="border border-border bg-card p-6 sm:p-10">
         <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Result</div>
         <h3 className="mt-3 font-display text-3xl leading-tight sm:text-4xl">
-          {score} / {QUIZ_LENGTH}{" "}
-          <span className="italic text-accent">({pct}%)</span>
+          {score} / {QUIZ_LENGTH} <span className="italic text-accent">({pct}%)</span>
         </h3>
         <p className="mt-3 max-w-lg text-muted-foreground">
-          {pct >= 86 ? "Test-ready on signs — brilliant." : pct >= 60 ? "Solid start — a bit more practice and you're there." : "Keep going — sign knowledge is worth easy marks on the theory test."}
+          {pct >= 86
+            ? "Test-ready on signs — brilliant."
+            : pct >= 60
+              ? "Solid start — a bit more practice and you're there."
+              : "Keep going — sign knowledge is worth easy marks on the theory test."}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Button onClick={restart} className="h-11 rounded-none">
@@ -130,7 +169,9 @@ export function HomeSignsQuiz() {
         {ariaMessage}
       </div>
       <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-        <span>Sign {i + 1} of {QUIZ_LENGTH}</span>
+        <span>
+          Sign {i + 1} of {QUIZ_LENGTH}
+        </span>
         <span>Score {score}</span>
       </div>
 
@@ -139,7 +180,9 @@ export function HomeSignsQuiz() {
           <OfficialSignImage sign={round.sign} variant="detail" />
         </div>
         <div>
-          <h3 className="font-display text-2xl leading-tight sm:text-3xl">What does this sign mean?</h3>
+          <h3 className="font-display text-2xl leading-tight sm:text-3xl">
+            What does this sign mean?
+          </h3>
           <p className="mt-2 text-sm text-muted-foreground">Tap the correct answer.</p>
 
           <div className="mt-5 grid gap-2">
@@ -166,8 +209,12 @@ export function HomeSignsQuiz() {
                   )}
                 >
                   <span className="flex-1">{opt}</span>
-                  {revealed && isCorrect && <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />}
-                  {revealed && isPicked && !isCorrect && <XCircle className="h-4 w-4 shrink-0 text-destructive" />}
+                  {revealed && isCorrect && (
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                  )}
+                  {revealed && isPicked && !isCorrect && (
+                    <XCircle className="h-4 w-4 shrink-0 text-destructive" />
+                  )}
                 </button>
               );
             })}
@@ -176,10 +223,12 @@ export function HomeSignsQuiz() {
       </div>
 
       {revealed && (
-        <div className={cn(
-          "mt-6 border p-4 text-sm sm:p-5",
-          gotIt ? "border-emerald-600 bg-emerald-600/10" : "border-destructive bg-destructive/10",
-        )}>
+        <div
+          className={cn(
+            "mt-6 border p-4 text-sm sm:p-5",
+            gotIt ? "border-emerald-600 bg-emerald-600/10" : "border-destructive bg-destructive/10",
+          )}
+        >
           <div className="font-medium">
             {gotIt ? "Correct" : "Not quite"} — the sign means{" "}
             <span className="underline">{round.sign.name}</span>.

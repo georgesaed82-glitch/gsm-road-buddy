@@ -33,11 +33,31 @@ export type RoadMarking = {
 };
 
 export const markingGroups: { slug: MarkingGroup; title: string; blurb: string }[] = [
-  { slug: "along", title: "Lines along the road", blurb: "Centre lines, hazard lines, double whites, lane and edge lines." },
-  { slug: "across", title: "Lines across the road", blurb: "Stop lines, give-way triangles, zebra zig-zags and box junctions." },
-  { slug: "kerb", title: "Kerb / waiting restrictions", blurb: "Yellow lines, red routes, bus and cycle lanes." },
-  { slug: "words", title: "Words and arrows", blurb: "Roundabout give-way triangles, 'KEEP CLEAR' and lane arrows." },
-  { slug: "lanes", title: "Lane arrows, merges & hatched areas", blurb: "Direction arrows painted on the road, merging slip roads and diagonal-stripe areas." },
+  {
+    slug: "along",
+    title: "Lines along the road",
+    blurb: "Centre lines, hazard lines, double whites, lane and edge lines.",
+  },
+  {
+    slug: "across",
+    title: "Lines across the road",
+    blurb: "Stop lines, give-way triangles, zebra zig-zags and box junctions.",
+  },
+  {
+    slug: "kerb",
+    title: "Kerb / waiting restrictions",
+    blurb: "Yellow lines, red routes, bus and cycle lanes.",
+  },
+  {
+    slug: "words",
+    title: "Words and arrows",
+    blurb: "Roundabout give-way triangles, 'KEEP CLEAR' and lane arrows.",
+  },
+  {
+    slug: "lanes",
+    title: "Lane arrows, merges & hatched areas",
+    blurb: "Direction arrows painted on the road, merging slip roads and diagonal-stripe areas.",
+  },
 ];
 
 export const roadMarkings: RoadMarking[] = [
@@ -78,14 +98,16 @@ export const roadMarkings: RoadMarking[] = [
     id: "rm-lane",
     name: "Lane line — short broken white",
     group: "along",
-    meaning: "Divides lanes on multi-lane roads. Change lanes only when it is safe and your mirror-signal-manoeuvre is complete.",
+    meaning:
+      "Divides lanes on multi-lane roads. Change lanes only when it is safe and your mirror-signal-manoeuvre is complete.",
     Visual: LaneLine,
   },
   {
     id: "rm-edge",
     name: "Edge of carriageway line",
     group: "along",
-    meaning: "A solid white line at the edge of the road. Marks the outside of the carriageway — useful in fog or at night.",
+    meaning:
+      "A solid white line at the edge of the road. Marks the outside of the carriageway — useful in fog or at night.",
     Visual: EdgeLine,
   },
 

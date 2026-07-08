@@ -36,8 +36,8 @@ function getFocusableElements(container: HTMLElement | null) {
   if (!container) return [];
   return Array.from(
     container.querySelectorAll<HTMLElement>(
-      'button, [href], input, textarea, select, details, [tabindex]:not([tabindex="-1"])'
-    )
+      'button, [href], input, textarea, select, details, [tabindex]:not([tabindex="-1"])',
+    ),
   ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
 }
 
@@ -52,8 +52,12 @@ export function AIChatWidget() {
     const row = (settingsQuery.data ?? []).find((r) => r.key === "ai_chat");
     const v = (row?.value ?? {}) as { welcome?: string; prompts?: string[]; enabled?: boolean };
     return {
-      welcome: typeof v.welcome === "string" && v.welcome.trim() ? v.welcome : DEFAULT_GREETING.content,
-      prompts: Array.isArray(v.prompts) && v.prompts.length ? v.prompts.filter((p) => typeof p === "string") : DEFAULT_SUGGESTIONS,
+      welcome:
+        typeof v.welcome === "string" && v.welcome.trim() ? v.welcome : DEFAULT_GREETING.content,
+      prompts:
+        Array.isArray(v.prompts) && v.prompts.length
+          ? v.prompts.filter((p) => typeof p === "string")
+          : DEFAULT_SUGGESTIONS,
       enabled: v.enabled !== false,
     };
   })();
@@ -81,7 +85,9 @@ export function AIChatWidget() {
   }, [messages, loading]);
 
   useEffect(() => {
-    setMessages((current) => current.map((message) => ({ ...message, content: fixPhoneNumbers(message.content) })));
+    setMessages((current) =>
+      current.map((message) => ({ ...message, content: fixPhoneNumbers(message.content) })),
+    );
   }, []);
 
   // When the chat panel closes, return focus to the floating trigger button.
@@ -132,7 +138,10 @@ export function AIChatWidget() {
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
-    const cleanMessages = messages.map((message) => ({ ...message, content: fixPhoneNumbers(message.content) }));
+    const cleanMessages = messages.map((message) => ({
+      ...message,
+      content: fixPhoneNumbers(message.content),
+    }));
     const next: Msg[] = [...cleanMessages, { role: "user", content: trimmed }];
     setMessages(next);
     setInput("");
@@ -151,7 +160,16 @@ export function AIChatWidget() {
 
       if (!res.ok || !res.body) {
         const errText = await res.text().catch(() => "Sorry, something went wrong.");
-        setMessages((m) => [...m, { role: "assistant", content: fixPhoneNumbers(errText || `Sorry, I had trouble responding. Please WhatsApp George on ${CORRECT_PHONE_DISPLAY}.`) }]);
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content: fixPhoneNumbers(
+              errText ||
+                `Sorry, I had trouble responding. Please WhatsApp George on ${CORRECT_PHONE_DISPLAY}.`,
+            ),
+          },
+        ]);
         return;
       }
 
@@ -177,7 +195,10 @@ export function AIChatWidget() {
             if (delta) {
               setMessages((m) => {
                 const copy = [...m];
-                copy[copy.length - 1] = { role: "assistant", content: fixPhoneNumbers(copy[copy.length - 1].content + delta) };
+                copy[copy.length - 1] = {
+                  role: "assistant",
+                  content: fixPhoneNumbers(copy[copy.length - 1].content + delta),
+                };
                 return copy;
               });
             }
@@ -188,7 +209,13 @@ export function AIChatWidget() {
       }
     } catch (e) {
       if ((e as Error).name !== "AbortError") {
-        setMessages((m) => [...m, { role: "assistant", content: `Connection issue. Please try again or WhatsApp George on ${CORRECT_PHONE_DISPLAY}.` }]);
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content: `Connection issue. Please try again or WhatsApp George on ${CORRECT_PHONE_DISPLAY}.`,
+          },
+        ]);
       }
     } finally {
       setLoading(false);
@@ -223,7 +250,12 @@ export function AIChatWidget() {
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-red-600 px-3 py-3 text-white sm:px-4">
             <div className="flex min-w-0 items-center gap-3">
               <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-white/30 bg-white shadow-sm">
-                <img src={gsmLogo.url} alt="" aria-hidden="true" className="h-full w-full object-cover" />
+                <img
+                  src={gsmLogo.url}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold leading-tight">GSM Assistant</p>
@@ -248,7 +280,10 @@ export function AIChatWidget() {
             className="flex-1 space-y-3 overflow-y-auto px-3 py-3 sm:px-4 sm:py-4"
           >
             {messages.map((m, i) => (
-              <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
+              <div
+                key={i}
+                className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
+              >
                 <div
                   tabIndex={0}
                   role="listitem"

@@ -4,11 +4,7 @@ import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { type TheoryQuestion } from "@/data/theory";
-import {
-  questionsByDifficulty,
-  difficultyMeta,
-  type Difficulty,
-} from "@/lib/questionDifficulty";
+import { questionsByDifficulty, difficultyMeta, type Difficulty } from "@/lib/questionDifficulty";
 import { CheckCircle2, XCircle, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
@@ -44,8 +40,8 @@ function QuestionsPage() {
   return (
     <PortalShell eyebrow="Theory practice" title="Questions by difficulty">
       <p className="max-w-2xl text-sm text-muted-foreground">
-        Practice UK theory questions grouped by difficulty. Each question
-        shows the correct answer and an explanation the moment you tap.
+        Practice UK theory questions grouped by difficulty. Each question shows the correct answer
+        and an explanation the moment you tap.
       </p>
 
       <OfflineDownloadButton
@@ -101,7 +97,7 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
   useEffect(() => {
     if (q || savedAttempt || log.length === 0) return;
     saveAttempt({
-      kind: (`questions-${difficulty}` as QuizKind),
+      kind: `questions-${difficulty}` as QuizKind,
       label: `${order.length} ${difficulty} questions`,
       score: right,
       total: order.length,
@@ -115,10 +111,13 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
       <div className="border border-border bg-card p-6">
         <h3 className="font-display text-xl">Session complete</h3>
         <p className="mt-2 text-sm text-muted-foreground">
-          You answered {right} of {order.length} correctly ({order.length ? Math.round((right / order.length) * 100) : 0}%).
+          You answered {right} of {order.length} correctly (
+          {order.length ? Math.round((right / order.length) * 100) : 0}%).
         </p>
         <div className="mt-4 flex gap-2">
-          <Button variant="outline" className="rounded-none" onClick={onExit}>Back to difficulties</Button>
+          <Button variant="outline" className="rounded-none" onClick={onExit}>
+            Back to difficulties
+          </Button>
         </div>
       </div>
     );
@@ -147,13 +146,19 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
   return (
     <div>
       <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-        <span>Question {i + 1} of {order.length}</span>
-        <span>Right {right} · Wrong {wrong}</span>
+        <span>
+          Question {i + 1} of {order.length}
+        </span>
+        <span>
+          Right {right} · Wrong {wrong}
+        </span>
       </div>
       <Progress value={((i + (picked !== null ? 1 : 0)) / order.length) * 100} />
 
       <div className="mt-6 border border-border bg-card p-6">
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{q.category.replaceAll("-", " ")}</div>
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          {q.category.replaceAll("-", " ")}
+        </div>
         <h2 className="mt-2 font-display text-xl">{q.question}</h2>
         <div className="mt-4 grid gap-2">
           {q.options.map((opt, idx) => {
@@ -168,13 +173,20 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
                   "flex items-center justify-between border px-4 py-3 text-left text-sm transition-colors",
                   picked === null && "border-border bg-background hover:bg-secondary",
                   picked !== null && isCorrect && "border-emerald-600 bg-emerald-600/10",
-                  picked !== null && isPicked && !isCorrect && "border-destructive bg-destructive/10",
+                  picked !== null &&
+                    isPicked &&
+                    !isCorrect &&
+                    "border-destructive bg-destructive/10",
                   picked !== null && !isCorrect && !isPicked && "border-border opacity-60",
                 )}
               >
                 <span>{opt}</span>
-                {picked !== null && isCorrect && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
-                {picked !== null && isPicked && !isCorrect && <XCircle className="h-4 w-4 text-destructive" />}
+                {picked !== null && isCorrect && (
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                )}
+                {picked !== null && isPicked && !isCorrect && (
+                  <XCircle className="h-4 w-4 text-destructive" />
+                )}
               </button>
             );
           })}
@@ -196,7 +208,14 @@ function Runner({ difficulty, onExit }: { difficulty: Difficulty; onExit: () => 
                 Why your answer is wrong: {q.optionExplanations[picked]}
               </p>
             )}
-            <Button size="sm" className="mt-4 rounded-none" onClick={() => { setI(i + 1); setPicked(null); }}>
+            <Button
+              size="sm"
+              className="mt-4 rounded-none"
+              onClick={() => {
+                setI(i + 1);
+                setPicked(null);
+              }}
+            >
               {i + 1 === order.length ? "See results →" : "Next question →"}
             </Button>
           </div>

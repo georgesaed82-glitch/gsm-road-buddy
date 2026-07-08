@@ -4,7 +4,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { AdminShell } from "@/components/AdminShell";
-import { listErrorLogs, getErrorStats, clearResolvedErrors, type ErrorLogRow } from "@/lib/error-logs.functions";
+import {
+  listErrorLogs,
+  getErrorStats,
+  clearResolvedErrors,
+  type ErrorLogRow,
+} from "@/lib/error-logs.functions";
 import { AlertTriangle, Trash2, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/errors")({
@@ -30,8 +35,7 @@ function AdminErrorsPage() {
   });
 
   const clearMut = useMutation({
-    mutationFn: (olderThanDays: number) =>
-      clearOld({ data: { olderThanDays } }),
+    mutationFn: (olderThanDays: number) => clearOld({ data: { olderThanDays } }),
     onSuccess: async () => {
       await Promise.all([
         qc.invalidateQueries({ queryKey: ["admin", "error-logs"] }),
@@ -97,9 +101,7 @@ function AdminErrorsPage() {
               label="Clear > 24h"
             />
             <ClearButton
-              onClick={() =>
-                handleClear(0, "Are you sure you want to clear all error logs?")
-              }
+              onClick={() => handleClear(0, "Are you sure you want to clear all error logs?")}
               disabled={clearMut.isPending}
               label="Clear all"
               emphatic
@@ -145,7 +147,9 @@ function AdminErrorsPage() {
                       <td className="px-4 py-2 font-mono text-xs">{g.message.slice(0, 90)}</td>
                       <td className="px-4 py-2 text-xs text-muted-foreground">{g.route ?? "—"}</td>
                       <td className="px-4 py-2 text-right font-semibold">{g.count}</td>
-                      <td className="px-4 py-2 text-right text-xs text-muted-foreground">{formatDistanceToNow(new Date(g.last), { addSuffix: true })}</td>
+                      <td className="px-4 py-2 text-right text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(g.last), { addSuffix: true })}
+                      </td>
                     </tr>
                   );
                 })}
@@ -158,17 +162,24 @@ function AdminErrorsPage() {
           <header className="flex items-center justify-between border-b border-border px-4 py-3">
             <div>
               <h2 className="font-display text-lg text-foreground">Recent events</h2>
-              <p className="text-xs text-muted-foreground">{activeFp ? "Filtered by selected error" : "All errors, newest first"}</p>
+              <p className="text-xs text-muted-foreground">
+                {activeFp ? "Filtered by selected error" : "All errors, newest first"}
+              </p>
             </div>
             {activeFp && (
-              <button onClick={() => setActiveFp(null)} className="text-xs text-muted-foreground underline">
+              <button
+                onClick={() => setActiveFp(null)}
+                className="text-xs text-muted-foreground underline"
+              >
                 Clear filter
               </button>
             )}
           </header>
           <div className="max-h-[600px] overflow-y-auto">
             {filteredLogs.length === 0 ? (
-              <div className="px-4 py-8 text-center text-sm text-muted-foreground">No events in range.</div>
+              <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+                No events in range.
+              </div>
             ) : (
               <ul className="divide-y divide-border">
                 {filteredLogs.map((row) => (
@@ -183,11 +194,25 @@ function AdminErrorsPage() {
   );
 }
 
-function StatCard({ label, value, small }: { label: string; value: string | number; small?: boolean }) {
+function StatCard({
+  label,
+  value,
+  small,
+}: {
+  label: string;
+  value: string | number;
+  small?: boolean;
+}) {
   return (
     <div className="border border-border bg-card px-4 py-3">
       <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{label}</div>
-      <div className={small ? "mt-1 text-sm text-foreground" : "mt-1 font-display text-2xl text-foreground"}>{value}</div>
+      <div
+        className={
+          small ? "mt-1 text-sm text-foreground" : "mt-1 font-display text-2xl text-foreground"
+        }
+      >
+        {value}
+      </div>
     </div>
   );
 }
@@ -230,13 +255,19 @@ function ErrorRow({ row }: { row: ErrorLogRow }) {
               {row.user_email && <span>· {row.user_email}</span>}
             </div>
           </div>
-          <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] uppercase ${row.level === "error" ? "bg-destructive/10 text-destructive" : "bg-secondary text-foreground"}`}>{row.level}</span>
+          <span
+            className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] uppercase ${row.level === "error" ? "bg-destructive/10 text-destructive" : "bg-secondary text-foreground"}`}
+          >
+            {row.level}
+          </span>
         </div>
       </button>
       {open && (
         <div className="mt-3 space-y-2 text-xs">
           {row.stack && (
-            <pre className="max-h-64 overflow-auto bg-secondary/50 p-3 font-mono text-[11px] leading-relaxed">{row.stack}</pre>
+            <pre className="max-h-64 overflow-auto bg-secondary/50 p-3 font-mono text-[11px] leading-relaxed">
+              {row.stack}
+            </pre>
           )}
           {row.user_agent && <div className="text-muted-foreground">UA: {row.user_agent}</div>}
           {row.url && <div className="break-all text-muted-foreground">URL: {row.url}</div>}

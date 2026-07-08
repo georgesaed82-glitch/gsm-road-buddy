@@ -22,9 +22,7 @@ function buildSet(): TheoryQ[] {
 
 export function HomeTheoryQuiz() {
   // Deterministic SSR slice; shuffle after mount to avoid hydration mismatch.
-  const [set, setSet] = useState<TheoryQ[]>(() =>
-    homeTheoryQuestions.slice(0, QUIZ_LENGTH),
-  );
+  const [set, setSet] = useState<TheoryQ[]>(() => homeTheoryQuestions.slice(0, QUIZ_LENGTH));
   useEffect(() => {
     setSet(buildSet());
   }, []);
@@ -89,7 +87,9 @@ export function HomeTheoryQuiz() {
         {ariaMessage}
       </div>
       <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-        <span className="inline-flex items-center gap-2"><BookOpen className="h-3 w-3" /> Question {i + 1} of {QUIZ_LENGTH}</span>
+        <span className="inline-flex items-center gap-2">
+          <BookOpen className="h-3 w-3" /> Question {i + 1} of {QUIZ_LENGTH}
+        </span>
         <span>Score {score}</span>
       </div>
 
@@ -119,8 +119,12 @@ export function HomeTheoryQuiz() {
               )}
             >
               <span className="flex-1">{opt}</span>
-              {revealed && isCorrect && <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />}
-              {revealed && isPicked && !isCorrect && <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}
+              {revealed && isCorrect && (
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+              )}
+              {revealed && isPicked && !isCorrect && (
+                <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+              )}
             </button>
           );
         })}

@@ -28,7 +28,10 @@ export const Route = createFileRoute("/_authenticated/admin/blog")({
   component: BlogAdmin,
 });
 
-type Draft = Omit<BlogPostRow, "cover_image_url" | "category_slug" | "category_name" | "related_slugs"> & {
+type Draft = Omit<
+  BlogPostRow,
+  "cover_image_url" | "category_slug" | "category_name" | "related_slugs"
+> & {
   relatedText: string;
 };
 
@@ -89,8 +92,14 @@ function BlogAdmin() {
   const saveCatFn = useServerFn(upsertCategory);
   const delCatFn = useServerFn(deleteCategory);
 
-  const { data: posts = [] } = useQuery({ queryKey: ["blog-admin-posts"], queryFn: () => listPostsFn() });
-  const { data: categories = [] } = useQuery({ queryKey: ["blog-admin-categories"], queryFn: () => listCatsFn() });
+  const { data: posts = [] } = useQuery({
+    queryKey: ["blog-admin-posts"],
+    queryFn: () => listPostsFn(),
+  });
+  const { data: categories = [] } = useQuery({
+    queryKey: ["blog-admin-categories"],
+    queryFn: () => listCatsFn(),
+  });
 
   const [editing, setEditing] = useState<Draft | null>(null);
   const [preview, setPreview] = useState(false);
@@ -110,7 +119,7 @@ function BlogAdmin() {
 
   const save = async () => {
     if (!editing) return;
-if (!editing.slug) editing.slug = slugify(editing.title);
+    if (!editing.slug) editing.slug = slugify(editing.title);
     try {
       const related = editing.relatedText
         .split(",")
@@ -144,7 +153,7 @@ if (!editing.slug) editing.slug = slugify(editing.title);
   };
 
   const remove = async (id: string) => {
-if (!confirm("Delete this post permanently?")) return;
+    if (!confirm("Delete this post permanently?")) return;
     try {
       await delFn({ data: { id } });
       toast.success("Deleted");
@@ -157,7 +166,7 @@ if (!confirm("Delete this post permanently?")) return;
 
   const upload = async (file: File) => {
     if (!editing?.id) return toast.error("Save the post first, then upload a cover.");
-const reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = async () => {
       try {
         const res = await uploadFn({
@@ -224,7 +233,7 @@ const reader = new FileReader();
           <CategoryEditor
             categories={categories}
             onSave={async (item) => {
-try {
+              try {
                 await saveCatFn({ data: { item } });
                 toast.success("Category saved");
                 invalidate();
@@ -233,7 +242,8 @@ try {
               }
             }}
             onDelete={async (id) => {
-if (!confirm("Delete category? Posts keep their content but lose the category link.")) return;
+              if (!confirm("Delete category? Posts keep their content but lose the category link."))
+                return;
               try {
                 await delCatFn({ data: { id } });
                 toast.success("Deleted");
@@ -258,9 +268,7 @@ if (!confirm("Delete category? Posts keep their content but lose the category li
           {editing && (
             <Card>
               <CardHeader className="flex flex-row items-center justify-between gap-2 p-4">
-                <div className="font-display text-lg">
-                  {editing.id ? "Edit post" : "New post"}
-                </div>
+                <div className="font-display text-lg">{editing.id ? "Edit post" : "New post"}</div>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={() => setPreview((v) => !v)}>
                     <Eye className="mr-1 h-4 w-4" />
@@ -300,9 +308,7 @@ if (!confirm("Delete category? Posts keep their content but lose the category li
                       onChange={(e) => {
                         const title = e.target.value;
                         setEditing((cur) =>
-                          cur
-                            ? { ...cur, title, slug: cur.slug || slugify(title) }
-                            : cur,
+                          cur ? { ...cur, title, slug: cur.slug || slugify(title) } : cur,
                         );
                       }}
                     />
@@ -406,7 +412,8 @@ if (!confirm("Delete category? Posts keep their content but lose the category li
                   <div className="flex items-center justify-between">
                     <Label>Body (Markdown)</Label>
                     <span className="text-xs text-muted-foreground">
-                      Supports **bold**, ## headings, [links](url), lists, images ![alt](url), tables
+                      Supports **bold**, ## headings, [links](url), lists, images ![alt](url),
+                      tables
                     </span>
                   </div>
                   {preview ? (
@@ -454,7 +461,9 @@ if (!confirm("Delete category? Posts keep their content but lose the category li
                       </span>
                     )}
                     {!editing.id && (
-                      <span className="text-xs text-muted-foreground">Save first, then upload.</span>
+                      <span className="text-xs text-muted-foreground">
+                        Save first, then upload.
+                      </span>
                     )}
                   </div>
                 </div>
@@ -493,9 +502,7 @@ if (!confirm("Delete category? Posts keep their content but lose the category li
                         placeholder="how-to-pass-first-time, my-first-lesson"
                         value={editing.relatedText}
                         onChange={(e) =>
-                          setEditing((cur) =>
-                            cur ? { ...cur, relatedText: e.target.value } : cur,
-                          )
+                          setEditing((cur) => (cur ? { ...cur, relatedText: e.target.value } : cur))
                         }
                       />
                     </div>
@@ -576,7 +583,11 @@ function CategoryEditor({
             placeholder="New category name"
             value={newCat.name}
             onChange={(e) =>
-              setNewCat((n) => ({ ...n, name: e.target.value, slug: n.slug || slugify(e.target.value) }))
+              setNewCat((n) => ({
+                ...n,
+                name: e.target.value,
+                slug: n.slug || slugify(e.target.value),
+              }))
             }
           />
           <Input

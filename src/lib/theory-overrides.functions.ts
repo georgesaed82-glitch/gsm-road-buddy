@@ -17,7 +17,9 @@ export const listTheoryOverrides = createServerFn({ method: "GET" }).handler(
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("theory_question_overrides")
-      .select("question_id, question, options, correct_index, explanation, option_explanations, updated_at");
+      .select(
+        "question_id, question, options, correct_index, explanation, option_explanations, updated_at",
+      );
     if (error) throw new Error(error.message);
     return (data ?? []).map((r) => ({
       question_id: r.question_id as string,
@@ -47,19 +49,17 @@ export const upsertTheoryOverride = createServerFn({ method: "POST" })
       throw new Error("Unauthorized");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
-      .from("theory_question_overrides")
-      .upsert(
-        {
-          question_id: data.question_id,
-          question: data.question,
-          options: data.options,
-          correct_index: data.correct_index,
-          explanation: data.explanation,
-          option_explanations: data.option_explanations,
-        },
-        { onConflict: "question_id" },
-      );
+    const { error } = await supabaseAdmin.from("theory_question_overrides").upsert(
+      {
+        question_id: data.question_id,
+        question: data.question,
+        options: data.options,
+        correct_index: data.correct_index,
+        explanation: data.explanation,
+        option_explanations: data.option_explanations,
+      },
+      { onConflict: "question_id" },
+    );
     if (error) throw new Error(error.message);
     return { ok: true };
   });

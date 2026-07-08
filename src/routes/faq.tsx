@@ -49,8 +49,7 @@ function FaqPage() {
     const list = needle
       ? faqs.filter(
           (f) =>
-            f.question.toLowerCase().includes(needle) ||
-            f.answer.toLowerCase().includes(needle),
+            f.question.toLowerCase().includes(needle) || f.answer.toLowerCase().includes(needle),
         )
       : faqs;
     const map = new Map<string, typeof faqs>();
@@ -66,7 +65,9 @@ function FaqPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
       <nav className="mb-4 text-sm text-muted-foreground" aria-label="Breadcrumb">
-        <Link to="/" className="hover:text-foreground">Home</Link>
+        <Link to="/" className="hover:text-foreground">
+          Home
+        </Link>
         <span className="mx-2">/</span>
         <span className="text-foreground">FAQ</span>
       </nav>

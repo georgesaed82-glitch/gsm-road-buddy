@@ -34,8 +34,8 @@ function LessonPage() {
   const idx = ordered.indexOf(slug);
   const nextSlug = idx >= 0 && idx < ordered.length - 1 ? ordered[idx + 1] : null;
   const prevSlug = idx > 0 ? ordered[idx - 1] : null;
-  const nextLesson = nextSlug ? getLesson(nextSlug) ?? null : null;
-  const prevLesson = prevSlug ? getLesson(prevSlug) ?? null : null;
+  const nextLesson = nextSlug ? (getLesson(nextSlug) ?? null) : null;
+  const prevLesson = prevSlug ? (getLesson(prevSlug) ?? null) : null;
   return (
     <PortalShell eyebrow="Practical" title={lesson.title}>
       <Link

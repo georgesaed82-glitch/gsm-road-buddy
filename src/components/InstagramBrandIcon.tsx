@@ -14,7 +14,15 @@ export function InstagramBrandIcon({ className = "h-5 w-5" }: { className?: stri
           <stop offset="100%" stopColor="#833ab4" />
         </linearGradient>
       </defs>
-      <rect x="2" y="2" width="20" height="20" rx="6" stroke="url(#instagram-gradient)" strokeWidth="2" />
+      <rect
+        x="2"
+        y="2"
+        width="20"
+        height="20"
+        rx="6"
+        stroke="url(#instagram-gradient)"
+        strokeWidth="2"
+      />
       <circle cx="12" cy="12" r="4.5" stroke="url(#instagram-gradient)" strokeWidth="2" />
       <circle cx="18" cy="6" r="1.25" fill="url(#instagram-gradient)" />
     </svg>

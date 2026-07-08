@@ -47,7 +47,7 @@ function DownloadsAdmin() {
 
   const doUpload = async (file: File) => {
     if (!newMeta.title.trim()) return toast.error("Enter a title before uploading.");
-const reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = async () => {
       try {
         await uploadFn({
@@ -71,7 +71,7 @@ const reader = new FileReader();
   };
 
   const saveMeta = async (r: DownloadRow) => {
-try {
+    try {
       await saveFn({
         data: {
           item: {
@@ -92,7 +92,7 @@ try {
   };
 
   const remove = async (id: string) => {
-if (!confirm("Delete this file permanently?")) return;
+    if (!confirm("Delete this file permanently?")) return;
     try {
       await delFn({ data: { id } });
       toast.success("Deleted");

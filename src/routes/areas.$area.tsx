@@ -12,7 +12,11 @@ import { getSiteRating, type SiteRatingValue } from "@/lib/cms.functions";
 async function resolveArea(slug: string): Promise<AreaPage & { _rating: SiteRatingValue }> {
   const fallbackRating: SiteRatingValue = { rating: 5.0, review_count: 143, show: true };
   let ratingVal: SiteRatingValue = fallbackRating;
-  try { ratingVal = await getSiteRating(); } catch { /* fall back */ }
+  try {
+    ratingVal = await getSiteRating();
+  } catch {
+    /* fall back */
+  }
   try {
     const rows = await listAreas();
     const enabled = rows.filter((r) => r.enabled);
@@ -114,8 +118,13 @@ export const Route = createFileRoute("/areas/$area")({
   notFoundComponent: () => (
     <div className="mx-auto max-w-3xl px-4 py-24 text-center">
       <h1 className="font-display text-3xl">Area not found</h1>
-      <p className="mt-2 text-muted-foreground">We cover Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and Fulham.</p>
-      <Link to="/areas" className="mt-6 inline-block text-primary underline">See all areas</Link>
+      <p className="mt-2 text-muted-foreground">
+        We cover Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and
+        Fulham.
+      </p>
+      <Link to="/areas" className="mt-6 inline-block text-primary underline">
+        See all areas
+      </Link>
     </div>
   ),
 });
@@ -137,10 +146,16 @@ function AreaPage() {
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{a.intro}</p>
           <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
             <Star className="h-4 w-4 fill-accent text-accent" />
-            <span>Rated {rating.rating.toFixed(1)} from {rating.review_count} Google reviews</span>
+            <span>
+              Rated {rating.rating.toFixed(1)} from {rating.review_count} Google reviews
+            </span>
           </div>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">
+            <Button
+              asChild
+              size="lg"
+              className="rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]"
+            >
               <a
                 href="https://wa.me/447961585231"
                 target="_blank"
@@ -166,10 +181,15 @@ function AreaPage() {
 
       <section className="py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-2xl font-semibold">Why learners in {a.area} choose GSM</h2>
+          <h2 className="font-display text-2xl font-semibold">
+            Why learners in {a.area} choose GSM
+          </h2>
           <ul className="mt-6 grid gap-4 sm:grid-cols-3">
             {a.highlights.map((h) => (
-              <li key={h} className="rounded-lg border border-border bg-card p-5 text-sm text-foreground">
+              <li
+                key={h}
+                className="rounded-lg border border-border bg-card p-5 text-sm text-foreground"
+              >
                 {h}
               </li>
             ))}
@@ -180,10 +200,15 @@ function AreaPage() {
       <section className="bg-secondary/30 py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <h2 className="font-display text-2xl font-semibold">Routes we practise in {a.area}</h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">{a.routes}</p>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">
+            {a.routes}
+          </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {[a.postcode, ...a.nearbyPostcodes].map((pc) => (
-              <span key={pc} className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium">
+              <span
+                key={pc}
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium"
+              >
                 <MapPin className="h-3 w-3" />
                 {pc}
               </span>
@@ -210,10 +235,18 @@ function AreaPage() {
 
       <section className="bg-primary py-16 text-primary-foreground">
         <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="font-display text-3xl font-semibold">Book your first lesson in {a.area}</h2>
-          <p className="mt-3 opacity-80">Message George on WhatsApp — usually answered the same day.</p>
+          <h2 className="font-display text-3xl font-semibold">
+            Book your first lesson in {a.area}
+          </h2>
+          <p className="mt-3 opacity-80">
+            Message George on WhatsApp — usually answered the same day.
+          </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg" className="rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]">
+            <Button
+              asChild
+              size="lg"
+              className="rounded-none bg-[#25D366] text-white hover:bg-[#1ebe57]"
+            >
               <a
                 href="https://wa.me/447961585231"
                 target="_blank"

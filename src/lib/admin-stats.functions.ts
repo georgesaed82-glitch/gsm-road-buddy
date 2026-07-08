@@ -26,7 +26,8 @@ export function classifyReferrer(ref: string | null | undefined): string {
   if (/(^|\.)bing\./.test(host)) return "Bing";
   if (/(^|\.)duckduckgo\./.test(host)) return "DuckDuckGo";
   if (/(^|\.)yahoo\./.test(host)) return "Yahoo";
-  if (/(^|\.)(facebook|fb)\./.test(host) || host === "l.facebook.com" || host === "m.facebook.com") return "Facebook";
+  if (/(^|\.)(facebook|fb)\./.test(host) || host === "l.facebook.com" || host === "m.facebook.com")
+    return "Facebook";
   if (/(^|\.)instagram\./.test(host) || host === "l.instagram.com") return "Instagram";
   if (/(^|\.)tiktok\./.test(host)) return "TikTok";
   if (/(^|\.)(twitter|x)\./.test(host) || host === "t.co") return "Twitter / X";
@@ -132,42 +133,146 @@ export const getAdminOverview = createServerFn({ method: "POST" })
       recentPageViews,
     ] = await Promise.all([
       supabase.from("profiles").select("id", { count: "exact", head: true }),
-      supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", sinceCurrent),
-      supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
-      supabase.from("profiles").select("id,full_name,created_at").gte("created_at", sinceCurrent).order("created_at", { ascending: false }).limit(50),
+      supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", sinceCurrent),
+      supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", sincePrevious)
+        .lt("created_at", sinceCurrent),
+      supabase
+        .from("profiles")
+        .select("id,full_name,created_at")
+        .gte("created_at", sinceCurrent)
+        .order("created_at", { ascending: false })
+        .limit(50),
       supabase.from("page_views").select("id", { count: "exact", head: true }),
-      supabase.from("page_views").select("id", { count: "exact", head: true }).gte("created_at", sinceCurrent),
-      supabase.from("page_views").select("id", { count: "exact", head: true }).gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
-      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "portal_view"),
-      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "portal_view").gte("created_at", sinceCurrent),
-      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "portal_view").gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
+      supabase
+        .from("page_views")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", sinceCurrent),
+      supabase
+        .from("page_views")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", sincePrevious)
+        .lt("created_at", sinceCurrent),
+      supabase
+        .from("contact_clicks")
+        .select("id", { count: "exact", head: true })
+        .eq("channel", "portal_view"),
+      supabase
+        .from("contact_clicks")
+        .select("id", { count: "exact", head: true })
+        .eq("channel", "portal_view")
+        .gte("created_at", sinceCurrent),
+      supabase
+        .from("contact_clicks")
+        .select("id", { count: "exact", head: true })
+        .eq("channel", "portal_view")
+        .gte("created_at", sincePrevious)
+        .lt("created_at", sinceCurrent),
       supabase.from("payments").select("id", { count: "exact", head: true }),
       supabase.from("payments").select("id", { count: "exact", head: true }).eq("status", "paid"),
-      supabase.from("payments").select("id", { count: "exact", head: true }).eq("status", "paid").gte("created_at", sinceCurrent),
+      supabase
+        .from("payments")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "paid")
+        .gte("created_at", sinceCurrent),
       supabase.from("payments").select("amount_pence,status"),
-      supabase.from("payments").select("amount_pence,status").eq("status", "paid").gte("created_at", sinceCurrent),
+      supabase
+        .from("payments")
+        .select("amount_pence,status")
+        .eq("status", "paid")
+        .gte("created_at", sinceCurrent),
       supabase.from("lesson_bookings").select("id", { count: "exact", head: true }),
-      supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).gte("scheduled_at", new Date().toISOString()),
-      supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).eq("status", "completed"),
-      supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).gte("created_at", sinceCurrent),
-      supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
-      supabase.from("lesson_bookings").select("id,duration_minutes,scheduled_at,pickup_location,created_at").gte("created_at", sinceCurrent).order("created_at", { ascending: false }).limit(50),
-      supabase.from("theory_progress").select("questions_answered,questions_correct,best_score_pct,completed_at,user_id,category_slug,created_at,updated_at"),
-      supabase.from("theory_progress").select("user_id,category_slug,last_score_pct,best_score_pct,updated_at,completed_at").order("updated_at", { ascending: false }).limit(50),
+      supabase
+        .from("lesson_bookings")
+        .select("id", { count: "exact", head: true })
+        .gte("scheduled_at", new Date().toISOString()),
+      supabase
+        .from("lesson_bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "completed"),
+      supabase
+        .from("lesson_bookings")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", sinceCurrent),
+      supabase
+        .from("lesson_bookings")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", sincePrevious)
+        .lt("created_at", sinceCurrent),
+      supabase
+        .from("lesson_bookings")
+        .select("id,duration_minutes,scheduled_at,pickup_location,created_at")
+        .gte("created_at", sinceCurrent)
+        .order("created_at", { ascending: false })
+        .limit(50),
+      supabase
+        .from("theory_progress")
+        .select(
+          "questions_answered,questions_correct,best_score_pct,completed_at,user_id,category_slug,created_at,updated_at",
+        ),
+      supabase
+        .from("theory_progress")
+        .select("user_id,category_slug,last_score_pct,best_score_pct,updated_at,completed_at")
+        .order("updated_at", { ascending: false })
+        .limit(50),
       supabase.from("theory_progress").select("user_id,created_at").gte("created_at", sinceCurrent),
-      supabase.from("theory_progress").select("user_id,created_at").gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
-      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "phone").gte("created_at", sinceCurrent),
-      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "phone").gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
-      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "email").gte("created_at", sinceCurrent),
-      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).eq("channel", "email").gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
+      supabase
+        .from("theory_progress")
+        .select("user_id,created_at")
+        .gte("created_at", sincePrevious)
+        .lt("created_at", sinceCurrent),
+      supabase
+        .from("contact_clicks")
+        .select("id", { count: "exact", head: true })
+        .eq("channel", "phone")
+        .gte("created_at", sinceCurrent),
+      supabase
+        .from("contact_clicks")
+        .select("id", { count: "exact", head: true })
+        .eq("channel", "phone")
+        .gte("created_at", sincePrevious)
+        .lt("created_at", sinceCurrent),
+      supabase
+        .from("contact_clicks")
+        .select("id", { count: "exact", head: true })
+        .eq("channel", "email")
+        .gte("created_at", sinceCurrent),
+      supabase
+        .from("contact_clicks")
+        .select("id", { count: "exact", head: true })
+        .eq("channel", "email")
+        .gte("created_at", sincePrevious)
+        .lt("created_at", sinceCurrent),
       supabase.from("contact_clicks").select("channel").gte("created_at", sinceCurrent),
-      supabase.from("contact_clicks").select("id", { count: "exact", head: true }).gte("created_at", sincePrevious).lt("created_at", sinceCurrent),
-      supabase.from("contact_clicks").select("channel,package,page,created_at").order("created_at", { ascending: false }).limit(30),
-      supabase.from("page_views").select("path,created_at").order("created_at", { ascending: false }).limit(500),
+      supabase
+        .from("contact_clicks")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", sincePrevious)
+        .lt("created_at", sinceCurrent),
+      supabase
+        .from("contact_clicks")
+        .select("channel,package,page,created_at")
+        .order("created_at", { ascending: false })
+        .limit(30),
+      supabase
+        .from("page_views")
+        .select("path,created_at")
+        .order("created_at", { ascending: false })
+        .limit(500),
     ]);
 
-    const paidPence = (paidSum.data ?? []).filter((p: any) => p.status === "paid").reduce((s: number, p: any) => s + (p.amount_pence ?? 0), 0);
-    const paidPenceCurrent = (paidSumCurrent.data ?? []).reduce((s: number, p: any) => s + (p.amount_pence ?? 0), 0);
+    const paidPence = (paidSum.data ?? [])
+      .filter((p: any) => p.status === "paid")
+      .reduce((s: number, p: any) => s + (p.amount_pence ?? 0), 0);
+    const paidPenceCurrent = (paidSumCurrent.data ?? []).reduce(
+      (s: number, p: any) => s + (p.amount_pence ?? 0),
+      0,
+    );
 
     const theory = (theoryRows.data ?? []) as any[];
     const totalAnswered = theory.reduce((s: number, r: any) => s + (r.questions_answered ?? 0), 0);
@@ -187,7 +292,11 @@ export const getAdminOverview = createServerFn({ method: "POST" })
     }
     const topicPerformance = Array.from(byTopic.entries())
       .filter(([, v]) => v.answers > 0)
-      .map(([slug, v]) => ({ slug, answers: v.answers, accuracy: Math.round((v.correct / v.answers) * 100) }))
+      .map(([slug, v]) => ({
+        slug,
+        answers: v.answers,
+        accuracy: Math.round((v.correct / v.answers) * 100),
+      }))
       .sort((a, b) => a.accuracy - b.accuracy);
 
     const clicksByChannel: Record<string, number> = {};
@@ -201,7 +310,9 @@ export const getAdminOverview = createServerFn({ method: "POST" })
       const p = (v as any).path;
       if (p) topPaths[p] = (topPaths[p] ?? 0) + 1;
     }
-    const topPathsSorted = Object.entries(topPaths).sort((a, b) => b[1] - a[1]).slice(0, 6) as [string, number][];
+    const topPathsSorted = Object.entries(topPaths)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6) as [string, number][];
 
     const buildSeries = (rows: { created_at?: string | null }[]) => {
       const buckets: Record<string, number> = {};
@@ -224,11 +335,21 @@ export const getAdminOverview = createServerFn({ method: "POST" })
     type Activity = { type: string; label: string; sub: string; at: string };
     const activity: Activity[] = [];
     for (const p of (profilesRecent.data ?? []) as any[]) {
-      activity.push({ type: "learner", label: "New learner registered", sub: p.full_name || "New learner", at: p.created_at });
+      activity.push({
+        type: "learner",
+        label: "New learner registered",
+        sub: p.full_name || "New learner",
+        at: p.created_at,
+      });
     }
     for (const b of (bookingsRecent.data ?? []) as any[]) {
       const hours = Math.round((b.duration_minutes ?? 60) / 60);
-      activity.push({ type: "booking", label: `Lesson booked (${hours}h)`, sub: b.pickup_location || "Pickup", at: b.created_at });
+      activity.push({
+        type: "booking",
+        label: `Lesson booked (${hours}h)`,
+        sub: b.pickup_location || "Pickup",
+        at: b.created_at,
+      });
     }
     for (const t of (theoryRecent.data ?? []) as any[]) {
       if (!t.completed_at && (t.last_score_pct ?? 0) === 0) continue;
@@ -246,10 +367,10 @@ export const getAdminOverview = createServerFn({ method: "POST" })
           c.channel === "whatsapp"
             ? "WhatsApp enquiry"
             : c.channel === "email"
-            ? "Email enquiry"
-            : c.channel === "phone"
-            ? "Phone enquiry"
-            : "Portal opened",
+              ? "Email enquiry"
+              : c.channel === "phone"
+                ? "Phone enquiry"
+                : "Portal opened",
         sub: c.package || c.page || "Website",
         at: c.created_at,
       });
@@ -257,8 +378,12 @@ export const getAdminOverview = createServerFn({ method: "POST" })
     activity.sort((a, b) => (a.at < b.at ? 1 : -1));
     const recentActivity = activity.slice(0, 12);
 
-    const theoryLearnersCurrent = new Set(((theoryCurrent.data ?? []) as any[]).map((r) => r.user_id)).size;
-    const theoryLearnersPrevious = new Set(((theoryPrevious.data ?? []) as any[]).map((r) => r.user_id)).size;
+    const theoryLearnersCurrent = new Set(
+      ((theoryCurrent.data ?? []) as any[]).map((r) => r.user_id),
+    ).size;
+    const theoryLearnersPrevious = new Set(
+      ((theoryPrevious.data ?? []) as any[]).map((r) => r.user_id),
+    ).size;
 
     return {
       students: profiles.count ?? 0,
@@ -502,19 +627,45 @@ export const exportAdminCsv = createServerFn({ method: "POST" })
       rows = Object.entries(byDay).map(([d, set]) => [d, set.size]);
     } else if (data.dataset === "recent-activity") {
       const [profilesRecent, bookingsRecent, theoryRecent, clicksRecent] = await Promise.all([
-        supabase.from("profiles").select("full_name,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }),
-        supabase.from("lesson_bookings").select("duration_minutes,pickup_location,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }),
-        supabase.from("theory_progress").select("category_slug,last_score_pct,completed_at,updated_at").gte("updated_at", sinceIso).order("updated_at", { ascending: false }),
-        supabase.from("contact_clicks").select("channel,package,page,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }),
+        supabase
+          .from("profiles")
+          .select("full_name,created_at")
+          .gte("created_at", sinceIso)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("lesson_bookings")
+          .select("duration_minutes,pickup_location,created_at")
+          .gte("created_at", sinceIso)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("theory_progress")
+          .select("category_slug,last_score_pct,completed_at,updated_at")
+          .gte("updated_at", sinceIso)
+          .order("updated_at", { ascending: false }),
+        supabase
+          .from("contact_clicks")
+          .select("channel,package,page,created_at")
+          .gte("created_at", sinceIso)
+          .order("created_at", { ascending: false }),
       ]);
       type Row = { at: string; type: string; label: string; detail: string };
       const out: Row[] = [];
       for (const p of (profilesRecent.data ?? []) as any[]) {
-        out.push({ at: p.created_at, type: "learner", label: "New learner registered", detail: p.full_name || "" });
+        out.push({
+          at: p.created_at,
+          type: "learner",
+          label: "New learner registered",
+          detail: p.full_name || "",
+        });
       }
       for (const b of (bookingsRecent.data ?? []) as any[]) {
         const hours = Math.round((b.duration_minutes ?? 60) / 60);
-        out.push({ at: b.created_at, type: "booking", label: `Lesson booked (${hours}h)`, detail: b.pickup_location || "" });
+        out.push({
+          at: b.created_at,
+          type: "booking",
+          label: `Lesson booked (${hours}h)`,
+          detail: b.pickup_location || "",
+        });
       }
       for (const t of (theoryRecent.data ?? []) as any[]) {
         if (!t.completed_at && (t.last_score_pct ?? 0) === 0) continue;
@@ -530,9 +681,13 @@ export const exportAdminCsv = createServerFn({ method: "POST" })
           at: c.created_at,
           type: "click",
           label:
-            c.channel === "whatsapp" ? "WhatsApp enquiry" :
-            c.channel === "email" ? "Email enquiry" :
-            c.channel === "phone" ? "Phone enquiry" : "Portal opened",
+            c.channel === "whatsapp"
+              ? "WhatsApp enquiry"
+              : c.channel === "email"
+                ? "Email enquiry"
+                : c.channel === "phone"
+                  ? "Phone enquiry"
+                  : "Portal opened",
           detail: c.package || c.page || "",
         });
       }
@@ -603,7 +758,14 @@ export const getSectionBreakdown = createServerFn({ method: "POST" })
       .limit(20000);
     if (error) throw new Error(error.message);
 
-    type Row = { path: string; platform: string | null; session_id: string | null; user_agent: string | null; referrer: string | null; created_at: string };
+    type Row = {
+      path: string;
+      platform: string | null;
+      session_id: string | null;
+      user_agent: string | null;
+      referrer: string | null;
+      created_at: string;
+    };
     const list = (rows ?? []) as Row[];
 
     const surfaceOf = (p: string | null, ua: string | null): "app" | "browser" | "unknown" => {
@@ -614,7 +776,10 @@ export const getSectionBreakdown = createServerFn({ method: "POST" })
       if (ua) return "browser";
       return "unknown";
     };
-    const deviceOf = (p: string | null, ua: string | null): "ios" | "android" | "mobile" | "desktop" | "unknown" => {
+    const deviceOf = (
+      p: string | null,
+      ua: string | null,
+    ): "ios" | "android" | "mobile" | "desktop" | "unknown" => {
       if (p) {
         const d = p.split("-")[1];
         if (d === "ios" || d === "android" || d === "mobile" || d === "desktop") return d;
@@ -659,7 +824,9 @@ export const getSectionBreakdown = createServerFn({ method: "POST" })
       sourceCounts.set(src, sRow);
       if (r.referrer) {
         let host = r.referrer;
-        try { host = new URL(r.referrer).hostname.toLowerCase() || r.referrer; } catch {}
+        try {
+          host = new URL(r.referrer).hostname.toLowerCase() || r.referrer;
+        } catch {}
         const rRow = referrerCounts.get(host) ?? { source: src, views: 0 };
         rRow.views += 1;
         referrerCounts.set(host, rRow);
@@ -714,7 +881,14 @@ export const getTrafficStats = createServerFn({ method: "POST" })
       .limit(20000);
     if (error) throw new Error(error.message);
 
-    type Row = { path: string; platform: string | null; session_id: string | null; user_agent: string | null; referrer: string | null; created_at: string };
+    type Row = {
+      path: string;
+      platform: string | null;
+      session_id: string | null;
+      user_agent: string | null;
+      referrer: string | null;
+      created_at: string;
+    };
     const list = (rows ?? []) as Row[];
 
     const surfaceOf = (p: string | null, ua: string | null): "app" | "browser" | "unknown" => {
@@ -725,7 +899,10 @@ export const getTrafficStats = createServerFn({ method: "POST" })
       if (ua) return "browser";
       return "unknown";
     };
-    const deviceOf = (p: string | null, ua: string | null): "ios" | "android" | "mobile" | "desktop" | "unknown" => {
+    const deviceOf = (
+      p: string | null,
+      ua: string | null,
+    ): "ios" | "android" | "mobile" | "desktop" | "unknown" => {
       if (p) {
         const d = p.split("-")[1];
         if (d === "ios" || d === "android" || d === "mobile" || d === "desktop") return d;
@@ -742,7 +919,10 @@ export const getTrafficStats = createServerFn({ method: "POST" })
     const bySurface = { app: 0, browser: 0, unknown: 0 };
     const byDevice = { ios: 0, android: 0, mobile: 0, desktop: 0, unknown: 0 };
     const platformCounts = new Map<string, { views: number; sessions: Set<string> }>();
-    const pathCounts = new Map<string, { views: number; sessions: Set<string>; app: number; browser: number }>();
+    const pathCounts = new Map<
+      string,
+      { views: number; sessions: Set<string>; app: number; browser: number }
+    >();
     const sourceCounts = new Map<string, { views: number; sessions: Set<string> }>();
     const referrerCounts = new Map<string, { source: string; views: number }>();
     const sessions = new Set<string>();
@@ -766,7 +946,12 @@ export const getTrafficStats = createServerFn({ method: "POST" })
       platformCounts.set(plat, pRow);
 
       const path = r.path || "(unknown)";
-      const pathRow = pathCounts.get(path) ?? { views: 0, sessions: new Set<string>(), app: 0, browser: 0 };
+      const pathRow = pathCounts.get(path) ?? {
+        views: 0,
+        sessions: new Set<string>(),
+        app: 0,
+        browser: 0,
+      };
       pathRow.views += 1;
       if (r.session_id) pathRow.sessions.add(r.session_id);
       if (surface === "app") pathRow.app += 1;
@@ -780,7 +965,9 @@ export const getTrafficStats = createServerFn({ method: "POST" })
       sourceCounts.set(src, sRow);
       if (r.referrer) {
         let host = r.referrer;
-        try { host = new URL(r.referrer).hostname.toLowerCase() || r.referrer; } catch {}
+        try {
+          host = new URL(r.referrer).hostname.toLowerCase() || r.referrer;
+        } catch {}
         const rRow = referrerCounts.get(host) ?? { source: src, views: 0 };
         rRow.views += 1;
         referrerCounts.set(host, rRow);

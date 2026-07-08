@@ -47,18 +47,38 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "GSM Driving School — Drive today. Succeed tomorrow." },
-      { name: "description", content: "DVSA-approved manual & automatic driving lessons in Notting Hill, Holland Park & Kensington. 20+ years' experience, 143 five-star Google reviews." },
+      {
+        name: "description",
+        content:
+          "DVSA-approved manual & automatic driving lessons in Notting Hill, Holland Park & Kensington. 20+ years' experience, 143 five-star Google reviews.",
+      },
       { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
-      { property: "og:description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 143 five-star Google reviews." },
+      {
+        property: "og:description",
+        content:
+          "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 143 five-star Google reviews.",
+      },
       { property: "og:image", content: heroImage.url },
-      { property: "og:image:alt", content: "GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London." },
+      {
+        property: "og:image:alt",
+        content:
+          "GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London.",
+      },
       { property: "og:image:width", content: "1600" },
       { property: "og:image:height", content: "1200" },
       { property: "og:image:type", content: "image/jpeg" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
-      { name: "twitter:description", content: "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 143 five-star Google reviews." },
-      { name: "twitter:image:alt", content: "GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London." },
+      {
+        name: "twitter:description",
+        content:
+          "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 143 five-star Google reviews.",
+      },
+      {
+        name: "twitter:image:alt",
+        content:
+          "GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London.",
+      },
     ],
   }),
   component: Home,
@@ -67,13 +87,30 @@ export const Route = createFileRoute("/")({
 const DEFAULT_POSTCODES = ["W2", "W3", "W4", "SW6", "W8", "W10", "W11", "W12", "W14"];
 
 const DEFAULT_REASONS = [
-  { id: "01", name: "Local knowledge", description: "Every test route junction and tricky give-way in W11 and W8, learned over 20+ years on these exact streets." },
-  { id: "02", name: "Consistent teaching", description: "Same instructor from your first lesson to test day — no handovers, no repeated explanations, no wasted hours." },
-  { id: "03", name: "Full support", description: "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other." },
+  {
+    id: "01",
+    name: "Local knowledge",
+    description:
+      "Every test route junction and tricky give-way in W11 and W8, learned over 20+ years on these exact streets.",
+  },
+  {
+    id: "02",
+    name: "Consistent teaching",
+    description:
+      "Same instructor from your first lesson to test day — no handovers, no repeated explanations, no wasted hours.",
+  },
+  {
+    id: "03",
+    name: "Full support",
+    description:
+      "Practical lessons paired with a theory & hazard perception portal so revision and driving reinforce each other.",
+  },
 ];
 
 // Defaults ensure the homepage renders identically until an admin edits the CMS.
-const DEFAULT_SECTIONS: Array<Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }> = [
+const DEFAULT_SECTIONS: Array<
+  Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
+> = [
   { section_key: "hero", section_type: "hero", sort_order: 10 },
   { section_key: "why", section_type: "why", sort_order: 20 },
   { section_key: "postcodes", section_type: "postcodes", sort_order: 30 },
@@ -96,26 +133,39 @@ function Home() {
     queryFn: () => listFn({ data: { surface: "web" } }),
   });
 
-  const sections: Array<Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }> =
-    data && data.length > 0 ? data : DEFAULT_SECTIONS;
+  const sections: Array<
+    Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
+  > = data && data.length > 0 ? data : DEFAULT_SECTIONS;
 
   return (
     <div className="flex flex-col">
       {sections.map((s) => {
         const key = s.section_key ?? s.section_type;
         switch (s.section_type) {
-          case "hero": return <HeroSection key={key} s={s} />;
-          case "why": return <WhySection key={key} s={s} />;
-          case "postcodes": return <PostcodesSection key={key} s={s} />;
-          case "areas": return <AreasSection key={key} s={s} />;
-          case "recent-pass": return <RecentPassSection key={key} s={s} />;
-          case "gallery": return <GallerySection key={key} s={s} />;
-          case "quizzes": return <QuizzesSection key={key} s={s} />;
-          case "install-app": return <InstallAppCard key={key} />;
-          case "portal": return <PortalSection key={key} s={s} />;
-          case "cta": return <CtaSection key={key} s={s} />;
-          case "custom": return <CustomSection key={key} s={s} />;
-          default: return null;
+          case "hero":
+            return <HeroSection key={key} s={s} />;
+          case "why":
+            return <WhySection key={key} s={s} />;
+          case "postcodes":
+            return <PostcodesSection key={key} s={s} />;
+          case "areas":
+            return <AreasSection key={key} s={s} />;
+          case "recent-pass":
+            return <RecentPassSection key={key} s={s} />;
+          case "gallery":
+            return <GallerySection key={key} s={s} />;
+          case "quizzes":
+            return <QuizzesSection key={key} s={s} />;
+          case "install-app":
+            return <InstallAppCard key={key} />;
+          case "portal":
+            return <PortalSection key={key} s={s} />;
+          case "cta":
+            return <CtaSection key={key} s={s} />;
+          case "custom":
+            return <CustomSection key={key} s={s} />;
+          default:
+            return null;
         }
       })}
     </div>
@@ -138,7 +188,8 @@ function renderHeroTitle(title: string) {
 
 function HeroSection({ s }: SectionProps) {
   const rating = useSiteRating();
-  const heroTitle = s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
+  const heroTitle =
+    s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-8 lg:pb-24 lg:pt-20">
@@ -150,14 +201,24 @@ function HeroSection({ s }: SectionProps) {
           <h1 className="mt-6 text-balance font-display text-[44px] font-medium leading-[1.05] text-foreground sm:text-6xl lg:text-[72px]">
             {renderHeroTitle(heroTitle)}
           </h1>
-          <a href="https://maps.google.com/?cid=12315071950298926858" target="_blank" rel="noopener noreferrer" className="mt-6 flex items-center gap-3 hover:opacity-80">
+          <a
+            href="https://maps.google.com/?cid=12315071950298926858"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 flex items-center gap-3 hover:opacity-80"
+          >
             <div className="flex text-accent">
-              {Array.from({ length: 5 }).map((_, i) => (<Star key={i} className="h-4 w-4 fill-accent" />))}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-accent" />
+              ))}
             </div>
             <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-            {or(s.body, "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.")}
+            {or(
+              s.body,
+              "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.",
+            )}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button
@@ -165,7 +226,10 @@ function HeroSection({ s }: SectionProps) {
               size="lg"
               className="h-14 rounded-xl bg-primary px-7 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
             >
-              <a href={or(s.cta_primary_href, "/contact")} className="inline-flex items-center gap-2 font-medium">
+              <a
+                href={or(s.cta_primary_href, "/contact")}
+                className="inline-flex items-center gap-2 font-medium"
+              >
                 {or(s.cta_primary_label, "Get in touch")}
                 <ArrowRight className="h-4 w-4" />
               </a>
@@ -175,7 +239,10 @@ function HeroSection({ s }: SectionProps) {
               size="lg"
               className="h-14 rounded-xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
             >
-              <a href={or(s.cta_secondary_href, "/#download-app")} className="inline-flex items-center gap-2 font-medium">
+              <a
+                href={or(s.cta_secondary_href, "/#download-app")}
+                className="inline-flex items-center gap-2 font-medium"
+              >
                 {or(s.cta_secondary_label, "Download the App")}
                 <ArrowRight className="h-4 w-4" />
               </a>
@@ -198,7 +265,8 @@ function HeroSection({ s }: SectionProps) {
               About GSM
             </div>
             <p className="mt-4 text-sm leading-relaxed">
-              George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.
+              George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also
+              DVSA-approved, joined the team bringing the same patient, structured teaching style.
             </p>
           </div>
         </div>
@@ -217,7 +285,15 @@ function WhySection({ s }: SectionProps) {
           {or(s.eyebrow, "Why GSM")}
         </div>
         <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl">
-          {s.title && s.title.trim().length > 0 ? s.title : (<>Over 20 years' experience,<br className="hidden sm:block" /> manual <span className="italic text-accent">and</span> automatic.</>)}
+          {s.title && s.title.trim().length > 0 ? (
+            s.title
+          ) : (
+            <>
+              Over 20 years' experience,
+              <br className="hidden sm:block" /> manual{" "}
+              <span className="italic text-accent">and</span> automatic.
+            </>
+          )}
         </h2>
         <div className="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
           {reasons.map((r) => (
@@ -238,7 +314,9 @@ function PostcodesSection({ s }: SectionProps) {
   return (
     <section className="border-y border-border bg-card">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-6 sm:px-6 lg:px-8">
-        <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">{or(s.eyebrow, "Postcodes covered")}</div>
+        <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+          {or(s.eyebrow, "Postcodes covered")}
+        </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-display text-lg text-primary">
           {postcodes.map((p, i) => (
             <span key={p} className="flex items-center gap-6">
@@ -296,14 +374,31 @@ function RecentPassSection({ s }: SectionProps) {
               {or(s.eyebrow, "Recent pass")}
             </div>
             <h2 className="mt-4 max-w-md font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-              {s.title && s.title.trim().length > 0 ? s.title : (<>Another first-time pass. <span className="italic text-accent">Another confident driver.</span></>)}
+              {s.title && s.title.trim().length > 0 ? (
+                s.title
+              ) : (
+                <>
+                  Another first-time pass.{" "}
+                  <span className="italic text-accent">Another confident driver.</span>
+                </>
+              )}
             </h2>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-              {or(s.body, "This is what success looks like at GSM — real students, real test centres, real certificates. We teach the skills, you earn the freedom.")}
+              {or(
+                s.body,
+                "This is what success looks like at GSM — real students, real test centres, real certificates. We teach the skills, you earn the freedom.",
+              )}
             </p>
-            <a href="https://maps.google.com/?cid=12315071950298926858" target="_blank" rel="noopener noreferrer" className="mt-8 flex items-center gap-4 hover:opacity-80">
+            <a
+              href="https://maps.google.com/?cid=12315071950298926858"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 flex items-center gap-4 hover:opacity-80"
+            >
               <div className="flex text-accent">
-                {Array.from({ length: 5 }).map((_, i) => (<Star key={i} className="h-4 w-4 fill-accent" />))}
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-accent" />
+                ))}
               </div>
               <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
             </a>
@@ -316,7 +411,10 @@ function RecentPassSection({ s }: SectionProps) {
 
 function GallerySection({ s }: SectionProps) {
   const captions = usePageBlockStrings("home-gallery-captions", DEFAULT_GALLERY_CAPTIONS);
-  const galleryPhotos = GALLERY_URLS.map((url, i) => ({ url, caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "" }));
+  const galleryPhotos = GALLERY_URLS.map((url, i) => ({
+    url,
+    caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "",
+  }));
   return (
     <section className="bg-muted py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -325,7 +423,14 @@ function GallerySection({ s }: SectionProps) {
           {or(s.eyebrow, "From our students")}
         </div>
         <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-          {s.title && s.title.trim().length > 0 ? s.title : (<>Pass certificates, smiles, <span className="italic text-accent">and the GSM car.</span></>)}
+          {s.title && s.title.trim().length > 0 ? (
+            s.title
+          ) : (
+            <>
+              Pass certificates, smiles,{" "}
+              <span className="italic text-accent">and the GSM car.</span>
+            </>
+          )}
         </h2>
         <div className="mt-12">
           <PhotoGallery photos={galleryPhotos} />
@@ -344,31 +449,53 @@ function QuizzesSection({ s }: SectionProps) {
           {or(s.eyebrow, "Free theory practice")}
         </div>
         <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl">
-          {s.title && s.title.trim().length > 0 ? s.title : (<>Test yourself — <span className="italic text-accent">right here.</span></>)}
+          {s.title && s.title.trim().length > 0 ? (
+            s.title
+          ) : (
+            <>
+              Test yourself — <span className="italic text-accent">right here.</span>
+            </>
+          )}
         </h2>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          {or(s.body, `This is a taster of GSM Plus. Every question in the full platform is explained the same way — answer, then a plain-English "why" — so you actually understand the road, not just memorise it. That's how our students pass quicker.`)}
+          {or(
+            s.body,
+            `This is a taster of GSM Plus. Every question in the full platform is explained the same way — answer, then a plain-English "why" — so you actually understand the road, not just memorise it. That's how our students pass quicker.`,
+          )}
         </p>
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           <div>
-            <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Road signs · 10 questions</div>
+            <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              Road signs · 10 questions
+            </div>
             <HomeSignsQuiz />
           </div>
           <div>
-            <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Theory questions · 10 questions</div>
+            <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              Theory questions · 10 questions
+            </div>
             <HomeTheoryQuiz />
           </div>
           <div className="lg:col-span-2">
-            <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Hazard perception & anticipation</div>
+            <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              Hazard perception & anticipation
+            </div>
             <div className="mb-4 overflow-hidden border-2 border-accent bg-primary p-6 text-primary-foreground shadow-lg sm:p-8">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.24em] text-accent">Status update</div>
+                  <div className="text-[11px] uppercase tracking-[0.24em] text-accent">
+                    Status update
+                  </div>
                   <div className="mt-2 font-display text-3xl leading-[1.05] sm:text-4xl md:text-5xl">
-                    Hazard perception from GSM — <span className="italic text-accent">coming soon</span>
+                    Hazard perception from GSM —{" "}
+                    <span className="italic text-accent">coming soon</span>
                   </div>
                   <p className="mt-3 max-w-2xl text-sm opacity-90 sm:text-base">
-                    Built from <span className="font-semibold text-accent">real dashcam recordings of live driving situations</span> around West London — not stock footage. Filming now.
+                    Built from{" "}
+                    <span className="font-semibold text-accent">
+                      real dashcam recordings of live driving situations
+                    </span>{" "}
+                    around West London — not stock footage. Filming now.
                   </p>
                 </div>
                 <div className="flex-none self-start border border-accent/60 px-4 py-2 text-center">
@@ -382,8 +509,12 @@ function QuizzesSection({ s }: SectionProps) {
         </div>
         <div className="mt-8 text-sm text-muted-foreground">
           Just a taster. The full{" "}
-          <Link to="/dashboard" className="font-medium text-primary underline underline-offset-4">GSM Plus</Link>{" "}
-          gives you all 14 theory categories, every UK road sign, road markings, police signals, hazard perception clips and full 50-question mock tests — each with the same "why" explanation so you learn faster and pass sooner.
+          <Link to="/dashboard" className="font-medium text-primary underline underline-offset-4">
+            GSM Plus
+          </Link>{" "}
+          gives you all 14 theory categories, every UK road sign, road markings, police signals,
+          hazard perception clips and full 50-question mock tests — each with the same "why"
+          explanation so you learn faster and pass sooner.
         </div>
       </div>
     </section>
@@ -401,17 +532,29 @@ function PortalSection({ s }: SectionProps) {
               {or(s.eyebrow, "GSM Plus")}
             </div>
             <h2 className="mt-4 font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-              {s.title && s.title.trim().length > 0 ? s.title : (<>Everything you need <span className="italic text-accent">in one place.</span></>)}
+              {s.title && s.title.trim().length > 0 ? (
+                s.title
+              ) : (
+                <>
+                  Everything you need <span className="italic text-accent">in one place.</span>
+                </>
+              )}
             </h2>
             <p className="mt-6 max-w-md text-lg leading-relaxed opacity-80">
-              {or(s.body, "Lesson notes, payment history, theory revision and hazard perception — synced from your instructor's tablet after every session.")}
+              {or(
+                s.body,
+                "Lesson notes, payment history, theory revision and hazard perception — synced from your instructor's tablet after every session.",
+              )}
             </p>
             <Button
               asChild
               size="lg"
               className="mt-8 h-14 rounded-xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
             >
-              <a href={or(s.cta_primary_href, "/dashboard")} className="inline-flex items-center gap-2 font-medium">
+              <a
+                href={or(s.cta_primary_href, "/dashboard")}
+                className="inline-flex items-center gap-2 font-medium"
+              >
                 {or(s.cta_primary_label, "Open your portal")}
                 <ArrowRight className="h-4 w-4" />
               </a>
@@ -450,7 +593,8 @@ function CtaSection({ s }: SectionProps) {
               {or(s.title, "Ready to start? Get in Touch.")}
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Message us on WhatsApp, give us a call, or download the app to book your first lesson today.
+              Message us on WhatsApp, give us a call, or download the app to book your first lesson
+              today.
             </p>
           </div>
           <div className="grid w-full gap-3 sm:grid-cols-3 lg:w-auto">
@@ -489,7 +633,11 @@ function CtaSection({ s }: SectionProps) {
               size="lg"
               className="h-14 rounded-xl bg-accent px-6 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
             >
-              <Link to="/" hash="download-app" className="inline-flex items-center justify-center gap-2 font-medium">
+              <Link
+                to="/"
+                hash="download-app"
+                className="inline-flex items-center justify-center gap-2 font-medium"
+              >
                 <Download className="h-5 w-5" />
                 {or(s.cta_primary_label, "Download the App")}
               </Link>
@@ -506,12 +654,12 @@ function CustomSection({ s }: SectionProps) {
     s.background === "primary"
       ? "bg-primary text-primary-foreground"
       : s.background === "accent"
-      ? "bg-accent text-accent-foreground"
-      : s.background === "muted"
-      ? "bg-muted"
-      : s.background === "card"
-      ? "bg-card"
-      : "bg-background";
+        ? "bg-accent text-accent-foreground"
+        : s.background === "muted"
+          ? "bg-muted"
+          : s.background === "card"
+            ? "bg-card"
+            : "bg-background";
   return (
     <section className={`${bg} border-t border-border py-20 sm:py-28`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -526,11 +674,13 @@ function CustomSection({ s }: SectionProps) {
             {s.title}
           </h2>
         )}
-        {s.subtitle && (
-          <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{s.subtitle}</p>
-        )}
+        {s.subtitle && <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{s.subtitle}</p>}
         {s.image_url && (
-          <img src={s.image_url} alt={s.title ?? ""} className="mt-8 max-h-[420px] w-full object-cover" />
+          <img
+            src={s.image_url}
+            alt={s.title ?? ""}
+            className="mt-8 max-h-[420px] w-full object-cover"
+          />
         )}
         {s.body && (
           <p className="mt-6 max-w-3xl whitespace-pre-line text-lg leading-relaxed text-muted-foreground">
@@ -540,7 +690,11 @@ function CustomSection({ s }: SectionProps) {
         {(s.cta_primary_label || s.cta_secondary_label) && (
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             {s.cta_primary_label && (
-              <Button asChild size="lg" className="h-12 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90">
+              <Button
+                asChild
+                size="lg"
+                className="h-12 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90"
+              >
                 <a href={or(s.cta_primary_href, "#")} className="inline-flex items-center gap-2">
                   {s.cta_primary_label}
                   <ArrowRight className="h-4 w-4" />

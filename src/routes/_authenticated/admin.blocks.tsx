@@ -3,14 +3,32 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, Save, RotateCcw, Plus, Trash2, ArrowUp, ArrowDown, CheckCircle2, Upload, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Save,
+  RotateCcw,
+  Plus,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  CheckCircle2,
+  Upload,
+  X,
+} from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { theoryCategories } from "@/data/theory";
 import { reviews } from "@/data/reviews";
@@ -96,7 +114,11 @@ const SECTIONS: Record<Section, SectionSpec> = {
     mode: "blocks",
     helper: "Each block is one memory-aid card (title, mnemonic, explanation).",
     defaults: () => [
-      { title: "Road studs — which colour, where?", aid: "Red = Left · Amber = Right · White = Middle · Green = sliP road", body: "Red on the left edge, Amber on the right, White between lanes, Green where a slip road meets the main carriageway." },
+      {
+        title: "Road studs — which colour, where?",
+        aid: "Red = Left · Amber = Right · White = Middle · Green = sliP road",
+        body: "Red on the left edge, Amber on the right, White between lanes, Green where a slip road meets the main carriageway.",
+      },
     ],
   },
   "common-fail": {
@@ -105,9 +127,14 @@ const SECTIONS: Record<Section, SectionSpec> = {
     items: [{ id: "default", label: "Common reasons people fail" }],
     fields: ["title", "body", "rule"],
     mode: "blocks",
-    helper: "Each block is one fail-reason card. The rule label shows underneath (e.g. “Rules 159, 161”).",
+    helper:
+      "Each block is one fail-reason card. The rule label shows underneath (e.g. “Rules 159, 161”).",
     defaults: () => [
-      { title: "Not checking mirrors properly", body: "Examiners want MSM every single time.", rule: "Rules 159, 161" },
+      {
+        title: "Not checking mirrors properly",
+        body: "Examiners want MSM every single time.",
+        rule: "Rules 159, 161",
+      },
     ],
   },
   review: {
@@ -158,7 +185,10 @@ function AdminBlocksPage() {
 
   const [blocks, setBlocks] = useState<OverrideBlock[]>([]);
   const [strings, setStrings] = useState<string[]>([]);
-  const [meta, setMeta] = useState<{ name: string; description: string }>({ name: "", description: "" });
+  const [meta, setMeta] = useState<{ name: string; description: string }>({
+    name: "",
+    description: "",
+  });
 
   useEffect(() => {
     if (!currentItem) return;
@@ -168,7 +198,9 @@ function AdminBlocksPage() {
       if (spec.mode === "strings") {
         setStrings((existing.data?.strings as string[] | undefined) ?? (defaults as string[]));
       } else {
-        setBlocks((existing.data?.blocks as OverrideBlock[] | undefined) ?? (defaults as OverrideBlock[]));
+        setBlocks(
+          (existing.data?.blocks as OverrideBlock[] | undefined) ?? (defaults as OverrideBlock[]),
+        );
       }
       setMeta({
         name: existing.name ?? metaDefaults.name ?? "",
@@ -194,19 +226,21 @@ function AdminBlocksPage() {
           item_id: currentItem.id,
           name: usePerItemMeta ? meta.name.trim() || null : null,
           description: usePerItemMeta ? meta.description.trim() || null : null,
-          data: spec.mode === "strings"
-            ? { strings: strings.map((s) => s.trim()).filter(Boolean) }
-            : { blocks: blocks
-                .map((b) => ({
-                  title: b.title?.trim() || undefined,
-                  body: b.body?.trim() || undefined,
-                  aid: b.aid?.trim() || undefined,
-                  rule: b.rule?.trim() || undefined,
-                  note: b.note?.trim() || undefined,
-                  image_path: b.image_path || undefined,
-                }))
-                .filter((b) => b.title || b.body || b.aid || b.rule || b.note || b.image_path),
-            },
+          data:
+            spec.mode === "strings"
+              ? { strings: strings.map((s) => s.trim()).filter(Boolean) }
+              : {
+                  blocks: blocks
+                    .map((b) => ({
+                      title: b.title?.trim() || undefined,
+                      body: b.body?.trim() || undefined,
+                      aid: b.aid?.trim() || undefined,
+                      rule: b.rule?.trim() || undefined,
+                      note: b.note?.trim() || undefined,
+                      image_path: b.image_path || undefined,
+                    }))
+                    .filter((b) => b.title || b.body || b.aid || b.rule || b.note || b.image_path),
+                },
         },
       });
       toast.success("Saved");
@@ -245,23 +279,33 @@ function AdminBlocksPage() {
     <AdminShell eyebrow="Admin" title="Edit George's methods, tips & reviews">
       <div className="mb-6 grid gap-3 sm:grid-cols-[240px_1fr_auto] sm:items-end">
         <div>
-          <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Section</Label>
+          <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            Section
+          </Label>
           <Select value={section} onValueChange={(v) => setSection(v as Section)}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               {(Object.keys(SECTIONS) as Section[]).map((s) => (
-                <SelectItem key={s} value={s}>{SECTIONS[s].label}</SelectItem>
+                <SelectItem key={s} value={s}>
+                  {SECTIONS[s].label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div>
-          <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{spec.itemsLabel}</Label>
+          <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            {spec.itemsLabel}
+          </Label>
           <Select
             value={currentItem?.id ?? ""}
             onValueChange={(id) => setItemIdx(spec.items.findIndex((it) => it.id === id))}
           >
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent className="max-h-72">
               {spec.items.map((it, i) => (
                 <SelectItem key={it.id} value={it.id}>
@@ -276,15 +320,15 @@ function AdminBlocksPage() {
         </div>
       </div>
 
-      {spec.helper && (
-        <p className="mb-4 text-xs text-muted-foreground">{spec.helper}</p>
-      )}
+      {spec.helper && <p className="mb-4 text-xs text-muted-foreground">{spec.helper}</p>}
 
       {currentItem && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="uppercase">{currentItem.id}</Badge>
+              <Badge variant="outline" className="uppercase">
+                {currentItem.id}
+              </Badge>
               {existing && (
                 <Badge className="bg-emerald-600 text-white">
                   <CheckCircle2 className="mr-1 h-3 w-3" /> edited
@@ -292,10 +336,20 @@ function AdminBlocksPage() {
               )}
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled={itemIdx === 0} onClick={() => setItemIdx((i) => Math.max(0, i - 1))}>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={itemIdx === 0}
+                onClick={() => setItemIdx((i) => Math.max(0, i - 1))}
+              >
                 <ChevronLeft className="h-4 w-4" /> Prev
               </Button>
-              <Button variant="outline" size="sm" disabled={itemIdx >= spec.items.length - 1} onClick={() => setItemIdx((i) => Math.min(spec.items.length - 1, i + 1))}>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={itemIdx >= spec.items.length - 1}
+                onClick={() => setItemIdx((i) => Math.min(spec.items.length - 1, i + 1))}
+              >
                 Next <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -305,11 +359,19 @@ function AdminBlocksPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <Label>Author name</Label>
-                  <Input className="mt-1" value={meta.name} onChange={(e) => setMeta({ ...meta, name: e.target.value })} />
+                  <Input
+                    className="mt-1"
+                    value={meta.name}
+                    onChange={(e) => setMeta({ ...meta, name: e.target.value })}
+                  />
                 </div>
                 <div>
                   <Label>Note (e.g. “GSM learner”)</Label>
-                  <Input className="mt-1" value={meta.description} onChange={(e) => setMeta({ ...meta, description: e.target.value })} />
+                  <Input
+                    className="mt-1"
+                    value={meta.description}
+                    onChange={(e) => setMeta({ ...meta, description: e.target.value })}
+                  />
                 </div>
               </div>
             )}
@@ -421,12 +483,26 @@ function BlockListEditor({
       {value.map((b, i) => (
         <div key={i} className="border border-border bg-background p-4">
           <div className="mb-3 flex items-center justify-between">
-            <div className="text-xs uppercase tracking-wider text-muted-foreground">Block {i + 1}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground">
+              Block {i + 1}
+            </div>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => move(i, -1)}
+                disabled={i === 0}
+                aria-label="Move up"
+              >
                 <ArrowUp className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => move(i, 1)} disabled={i === value.length - 1} aria-label="Move down">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => move(i, 1)}
+                disabled={i === value.length - 1}
+                aria-label="Move down"
+              >
                 <ArrowDown className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon" onClick={() => remove(i)} aria-label="Delete">
@@ -460,7 +536,11 @@ function BlockListEditor({
               <Label>Image (optional)</Label>
               <div className="mt-1 flex items-center gap-3">
                 {b.image_url ? (
-                  <img src={b.image_url} alt="" className="h-20 w-20 border border-border object-cover" />
+                  <img
+                    src={b.image_url}
+                    alt=""
+                    className="h-20 w-20 border border-border object-cover"
+                  />
                 ) : (
                   <div className="flex h-20 w-20 items-center justify-center border border-dashed border-border text-[11px] text-muted-foreground">
                     None
@@ -469,7 +549,11 @@ function BlockListEditor({
                 <div className="flex flex-col gap-2">
                   <label className="inline-flex cursor-pointer items-center gap-2 border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-secondary">
                     <Upload className="h-3.5 w-3.5" />
-                    {uploadingIdx === i ? "Uploading…" : b.image_url ? "Replace image" : "Upload image"}
+                    {uploadingIdx === i
+                      ? "Uploading…"
+                      : b.image_url
+                        ? "Replace image"
+                        : "Upload image"}
                     <input
                       type="file"
                       accept="image/*"
@@ -504,7 +588,13 @@ function BlockListEditor({
   );
 }
 
-function StringListEditor({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+function StringListEditor({
+  value,
+  onChange,
+}: {
+  value: string[];
+  onChange: (v: string[]) => void;
+}) {
   return (
     <div>
       <Label>Items (one per line)</Label>

@@ -171,7 +171,8 @@ export function ZigZagCrossing() {
   // Zebra crossing: zig-zags on both approaches with alternating black/white
   // stripes in the middle (Highway Code / Traffic Signs Manual style).
   const zigTop = "M10 45 L30 65 L50 45 L70 65 L90 45 L110 65 L130 45 L150 65 L170 45 L190 65";
-  const zigBottom = "M10 155 L30 135 L50 155 L70 135 L90 155 L110 135 L130 155 L150 135 L170 155 L190 135";
+  const zigBottom =
+    "M10 155 L30 135 L50 155 L70 135 L90 155 L110 135 L130 155 L150 135 L170 155 L190 135";
   return (
     <Frame>
       {/* Zig-zags on the near side */}
@@ -227,15 +228,7 @@ export function YellowBoxJunction() {
           <line key={"b" + k} x1={x0 + k} y1={y0} x2={x0 + k - w} y2={y0 + w} />
         ))}
       </g>
-      <rect
-        x={x0}
-        y={y0}
-        width={w}
-        height={w}
-        fill="none"
-        stroke={YELLOW}
-        strokeWidth="6"
-      />
+      <rect x={x0} y={y0} width={w} height={w} fill="none" stroke={YELLOW} strokeWidth="6" />
     </Frame>
   );
 }
@@ -362,7 +355,7 @@ export function BusLane() {
           y={signY + 56}
           textAnchor="middle"
           fill={PAINT}
-          style={{ font: '700 9px Arial, sans-serif', letterSpacing: 0.5 }}
+          style={{ font: "700 9px Arial, sans-serif", letterSpacing: 0.5 }}
         >
           Mon – Sat
         </text>
@@ -371,7 +364,7 @@ export function BusLane() {
           y={signY + 74}
           textAnchor="middle"
           fill={PAINT}
-          style={{ font: '700 11px Arial, sans-serif' }}
+          style={{ font: "700 11px Arial, sans-serif" }}
         >
           7 am
         </text>
@@ -380,7 +373,7 @@ export function BusLane() {
           y={signY + 88}
           textAnchor="middle"
           fill={PAINT}
-          style={{ font: '700 11px Arial, sans-serif' }}
+          style={{ font: "700 11px Arial, sans-serif" }}
         >
           –
         </text>
@@ -389,7 +382,7 @@ export function BusLane() {
           y={signY + 104}
           textAnchor="middle"
           fill={PAINT}
-          style={{ font: '700 11px Arial, sans-serif' }}
+          style={{ font: "700 11px Arial, sans-serif" }}
         >
           4 pm
         </text>
@@ -413,9 +406,7 @@ export function RoundaboutTriangles() {
     const teeth = [];
     for (let i = -2; i <= 2; i++) {
       const x = i * 12;
-      teeth.push(
-        <polygon key={i} points={`${x - 4},0 ${x + 4},0 ${x},9`} fill={PAINT} />,
-      );
+      teeth.push(<polygon key={i} points={`${x - 4},0 ${x + 4},0 ${x},9`} fill={PAINT} />);
     }
     return <g>{teeth}</g>;
   }
@@ -467,7 +458,9 @@ export function RoundaboutTriangles() {
 
       {/* Curved clockwise direction arrow around the disc */}
       <g fill="none" stroke={ROAD} strokeWidth="3" opacity="0.85">
-        <path d={`M ${cx + discR - 2} ${cy - 4} A ${discR - 4} ${discR - 4} 0 1 1 ${cx - 4} ${cy - discR + 2}`} />
+        <path
+          d={`M ${cx + discR - 2} ${cy - 4} A ${discR - 4} ${discR - 4} 0 1 1 ${cx - 4} ${cy - discR + 2}`}
+        />
       </g>
       <polygon
         points={`${cx - 8},${cy - discR + 2} ${cx - 2},${cy - discR - 4} ${cx + 2},${cy - discR + 4}`}
@@ -608,11 +601,7 @@ export function MergeShortDashes() {
       <rect x="0" y="0" width="200" height="200" fill="#2a2a2a" />
 
       {/* Grass verge to the left of the slip road (below the curve) */}
-      <path
-        d="M 0 200 L 0 0 L 78 0 C 40 70 20 130 18 200 Z"
-        fill="#3a5a2a"
-        opacity="0.55"
-      />
+      <path d="M 0 200 L 0 0 L 78 0 C 40 70 20 130 18 200 Z" fill="#3a5a2a" opacity="0.55" />
 
       {/* Solid kerbside (left) edge — curves up from bottom-left and
           becomes the nearside edge of the main carriageway at the top */}

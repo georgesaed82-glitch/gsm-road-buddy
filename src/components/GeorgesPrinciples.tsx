@@ -29,8 +29,8 @@ export function GeorgesPrinciples() {
         Nine rules that keep you safe for life
       </h3>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-        The same principles George teaches on every lesson. Learn them, live
-        them — they pass the test and outlast it.
+        The same principles George teaches on every lesson. Learn them, live them — they pass the
+        test and outlast it.
       </p>
       <ol className="mt-5 grid gap-2 sm:grid-cols-2">
         {principles.map((p, i) => (

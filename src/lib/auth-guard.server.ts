@@ -22,8 +22,7 @@ export function reqMeta(): { ip: string | null; ua: string | null } {
 export function getBearerToken(): string | null {
   try {
     const req = getRequest();
-    const header =
-      req?.headers.get("authorization") || req?.headers.get("Authorization");
+    const header = req?.headers.get("authorization") || req?.headers.get("Authorization");
     if (!header) return null;
     const token = header.replace(/^Bearer\s+/i, "").trim();
     return token || null;

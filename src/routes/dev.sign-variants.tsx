@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { OfficialSignImage, SIGN_IMAGE_SIZES, type SignImageVariant } from "@/components/OfficialSignImage";
+import {
+  OfficialSignImage,
+  SIGN_IMAGE_SIZES,
+  type SignImageVariant,
+} from "@/components/OfficialSignImage";
 import { signs } from "@/data/signs";
 
 // Test fixture used by the visual-regression Playwright suite.
@@ -15,10 +19,7 @@ function DevSignVariants() {
   return (
     <main className="min-h-screen bg-white p-6">
       <h1 className="text-lg font-semibold mb-4">OfficialSignImage variants — {sample.name}</h1>
-      <div
-        className="flex flex-wrap items-start gap-8"
-        data-testid="variant-grid"
-      >
+      <div className="flex flex-wrap items-start gap-8" data-testid="variant-grid">
         {VARIANTS.map((v) => (
           <div
             key={v}
@@ -53,9 +54,6 @@ function DevSignVariants() {
 export const Route = createFileRoute("/dev/sign-variants")({
   component: DevSignVariants,
   head: () => ({
-    meta: [
-      { title: "Sign variants (dev)" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Sign variants (dev)" }, { name: "robots", content: "noindex,nofollow" }],
   }),
 });

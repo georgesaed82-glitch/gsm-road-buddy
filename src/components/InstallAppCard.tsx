@@ -12,8 +12,7 @@ function detectPlatform() {
   const ios = /iPhone|iPad|iPod/i.test(ua);
   const android = /Android/i.test(ua);
   const standalone =
-    (typeof window !== "undefined" &&
-      window.matchMedia?.("(display-mode: standalone)").matches) ||
+    (typeof window !== "undefined" && window.matchMedia?.("(display-mode: standalone)").matches) ||
     (navigator as Navigator & { standalone?: boolean }).standalone === true;
   return { ios, android, standalone };
 }
@@ -74,8 +73,7 @@ export function InstallAppCard() {
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                 Install the GSM Driving School app for one-tap access to lessons, theory practice,
-                hazard perception and GSM Plus — straight from your home screen, online or
-                offline.
+                hazard perception and GSM Plus — straight from your home screen, online or offline.
               </p>
               <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-2">
@@ -160,24 +158,33 @@ export function InstallAppCard() {
                     <li className="flex gap-2">
                       <span className="font-medium text-foreground">1.</span>
                       <span className="inline-flex flex-wrap items-center gap-1">
-                        Tap the <Share className="inline h-4 w-4 text-accent" /> Share button at the bottom of Safari.
+                        Tap the <Share className="inline h-4 w-4 text-accent" /> Share button at the
+                        bottom of Safari.
                       </span>
                     </li>
                     <li className="flex gap-2">
                       <span className="font-medium text-foreground">2.</span>
                       <span className="inline-flex flex-wrap items-center gap-1">
-                        Choose <Plus className="inline h-4 w-4 text-accent" /> <strong className="text-foreground">Add to Home Screen</strong>.
+                        Choose <Plus className="inline h-4 w-4 text-accent" />{" "}
+                        <strong className="text-foreground">Add to Home Screen</strong>.
                       </span>
                     </li>
                     <li className="flex gap-2">
                       <span className="font-medium text-foreground">3.</span>
-                      <span>Tap <strong className="text-foreground">Add</strong> — the GSM icon appears on your home screen.</span>
+                      <span>
+                        Tap <strong className="text-foreground">Add</strong> — the GSM icon appears
+                        on your home screen.
+                      </span>
                     </li>
                   </>
                 ) : (
                   <>
                     <li>Open this site in Chrome, Edge or Samsung Internet.</li>
-                    <li>Open the browser menu (⋮) and choose <strong className="text-foreground">Install app</strong> or <strong className="text-foreground">Add to Home screen</strong>.</li>
+                    <li>
+                      Open the browser menu (⋮) and choose{" "}
+                      <strong className="text-foreground">Install app</strong> or{" "}
+                      <strong className="text-foreground">Add to Home screen</strong>.
+                    </li>
                     <li>Confirm to add the GSM icon to your home screen.</li>
                   </>
                 )}

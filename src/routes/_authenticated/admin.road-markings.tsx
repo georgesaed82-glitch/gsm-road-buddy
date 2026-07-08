@@ -29,7 +29,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { roadMarkings, markingGroups, type MarkingGroup, type RoadMarking } from "@/data/roadMarkings";
+import {
+  roadMarkings,
+  markingGroups,
+  type MarkingGroup,
+  type RoadMarking,
+} from "@/data/roadMarkings";
 import { useContentOverrides } from "@/hooks/useContentOverrides";
 import {
   upsertContentOverride,
@@ -75,9 +80,9 @@ function AdminRoadMarkingsPage() {
       id: r.item_id,
       name: r.name ?? "Custom marking",
       meaning: r.description ?? "",
-      group: (markingGroups.some((g) => g.slug === r.group_slug)
+      group: markingGroups.some((g) => g.slug === r.group_slug)
         ? (r.group_slug as MarkingGroup)
-        : "along"),
+        : "along",
       isCustom: true,
     }));
     const merged = [...base, ...custom];
@@ -95,7 +100,8 @@ function AdminRoadMarkingsPage() {
       const q = search.toLowerCase();
       const name = (ov?.name ?? r.name).toLowerCase();
       const meaning = (ov?.description ?? r.meaning).toLowerCase();
-      if (!name.includes(q) && !meaning.includes(q) && !r.id.toLowerCase().includes(q)) return false;
+      if (!name.includes(q) && !meaning.includes(q) && !r.id.toLowerCase().includes(q))
+        return false;
     }
     return true;
   });
@@ -180,9 +186,9 @@ function AdminRoadMarkingsPage() {
   return (
     <AdminShell eyebrow="Content" title="Road markings library">
       <p className="max-w-3xl text-sm text-muted-foreground">
-        Manage every painted road marking. Upload your own image to replace the
-        built-in diagram, edit the name or meaning, hide markings, reorder them,
-        duplicate existing entries, or add entirely new custom markings.
+        Manage every painted road marking. Upload your own image to replace the built-in diagram,
+        edit the name or meaning, hide markings, reorder them, duplicate existing entries, or add
+        entirely new custom markings.
       </p>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -195,7 +201,9 @@ function AdminRoadMarkingsPage() {
             <SelectContent>
               <SelectItem value="all">All ({rows.length})</SelectItem>
               {markingGroups.map((g) => (
-                <SelectItem key={g.slug} value={g.slug}>{g.title}</SelectItem>
+                <SelectItem key={g.slug} value={g.slug}>
+                  {g.title}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -338,19 +346,39 @@ function MarkingRow({
   const currentGroup = (ov?.group_slug as MarkingGroup | undefined) ?? row.group;
 
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState({ name: currentName, meaning: currentMeaning, group: currentGroup });
+  const [draft, setDraft] = useState({
+    name: currentName,
+    meaning: currentMeaning,
+    group: currentGroup,
+  });
 
   const overrideImg = ov?.image_url ?? null;
-  const hasCustomisation = Boolean(ov && (ov.name || ov.description || ov.group_slug || ov.image_path));
+  const hasCustomisation = Boolean(
+    ov && (ov.name || ov.description || ov.group_slug || ov.image_path),
+  );
   const Visual = row.base?.Visual;
 
   return (
-    <div className={`grid grid-cols-[auto_120px_1fr_auto] items-start gap-4 border p-4 ${enabled ? "border-border bg-card" : "border-dashed border-border bg-muted/40 opacity-70"}`}>
+    <div
+      className={`grid grid-cols-[auto_120px_1fr_auto] items-start gap-4 border p-4 ${enabled ? "border-border bg-card" : "border-dashed border-border bg-muted/40 opacity-70"}`}
+    >
       <div className="flex flex-col items-center gap-1">
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onMoveUp} aria-label="Move up">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          onClick={onMoveUp}
+          aria-label="Move up"
+        >
           <ArrowUp className="h-3.5 w-3.5" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onMoveDown} aria-label="Move down">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          onClick={onMoveDown}
+          aria-label="Move down"
+        >
           <ArrowDown className="h-3.5 w-3.5" />
         </Button>
       </div>
@@ -360,7 +388,9 @@ function MarkingRow({
         ) : Visual ? (
           <Visual />
         ) : (
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">No image</div>
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+            No image
+          </div>
         )}
       </div>
       <div className="min-w-0">
@@ -386,7 +416,9 @@ function MarkingRow({
               </SelectTrigger>
               <SelectContent>
                 {markingGroups.map((g) => (
-                  <SelectItem key={g.slug} value={g.slug}>{g.title}</SelectItem>
+                  <SelectItem key={g.slug} value={g.slug}>
+                    {g.title}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -401,7 +433,12 @@ function MarkingRow({
               >
                 <Save className="mr-2 h-3.5 w-3.5" /> Save
               </Button>
-              <Button size="sm" variant="outline" className="rounded-none" onClick={() => setEditing(false)}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-none"
+                onClick={() => setEditing(false)}
+              >
                 <X className="mr-2 h-3.5 w-3.5" /> Cancel
               </Button>
             </div>
@@ -413,15 +450,24 @@ function MarkingRow({
               {row.isCustom && <Badge variant="outline">Custom</Badge>}
               {!enabled && <Badge variant="outline">Hidden</Badge>}
               {hasCustomisation && !row.isCustom && <Badge variant="secondary">Customised</Badge>}
-              <Badge variant="outline">{markingGroups.find((g) => g.slug === currentGroup)?.title ?? currentGroup}</Badge>
+              <Badge variant="outline">
+                {markingGroups.find((g) => g.slug === currentGroup)?.title ?? currentGroup}
+              </Badge>
             </div>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{currentMeaning}</p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{row.id}</p>
+            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              {row.id}
+            </p>
           </>
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <Button variant="outline" size="sm" className="rounded-none" onClick={() => setEditing((v) => !v)}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="rounded-none"
+          onClick={() => setEditing((v) => !v)}
+        >
           Edit
         </Button>
         <label className="inline-flex">
@@ -440,13 +486,26 @@ function MarkingRow({
           </span>
         </label>
         <Button variant="outline" size="sm" className="rounded-none" onClick={onToggle}>
-          {enabled ? <><EyeOff className="mr-1.5 h-3 w-3" /> Hide</> : <><Eye className="mr-1.5 h-3 w-3" /> Show</>}
+          {enabled ? (
+            <>
+              <EyeOff className="mr-1.5 h-3 w-3" /> Hide
+            </>
+          ) : (
+            <>
+              <Eye className="mr-1.5 h-3 w-3" /> Show
+            </>
+          )}
         </Button>
         <Button variant="outline" size="sm" className="rounded-none" onClick={onDuplicate}>
           <Plus className="mr-1.5 h-3 w-3" /> Duplicate
         </Button>
         {row.isCustom ? (
-          <Button variant="outline" size="sm" className="rounded-none text-destructive" onClick={onDeleteCustom}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-none text-destructive"
+            onClick={onDeleteCustom}
+          >
             <Trash2 className="mr-1.5 h-3 w-3" /> Delete
           </Button>
         ) : hasCustomisation ? (

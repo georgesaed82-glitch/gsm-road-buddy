@@ -26,19 +26,35 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function SignsPage() {
-  const [mode, setMode] = useState<null | { kind: "learn" | "quiz"; category?: SignCategory }>(null);
+  const [mode, setMode] = useState<null | { kind: "learn" | "quiz"; category?: SignCategory }>(
+    null,
+  );
   const { signsByCategory } = useSignsCms();
 
   if (mode?.kind === "learn") {
     return (
-      <PortalShell eyebrow="Highway Code" title={mode.category ? signCategories.find((c) => c.slug === mode.category)!.title : "Learn all UK road signs"}>
+      <PortalShell
+        eyebrow="Highway Code"
+        title={
+          mode.category
+            ? signCategories.find((c) => c.slug === mode.category)!.title
+            : "Learn all UK road signs"
+        }
+      >
         <LearnGallery category={mode.category} onExit={() => setMode(null)} />
       </PortalShell>
     );
   }
   if (mode?.kind === "quiz") {
     return (
-      <PortalShell eyebrow="Signs quiz" title={mode.category ? signCategories.find((c) => c.slug === mode.category)!.title : "All-signs quiz"}>
+      <PortalShell
+        eyebrow="Signs quiz"
+        title={
+          mode.category
+            ? signCategories.find((c) => c.slug === mode.category)!.title
+            : "All-signs quiz"
+        }
+      >
         <SignsQuiz category={mode.category} onExit={() => setMode(null)} />
       </PortalShell>
     );
@@ -48,7 +64,8 @@ function SignsPage() {
     <PortalShell eyebrow="Know your signs" title="UK road signs — learn & quiz">
       <SignsShapesLegend />
       <p className="max-w-2xl text-sm text-muted-foreground">
-        Every category from the Highway Code, drawn in the correct shape and colour. Learn them, then test yourself. If you get one wrong, we show you the sign with the answer explained.
+        Every category from the Highway Code, drawn in the correct shape and colour. Learn them,
+        then test yourself. If you get one wrong, we show you the sign with the answer explained.
       </p>
 
       <OfflineDownloadButton
@@ -67,8 +84,12 @@ function SignsPage() {
             <Sparkles className="h-3.5 w-3.5" /> Mixed quiz
           </div>
           <h2 className="mt-2 font-display text-2xl">All signs, shuffled</h2>
-          <p className="mt-1 text-sm opacity-90">One question at a time. Wrong answers show the sign and the correct meaning.</p>
-          <span className="mt-4 inline-block text-sm font-medium underline underline-offset-4">Start quiz →</span>
+          <p className="mt-1 text-sm opacity-90">
+            One question at a time. Wrong answers show the sign and the correct meaning.
+          </p>
+          <span className="mt-4 inline-block text-sm font-medium underline underline-offset-4">
+            Start quiz →
+          </span>
         </button>
         <button
           onClick={() => setMode({ kind: "learn" })}
@@ -78,13 +99,17 @@ function SignsPage() {
             <SignpostBig className="h-3.5 w-3.5 text-accent" /> Study
           </div>
           <h2 className="mt-2 font-display text-2xl">Learn every sign</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Browse the full library grouped by category with the meaning of each sign.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Browse the full library grouped by category with the meaning of each sign.
+          </p>
           <span className="mt-4 inline-block text-sm font-medium text-accent">Open gallery →</span>
         </button>
       </div>
 
       <h2 className="mt-12 font-display text-2xl">Categories</h2>
-      <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Pick a category to focus on. Each one has its own quiz.</p>
+      <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+        Pick a category to focus on. Each one has its own quiz.
+      </p>
       <div className="mt-6 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
         {signCategories.map((c) => {
           const count = signsByCategory(c.slug).length;
@@ -98,10 +123,19 @@ function SignsPage() {
                 <Badge variant="outline">{count}</Badge>
               </div>
               <div className="mt-5 flex flex-wrap gap-2">
-                <Button size="sm" className="rounded-none" onClick={() => setMode({ kind: "quiz", category: c.slug })}>
+                <Button
+                  size="sm"
+                  className="rounded-none"
+                  onClick={() => setMode({ kind: "quiz", category: c.slug })}
+                >
                   Quiz →
                 </Button>
-                <Button size="sm" variant="outline" className="rounded-none" onClick={() => setMode({ kind: "learn", category: c.slug })}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-none"
+                  onClick={() => setMode({ kind: "learn", category: c.slug })}
+                >
                   Learn
                 </Button>
               </div>
@@ -118,7 +152,9 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
   const groups = category ? [category] : signCategories.map((c) => c.slug);
   return (
     <div>
-      <button onClick={onExit} className="text-sm text-muted-foreground hover:text-foreground">← Back</button>
+      <button onClick={onExit} className="text-sm text-muted-foreground hover:text-foreground">
+        ← Back
+      </button>
       <div className="mt-6 space-y-10">
         {groups.map((g) => {
           const meta = signCategories.find((c) => c.slug === g)!;
@@ -127,7 +163,10 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
             <section key={g}>
               <h3 className="font-display text-2xl">{meta.title}</h3>
               <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{meta.blurb}</p>
-              <div data-testid={`signs-learn-grid-${g}`} className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div
+                data-testid={`signs-learn-grid-${g}`}
+                className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              >
                 {items.map((s) => (
                   <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
                     <div className="flex h-[110px] w-[110px] shrink-0 items-center justify-center">
@@ -135,7 +174,9 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
                     </div>
                     <div className="min-w-0">
                       <div className="font-display text-base leading-tight">{s.name}</div>
-                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{s.meaning}</p>
+                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                        {s.meaning}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -148,9 +189,7 @@ function LearnGallery({ category, onExit }: { category?: SignCategory; onExit: (
   );
 }
 
-type QState =
-  | { phase: "answering"; chosen: null }
-  | { phase: "revealed"; chosen: number };
+type QState = { phase: "answering"; chosen: null } | { phase: "revealed"; chosen: number };
 
 function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () => void }) {
   const { applyText, allSigns, signsByCategory, imageFor } = useSignsCms();
@@ -158,16 +197,16 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
     () => (category ? signsByCategory(category) : allSigns),
     [category, signsByCategory, allSigns],
   );
-  const pool = useMemo(
-    () => shuffle(applyText("sign", source)),
-    [applyText, source],
-  );
+  const pool = useMemo(() => shuffle(applyText("sign", source)), [applyText, source]);
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState({ answered: 0, correct: 0 });
   const [finished, setFinished] = useState(false);
   const [missed, setMissed] = useState<Sign[]>([]);
   const current: Sign | undefined = pool[idx];
-  const opts = useMemo(() => (current ? buildSignOptions(current, source) : null), [current, source]);
+  const opts = useMemo(
+    () => (current ? buildSignOptions(current, source) : null),
+    [current, source],
+  );
   const [state, setState] = useState<QState>({ phase: "answering", chosen: null });
 
   if (!current || finished) {
@@ -175,13 +214,23 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
     const passed = pct >= 86;
     return (
       <div className="mx-auto max-w-xl border border-border bg-card p-8 text-center">
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Quiz complete</div>
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          Quiz complete
+        </div>
         <h2 className="mt-2 font-display text-3xl">Signs quiz</h2>
-        <div className={`mt-6 font-display text-6xl ${passed ? "text-success" : "text-foreground"}`}>{pct}%</div>
-        <p className="mt-2 text-sm text-muted-foreground">{score.correct} correct out of {score.answered}.</p>
+        <div
+          className={`mt-6 font-display text-6xl ${passed ? "text-success" : "text-foreground"}`}
+        >
+          {pct}%
+        </div>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {score.correct} correct out of {score.answered}.
+        </p>
         {missed.length > 0 && (
           <div className="mt-6 border-t border-border pt-6 text-left">
-            <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Review missed signs</div>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Review missed signs
+            </div>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {missed.map((s) => (
                 <div key={s.id} className="flex gap-3 border border-border p-3">
@@ -209,7 +258,9 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
           >
             Retake
           </Button>
-          <Button size="sm" variant="outline" className="rounded-none" onClick={onExit}>Back</Button>
+          <Button size="sm" variant="outline" className="rounded-none" onClick={onExit}>
+            Back
+          </Button>
         </div>
       </div>
     );
@@ -239,15 +290,21 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
     <div className="grid gap-6 lg:grid-cols-[1fr_260px]">
       <div className="border border-border bg-card p-6 sm:p-8">
         <div className="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground">
-          <span>Question {idx + 1} of {pool.length}</span>
-          <button onClick={onExit} className="hover:text-foreground">Back →</button>
+          <span>
+            Question {idx + 1} of {pool.length}
+          </span>
+          <button onClick={onExit} className="hover:text-foreground">
+            Back →
+          </button>
         </div>
 
         <div className="mt-6 flex flex-col items-center gap-4">
           <div className="flex h-[200px] items-center justify-center">
             <OfficialSignImage sign={current} variant="detail" overrideSrc={imageFor(current.id)} />
           </div>
-          <h2 className="text-center font-display text-2xl leading-snug">What does this sign mean?</h2>
+          <h2 className="text-center font-display text-2xl leading-snug">
+            What does this sign mean?
+          </h2>
         </div>
 
         <ul className="mt-8 space-y-3">
@@ -257,10 +314,10 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
             const stateClass = !answered
               ? "border-border hover:border-primary"
               : isCorrect
-              ? "border-success bg-success/10"
-              : isChosen
-              ? "border-destructive bg-destructive/10"
-              : "border-border opacity-70";
+                ? "border-success bg-success/10"
+                : isChosen
+                  ? "border-destructive bg-destructive/10"
+                  : "border-border opacity-70";
             return (
               <li key={i}>
                 <button
@@ -273,11 +330,17 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
                       answered && isCorrect
                         ? "border-success bg-success text-success-foreground"
                         : answered && isChosen
-                        ? "border-destructive bg-destructive text-destructive-foreground"
-                        : "border-border"
+                          ? "border-destructive bg-destructive text-destructive-foreground"
+                          : "border-border"
                     }`}
                   >
-                    {answered && isCorrect ? <CheckCircle2 className="h-3.5 w-3.5" /> : answered && isChosen ? <XCircle className="h-3.5 w-3.5" /> : String.fromCharCode(65 + i)}
+                    {answered && isCorrect ? (
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    ) : answered && isChosen ? (
+                      <XCircle className="h-3.5 w-3.5" />
+                    ) : (
+                      String.fromCharCode(65 + i)
+                    )}
                   </span>
                   <span className="text-sm leading-relaxed">{opt}</span>
                 </button>
@@ -287,12 +350,20 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
         </ul>
 
         {answered && (
-          <div className={`mt-6 border-l-4 p-4 ${correct ? "border-success bg-success/5" : "border-destructive bg-destructive/5"}`}>
+          <div
+            className={`mt-6 border-l-4 p-4 ${correct ? "border-success bg-success/5" : "border-destructive bg-destructive/5"}`}
+          >
             <div className={`text-sm font-medium ${correct ? "text-success" : "text-destructive"}`}>
               {correct ? "Correct" : "Not quite — here's the sign explained"}
             </div>
             <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row">
-              <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" overrideSrc={imageFor(current.id)} /></div>
+              <div className="shrink-0">
+                <OfficialSignImage
+                  sign={current}
+                  variant="feedback"
+                  overrideSrc={imageFor(current.id)}
+                />
+              </div>
               <div>
                 <div className="font-display text-lg">{current.name}</div>
                 <p className="mt-1 text-sm text-muted-foreground">{current.meaning}</p>
@@ -306,7 +377,9 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
       </div>
 
       <aside className="border border-border bg-card p-5">
-        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">This session</div>
+        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          This session
+        </div>
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div>
             <div className="text-xs text-muted-foreground">Answered</div>
@@ -317,8 +390,13 @@ function SignsQuiz({ category, onExit }: { category?: SignCategory; onExit: () =
             <div className="font-display text-2xl text-success">{score.correct}</div>
           </div>
         </div>
-        <Progress value={score.answered ? (score.correct / score.answered) * 100 : 0} className="mt-4 h-1.5" />
-        <p className="mt-4 text-xs text-muted-foreground">Aim for 86% — that's the DVSA pass mark.</p>
+        <Progress
+          value={score.answered ? (score.correct / score.answered) * 100 : 0}
+          className="mt-4 h-1.5"
+        />
+        <p className="mt-4 text-xs text-muted-foreground">
+          Aim for 86% — that's the DVSA pass mark.
+        </p>
       </aside>
     </div>
   );

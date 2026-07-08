@@ -55,7 +55,10 @@ function InstructorsAdmin() {
   const delFn = useServerFn(deleteInstructor);
   const orderFn = useServerFn(reorderInstructors);
   const uploadFn = useServerFn(uploadInstructorImage);
-  const { data: rows = [] } = useQuery({ queryKey: ["instructors-admin"], queryFn: () => listFn() });
+  const { data: rows = [] } = useQuery({
+    queryKey: ["instructors-admin"],
+    queryFn: () => listFn(),
+  });
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [savingId, setSavingId] = useState<string | null>(null);
 
@@ -69,9 +72,12 @@ function InstructorsAdmin() {
   };
 
   const save = async (d: Draft) => {
-setSavingId(d.id || "new");
+    setSavingId(d.id || "new");
     try {
-      const badges = d.badgesText.split(",").map((s) => s.trim()).filter(Boolean);
+      const badges = d.badgesText
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
       await saveFn({
         data: {
           item: {
@@ -102,7 +108,7 @@ setSavingId(d.id || "new");
 
   const remove = async (id: string) => {
     if (!confirm("Delete this instructor?")) return;
-try {
+    try {
       await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
@@ -112,7 +118,7 @@ try {
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-const next = [...drafts];
+    const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];
@@ -148,7 +154,10 @@ const next = [...drafts];
   return (
     <AdminShell eyebrow="Admin" title="Instructors">
       <div className="mb-4 flex justify-end">
-        <Button onClick={addNew}><Plus className="mr-1 h-4 w-4" />Add instructor</Button>
+        <Button onClick={addNew}>
+          <Plus className="mr-1 h-4 w-4" />
+          Add instructor
+        </Button>
       </div>
       <div className="grid gap-6">
         {drafts.map((d, idx) => (
@@ -157,33 +166,191 @@ const next = [...drafts];
               <div className="flex items-center gap-2">
                 <h2 className="font-display text-lg">{d.name || "New instructor"}</h2>
                 <div className="flex items-center gap-2 text-xs">
-                  <Switch checked={d.enabled} onCheckedChange={(v) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, enabled: v } : r)))} />
+                  <Switch
+                    checked={d.enabled}
+                    onCheckedChange={(v) =>
+                      setDrafts(drafts.map((r, i) => (i === idx ? { ...r, enabled: v } : r)))
+                    }
+                  />
                   <span className="text-muted-foreground">{d.enabled ? "Visible" : "Hidden"}</span>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <Button aria-label="Move up" size="icon" variant="ghost" onClick={() => move(idx, -1)} disabled={idx === 0 || !d.id}><ArrowUp className="h-4 w-4" /></Button>
-                <Button aria-label="Move down" size="icon" variant="ghost" onClick={() => move(idx, 1)} disabled={idx === drafts.length - 1 || !d.id}><ArrowDown className="h-4 w-4" /></Button>
+                <Button
+                  aria-label="Move up"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => move(idx, -1)}
+                  disabled={idx === 0 || !d.id}
+                >
+                  <ArrowUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  aria-label="Move down"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => move(idx, 1)}
+                  disabled={idx === drafts.length - 1 || !d.id}
+                >
+                  <ArrowDown className="h-4 w-4" />
+                </Button>
                 {d.id && (
-                  <Button aria-label="Delete" size="icon" variant="ghost" onClick={() => remove(d.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  <Button
+                    aria-label="Delete"
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => remove(d.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
                 )}
                 {!d.id && (
-                  <Button size="icon" variant="ghost" onClick={() => setDrafts(drafts.filter((_, i) => i !== idx))}><X className="h-4 w-4" /></Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => setDrafts(drafts.filter((_, i) => i !== idx))}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 )}
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
-                <div><Label>Name</Label><Input className="mt-1" value={d.name} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, name: e.target.value } : r)))} /></div>
-                <div><Label>Role</Label><Input className="mt-1" value={d.role} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, role: e.target.value } : r)))} /></div>
-                <div><Label>Initials (fallback)</Label><Input className="mt-1" value={d.initials} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, initials: e.target.value } : r)))} /></div>
-                <div><Label>Colour class (fallback)</Label><Input className="mt-1" value={d.color} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, color: e.target.value } : r)))} /></div>
-                <div><Label>Rating (0–5)</Label><Input type="number" step="0.1" className="mt-1" value={d.rating ?? ""} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, rating: e.target.value === "" ? null : Number(e.target.value) } : r)))} /></div>
-                <div><Label>Reviews count</Label><Input type="number" className="mt-1" value={d.reviews ?? 0} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, reviews: Number(e.target.value) } : r)))} /></div>
-                <div><Label>Location</Label><Input className="mt-1" value={d.location ?? ""} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, location: e.target.value } : r)))} /></div>
-                <div><Label>Badges (comma-separated)</Label><Input className="mt-1" value={d.badgesText} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, badgesText: e.target.value } : r)))} /></div>
-                <div className="sm:col-span-2"><Label>CTA link</Label><Input className="mt-1" value={d.cta_href} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, cta_href: e.target.value } : r)))} /></div>
-                <div className="sm:col-span-2"><Label>Bio</Label><Textarea className="mt-1" value={d.bio} onChange={(e) => setDrafts(drafts.map((r, i) => (i === idx ? { ...r, bio: e.target.value } : r)))} /></div>
+                <div>
+                  <Label>Name</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.name}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) => (i === idx ? { ...r, name: e.target.value } : r)),
+                      )
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Role</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.role}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) => (i === idx ? { ...r, role: e.target.value } : r)),
+                      )
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Initials (fallback)</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.initials}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) => (i === idx ? { ...r, initials: e.target.value } : r)),
+                      )
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Colour class (fallback)</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.color}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) => (i === idx ? { ...r, color: e.target.value } : r)),
+                      )
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Rating (0–5)</Label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    className="mt-1"
+                    value={d.rating ?? ""}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) =>
+                          i === idx
+                            ? {
+                                ...r,
+                                rating: e.target.value === "" ? null : Number(e.target.value),
+                              }
+                            : r,
+                        ),
+                      )
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Reviews count</Label>
+                  <Input
+                    type="number"
+                    className="mt-1"
+                    value={d.reviews ?? 0}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) =>
+                          i === idx ? { ...r, reviews: Number(e.target.value) } : r,
+                        ),
+                      )
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Location</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.location ?? ""}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) => (i === idx ? { ...r, location: e.target.value } : r)),
+                      )
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Badges (comma-separated)</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.badgesText}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) =>
+                          i === idx ? { ...r, badgesText: e.target.value } : r,
+                        ),
+                      )
+                    }
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>CTA link</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.cta_href}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) => (i === idx ? { ...r, cta_href: e.target.value } : r)),
+                      )
+                    }
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Bio</Label>
+                  <Textarea
+                    className="mt-1"
+                    value={d.bio}
+                    onChange={(e) =>
+                      setDrafts(
+                        drafts.map((r, i) => (i === idx ? { ...r, bio: e.target.value } : r)),
+                      )
+                    }
+                  />
+                </div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-dashed border-border px-3 py-1.5 text-sm text-muted-foreground hover:bg-secondary">
@@ -196,9 +363,16 @@ const next = [...drafts];
                     onChange={(e) => e.target.files?.[0] && upload(d.id, e.target.files[0])}
                   />
                 </label>
-                {d.image_path && <span className="text-xs text-muted-foreground">Image attached</span>}
-                <Button onClick={() => save(d)} disabled={savingId === (d.id || "new")} className="ml-auto">
-                  <Save className="mr-1 h-4 w-4" />{savingId === (d.id || "new") ? "Saving…" : "Save"}
+                {d.image_path && (
+                  <span className="text-xs text-muted-foreground">Image attached</span>
+                )}
+                <Button
+                  onClick={() => save(d)}
+                  disabled={savingId === (d.id || "new")}
+                  className="ml-auto"
+                >
+                  <Save className="mr-1 h-4 w-4" />
+                  {savingId === (d.id || "new") ? "Saving…" : "Save"}
                 </Button>
               </div>
             </CardContent>

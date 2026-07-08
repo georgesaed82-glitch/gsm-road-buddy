@@ -1,5 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { evaluateAttemptState, fingerprintCode, guardCodeAttempt, logCodeAttempt } from "./auth-guard.functions";
+import {
+  evaluateAttemptState,
+  fingerprintCode,
+  guardCodeAttempt,
+  logCodeAttempt,
+} from "./auth-guard.functions";
 
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -45,159 +50,168 @@ async function requireAdmin() {
 }
 
 export const verifyPortalAccess = createServerFn({ method: "POST" })
-  .inputValidator((d: { password: string; mode: "learner" | "admin"; captchaToken?: string | null; email?: string | null }) => d)
-  .handler(async ({ data }): Promise<{
-    ok: boolean;
-    reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed" | "email_mismatch";
-    retryAfterSeconds?: number;
-    captchaRequiredNext?: boolean;
-    subscription?: { email: string | null; expires_at: string | null } | null;
-    session?: { access_token: string; refresh_token: string } | null;
-  }> => {
-    const password = (data.password || "").trim();
-    if (!password) return { ok: false };
-    const submittedEmail = (data.email || "").trim().toLowerCase();
-    const fingerprint = await fingerprintCode(password);
-    const guard = await guardCodeAttempt(fingerprint, data.mode, data.captchaToken);
-    if (!guard.proceed) {
-      return { ok: false, reason: guard.reason, retryAfterSeconds: guard.retryAfterSeconds };
-    }
-    const captchaVerified = guard.captchaVerified;
-    let reqMetaInfo: { ip: string | null; ua: string | null } = { ip: null, ua: null };
-    try {
-      const { reqMeta } = await import("./auth-guard.server");
-      reqMetaInfo = reqMeta();
-    } catch {
-      // ignore — no request context available
-    }
-    const logUsage = async (codeId: string, mode: "learner" | "admin") => {
+  .inputValidator(
+    (d: {
+      password: string;
+      mode: "learner" | "admin";
+      captchaToken?: string | null;
+      email?: string | null;
+    }) => d,
+  )
+  .handler(
+    async ({
+      data,
+    }): Promise<{
+      ok: boolean;
+      reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed" | "email_mismatch";
+      retryAfterSeconds?: number;
+      captchaRequiredNext?: boolean;
+      subscription?: { email: string | null; expires_at: string | null } | null;
+      session?: { access_token: string; refresh_token: string } | null;
+    }> => {
+      const password = (data.password || "").trim();
+      if (!password) return { ok: false };
+      const submittedEmail = (data.email || "").trim().toLowerCase();
+      const fingerprint = await fingerprintCode(password);
+      const guard = await guardCodeAttempt(fingerprint, data.mode, data.captchaToken);
+      if (!guard.proceed) {
+        return { ok: false, reason: guard.reason, retryAfterSeconds: guard.retryAfterSeconds };
+      }
+      const captchaVerified = guard.captchaVerified;
+      let reqMetaInfo: { ip: string | null; ua: string | null } = { ip: null, ua: null };
       try {
-        const supabase = await admin();
-        const ua = reqMetaInfo.ua;
-        const ipRaw = reqMetaInfo.ip;
-        let ip_hash: string | null = null;
-        if (ipRaw) {
-          const buf = await crypto.subtle.digest(
-            "SHA-256",
-            new TextEncoder().encode(ipRaw),
-          );
-          ip_hash = Array.from(new Uint8Array(buf))
-            .slice(0, 8)
-            .map((b) => b.toString(16).padStart(2, "0"))
-            .join("");
+        const { reqMeta } = await import("./auth-guard.server");
+        reqMetaInfo = reqMeta();
+      } catch {
+        // ignore — no request context available
+      }
+      const logUsage = async (codeId: string, mode: "learner" | "admin") => {
+        try {
+          const supabase = await admin();
+          const ua = reqMetaInfo.ua;
+          const ipRaw = reqMetaInfo.ip;
+          let ip_hash: string | null = null;
+          if (ipRaw) {
+            const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ipRaw));
+            ip_hash = Array.from(new Uint8Array(buf))
+              .slice(0, 8)
+              .map((b) => b.toString(16).padStart(2, "0"))
+              .join("");
+          }
+          await supabase.from("portal_access_uses").insert({
+            code_id: codeId,
+            mode,
+            user_agent: ua?.slice(0, 300) ?? null,
+            ip_hash,
+          });
+          const { data: row } = await supabase
+            .from("portal_access_codes")
+            .select("use_count")
+            .eq("id", codeId)
+            .maybeSingle();
+          await supabase
+            .from("portal_access_codes")
+            .update({
+              use_count: (row?.use_count ?? 0) + 1,
+              last_used_at: new Date().toISOString(),
+            })
+            .eq("id", codeId);
+        } catch {
+          /* best-effort logging */
         }
-        await supabase.from("portal_access_uses").insert({
-          code_id: codeId,
-          mode,
-          user_agent: ua?.slice(0, 300) ?? null,
-          ip_hash,
-        });
+      };
+
+      if (data.mode === "admin") {
+        const supabase = await admin();
+        const nowIso = new Date().toISOString();
         const { data: row } = await supabase
           .from("portal_access_codes")
-          .select("use_count")
-          .eq("id", codeId)
+          .select("id,email,expires_at")
+          .eq("kind", "admin")
+          .eq("code", password)
+          .eq("revoked", false)
           .maybeSingle();
-        await supabase
-          .from("portal_access_codes")
-          .update({
-            use_count: (row?.use_count ?? 0) + 1,
-            last_used_at: new Date().toISOString(),
-          })
-          .eq("id", codeId);
-      } catch {
-        /* best-effort logging */
-      }
-    };
 
-    if (data.mode === "admin") {
-      const supabase = await admin();
-      const nowIso = new Date().toISOString();
-      const { data: row } = await supabase
-        .from("portal_access_codes")
-        .select("id,email,expires_at")
-        .eq("kind", "admin")
-        .eq("code", password)
-        .eq("revoked", false)
-        .maybeSingle();
-
-      let ok = false;
-      let session: { access_token: string; refresh_token: string } | null = null;
-      if (row && (!row.expires_at || row.expires_at > nowIso)) {
-        const adminEmail = row.email?.trim().toLowerCase() || "";
-        if (adminEmail) {
-          const minted = await mintSessionForEmail(adminEmail, false);
-          if (minted) {
-            const { data: userData } = await supabase.auth.getUser(minted.access_token);
-            const uid = userData?.user?.id;
-            const { data: role } = uid
-              ? await supabase
-                  .from("user_roles")
-                  .select("user_id")
-                  .eq("user_id", uid)
-                  .eq("role", "admin")
-                  .maybeSingle()
-              : { data: null };
-            if (role?.user_id) {
-              session = minted;
-              ok = true;
+        let ok = false;
+        let session: { access_token: string; refresh_token: string } | null = null;
+        if (row && (!row.expires_at || row.expires_at > nowIso)) {
+          const adminEmail = row.email?.trim().toLowerCase() || "";
+          if (adminEmail) {
+            const minted = await mintSessionForEmail(adminEmail, false);
+            if (minted) {
+              const { data: userData } = await supabase.auth.getUser(minted.access_token);
+              const uid = userData?.user?.id;
+              const { data: role } = uid
+                ? await supabase
+                    .from("user_roles")
+                    .select("user_id")
+                    .eq("user_id", uid)
+                    .eq("role", "admin")
+                    .maybeSingle()
+                : { data: null };
+              if (role?.user_id) {
+                session = minted;
+                ok = true;
+              }
             }
           }
         }
-      }
 
-      await logCodeAttempt(fingerprint, "admin", ok, captchaVerified);
-      if (ok) {
-        if (row?.id) await logUsage(row.id, "admin");
-        return { ok: true, session };
-      }
-      const after = await evaluateAttemptState(fingerprint);
-      return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
-    }
-    const supabase = await admin();
-    const nowIso = new Date().toISOString();
-    // Learner master code
-    const { data: row } = await supabase
-      .from("portal_access_codes")
-      .select("id,kind,email,expires_at")
-      .eq("code", password)
-      .eq("revoked", false)
-      .in("kind", ["learner", "subscription"])
-      .maybeSingle();
-    if (row) {
-      if (row.expires_at && row.expires_at <= nowIso) {
-        await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
+        await logCodeAttempt(fingerprint, "admin", ok, captchaVerified);
+        if (ok) {
+          if (row?.id) await logUsage(row.id, "admin");
+          return { ok: true, session };
+        }
         const after = await evaluateAttemptState(fingerprint);
         return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
       }
-      // For subscription codes tied to an email, enforce that the learner
-      // enters the matching email address alongside the PIN.
-      if (row.kind === "subscription" && row.email) {
-        if (!submittedEmail || submittedEmail !== row.email.trim().toLowerCase()) {
+      const supabase = await admin();
+      const nowIso = new Date().toISOString();
+      // Learner master code
+      const { data: row } = await supabase
+        .from("portal_access_codes")
+        .select("id,kind,email,expires_at")
+        .eq("code", password)
+        .eq("revoked", false)
+        .in("kind", ["learner", "subscription"])
+        .maybeSingle();
+      if (row) {
+        if (row.expires_at && row.expires_at <= nowIso) {
           await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
           const after = await evaluateAttemptState(fingerprint);
-          return { ok: false, reason: "email_mismatch", captchaRequiredNext: after.required };
+          return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
         }
-      }
-      await logUsage(row.id, "learner");
-      await logCodeAttempt(fingerprint, "learner", true, captchaVerified);
-      let session: { access_token: string; refresh_token: string } | null = null;
-      if (row.kind === "subscription" && row.email) {
-        try {
-          session = await mintSessionForEmail(row.email);
-        } catch (e) {
-          console.error("[portal-access] mintSessionForEmail failed", e);
+        // For subscription codes tied to an email, enforce that the learner
+        // enters the matching email address alongside the PIN.
+        if (row.kind === "subscription" && row.email) {
+          if (!submittedEmail || submittedEmail !== row.email.trim().toLowerCase()) {
+            await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
+            const after = await evaluateAttemptState(fingerprint);
+            return { ok: false, reason: "email_mismatch", captchaRequiredNext: after.required };
+          }
         }
+        await logUsage(row.id, "learner");
+        await logCodeAttempt(fingerprint, "learner", true, captchaVerified);
+        let session: { access_token: string; refresh_token: string } | null = null;
+        if (row.kind === "subscription" && row.email) {
+          try {
+            session = await mintSessionForEmail(row.email);
+          } catch (e) {
+            console.error("[portal-access] mintSessionForEmail failed", e);
+          }
+        }
+        return {
+          ok: true,
+          subscription:
+            row.kind === "subscription" ? { email: row.email, expires_at: row.expires_at } : null,
+          session,
+        };
       }
-      return {
-        ok: true,
-        subscription: row.kind === "subscription" ? { email: row.email, expires_at: row.expires_at } : null,
-        session,
-      };
-    }
-    await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
-    const after = await evaluateAttemptState(fingerprint);
-    return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
-  });
+      await logCodeAttempt(fingerprint, "learner", false, captchaVerified);
+      const after = await evaluateAttemptState(fingerprint);
+      return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
+    },
+  );
 
 /**
  * Ensures a Supabase auth user exists for `email` and returns a fresh
@@ -285,8 +299,8 @@ export const listAccessCodes = createServerFn({ method: "POST" })
       status: r.revoked
         ? "revoked"
         : r.expires_at && new Date(r.expires_at).getTime() <= now
-        ? "expired"
-        : "active",
+          ? "expired"
+          : "active",
     })) as AccessCodeRow[];
   });
 

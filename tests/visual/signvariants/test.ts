@@ -120,14 +120,16 @@ async function waitForGridImages(page: Page, viewName: string) {
   try {
     await page.waitForFunction(
       () => {
-        const imgs = Array.from(document.querySelectorAll('[data-testid="variant-grid"] img'))
-          .filter((img) => {
-            const el = img as HTMLElement;
-            return !!(el.offsetWidth || el.offsetHeight);
-          }) as HTMLImageElement[];
+        const imgs = Array.from(
+          document.querySelectorAll('[data-testid="variant-grid"] img'),
+        ).filter((img) => {
+          const el = img as HTMLElement;
+          return !!(el.offsetWidth || el.offsetHeight);
+        }) as HTMLImageElement[];
 
-        return imgs.length > 0 && imgs.every((img) =>
-          img.complete && img.naturalWidth > 0 && img.naturalHeight > 0,
+        return (
+          imgs.length > 0 &&
+          imgs.every((img) => img.complete && img.naturalWidth > 0 && img.naturalHeight > 0)
         );
       },
       { timeout: 30000 },

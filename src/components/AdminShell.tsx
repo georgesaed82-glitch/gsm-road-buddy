@@ -1,11 +1,51 @@
 import type { ReactNode } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, BarChart3, LogOut, ShieldCheck, Mail, Film, KeyRound, Activity, Download, TrendingUp, AlertTriangle, BookOpen, SignpostBig, Sparkles, Settings, ListTree, Search, Users, Tag, Newspaper, HelpCircle, FileDown, MapPin, Star, Video, Image as ImageIcon, Route as RouteIcon, Hand, Palette, GraduationCap, Home as HomeIcon, ChevronDown, Menu } from "lucide-react";
+import {
+  LayoutDashboard,
+  BarChart3,
+  LogOut,
+  ShieldCheck,
+  Mail,
+  Film,
+  KeyRound,
+  Activity,
+  Download,
+  TrendingUp,
+  AlertTriangle,
+  BookOpen,
+  SignpostBig,
+  Sparkles,
+  Settings,
+  ListTree,
+  Search,
+  Users,
+  Tag,
+  Newspaper,
+  HelpCircle,
+  FileDown,
+  MapPin,
+  Star,
+  Video,
+  Image as ImageIcon,
+  Route as RouteIcon,
+  Hand,
+  Palette,
+  GraduationCap,
+  Home as HomeIcon,
+  ChevronDown,
+  Menu,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalFooter } from "@/components/PortalFooter";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
 type Group = { id: string; label: string; items: Item[] };
@@ -75,7 +115,15 @@ const groups: Group[] = [
   },
 ];
 
-export function AdminShell({ children, title, eyebrow }: { children: ReactNode; title: string; eyebrow?: string }) {
+export function AdminShell({
+  children,
+  title,
+  eyebrow,
+}: {
+  children: ReactNode;
+  title: string;
+  eyebrow?: string;
+}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -116,7 +164,9 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
       </div>
       <nav className="mt-2 flex flex-col gap-0.5">
         <Link to={overview.to} className={linkClass(pathname === overview.to)}>
-          <overview.icon className={cn("h-4 w-4", pathname === overview.to ? "" : "text-accent/80")} />
+          <overview.icon
+            className={cn("h-4 w-4", pathname === overview.to ? "" : "text-accent/80")}
+          />
           {overview.label}
         </Link>
         {groups.map((group) => {
@@ -134,7 +184,12 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
                 )}
               >
                 <span className="flex-1 text-left">{group.label}</span>
-                <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open ? "rotate-180" : "rotate-0")} />
+                <ChevronDown
+                  className={cn(
+                    "h-3.5 w-3.5 transition-transform",
+                    open ? "rotate-180" : "rotate-0",
+                  )}
+                />
               </button>
               <div
                 className={cn(
@@ -203,7 +258,9 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px] overflow-y-auto p-3 sm:w-[320px]">
                   <SheetTitle className="sr-only">Admin portal navigation</SheetTitle>
-                  <SheetDescription className="sr-only">Choose an admin section to open.</SheetDescription>
+                  <SheetDescription className="sr-only">
+                    Choose an admin section to open.
+                  </SheetDescription>
                   {sidebarInner}
                 </SheetContent>
               </Sheet>
@@ -214,7 +271,9 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
                 {eyebrow}
               </div>
             )}
-            <h1 className="mt-2 break-words font-display text-3xl font-medium leading-tight text-foreground sm:text-4xl">{title}</h1>
+            <h1 className="mt-2 break-words font-display text-3xl font-medium leading-tight text-foreground sm:text-4xl">
+              {title}
+            </h1>
           </header>
           <div className="pt-8">{children}</div>
         </main>

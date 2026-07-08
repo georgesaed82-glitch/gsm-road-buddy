@@ -29,9 +29,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
         { property: "og:url", content: url },
-        ...(post.cover_image_url
-          ? [{ property: "og:image", content: post.cover_image_url }]
-          : []),
+        ...(post.cover_image_url ? [{ property: "og:image", content: post.cover_image_url }] : []),
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -75,9 +73,13 @@ function PostPage() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
       <nav className="mb-4 text-sm text-muted-foreground" aria-label="Breadcrumb">
-        <Link to="/" className="hover:text-foreground">Home</Link>
+        <Link to="/" className="hover:text-foreground">
+          Home
+        </Link>
         <span className="mx-2">/</span>
-        <Link to="/blog" className="hover:text-foreground">Blog</Link>
+        <Link to="/blog" className="hover:text-foreground">
+          Blog
+        </Link>
         {post.category_slug && post.category_name && (
           <>
             <span className="mx-2">/</span>
@@ -121,9 +123,7 @@ function PostPage() {
         />
       )}
 
-      {post.excerpt && (
-        <p className="mt-6 text-lg text-foreground/80">{post.excerpt}</p>
-      )}
+      {post.excerpt && <p className="mt-6 text-lg text-foreground/80">{post.excerpt}</p>}
 
       <div className="mt-6">
         <Markdown>{post.body_md}</Markdown>
@@ -142,9 +142,7 @@ function PostPage() {
                 >
                   {r.title}
                 </Link>
-                {r.excerpt && (
-                  <p className="text-sm text-muted-foreground">{r.excerpt}</p>
-                )}
+                {r.excerpt && <p className="text-sm text-muted-foreground">{r.excerpt}</p>}
               </li>
             ))}
           </ul>

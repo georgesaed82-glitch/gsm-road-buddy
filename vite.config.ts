@@ -29,8 +29,7 @@ export default defineConfig({
         skipWaiting: true,
         runtimeCaching: [
           {
-            urlPattern: ({ request, sameOrigin }) =>
-              sameOrigin && request.mode === "navigate",
+            urlPattern: ({ request, sameOrigin }) => sameOrigin && request.mode === "navigate",
             handler: "NetworkFirst",
             options: {
               cacheName: "gsm-pages",
@@ -57,8 +56,7 @@ export default defineConfig({
           },
           {
             // Learner-portal content JSON (theory questions, road signs, etc.)
-            urlPattern: ({ url, sameOrigin }) =>
-              sameOrigin && /\.json$/.test(url.pathname),
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && /\.json$/.test(url.pathname),
             handler: "StaleWhileRevalidate",
             options: {
               cacheName: "gsm-content",

@@ -18,16 +18,52 @@ import { drivingClips } from "@/components/driving-clips/clips";
 // Static index of Highway Code essentials sections. Each `id` matches the
 // anchor `id` added to the corresponding <Panel> in HighwayCodeEssentials.
 const essentialsSections = [
-  { id: "road-studs", title: "Road studs (Rule 132)", keywords: "red amber white green studs cats eyes central reservation hard shoulder slip road" },
-  { id: "hierarchy", title: "Hierarchy of road users (Rules H1–H3)", keywords: "H1 H2 H3 hierarchy pedestrian cyclist priority junction" },
-  { id: "stopping-distances", title: "Stopping distances (Rule 126)", keywords: "stopping distance thinking braking two second rule wet dry ice mph" },
-  { id: "traffic-lights", title: "Traffic lights & crossings (Rules 175, 195–199)", keywords: "traffic light red amber green flashing pelican puffin toucan filter" },
-  { id: "zebra-crossings", title: "Zebra crossings (Rules 19, 195, H2)", keywords: "zebra crossing belisha beacon zig zag pedestrian give way" },
-  { id: "yellow-box", title: "Yellow box junctions (Rule 174)", keywords: "yellow box junction turning right exit clear" },
-  { id: "nearside-offside", title: "Turning right — nearside vs offside (Rules 176–181)", keywords: "turning right nearside offside crossroads oncoming traffic" },
+  {
+    id: "road-studs",
+    title: "Road studs (Rule 132)",
+    keywords: "red amber white green studs cats eyes central reservation hard shoulder slip road",
+  },
+  {
+    id: "hierarchy",
+    title: "Hierarchy of road users (Rules H1–H3)",
+    keywords: "H1 H2 H3 hierarchy pedestrian cyclist priority junction",
+  },
+  {
+    id: "stopping-distances",
+    title: "Stopping distances (Rule 126)",
+    keywords: "stopping distance thinking braking two second rule wet dry ice mph",
+  },
+  {
+    id: "traffic-lights",
+    title: "Traffic lights & crossings (Rules 175, 195–199)",
+    keywords: "traffic light red amber green flashing pelican puffin toucan filter",
+  },
+  {
+    id: "zebra-crossings",
+    title: "Zebra crossings (Rules 19, 195, H2)",
+    keywords: "zebra crossing belisha beacon zig zag pedestrian give way",
+  },
+  {
+    id: "yellow-box",
+    title: "Yellow box junctions (Rule 174)",
+    keywords: "yellow box junction turning right exit clear",
+  },
+  {
+    id: "nearside-offside",
+    title: "Turning right — nearside vs offside (Rules 176–181)",
+    keywords: "turning right nearside offside crossroads oncoming traffic",
+  },
   { id: "rule-181", title: "More Rule 181 scenarios", keywords: "rule 181 turning right junction" },
-  { id: "smart-motorway", title: "Smart motorway gantry signs (Rules 258, 261)", keywords: "smart motorway gantry red x variable speed all lanes running hard shoulder" },
-  { id: "speed-limits", title: "Vehicle speed limits (Rule 124)", keywords: "speed limit national mph car van motorbike bus lorry dual carriageway motorway" },
+  {
+    id: "smart-motorway",
+    title: "Smart motorway gantry signs (Rules 258, 261)",
+    keywords: "smart motorway gantry red x variable speed all lanes running hard shoulder",
+  },
+  {
+    id: "speed-limits",
+    title: "Vehicle speed limits (Rule 124)",
+    keywords: "speed limit national mph car van motorbike bus lorry dual carriageway motorway",
+  },
 ];
 
 type Hit = { href: string; title: string; snippet: string; group: string; score: number };
@@ -73,27 +109,75 @@ export function PortalSearch() {
 
     for (const s of essentialsSections) {
       const sc = scoreMatch(`${s.title} ${s.keywords}`, q);
-      if (sc > 0) hits.push({ href: `/highway-code#${s.id}`, title: s.title, snippet: "Highway Code essentials", group: "Highway Code", score: sc });
+      if (sc > 0)
+        hits.push({
+          href: `/highway-code#${s.id}`,
+          title: s.title,
+          snippet: "Highway Code essentials",
+          group: "Highway Code",
+          score: sc,
+        });
     }
     for (const c of theoryCategories) {
-      const sc = scoreMatch(`${c.title} ${c.description} ${c.topics.join(" ")} ${c.keyPoints.join(" ")}`, q);
-      if (sc > 0) hits.push({ href: `/highway-code#topic-${c.slug}`, title: c.title, snippet: c.description, group: "DVSA topics", score: sc });
+      const sc = scoreMatch(
+        `${c.title} ${c.description} ${c.topics.join(" ")} ${c.keyPoints.join(" ")}`,
+        q,
+      );
+      if (sc > 0)
+        hits.push({
+          href: `/highway-code#topic-${c.slug}`,
+          title: c.title,
+          snippet: c.description,
+          group: "DVSA topics",
+          score: sc,
+        });
     }
     for (const s of signs) {
       const sc = scoreMatch(`${s.name} ${s.meaning} ${s.category}`, q);
-      if (sc > 0) hits.push({ href: `/road-signs?q=${encodeURIComponent(s.name)}`, title: s.name, snippet: s.meaning, group: "Road signs", score: sc });
+      if (sc > 0)
+        hits.push({
+          href: `/road-signs?q=${encodeURIComponent(s.name)}`,
+          title: s.name,
+          snippet: s.meaning,
+          group: "Road signs",
+          score: sc,
+        });
     }
     for (const m of roadMarkings) {
       const sc = scoreMatch(`${m.name} ${m.meaning}`, q);
-      if (sc > 0) hits.push({ href: `/road-markings?q=${encodeURIComponent(m.name)}`, title: m.name, snippet: m.meaning, group: "Road markings", score: sc });
+      if (sc > 0)
+        hits.push({
+          href: `/road-markings?q=${encodeURIComponent(m.name)}`,
+          title: m.name,
+          snippet: m.meaning,
+          group: "Road markings",
+          score: sc,
+        });
     }
     for (const p of policeSignals) {
       const sc = scoreMatch(`${p.name} ${p.meaning}`, q);
-      if (sc > 0) hits.push({ href: `/police-signals?q=${encodeURIComponent(p.name)}`, title: p.name, snippet: p.meaning, group: "Arm signals", score: sc });
+      if (sc > 0)
+        hits.push({
+          href: `/police-signals?q=${encodeURIComponent(p.name)}`,
+          title: p.name,
+          snippet: p.meaning,
+          group: "Arm signals",
+          score: sc,
+        });
     }
     for (const c of drivingClips) {
-      const sc = scoreMatch(`${c.title} ${c.rule} ${c.summary} ${c.beats.map((b) => b.label + " " + b.detail).join(" ")}`, q);
-      if (sc > 0) hits.push({ href: `/driving-clips#${c.slug}`, title: c.title, snippet: c.summary, group: "Practical strategy videos", score: sc });
+      const sc = scoreMatch(
+        `${c.title} ${c.rule} ${c.summary} ${c.beats.map((b) => b.label + " " + b.detail).join(" ")}`,
+        q,
+      );
+      if (sc > 0)
+        hits.push({
+          href: `/driving-clips#${c.slug}`,
+          title: c.title,
+          snippet: c.summary,
+          group: "Practical strategy videos",
+          score: sc,
+        });
     }
 
     hits.sort((a, b) => b.score - a.score);
@@ -111,7 +195,11 @@ export function PortalSearch() {
     // Split off hash if present so scroll works after navigation.
     const [pathAndQuery, hash] = href.split("#");
     const [path, query] = pathAndQuery.split("?");
-    navigate({ to: path, search: query ? Object.fromEntries(new URLSearchParams(query)) as never : undefined, hash });
+    navigate({
+      to: path,
+      search: query ? (Object.fromEntries(new URLSearchParams(query)) as never) : undefined,
+      hash,
+    });
   };
 
   return (
@@ -124,7 +212,9 @@ export function PortalSearch() {
       >
         <Search className="h-4 w-4" />
         <span className="flex-1">Search Highway Code, signs…</span>
-        <kbd className="hidden rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline">⌘K</kbd>
+        <kbd className="hidden rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline">
+          ⌘K
+        </kbd>
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
@@ -141,9 +231,14 @@ export function PortalSearch() {
             <div className="px-4 py-6 text-sm text-muted-foreground">
               <div className="font-medium text-foreground">What can I look up?</div>
               <ul className="mt-2 list-disc space-y-1 pl-5">
-                <li>Highway Code sections (e.g. <em>zebra</em>, <em>road studs</em>, <em>stopping distance</em>)</li>
+                <li>
+                  Highway Code sections (e.g. <em>zebra</em>, <em>road studs</em>,{" "}
+                  <em>stopping distance</em>)
+                </li>
                 <li>Any of the 14 DVSA theory topics</li>
-                <li>Road signs by name or meaning (<em>no entry</em>, <em>national speed limit</em>)</li>
+                <li>
+                  Road signs by name or meaning (<em>no entry</em>, <em>national speed limit</em>)
+                </li>
                 <li>Road markings and police / arm signals</li>
               </ul>
             </div>
@@ -160,7 +255,9 @@ export function PortalSearch() {
                   >
                     <span className="font-medium">{h.title}</span>
                     {h.snippet && (
-                      <span className="line-clamp-1 text-xs text-muted-foreground">{h.snippet}</span>
+                      <span className="line-clamp-1 text-xs text-muted-foreground">
+                        {h.snippet}
+                      </span>
                     )}
                   </CommandItem>
                 ))}

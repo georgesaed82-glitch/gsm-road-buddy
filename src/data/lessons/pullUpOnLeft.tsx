@@ -26,13 +26,13 @@ type Spot = { x: number; w: number; label: string; sub?: string; kind: "bad" | "
 
 // Ordered left-to-right along the kerb. Positions are in SVG px.
 const SPOTS: Spot[] = [
-  { x: 60,  w: 60, label: "Driveway",         sub: "Blocks access", kind: "bad" },
-  { x: 140, w: 60, label: "Zigzags",          sub: "Never stop",    kind: "bad" },
-  { x: 220, w: 60, label: "School Keep Clear",sub: "Prohibited",    kind: "bad" },
-  { x: 300, w: 70, label: "Parking bay",      sub: "Safe & legal",  kind: "good" },
-  { x: 390, w: 60, label: "Double yellows",   sub: "No stopping",   kind: "bad" },
-  { x: 470, w: 60, label: "Bus stop",         sub: "Restricted",    kind: "bad" },
-  { x: 550, w: 60, label: "Single yellow",    sub: "Check times",   kind: "good" },
+  { x: 60, w: 60, label: "Driveway", sub: "Blocks access", kind: "bad" },
+  { x: 140, w: 60, label: "Zigzags", sub: "Never stop", kind: "bad" },
+  { x: 220, w: 60, label: "School Keep Clear", sub: "Prohibited", kind: "bad" },
+  { x: 300, w: 70, label: "Parking bay", sub: "Safe & legal", kind: "good" },
+  { x: 390, w: 60, label: "Double yellows", sub: "No stopping", kind: "bad" },
+  { x: 470, w: 60, label: "Bus stop", sub: "Restricted", kind: "bad" },
+  { x: 550, w: 60, label: "Single yellow", sub: "Check times", kind: "good" },
 ];
 
 // Choice targets for the two examiner instructions:
@@ -54,7 +54,16 @@ function CarTop({
 }) {
   return (
     <g transform={`translate(${cx} ${cy})`}>
-      <rect x={-18} y={-9} width={36} height={18} rx={4} fill={color} stroke="#0a0a0a" strokeWidth={0.8} />
+      <rect
+        x={-18}
+        y={-9}
+        width={36}
+        height={18}
+        rx={4}
+        fill={color}
+        stroke="#0a0a0a"
+        strokeWidth={0.8}
+      />
       <rect x={-10} y={-7} width={6} height={14} rx={1} fill="#111" opacity={0.75} />
       <rect x={4} y={-7} width={6} height={14} rx={1} fill="#111" opacity={0.55} />
       {/* headlights (front = right) */}
@@ -67,10 +76,20 @@ function CarTop({
       {indicator && (
         <>
           <circle cx={-19} cy={7.5} r={1.8} fill="#ffb020">
-            <animate attributeName="opacity" values="1;0.15;1" dur="0.5s" repeatCount="indefinite" />
+            <animate
+              attributeName="opacity"
+              values="1;0.15;1"
+              dur="0.5s"
+              repeatCount="indefinite"
+            />
           </circle>
           <circle cx={18} cy={7.5} r={1.8} fill="#ffb020">
-            <animate attributeName="opacity" values="1;0.15;1" dur="0.5s" repeatCount="indefinite" />
+            <animate
+              attributeName="opacity"
+              values="1;0.15;1"
+              dur="0.5s"
+              repeatCount="indefinite"
+            />
           </circle>
         </>
       )}
@@ -81,50 +100,148 @@ function CarTop({
 function KerbFeature({ spot, active }: { spot: Spot; active: boolean }) {
   const isBad = spot.kind === "bad";
   const stroke = active ? (isBad ? BAD : GOOD) : "#4a4a4e";
-  const fill = active ? (isBad ? "rgba(239,68,68,0.18)" : "rgba(34,197,94,0.18)") : "rgba(255,255,255,0.04)";
+  const fill = active
+    ? isBad
+      ? "rgba(239,68,68,0.18)"
+      : "rgba(34,197,94,0.18)"
+    : "rgba(255,255,255,0.04)";
   return (
     <g>
       {/* Kerb section marker */}
-      <rect x={spot.x} y={230} width={spot.w} height={10} fill={fill} stroke={stroke} strokeWidth={1.2} />
+      <rect
+        x={spot.x}
+        y={230}
+        width={spot.w}
+        height={10}
+        fill={fill}
+        stroke={stroke}
+        strokeWidth={1.2}
+      />
       {/* Feature-specific paint */}
       {spot.label === "Driveway" && (
-        <rect x={spot.x + 8} y={244} width={spot.w - 16} height={30} fill="#3a3a3d" stroke={PAINT} strokeDasharray="3 2" strokeWidth={0.8} />
+        <rect
+          x={spot.x + 8}
+          y={244}
+          width={spot.w - 16}
+          height={30}
+          fill="#3a3a3d"
+          stroke={PAINT}
+          strokeDasharray="3 2"
+          strokeWidth={0.8}
+        />
       )}
       {spot.label === "Zigzags" && (
         <polyline
-          points={Array.from({ length: 10 }).map((_, i) => `${spot.x + i * (spot.w / 9)},${228 + (i % 2 === 0 ? -6 : 0)}`).join(" ")}
+          points={Array.from({ length: 10 })
+            .map((_, i) => `${spot.x + i * (spot.w / 9)},${228 + (i % 2 === 0 ? -6 : 0)}`)
+            .join(" ")}
           fill="none"
           stroke={PAINT}
           strokeWidth={1.4}
         />
       )}
       {spot.label === "School Keep Clear" && (
-        <text x={spot.x + spot.w / 2} y={225} textAnchor="middle" fontSize={6.5} fill="#facc15" fontWeight={800} fontFamily="sans-serif">SCHOOL KEEP CLEAR</text>
+        <text
+          x={spot.x + spot.w / 2}
+          y={225}
+          textAnchor="middle"
+          fontSize={6.5}
+          fill="#facc15"
+          fontWeight={800}
+          fontFamily="sans-serif"
+        >
+          SCHOOL KEEP CLEAR
+        </text>
       )}
       {spot.label === "Double yellows" && (
         <>
-          <line x1={spot.x} y1={224} x2={spot.x + spot.w} y2={224} stroke="#facc15" strokeWidth={1.8} />
-          <line x1={spot.x} y1={228} x2={spot.x + spot.w} y2={228} stroke="#facc15" strokeWidth={1.8} />
+          <line
+            x1={spot.x}
+            y1={224}
+            x2={spot.x + spot.w}
+            y2={224}
+            stroke="#facc15"
+            strokeWidth={1.8}
+          />
+          <line
+            x1={spot.x}
+            y1={228}
+            x2={spot.x + spot.w}
+            y2={228}
+            stroke="#facc15"
+            strokeWidth={1.8}
+          />
         </>
       )}
       {spot.label === "Single yellow" && (
-        <line x1={spot.x} y1={226} x2={spot.x + spot.w} y2={226} stroke="#facc15" strokeWidth={1.8} />
+        <line
+          x1={spot.x}
+          y1={226}
+          x2={spot.x + spot.w}
+          y2={226}
+          stroke="#facc15"
+          strokeWidth={1.8}
+        />
       )}
       {spot.label === "Bus stop" && (
         <>
-          <rect x={spot.x + spot.w / 2 - 10} y={196} width={20} height={20} rx={2} fill="#1a3a7a" stroke="#fff" strokeWidth={0.8} />
-          <text x={spot.x + spot.w / 2} y={210} textAnchor="middle" fontSize={9} fontWeight={800} fill="#fff" fontFamily="sans-serif">B</text>
+          <rect
+            x={spot.x + spot.w / 2 - 10}
+            y={196}
+            width={20}
+            height={20}
+            rx={2}
+            fill="#1a3a7a"
+            stroke="#fff"
+            strokeWidth={0.8}
+          />
+          <text
+            x={spot.x + spot.w / 2}
+            y={210}
+            textAnchor="middle"
+            fontSize={9}
+            fontWeight={800}
+            fill="#fff"
+            fontFamily="sans-serif"
+          >
+            B
+          </text>
         </>
       )}
       {spot.label === "Parking bay" && (
         <>
-          <rect x={spot.x + 4} y={244} width={spot.w - 8} height={30} fill="none" stroke={PAINT} strokeWidth={1} strokeDasharray="4 2" />
-          <text x={spot.x + spot.w / 2} y={262} textAnchor="middle" fontSize={7} fill={PAINT} opacity={0.85} fontFamily="sans-serif">P</text>
+          <rect
+            x={spot.x + 4}
+            y={244}
+            width={spot.w - 8}
+            height={30}
+            fill="none"
+            stroke={PAINT}
+            strokeWidth={1}
+            strokeDasharray="4 2"
+          />
+          <text
+            x={spot.x + spot.w / 2}
+            y={262}
+            textAnchor="middle"
+            fontSize={7}
+            fill={PAINT}
+            opacity={0.85}
+            fontFamily="sans-serif"
+          >
+            P
+          </text>
         </>
       )}
       {/* Label */}
       <g transform={`translate(${spot.x + spot.w / 2} 292)`}>
-        <text textAnchor="middle" fontSize={7.5} fontWeight={700} fill={active ? (isBad ? BAD : GOOD) : "#c9cbd1"} fontFamily="sans-serif">
+        <text
+          textAnchor="middle"
+          fontSize={7.5}
+          fontWeight={700}
+          fill={active ? (isBad ? BAD : GOOD) : "#c9cbd1"}
+          fontFamily="sans-serif"
+        >
           {spot.label.toUpperCase()}
         </text>
         {spot.sub && (
@@ -229,8 +346,25 @@ function PullUpOnLeftScene(t: number) {
       {/* Target marker (a soft glow at the target when instruction is active) */}
       {(phaseA || phaseB) && (
         <g opacity={0.85}>
-          <circle cx={target} cy={200} r={22} fill="none" stroke={GOOD} strokeWidth={1.6} strokeDasharray="3 3" />
-          <text x={target} y={172} textAnchor="middle" fontSize={7.5} fontWeight={800} fill={GOOD} fontFamily="sans-serif" letterSpacing="1.2">
+          <circle
+            cx={target}
+            cy={200}
+            r={22}
+            fill="none"
+            stroke={GOOD}
+            strokeWidth={1.6}
+            strokeDasharray="3 3"
+          />
+          <text
+            x={target}
+            y={172}
+            textAnchor="middle"
+            fontSize={7.5}
+            fontWeight={800}
+            fill={GOOD}
+            fontFamily="sans-serif"
+            letterSpacing="1.2"
+          >
             STOP HERE
           </text>
         </g>
@@ -244,7 +378,15 @@ function PullUpOnLeftScene(t: number) {
       {/* Instruction ribbon (examiner speech) */}
       <g transform="translate(20 20)">
         <rect width={360} height={40} rx={6} fill="#000" opacity={0.6} />
-        <text x={12} y={16} fontSize={9} fill={ACCENT} fontWeight={700} letterSpacing="1.5" fontFamily="sans-serif">
+        <text
+          x={12}
+          y={16}
+          fontSize={9}
+          fill={ACCENT}
+          fontWeight={700}
+          letterSpacing="1.5"
+          fontFamily="sans-serif"
+        >
           EXAMINER SAYS
         </text>
         <text x={12} y={32} fontSize={13} fill="#fff" fontFamily="sans-serif" fontWeight={600}>
@@ -280,8 +422,7 @@ export const pullUpOnLeft: Lesson = {
     "Have I done MSPSL — mirrors, signal, position, speed, look?",
     "Would stopping here cause danger or inconvenience to anyone?",
   ],
-  ruleHeadline:
-    "Listen to the words. If it’s your choice — choose somewhere legal and safe.",
+  ruleHeadline: "Listen to the words. If it’s your choice — choose somewhere legal and safe.",
   ruleBullets: [
     "‘Somewhere safe and convenient’ — the decision is YOURS",
     "A specific instruction (e.g. ‘next to the driveway’) — you FOLLOW it",
@@ -293,13 +434,20 @@ export const pullUpOnLeft: Lesson = {
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why it matters</p>
       <p>
-        The examiner’s wording tells you who is making the decision. If they say <strong>“somewhere safe and convenient”</strong>, they’re testing your judgement — you’re responsible for picking a spot that is legal, safe and doesn’t inconvenience anyone. If they give you a <strong>specific</strong> location, they are taking that decision away from you and you simply carry it out (unless it would be immediately dangerous).
+        The examiner’s wording tells you who is making the decision. If they say{" "}
+        <strong>“somewhere safe and convenient”</strong>, they’re testing your judgement — you’re
+        responsible for picking a spot that is legal, safe and doesn’t inconvenience anyone. If they
+        give you a <strong>specific</strong> location, they are taking that decision away from you
+        and you simply carry it out (unless it would be immediately dangerous).
       </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When it happens</p>
       <p>
-        Somewhere on almost every driving test. It’s one of the earliest ways an examiner checks whether you can plan, read the road and follow instructions calmly.
+        Somewhere on almost every driving test. It’s one of the earliest ways an examiner checks
+        whether you can plan, read the road and follow instructions calmly.
       </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How to do it — MSPSL</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How to do it — MSPSL
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Mirrors — interior, then left.</li>
         <li>Signal left in good time.</li>
@@ -320,14 +468,18 @@ export const pullUpOnLeft: Lesson = {
   ],
   mistakes: [
     {
-      wrong: "The examiner says ‘safe and convenient’ and the learner stops right next to a driveway.",
+      wrong:
+        "The examiner says ‘safe and convenient’ and the learner stops right next to a driveway.",
       why: "The decision was theirs, and a driveway blocks access — that’s inconvenient and would attract a fault.",
-      right: "Choose a quiet stretch of road, a parking bay or a section with no restrictions and good visibility.",
+      right:
+        "Choose a quiet stretch of road, a parking bay or a section with no restrictions and good visibility.",
     },
     {
-      wrong: "The examiner says ‘pull up next to the driveway’ and the learner drives past looking for somewhere else.",
+      wrong:
+        "The examiner says ‘pull up next to the driveway’ and the learner drives past looking for somewhere else.",
       why: "The examiner has chosen the spot for you. Ignoring a clear instruction is a fault in itself.",
-      right: "Follow the instruction: MSPSL and stop next to the driveway. You won’t be marked down for the location.",
+      right:
+        "Follow the instruction: MSPSL and stop next to the driveway. You won’t be marked down for the location.",
     },
   ],
   gsmTips: [
@@ -341,11 +493,31 @@ export const pullUpOnLeft: Lesson = {
     "The words the examiner uses decide who chooses the spot. ‘Safe and convenient’ = your call. A specific instruction = you follow it.",
   durationMs: 20000,
   captions: [
-    { at: 0.0, label: "Instruction 1 — ‘safe and convenient’", detail: "Your choice: legal, safe, no inconvenience." },
-    { at: 0.15, label: "Reading the kerb", detail: "Driveway, zigzags, School Keep Clear — all no-go." },
-    { at: 0.35, label: "Parking bay ahead — good spot", detail: "Clear of restrictions and hazards. MSPSL to stop." },
-    { at: 0.55, label: "Instruction 2 — ‘next to the driveway’", detail: "The examiner has chosen. You just carry it out." },
-    { at: 0.85, label: "Stopping next to the driveway", detail: "No fault — the instruction was specific." },
+    {
+      at: 0.0,
+      label: "Instruction 1 — ‘safe and convenient’",
+      detail: "Your choice: legal, safe, no inconvenience.",
+    },
+    {
+      at: 0.15,
+      label: "Reading the kerb",
+      detail: "Driveway, zigzags, School Keep Clear — all no-go.",
+    },
+    {
+      at: 0.35,
+      label: "Parking bay ahead — good spot",
+      detail: "Clear of restrictions and hazards. MSPSL to stop.",
+    },
+    {
+      at: 0.55,
+      label: "Instruction 2 — ‘next to the driveway’",
+      detail: "The examiner has chosen. You just carry it out.",
+    },
+    {
+      at: 0.85,
+      label: "Stopping next to the driveway",
+      detail: "No fault — the instruction was specific.",
+    },
   ],
   questions: [
     {
@@ -373,8 +545,7 @@ export const pullUpOnLeft: Lesson = {
     },
     {
       at: 0.7,
-      prompt:
-        "The examiner says: ‘Pull up on the left next to the driveway.’ What should you do?",
+      prompt: "The examiner says: ‘Pull up on the left next to the driveway.’ What should you do?",
       options: [
         {
           label: "Ignore the driveway and find a safer spot instead",
@@ -389,8 +560,7 @@ export const pullUpOnLeft: Lesson = {
         },
         {
           label: "Ask the examiner if they’re sure",
-          explain:
-            "No. The examiner has been clear. Trust the instruction and act on it smoothly.",
+          explain: "No. The examiner has been clear. Trust the instruction and act on it smoothly.",
         },
       ],
     },

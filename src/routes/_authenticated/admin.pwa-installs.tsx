@@ -35,8 +35,7 @@ function PwaInstallsPage() {
   const fetchEvents = useServerFn(getPwaEvents);
   const { data, isLoading } = useQuery({
     queryKey: ["pwa_events"],
-    queryFn: async (): Promise<PwaFunnel> =>
-      (await fetchEvents({ data: { } })) as PwaFunnel,
+    queryFn: async (): Promise<PwaFunnel> => (await fetchEvents({ data: {} })) as PwaFunnel,
     retry: false,
   });
 
@@ -49,14 +48,31 @@ function PwaInstallsPage() {
   return (
     <AdminShell eyebrow="Insights" title="PWA installs">
       <p className="mb-6 text-sm text-muted-foreground">
-        Tracks the install-app funnel: browser offers the prompt → student is shown it → accepts/dismisses → final install. Counts are unique sessions.
+        Tracks the install-app funnel: browser offers the prompt → student is shown it →
+        accepts/dismisses → final install. Counts are unique sessions.
       </p>
 
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatCard label="Install conversion" value={isLoading ? "…" : pct(data?.promptToInstallRate ?? 0)} sub="installs ÷ eligible" />
-        <StatCard label="Total installs" value={isLoading ? "…" : String(unique["installed"] ?? 0)} sub="unique sessions" />
-        <StatCard label="Eligible visitors" value={isLoading ? "…" : String(top)} sub="prompt available" />
-        <StatCard label="App launches" value={isLoading ? "…" : String(unique["displayed_standalone"] ?? 0)} sub="opened standalone" />
+        <StatCard
+          label="Install conversion"
+          value={isLoading ? "…" : pct(data?.promptToInstallRate ?? 0)}
+          sub="installs ÷ eligible"
+        />
+        <StatCard
+          label="Total installs"
+          value={isLoading ? "…" : String(unique["installed"] ?? 0)}
+          sub="unique sessions"
+        />
+        <StatCard
+          label="Eligible visitors"
+          value={isLoading ? "…" : String(top)}
+          sub="prompt available"
+        />
+        <StatCard
+          label="App launches"
+          value={isLoading ? "…" : String(unique["displayed_standalone"] ?? 0)}
+          sub="opened standalone"
+        />
       </div>
 
       <Card className="mb-8">
@@ -78,7 +94,9 @@ function PwaInstallsPage() {
                       <span className="font-medium">
                         {count}
                         {top > 0 && ev !== "prompt_available" && (
-                          <span className="ml-2 text-xs text-muted-foreground">{pct(count / top)}</span>
+                          <span className="ml-2 text-xs text-muted-foreground">
+                            {pct(count / top)}
+                          </span>
                         )}
                       </span>
                     </div>
@@ -159,7 +177,8 @@ function PwaInstallsPage() {
       </Card>
 
       <p className="mt-6 text-xs text-muted-foreground">
-        Note: iOS Safari doesn't fire a browser install prompt, so iPhone installs only show as "Opened as app" once a student adds the site to their Home Screen.
+        Note: iOS Safari doesn't fire a browser install prompt, so iPhone installs only show as
+        "Opened as app" once a student adds the site to their Home Screen.
       </p>
     </AdminShell>
   );

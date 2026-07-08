@@ -35,7 +35,9 @@ export function OfflineDownloadButton({ sectionKey, label, urls, className }: Pr
     setSwReady(ready);
     try {
       if (window.localStorage.getItem(storageKey)) setState("done");
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, [storageKey]);
 
   async function handleDownload() {
@@ -56,14 +58,20 @@ export function OfflineDownloadButton({ sectionKey, label, urls, className }: Pr
             // caches get a fresh copy instead of a stale HTTP cache hit.
             const res = await fetch(url, { cache: "reload", credentials: "same-origin" });
             if (res.ok || res.type === "opaque") ok++;
-          } catch { /* offline / blocked — skip */ }
+          } catch {
+            /* offline / blocked — skip */
+          }
           setProgress((p) => p + 1);
         }),
       );
     }
 
     if (ok > 0) {
-      try { window.localStorage.setItem(storageKey, String(Date.now())); } catch { /* ignore */ }
+      try {
+        window.localStorage.setItem(storageKey, String(Date.now()));
+      } catch {
+        /* ignore */
+      }
       setState("done");
     } else {
       setState("error");
@@ -71,7 +79,11 @@ export function OfflineDownloadButton({ sectionKey, label, urls, className }: Pr
   }
 
   function handleReset() {
-    try { window.localStorage.removeItem(storageKey); } catch { /* ignore */ }
+    try {
+      window.localStorage.removeItem(storageKey);
+    } catch {
+      /* ignore */
+    }
     setState("idle");
     setProgress(0);
   }
@@ -114,7 +126,10 @@ export function OfflineDownloadButton({ sectionKey, label, urls, className }: Pr
                     : "Open the published app once online, then come back — offline saving activates after the app installs its cache."}
           </p>
           {state === "downloading" ? (
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary" aria-hidden>
+            <div
+              className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary"
+              aria-hidden
+            >
               <div className="h-full bg-accent transition-all" style={{ width: `${pct}%` }} />
             </div>
           ) : null}

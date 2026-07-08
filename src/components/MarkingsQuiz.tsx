@@ -35,10 +35,7 @@ export function MarkingsQuiz() {
   const [savedAttempt, setSavedAttempt] = useState(false);
 
   const current = pool[idx];
-  const q = useMemo(
-    () => (current ? buildOptions(current, roadMarkings) : null),
-    [current],
-  );
+  const q = useMemo(() => (current ? buildOptions(current, roadMarkings) : null), [current]);
 
   const restart = () => {
     setIdx(0);
@@ -86,7 +83,9 @@ export function MarkingsQuiz() {
     const pct = answered ? Math.round((correct / answered) * 100) : 0;
     return (
       <div className="mt-6 border border-border bg-card p-6 sm:p-8">
-        <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">Quiz complete</div>
+        <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+          Quiz complete
+        </div>
         <h3 className="mt-2 font-display text-3xl">
           {correct} / {answered} <span className="italic text-accent">({pct}%)</span>
         </h3>
@@ -121,7 +120,9 @@ export function MarkingsQuiz() {
         )}
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <Button className="rounded-none" onClick={restart}>Retake full quiz</Button>
+          <Button className="rounded-none" onClick={restart}>
+            Retake full quiz
+          </Button>
           {missed.length > 0 && (
             <Button variant="outline" className="rounded-none" onClick={practiceMissed}>
               Practice missed ({missed.length}) →
@@ -166,8 +167,12 @@ export function MarkingsQuiz() {
   return (
     <div className="mt-6">
       <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-        <span>Question {idx + 1} of {pool.length}</span>
-        <span>Correct {correct} · Missed {missed.length}</span>
+        <span>
+          Question {idx + 1} of {pool.length}
+        </span>
+        <span>
+          Correct {correct} · Missed {missed.length}
+        </span>
       </div>
       <Progress value={((idx + (answered ? 1 : 0)) / pool.length) * 100} />
 
@@ -199,8 +204,12 @@ export function MarkingsQuiz() {
                   )}
                 >
                   <span className="flex-1">{opt.name}</span>
-                  {answered && isCorrect && <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />}
-                  {answered && isChosen && !isCorrect && <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}
+                  {answered && isCorrect && (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  )}
+                  {answered && isChosen && !isCorrect && (
+                    <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                  )}
                 </button>
               );
             })}
@@ -210,7 +219,9 @@ export function MarkingsQuiz() {
             <div
               className={cn(
                 "mt-5 border-l-2 p-4 text-sm",
-                isRight ? "border-emerald-600 bg-emerald-600/5" : "border-destructive bg-destructive/5",
+                isRight
+                  ? "border-emerald-600 bg-emerald-600/5"
+                  : "border-destructive bg-destructive/5",
               )}
             >
               <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
