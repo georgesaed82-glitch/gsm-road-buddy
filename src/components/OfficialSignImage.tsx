@@ -2,6 +2,7 @@ import { useState, type CSSProperties } from "react";
 import { SignVisual } from "@/components/SignVisual";
 import { officialSignImageFor } from "@/data/signImages";
 import type { Sign } from "@/data/signs";
+import { Zoomable } from "@/components/Zoomable";
 
 /**
  * Shared sizing tokens so every page renders signs consistently.
@@ -34,6 +35,8 @@ type OfficialSignImageProps = {
   overrideSrc?: string | null;
   /** Visual tests can opt out of lazy loading so browsers render before screenshots. */
   loading?: "eager" | "lazy";
+  /** Opt out of the tap-to-zoom lightbox (e.g. inside quiz answer buttons). */
+  zoomable?: boolean;
 };
 
 /**
@@ -55,6 +58,7 @@ export function OfficialSignImage({
   imageSrc,
   overrideSrc,
   loading = "lazy",
+  zoomable = true,
 }: OfficialSignImageProps) {
   const resolvedSize = size ?? SIGN_IMAGE_SIZES[variant];
   const src = overrideSrc || imageSrc || officialSignImageFor(sign.id);
@@ -66,15 +70,11 @@ export function OfficialSignImage({
     aspectRatio: "1 / 1",
   };
 
-  if (!src || errored) {
-    return (
-      <div style={wrapperStyle} className="inline-flex items-center justify-center">
-        <SignVisual variant={sign.variant} size={resolvedSize} />
-      </div>
-    );
-  }
-
-  return (
+  const content = !src || errored ? (
+    <div style={wrapperStyle} className="inline-flex items-center justify-center">
+      <SignVisual variant={sign.variant} size={resolvedSize} />
+    </div>
+  ) : (
     <div style={wrapperStyle} className="inline-block">
       <img
         src={src}
@@ -88,11 +88,16 @@ export function OfficialSignImage({
           width: "100%",
           height: "100%",
           objectFit: "contain",
-          // SVGs render sharp by default; this hint keeps rasterised fallbacks
-          // (should a PNG ever slip in) from getting blurred on high-DPR screens.
           imageRendering: "auto",
         }}
       />
     </div>
+  );
+
+  if (!zoomable) return content;
+  return (
+    <Zoomable label={sign.name} aspectRatio="1 / 1" className="inline-block">
+      {content}
+    </Zoomable>
   );
 }

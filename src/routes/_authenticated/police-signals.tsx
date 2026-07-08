@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Zoomable } from "@/components/Zoomable";
 import { PortalShell } from "@/components/PortalShell";
 import { policeSignals, signalGroups } from "@/data/policeSignals";
 import type { PoliceSignal, SignalGroup } from "@/data/policeSignals";
@@ -60,13 +61,15 @@ function PoliceSignalsPage() {
                   return (
                     <article key={s.id} className="border border-border bg-card p-4">
                       <div className="mx-auto w-40 max-w-full">
-                        <div className="aspect-square overflow-hidden border border-border">
-                          {img ? (
-                            <img src={img} alt={s.name} className="h-full w-full object-cover" />
-                          ) : (
-                            <Visual />
-                          )}
-                        </div>
+                        <Zoomable label={s.name} aspectRatio="1 / 1" className="block">
+                          <div className="aspect-square overflow-hidden border border-border">
+                            {img ? (
+                              <img src={img} alt={s.name} className="h-full w-full object-cover" />
+                            ) : (
+                              <Visual />
+                            )}
+                          </div>
+                        </Zoomable>
                       </div>
                       <h3 className="mt-4 font-display text-lg leading-tight">{s.name}</h3>
                       <p className="mt-2 text-sm text-muted-foreground">{s.meaning}</p>
