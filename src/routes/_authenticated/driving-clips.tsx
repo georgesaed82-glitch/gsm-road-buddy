@@ -231,8 +231,8 @@ function LessonRow({ lesson, done }: { lesson: PlannedLesson; done: boolean }) {
     return (
       <li className="flex items-start gap-3 rounded-lg border border-dashed border-border bg-background/60 p-3 opacity-80">
         <Clock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-        <div className="min-w-0">
-          <div className="truncate text-sm font-medium text-foreground/80">{lesson.title}</div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-medium leading-snug text-foreground/80 break-words">{lesson.title}</div>
           <div className="mt-0.5 text-[11px] uppercase tracking-wider text-muted-foreground">
             {lesson.rule ?? "Highway Code"} · Coming soon
           </div>
@@ -253,9 +253,9 @@ function LessonRow({ lesson, done }: { lesson: PlannedLesson; done: boolean }) {
           <span className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-border" />
         )}
         <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <div className="truncate text-sm font-semibold">{lesson.title}</div>
-            <span className="text-accent transition-transform group-hover/row:translate-x-0.5">→</span>
+          <div className="flex items-start justify-between gap-2">
+            <div className="text-sm font-semibold leading-snug break-words">{lesson.title}</div>
+            <span className="mt-0.5 shrink-0 text-accent transition-transform group-hover/row:translate-x-0.5">→</span>
           </div>
           {lesson.rule && (
             <div className="mt-0.5 text-[11px] uppercase tracking-wider text-muted-foreground">
