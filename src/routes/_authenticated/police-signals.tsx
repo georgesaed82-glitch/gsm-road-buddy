@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Zoomable } from "@/components/Zoomable";
 import { PortalShell } from "@/components/PortalShell";
 import { policeSignals, signalGroups } from "@/data/policeSignals";
 import type { PoliceSignal, SignalGroup } from "@/data/policeSignals";

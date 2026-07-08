@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Zoomable } from "@/components/Zoomable";
 import { useEffect, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
