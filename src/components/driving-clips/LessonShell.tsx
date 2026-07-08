@@ -78,7 +78,13 @@ export function LessonShell({
     const step = (now: number) => {
       if (startRef.current === null) startRef.current = now;
       const elapsed = now - startRef.current;
-      let next = (baseRef.current + elapsed / durationMs) % 1;
+      let next = baseRef.current + elapsed / durationMs;
+      // Play the manoeuvre once from start to finish. When it completes,
+      // hold on the final frame so the learner sees the outcome and can
+      // choose to Restart. Auto-pause at the next un-answered question
+      // beat still takes priority below.
+      const finished = next >= 1;
+      if (finished) next = 1;
 
       // Check if we've crossed an un-answered question beat.
       for (let i = 0; i < questions.length; i++) {
@@ -94,6 +100,12 @@ export function LessonShell({
         }
       }
       setT(next);
+      if (finished) {
+        baseRef.current = 1;
+        startRef.current = null;
+        setPlaying(false);
+        return;
+      }
       raf.current = requestAnimationFrame(step);
     };
     raf.current = requestAnimationFrame(step);
