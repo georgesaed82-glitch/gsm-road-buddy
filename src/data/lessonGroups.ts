@@ -53,6 +53,7 @@ export const lessonGroups: LessonGroup[] = [
     title: "GSM Driving Method",
     blurb: "The core habits every GSM learner is taught first.",
     lessons: compact([
+      existing("dsssm-cockpit-drill"),
       existing("stretch-your-vision"),
       existing("plan-to-stop-look-to-go"),
       existing("pull-up-on-left"),
