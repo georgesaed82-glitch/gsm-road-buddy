@@ -4,6 +4,7 @@ import { pullUpOnLeft } from "@/data/lessons/pullUpOnLeft";
 import { pomRoutine } from "@/data/lessons/pomRoutine";
 import { meetingInSmallSpaces } from "@/data/lessons/meetingInSmallSpaces";
 import { giveWayLines } from "@/data/lessons/giveWayLines";
+import { joiningDualCarriageway } from "@/data/lessons/joiningDualCarriageway";
 
 // ─────────────────────────────────────────────────────────────
 // GSM lesson library. Each lesson uses the standard LessonShell
@@ -3497,6 +3498,7 @@ export const drivingLessons: Lesson[] = [
   pomRoutine,
   meetingInSmallSpaces,
   giveWayLines,
+  joiningDualCarriageway,
 ];
 
 export function getLesson(slug: string): Lesson | undefined {
