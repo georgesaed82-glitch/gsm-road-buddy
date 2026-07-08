@@ -1,69 +1,93 @@
+# GSM Learner Portal — Illustration & Diagram Overhaul
 
-## Goal
+This is a big job and doing it in one turn would produce a shallow, inconsistent pass — exactly what we're trying to move away from. I'd like to break it into phases so every diagram is properly designed, technically correct, and consistent, rather than rushed.
 
-Make almost everything on gsmdrivingschool.com editable from `/admin` without touching code. Ship in phases so nothing breaks and you get value quickly.
+## Phase 0 — Define the GSM illustration system (this turn, after you approve)
 
-## What you already have (no work needed)
+Before touching individual diagrams, lock the shared visual language so everything from here on uses it:
 
-Admin today already edits: signs, road markings, police signals, Highway Code topics, theory questions, George's tips (per topic), driving principles, memory tips, common fail reasons, reviews (all with image upload), plus admin accounts, access codes, email settings, hazard videos, traffic, contact clicks, PWA installs, diagnostics and errors.
+- **Palette:** road `#2b2b2e`, paint `#f5f5f0`, kerb `#8b8f95`, grass `#3d6a2f`, hatch red `#c94a3a`, ego vehicle GSM forest-green, other vehicles neutral greys, hazard warnings terracotta accent, safe/clear emerald, warning amber.
+- **Line thickness:** 1.4 for kerbs/road edges, 0.9 for vehicle outlines, 1.2 dashed for advisory guides.
+- **Vehicles:** one reusable `<Car>` component (ego / oncoming / traffic variants) with consistent 44×22 proportions, matching windows, lights and brake indicators.
+- **Arrows / paths:** one reusable arrow head + dashed-path style, always terracotta for the learner's intended path and grey for other traffic.
+- **Typography inside diagrams:** matches site display font, uniform label sizes (9pt caption, 11pt banner).
+- **Shadows / depth:** single subtle drop-shadow token; no per-diagram experimentation.
 
-The plan below is only the NEW work.
+Delivered as `src/components/diagram/*` (Car, Arrow, Road, Kerb, Hatch, Label, SpeedPanel, MirrorPulse) that every existing and future lesson diagram uses.
 
-## Phase 1 — Site chrome + per-page SEO (foundation)
+## Phase 1 — Rebuild the Joining a Dual Carriageway lesson
 
-Highest impact, lowest risk. Everything else builds on the pattern.
+Full redesign with a proper top-down UK layout:
 
-- New table `site_settings` (single-row key/value JSON) for: business name, phone, WhatsApp, email, address, opening hours, social links (Facebook, Instagram, TikTok, YouTube), footer copy, disclaimer.
-- New table `nav_items` (label, href, order, enabled, parent_id) for header and footer menus.
-- New table `page_seo` (route path unique, title, description, og_title, og_description, canonical_override, og_image_path, noindex flag).
-- New admin pages: `/admin/site-settings`, `/admin/navigation`, `/admin/seo`.
-- Wire `Header.tsx`, `Footer.tsx`, `__root.tsx` and every route's `head()` to read from these tables (with in-code defaults as fallback so SSR/prerender never breaks).
+```text
+        ══════════════════════════════════════════════   (central reservation)
+    →   ────────────  running lane 2 (overtaking)  ────
+    →   ────────────  running lane 1 (normal)      ────
+        ─────  ▲▲▲ hatched taper (NOT drivable) ▲▲▲ ────
+                  ╲___ acceleration lane ___
+                       ↑ ego car joins here
+```
 
-## Phase 2 — Homepage sections with drag-and-drop reorder + enable/disable
+Animation sequence (single play-through, ends at completion):
+1. Ego enters the acceleration lane at slip-road speed.
+2. Builds speed to match traffic on the main carriageway.
+3. Mirror check pulse → right-shoulder blind-spot check pulse.
+4. Gap identification (highlighted safe gap in lane 1).
+5. Indicator on, smooth merge from acceleration lane into lane 1.
+6. Continues in lane 1 at matched speed — the diagram explicitly shows the hatched taper is skirted, never crossed.
 
-- New table `home_sections` (id, kind enum: hero/reviews/quiz-theory/quiz-signs/quiz-hazard/gallery/booking/tips/faq/custom, order_index, enabled, data JSONB, updated_at).
-- Admin page `/admin/homepage`: `@dnd-kit/sortable` list of sections. Toggle enabled, drag to reorder, click to open a per-kind editor with text + image fields.
-- Refactor `src/routes/index.tsx` to render sections from this table in order. Each kind maps to its existing component; text/image inputs override the current hardcoded copy.
-- Image uploads reuse the existing `content-images` bucket + upload server fn.
+Copy blocks: objective, THINK questions, rule, why (with a callout on hatched areas + Rule 130), George explains, common mistakes, GSM tips, key takeaway. One decision-point question at the mirror/blind-spot moment.
 
-## Phase 3 — Instructors, lesson packages & pricing
+## Phase 2 — Rebuild the crossings & signals library
 
-- Tables `instructors` (name, photo, bio, phone, areas, active, order), `packages` (name, description, hours, price_pence, promo_price_pence, promo_ends_at, active, order), `promotions` (code, description, discount, starts/ends, active).
-- Admin CRUD: `/admin/instructors`, `/admin/packages`, `/admin/promotions`.
-- Refactor `/instructors` and `/pricing` routes to read from these tables.
+New `src/components/crossings/` module with pixel-precise TSRGD-correct SVGs, all sharing the Phase 0 style:
 
-## Phase 4 — Blog / driving tips + FAQs + downloadable files ✅
+- Zebra crossing (belisha beacons, black/white stripes, zig-zags)
+- Pelican, Puffin, Toucan, Pegasus crossings — each with correct signals, ground layout and user (pedestrian / pedestrian+cyclist / horse)
+- Red man / Green man / Green man+bike / Green horse+rider signal heads
+- Traffic light head (3-aspect) and filter arrow
+- Warning sign: children / pedestrians / horses / cycles (triangles with correct pictograms)
+- Regulatory circles (no entry, give way triangle, stop octagon)
 
-- Tables `blog_categories`, `blog_posts`, `faqs`, `downloads` (RLS: anon read published/enabled, service_role write via admin password check).
-- Public routes: `/blog` (search + category filter), `/blog/$slug` (Article + JSON-LD + related posts + breadcrumbs), `/faq` (grouped + search), `/downloads` (grouped by category).
-- Admin CRUD: `/admin/blog` (posts + categories + Markdown editor with preview + cover uploads + SEO fields + related slugs), `/admin/faqs`, `/admin/downloads` (private `downloads` storage bucket + signed URLs).
-- Blog posts + `/blog`, `/faq`, `/downloads` added to sitemap.xml. Nav items and page SEO seeded for the three new pages.
+Every crossing gets a matching diagram variant for use inside lesson animations (top-down road with the crossing embedded), so the Highway Code page and the driving lessons pull from the same components.
 
-## Phase 5 — Advanced (largest phase, split further if needed)
+## Phase 3 — Audit and rebuild remaining Driving Strategy diagrams
 
-- **Theme editor** `/admin/theme`: form for brand primary/accent hex, heading font, body font, radius. Values written to `theme_settings` row, injected as CSS variables via a `<style>` tag in `__root.tsx`. Google-Fonts-via-@fontsource swap for font choice.
-- **Change history + restore**: new `content_history` table; a shared server helper wraps every upsert so it writes the previous JSON into history keyed by `(entity_kind, entity_id, version, snapshot, changed_by, changed_at)`. Admin history viewer per entity with "Restore" button.
-- **Email template editor** `/admin/email-templates`: table `email_templates` (key, subject, html_body, text_body, variables). Wire existing outbound emails (booking, contact, admin alerts) through a renderer that substitutes `{{name}}` etc. Templates auto-seeded from current hardcoded copy on first deploy.
+Working through every lesson in `src/data/lessons/` and `src/data/drivingLessons.tsx`, converting each to the Phase 0 primitives:
 
-## Explicitly not in scope
+- Plan to Stop, Look to Go
+- Give Way Lines
+- Meeting in Small Spaces (already redesigned last turn — align to new primitives)
+- POM routine
+- Pull up on the left
+- Parallel parking
+- Roundabouts, junctions, lane discipline, etc.
 
-- **Extra roles (Instructor / Staff)**: you did not pick this. Everything stays admin-only. If you want it, we add it as Phase 6.
-- **Add/edit/delete pages from admin**: routes stay file-based (they must, for SSR + type-safe routing). Instead you get per-page SEO + editable content on every existing page + a Blog/Tips CMS for new content. If you want a true "arbitrary new page" builder, that's an extra phase.
+Each diagram must clearly show: lane position, vehicle path, steering, direction arrows, road markings, priority, hazards and safe distances — as you specified.
 
-## Technical details (safe to skim)
+## Phase 4 — Portal-wide QA pass
 
-- All new admin routes gated by the existing `_authenticated/admin` layout + `verifyAdminPasswordServer` on every mutation.
-- All new public tables: `GRANT SELECT ... TO anon` only on rows marked published/enabled; `authenticated` gets full CRUD via RLS; `service_role` gets ALL.
-- Public read paths use the server publishable client (per `tanstack-supabase-integration`), never `supabaseAdmin`.
-- SSR head reads settings via a public server fn cached with TanStack Query so route `head()` stays static-render-safe.
-- Hardcoded content stays in the repo as a fallback so a DB outage never blanks the site.
+Automated + manual sweep:
+- Playwright walk of every learner-portal route at desktop + mobile, capturing screenshots.
+- Check for stretched images (aspect-ratio drift), low-res raster placeholders, misaligned SVGs, incorrect Highway Code copy.
+- Fix findings in a single follow-up turn with a short report.
 
-## Ballpark size
+---
 
-Phase 1: ~1 turn. Phase 2: 1-2 turns. Phase 3: 1-2 turns. Phase 4: 2 turns. Phase 5: 2-3 turns (may split). Rough total: 8–10 focused turns.
+## Technical notes (for your reference)
+
+- All new diagrams are **inline SVG** components in `src/components/diagram/` and `src/components/crossings/`. No raster clip-art anywhere.
+- Existing `src/components/SignVisual.tsx`, `OfficialSignImage.tsx`, `RoadMarkingVisual.tsx`, `PoliceSignalVisual.tsx` will migrate to the new primitives; call sites keep working.
+- Data files in `src/data/signImages.ts`, `src/data/roadMarkings.ts`, `src/data/policeSignals.ts` will point at the new components rather than external image URLs.
+- Lesson `render(t)` functions keep the same signature — animation shell (already improved last turn to play once end-to-end and pause for questions) stays as is.
+- Type-checked with `bunx tsgo` and visual-diffed at the end of each phase.
+
+---
 
 ## What I need from you
 
-1. Approve this plan.
-2. Confirm I should start with **Phase 1 (site chrome + per-page SEO)**.
-3. Anything on the "not in scope" list you actually want added?
+1. **Approve the plan** so I can start Phase 0 + Phase 1 immediately (this is the highest-impact starting point: locks the system and fixes the Dual Carriageway lesson you called out).
+2. Confirm you're happy for me to work through Phases 2–4 in follow-up turns rather than one giant turn — that's the only way to hit the quality bar you've asked for.
+3. Flag any lessons or pages that you specifically want prioritised in Phase 3.
+
+Once you say go, I'll ship Phase 0 + Phase 1 in the next turn.
