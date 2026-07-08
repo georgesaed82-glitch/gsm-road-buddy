@@ -1,6 +1,7 @@
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
+import { Zoomable } from "@/components/Zoomable";
 
 const components: Components = {
   h1: ({ node: _n, ...p }) => (
@@ -40,7 +41,9 @@ const components: Components = {
     />
   ),
   img: ({ node: _n, ...p }) => (
-    <img className="my-4 max-w-full border border-border" alt={p.alt ?? ""} {...p} />
+    <Zoomable label={p.alt ?? undefined} className="my-4 block">
+      <img className="max-w-full border border-border" alt={p.alt ?? ""} {...p} />
+    </Zoomable>
   ),
   table: ({ node: _n, ...p }) => (
     <div className="my-4 overflow-x-auto">
