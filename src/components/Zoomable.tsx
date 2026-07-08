@@ -13,6 +13,12 @@ type ZoomableProps = {
   aspectRatio?: string;
   /** When true, the trigger renders without the built-in hover affordance. */
   bare?: boolean;
+  /**
+   * Whether tapping the enlarged content closes it. Defaults to true (good for
+   * static images). Set to false when the enlarged view contains interactive
+   * controls (e.g. animated diagrams with quiz buttons).
+   */
+  closeOnContentClick?: boolean;
 };
 
 /**
@@ -24,7 +30,14 @@ type ZoomableProps = {
  * - Body scroll is locked while open, so returning to the lesson keeps scroll position.
  * - Works for <img>, SVG diagrams and live-updating animations (children re-render inside the overlay).
  */
-export function Zoomable({ children, label, className, aspectRatio, bare = false }: ZoomableProps) {
+export function Zoomable({
+  children,
+  label,
+  className,
+  aspectRatio,
+  bare = false,
+  closeOnContentClick = true,
+}: ZoomableProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -95,9 +108,8 @@ export function Zoomable({ children, label, className, aspectRatio, bare = false
             <figure
               className="relative flex max-h-full max-w-[95vw] flex-col items-center"
               onClick={(e) => {
-                // Tap the enlarged content itself to close, mirroring the backdrop behaviour.
                 e.stopPropagation();
-                close();
+                if (closeOnContentClick) close();
               }}
             >
               <div
