@@ -57,6 +57,7 @@ export const lessonGroups: LessonGroup[] = [
       existing("plan-to-stop-look-to-go"),
       existing("pull-up-on-left"),
       existing("pom-routine"),
+      existing("give-way-lines"),
     ]),
   },
   {
@@ -82,6 +83,7 @@ export const lessonGroups: LessonGroup[] = [
       planned("narrow-roads", "Narrow roads", "Rules 155, 163"),
       planned("priority-meeting", "Priority — who goes first?", "Rule 155"),
       existing("meeting-traffic"),
+      existing("meeting-in-small-spaces"),
       planned("passing-places", "Passing places", "Rule 155"),
     ]),
   },

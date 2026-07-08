@@ -2,6 +2,8 @@ import type { Lesson } from "@/components/driving-clips/LessonShell";
 import { parallelParking } from "@/data/lessons/parallelParking";
 import { pullUpOnLeft } from "@/data/lessons/pullUpOnLeft";
 import { pomRoutine } from "@/data/lessons/pomRoutine";
+import { meetingInSmallSpaces } from "@/data/lessons/meetingInSmallSpaces";
+import { giveWayLines } from "@/data/lessons/giveWayLines";
 
 // ─────────────────────────────────────────────────────────────
 // GSM lesson library. Each lesson uses the standard LessonShell
@@ -3065,7 +3067,8 @@ const planStopLookGo: Lesson = {
   title: "Plan to stop — look to go",
   category: "Highway Code • GSM Driving Method",
   rule: "Rules 170–171",
-  objective: "Learn the GSM approach routine at every junction: Slow, Observe, See, Decide, Proceed.",
+  objective:
+    "Learn the GSM approach routine for OPEN-VISIBILITY junctions — open Give Ways, open crossroads and roundabouts where you can see well: Slow, Observe, See, Decide, Proceed. At closed junctions, do NOT use this routine — stop at the Give Way line and use Creep and Peep instead (see the Give Way lines lesson).",
   think: [
     "Am I slowing early enough to have time to observe?",
     "What do I actually see — traffic, gaps, pedestrians?",
@@ -3073,8 +3076,10 @@ const planStopLookGo: Lesson = {
     "If I proceed, is there room to complete the move without stopping again?",
     "Would a passenger describe my approach as calm and smooth?",
   ],
-  ruleHeadline: "Approach every junction as if you'll stop — then decide whether to go.",
+  ruleHeadline: "Open junctions only — approach as if you'll stop, then decide whether to go.",
   ruleBullets: [
+    "USE this routine at: open Give Way junctions, open crossroads, and roundabouts where visibility is good",
+    "DO NOT use it at closed T-junctions — stop at the line and Creep and Peep instead",
     "SLOW — early and progressively, off the accelerator first",
     "OBSERVE — mirrors, both directions, pedestrians, cyclists",
     "SEE — actually process what you're looking at, don't just glance",
@@ -3086,7 +3091,9 @@ const planStopLookGo: Lesson = {
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
       <p>Half of all junction incidents come from a driver who was going too fast to actually observe — or who observed but never decided. <strong>Plan to Stop</strong> buys you the time to see. <strong>Look to Go</strong> turns that seeing into a clean decision.</p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Every give-way, T-junction, mini-roundabout, unmarked crossroad and blind emerge. If the view is closed, you stop. If the view is open, you still plan as if you might stop — then let the road decide.</p>
+      <p>Only at <strong>open-visibility</strong> junctions — open Give Ways, open crossroads and roundabouts where you can see approaching traffic early. Good visibility allows early decision making while keeping traffic flowing smoothly.</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we DO NOT do it</p>
+      <p>At <strong>closed</strong> T-junctions and any junction where your view is blocked by parked vehicles, hedges, walls or buildings. There you must stop at the Give Way line, complete full observations, and use Creep and Peep until you have a genuine view. Teaching "Look to Go" at a closed junction would encourage learners to look for gaps before they can actually see the road.</p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
       <ol className="list-decimal space-y-1 pl-5">
         <li><strong>Plan</strong> — mirrors, signal, position, gear, brakes covered.</li>
@@ -3488,6 +3495,8 @@ export const drivingLessons: Lesson[] = [
   parallelParking,
   pullUpOnLeft,
   pomRoutine,
+  meetingInSmallSpaces,
+  giveWayLines,
 ];
 
 export function getLesson(slug: string): Lesson | undefined {
