@@ -92,8 +92,7 @@ function AdminOverviewPage() {
   useEffect(() => {
     const status = (error as any)?.status ?? (error as any)?.response?.status;
     if (status === 401) {
-      if (typeof window !== "undefined") {
-      }
+      // (Any browser-only cleanup on 401 would go here.)
       navigate({ to: "/auth", search: { admin: 1 } });
     }
   }, [error, navigate]);
