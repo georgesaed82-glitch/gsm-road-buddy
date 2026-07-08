@@ -595,7 +595,6 @@ function FieldImage({
       <Label>{label}</Label>
       <div className="flex items-center gap-3">
         {value ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={value}
             alt=""
@@ -683,7 +682,6 @@ function AssetsPanel({
         {assets.map((a) => (
           <div key={a.id} className="group relative rounded-md border border-border bg-card p-2">
             <div className="flex aspect-square items-center justify-center overflow-hidden rounded bg-muted">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={a.url} alt={a.name} className="max-h-full max-w-full object-contain" />
             </div>
             <div className="mt-2 truncate text-xs">{a.name}</div>
