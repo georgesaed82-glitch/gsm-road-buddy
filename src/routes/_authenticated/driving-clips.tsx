@@ -22,9 +22,6 @@ export const Route = createFileRoute("/_authenticated/driving-clips")({
 
 function DrivingClipsPage() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isLesson = pathname.startsWith("/driving-clips/") && pathname !== "/driving-clips/";
-  if (isLesson) return <Outlet />;
-
   const [query, setQuery] = useState("");
   const [ruleFilter, setRuleFilter] = useState("");
   const { isDone, completed } = useLessonProgress();
@@ -49,6 +46,9 @@ function DrivingClipsPage() {
       }))
       .filter((g) => g.lessons.length > 0);
   }, [q, ruleNum]);
+
+  const isLesson = pathname.startsWith("/driving-clips/") && pathname !== "/driving-clips/";
+  if (isLesson) return <Outlet />;
 
   const totalMatches = filteredGroups.reduce((n, g) => n + g.lessons.length, 0);
   const filtering = q.length > 0 || ruleNum !== null;
