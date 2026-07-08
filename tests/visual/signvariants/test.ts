@@ -196,7 +196,10 @@ async function main() {
       }
 
       const curPath = resolve(CUR, `${viewName}_${v}.png`);
-      await el.screenshot({ path: curPath });
+      // Screenshot only the 1:1 sign wrapper — excluding the dev-page caption
+      // text below, whose font antialiasing shifts between Chromium builds
+      // and busts the pixel budget on the small tiles.
+      await wrapper.screenshot({ path: curPath });
       const basePath = resolve(BASE, `${viewName}_${v}.png`);
       if (!existsSync(basePath)) {
         // copy current screenshot to baseline
