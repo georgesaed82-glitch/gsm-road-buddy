@@ -71,30 +71,31 @@ export function OfficialSignImage({
     verticalAlign: "top",
   };
 
-  const content = !src || errored ? (
-    <div style={wrapperStyle} className="flex items-center justify-center">
-      <SignVisual variant={sign.variant} size={resolvedSize} />
-    </div>
-  ) : (
-    <div style={wrapperStyle} className="block">
-      <img
-        src={src}
-        alt={sign.name}
-        width={resolvedSize}
-        height={resolvedSize}
-        loading={loading}
-        decoding="async"
-        onError={() => setErrored(true)}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
-          imageRendering: "auto",
-          verticalAlign: "top",
-        }}
-      />
-    </div>
-  );
+  const content =
+    !src || errored ? (
+      <div style={wrapperStyle} className="flex items-center justify-center">
+        <SignVisual variant={sign.variant} size={resolvedSize} />
+      </div>
+    ) : (
+      <div style={wrapperStyle} className="block">
+        <img
+          src={src}
+          alt={sign.name}
+          width={resolvedSize}
+          height={resolvedSize}
+          loading={loading}
+          decoding="async"
+          onError={() => setErrored(true)}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            imageRendering: "auto",
+            verticalAlign: "top",
+          }}
+        />
+      </div>
+    );
 
   if (!zoomable) return content;
   return (

@@ -23,11 +23,11 @@ function AdminsPage() {
 
   const { data: admins, isLoading } = useQuery({
     queryKey: ["admins"],
-    queryFn: () => list({ data: { } }),
+    queryFn: () => list({ data: {} }),
   });
 
   const addMut = useMutation({
-    mutationFn: (e: string) => add({ data: { email: e, } }),
+    mutationFn: (e: string) => add({ data: { email: e } }),
     onSuccess: () => {
       toast.success("Admin added");
       setEmail("");
@@ -37,7 +37,7 @@ function AdminsPage() {
   });
 
   const removeMut = useMutation({
-    mutationFn: (user_id: string) => remove({ data: { user_id, } }),
+    mutationFn: (user_id: string) => remove({ data: { user_id } }),
     onSuccess: () => {
       toast.success("Admin removed");
       qc.invalidateQueries({ queryKey: ["admins"] });
@@ -48,7 +48,8 @@ function AdminsPage() {
   return (
     <AdminShell eyebrow="Access control" title="Admin accounts">
       <p className="mb-6 text-sm text-muted-foreground">
-        Anyone listed here has full access to the admin portal. The account must already have signed up.
+        Anyone listed here has full access to the admin portal. The account must already have signed
+        up.
       </p>
 
       <Card className="mb-8">
@@ -94,7 +95,10 @@ function AdminsPage() {
               {admins.map((a) => {
                 const isMe = false;
                 return (
-                  <li key={a.user_id} className="flex items-center justify-between gap-3 py-3 text-sm">
+                  <li
+                    key={a.user_id}
+                    className="flex items-center justify-between gap-3 py-3 text-sm"
+                  >
                     <div className="min-w-0">
                       <div className="truncate font-medium">{a.email}</div>
                       {a.full_name && (

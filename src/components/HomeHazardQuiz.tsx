@@ -22,9 +22,7 @@ function buildSet(): HazardQuestion[] {
 export function HomeHazardQuiz() {
   // Use a deterministic initial slice so SSR HTML matches the first client
   // render, then shuffle after mount to keep the quiz varied across sessions.
-  const [set, setSet] = useState<HazardQuestion[]>(() =>
-    hazardQuestions.slice(0, QUIZ_LENGTH),
-  );
+  const [set, setSet] = useState<HazardQuestion[]>(() => hazardQuestions.slice(0, QUIZ_LENGTH));
   useEffect(() => {
     setSet(buildSet());
   }, []);
@@ -77,7 +75,9 @@ export function HomeHazardQuiz() {
   return (
     <div className="border border-border bg-card p-5 sm:p-8">
       <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-        <span className="inline-flex items-center gap-2"><Eye className="h-3 w-3" /> Question {i + 1} of {QUIZ_LENGTH}</span>
+        <span className="inline-flex items-center gap-2">
+          <Eye className="h-3 w-3" /> Question {i + 1} of {QUIZ_LENGTH}
+        </span>
         <span>Score {score}</span>
       </div>
 
@@ -107,18 +107,24 @@ export function HomeHazardQuiz() {
               )}
             >
               <span className="flex-1">{opt}</span>
-              {revealed && isCorrect && <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />}
-              {revealed && isPicked && !isCorrect && <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}
+              {revealed && isCorrect && (
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+              )}
+              {revealed && isPicked && !isCorrect && (
+                <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+              )}
             </button>
           );
         })}
       </div>
 
       {revealed && (
-        <div className={cn(
-          "mt-6 border p-4 text-sm sm:p-5",
-          gotIt ? "border-emerald-600 bg-emerald-600/10" : "border-destructive bg-destructive/10",
-        )}>
+        <div
+          className={cn(
+            "mt-6 border p-4 text-sm sm:p-5",
+            gotIt ? "border-emerald-600 bg-emerald-600/10" : "border-destructive bg-destructive/10",
+          )}
+        >
           <div className="font-medium">
             {gotIt ? "Correct" : "Not quite"} — the answer is{" "}
             <span className="underline">{q.options[q.correctIndex]}</span>.

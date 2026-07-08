@@ -5,13 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
-import {
-  signGroups,
-  signGroupOf,
-  buildSignOptions,
-  type Sign,
-  type SignGroup,
-} from "@/data/signs";
+import { signGroups, signGroupOf, buildSignOptions, type Sign, type SignGroup } from "@/data/signs";
 import { CheckCircle2, XCircle, SignpostBig, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
@@ -38,8 +32,8 @@ function RoadSignsPage() {
   return (
     <PortalShell eyebrow="Highway Code" title="Road signs">
       <p className="max-w-2xl text-sm text-muted-foreground">
-        Every UK road sign, grouped by type. Choose a category, learn the shapes
-        and colours, then flip to quiz mode to test yourself.
+        Every UK road sign, grouped by type. Choose a category, learn the shapes and colours, then
+        flip to quiz mode to test yourself.
       </p>
 
       <OfflineDownloadButton
@@ -61,8 +55,12 @@ function RoadSignsPage() {
       </div>
 
       <div className="mt-6 flex gap-2 border-b border-border">
-        <TabBtn active={mode === "learn"} onClick={() => setMode("learn")}>Learn</TabBtn>
-        <TabBtn active={mode === "quiz"} onClick={() => setMode("quiz")}>Quiz</TabBtn>
+        <TabBtn active={mode === "learn"} onClick={() => setMode("learn")}>
+          Learn
+        </TabBtn>
+        <TabBtn active={mode === "quiz"} onClick={() => setMode("quiz")}>
+          Quiz
+        </TabBtn>
       </div>
 
       {mode === "learn" ? (
@@ -77,7 +75,15 @@ function RoadSignsPage() {
   );
 }
 
-function CategoryChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function CategoryChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
@@ -93,13 +99,23 @@ function CategoryChip({ active, onClick, children }: { active: boolean; onClick:
   );
 }
 
-function TabBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function TabBtn({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
       className={cn(
         "-mb-px border-b-2 px-4 py-2 text-sm transition-colors",
-        active ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+        active
+          ? "border-accent text-foreground"
+          : "border-transparent text-muted-foreground hover:text-foreground",
       )}
     >
       {children}
@@ -107,12 +123,23 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
   );
 }
 
-function LearnGrid({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: string) => string | null }) {
+function LearnGrid({
+  pool,
+  overrideFor,
+}: {
+  pool: Sign[];
+  overrideFor: (id: string) => string | null;
+}) {
   return (
-    <div data-testid="road-signs-learn-grid" className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div
+      data-testid="road-signs-learn-grid"
+      className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+    >
       {pool.map((s) => (
         <div key={s.id} className="flex gap-4 border border-border bg-card p-4">
-          <div className="shrink-0"><OfficialSignImage sign={s} variant="card" overrideSrc={overrideFor(s.id)} /></div>
+          <div className="shrink-0">
+            <OfficialSignImage sign={s} variant="card" overrideSrc={overrideFor(s.id)} />
+          </div>
           <div className="min-w-0">
             <div className="font-display text-base text-foreground">{s.name}</div>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{s.meaning}</p>
@@ -132,7 +159,13 @@ function shuffle<T>(a: T[]): T[] {
   return b;
 }
 
-function QuizRunner({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: string) => string | null }) {
+function QuizRunner({
+  pool,
+  overrideFor,
+}: {
+  pool: Sign[];
+  overrideFor: (id: string) => string | null;
+}) {
   const [order, setOrder] = useState<Sign[]>(() => shuffle(pool));
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -185,7 +218,9 @@ function QuizRunner({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: str
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {missed.map((s) => (
                 <div key={s.id} className="flex gap-3 border border-border p-3">
-                  <div className="shrink-0"><OfficialSignImage sign={s} variant="thumb" overrideSrc={overrideFor(s.id)} /></div>
+                  <div className="shrink-0">
+                    <OfficialSignImage sign={s} variant="thumb" overrideSrc={overrideFor(s.id)} />
+                  </div>
                   <div className="min-w-0">
                     <div className="text-sm font-medium">{s.name}</div>
                     <p className="mt-1 text-xs text-muted-foreground">{s.meaning}</p>
@@ -246,15 +281,27 @@ function QuizRunner({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: str
   return (
     <div className="mt-6">
       <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-        <span>Question {i + 1} of {order.length}</span>
-        <span>Right {right} · Wrong {wrong}</span>
+        <span>
+          Question {i + 1} of {order.length}
+        </span>
+        <span>
+          Right {right} · Wrong {wrong}
+        </span>
       </div>
       <Progress value={((i + (picked !== null ? 1 : 0)) / order.length) * 100} />
 
       <div className="mt-6 grid gap-6 border border-border bg-card p-6 sm:grid-cols-[auto_1fr]">
-        <div className="flex items-start justify-center"><OfficialSignImage sign={current} variant="detail" overrideSrc={overrideFor(current.id)} /></div>
+        <div className="flex items-start justify-center">
+          <OfficialSignImage
+            sign={current}
+            variant="detail"
+            overrideSrc={overrideFor(current.id)}
+          />
+        </div>
         <div>
-          <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">What does this sign mean?</div>
+          <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            What does this sign mean?
+          </div>
           <div className="mt-4 grid gap-2">
             {q.options.map((opt, idx) => {
               const isCorrect = idx === q.correctIndex;
@@ -267,14 +314,26 @@ function QuizRunner({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: str
                   className={cn(
                     "flex items-center justify-between border px-4 py-3 text-left text-sm transition-colors",
                     picked === null && "border-border bg-background hover:bg-secondary",
-                    picked !== null && isCorrect && "border-emerald-600 bg-emerald-600/10 text-foreground",
-                    picked !== null && isPicked && !isCorrect && "border-destructive bg-destructive/10 text-foreground",
-                    picked !== null && !isCorrect && !isPicked && "border-border bg-background opacity-60",
+                    picked !== null &&
+                      isCorrect &&
+                      "border-emerald-600 bg-emerald-600/10 text-foreground",
+                    picked !== null &&
+                      isPicked &&
+                      !isCorrect &&
+                      "border-destructive bg-destructive/10 text-foreground",
+                    picked !== null &&
+                      !isCorrect &&
+                      !isPicked &&
+                      "border-border bg-background opacity-60",
                   )}
                 >
                   <span>{opt}</span>
-                  {picked !== null && isCorrect && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
-                  {picked !== null && isPicked && !isCorrect && <XCircle className="h-4 w-4 text-destructive" />}
+                  {picked !== null && isCorrect && (
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  )}
+                  {picked !== null && isPicked && !isCorrect && (
+                    <XCircle className="h-4 w-4 text-destructive" />
+                  )}
                 </button>
               );
             })}
@@ -287,7 +346,13 @@ function QuizRunner({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: str
               </div>
               {picked !== q.correctIndex && (
                 <div className="mt-3 flex gap-4 border border-destructive/40 bg-background p-3">
-                  <div className="shrink-0"><OfficialSignImage sign={current} variant="feedback" overrideSrc={overrideFor(current.id)} /></div>
+                  <div className="shrink-0">
+                    <OfficialSignImage
+                      sign={current}
+                      variant="feedback"
+                      overrideSrc={overrideFor(current.id)}
+                    />
+                  </div>
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">
                       You picked: <span className="text-foreground">{q.options[picked]}</span>
@@ -312,7 +377,8 @@ function QuizRunner({ pool, overrideFor }: { pool: Sign[]; overrideFor: (id: str
       </div>
 
       <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-        <SignpostBig className="h-3.5 w-3.5" /> Wrong answers always show the sign with the correct meaning.
+        <SignpostBig className="h-3.5 w-3.5" /> Wrong answers always show the sign with the correct
+        meaning.
       </div>
 
       <p className="mt-2 text-[11px] text-muted-foreground">

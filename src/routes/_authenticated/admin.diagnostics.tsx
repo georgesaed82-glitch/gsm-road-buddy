@@ -92,7 +92,10 @@ function DiagnosticsPage() {
             </header>
             <ul className="divide-y divide-border">
               {rows.map((r) => (
-                <li key={cat + r.name} className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm">
+                <li
+                  key={cat + r.name}
+                  className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm"
+                >
                   <div className="flex min-w-0 items-center gap-2">
                     <StatusIcon status={r.status} />
                     <span className="truncate font-mono text-xs">{r.name}</span>
@@ -111,13 +114,17 @@ function DiagnosticsPage() {
   );
 }
 
-function SummaryCard({ label, value, tone }: { label: string; value: number; tone: "ok" | "warn" | "fail" }) {
+function SummaryCard({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: "ok" | "warn" | "fail";
+}) {
   const toneClass =
-    tone === "ok"
-      ? "text-emerald-700"
-      : tone === "warn"
-        ? "text-amber-700"
-        : "text-red-700";
+    tone === "ok" ? "text-emerald-700" : tone === "warn" ? "text-amber-700" : "text-red-700";
   return (
     <div className="border border-border bg-card px-4 py-3">
       <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{label}</div>

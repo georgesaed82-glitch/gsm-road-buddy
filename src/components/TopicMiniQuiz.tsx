@@ -75,16 +75,22 @@ export function TopicMiniQuiz({ slug, topicTitle }: { slug: string; topicTitle: 
       >
         <div>
           <div className="text-[11px] uppercase tracking-[0.18em] text-accent">Test yourself</div>
-          <div className="text-sm font-semibold">{questions.length} quick questions on this topic</div>
+          <div className="text-sm font-semibold">
+            {questions.length} quick questions on this topic
+          </div>
         </div>
-        <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")} />
+        <ChevronDown
+          className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")}
+        />
       </button>
 
       {open && (
         <div className="mt-4">
           {finished ? (
             <div className="border border-border bg-secondary/40 p-4">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Complete</div>
+              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                Complete
+              </div>
               <div className="mt-1 font-display text-xl">
                 {correct} / {questions.length} correct
               </div>
@@ -102,7 +108,9 @@ export function TopicMiniQuiz({ slug, topicTitle }: { slug: string; topicTitle: 
           ) : (
             <div>
               <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-                <span>Question {idx + 1} of {questions.length}</span>
+                <span>
+                  Question {idx + 1} of {questions.length}
+                </span>
                 <span>Correct {correct}</span>
               </div>
               <p className="text-sm font-medium">{current.q}</p>
@@ -121,13 +129,23 @@ export function TopicMiniQuiz({ slug, topicTitle }: { slug: string; topicTitle: 
                         "flex items-start justify-between gap-2 border px-3 py-2 text-left text-sm transition-colors",
                         !answered && "border-border bg-background hover:bg-secondary",
                         answered && isCorrect && "border-emerald-600 bg-emerald-600/10",
-                        answered && isChosen && !isCorrect && "border-destructive bg-destructive/10",
-                        answered && !isCorrect && !isChosen && "border-border bg-background opacity-60",
+                        answered &&
+                          isChosen &&
+                          !isCorrect &&
+                          "border-destructive bg-destructive/10",
+                        answered &&
+                          !isCorrect &&
+                          !isChosen &&
+                          "border-border bg-background opacity-60",
                       )}
                     >
                       <span className="flex-1">{opt}</span>
-                      {answered && isCorrect && <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />}
-                      {answered && isChosen && !isCorrect && <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}
+                      {answered && isCorrect && (
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                      )}
+                      {answered && isChosen && !isCorrect && (
+                        <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                      )}
                     </button>
                   );
                 })}

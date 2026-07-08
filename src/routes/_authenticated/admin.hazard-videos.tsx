@@ -48,7 +48,9 @@ function HazardVideosAdmin() {
       </div>
 
       <p className="mt-6 max-w-2xl text-sm text-muted-foreground">
-        Upload an MP4 (H.264 recommended, under 200 MB) for each clip slot below. Learners see a "coming soon" placeholder until a video is uploaded. You can replace or remove a video at any time.
+        Upload an MP4 (H.264 recommended, under 200 MB) for each clip slot below. Learners see a
+        "coming soon" placeholder until a video is uploaded. You can replace or remove a video at
+        any time.
       </p>
 
       <div className="mt-8 grid gap-4">
@@ -66,7 +68,15 @@ function HazardVideosAdmin() {
   );
 }
 
-function ClipRow({ clip, row, onChanged }: { clip: HazardClip; row?: ClipVideoRow; onChanged: () => void }) {
+function ClipRow({
+  clip,
+  row,
+  onChanged,
+}: {
+  clip: HazardClip;
+  row?: ClipVideoRow;
+  onChanged: () => void;
+}) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -78,9 +88,12 @@ function ClipRow({ clip, row, onChanged }: { clip: HazardClip; row?: ClipVideoRo
       setSignedUrl(null);
       return;
     }
-    supabase.storage.from(BUCKET).createSignedUrl(row.video_path, 3600).then(({ data }) => {
-      if (!cancelled && data?.signedUrl) setSignedUrl(data.signedUrl);
-    });
+    supabase.storage
+      .from(BUCKET)
+      .createSignedUrl(row.video_path, 3600)
+      .then(({ data }) => {
+        if (!cancelled && data?.signedUrl) setSignedUrl(data.signedUrl);
+      });
     return () => {
       cancelled = true;
     };
@@ -141,10 +154,14 @@ function ClipRow({ clip, row, onChanged }: { clip: HazardClip; row?: ClipVideoRo
 
   const onRemove = async () => {
     if (!row) return;
-    if (!confirm(`Remove the video for "${clip.title}"? Learners will see the placeholder again.`)) return;
+    if (!confirm(`Remove the video for "${clip.title}"? Learners will see the placeholder again.`))
+      return;
     try {
       await supabase.storage.from(BUCKET).remove([row.video_path]);
-      const { error } = await supabase.from("hazard_clip_videos").delete().eq("clip_slug", clip.slug);
+      const { error } = await supabase
+        .from("hazard_clip_videos")
+        .delete()
+        .eq("clip_slug", clip.slug);
       if (error) throw error;
       toast.success("Video removed");
       onChanged();
@@ -160,11 +177,18 @@ function ClipRow({ clip, row, onChanged }: { clip: HazardClip; row?: ClipVideoRo
     <div className="grid gap-4 border border-border bg-card p-4 md:grid-cols-[260px_1fr] md:p-5">
       <div className="aspect-video w-full overflow-hidden bg-primary/90">
         {signedUrl ? (
-          <video src={signedUrl} controls preload="metadata" className="h-full w-full object-cover" />
+          <video
+            src={signedUrl}
+            controls
+            preload="metadata"
+            className="h-full w-full object-cover"
+          />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-primary-foreground/80">
             <span className="text-[10px] uppercase tracking-[0.22em] opacity-70">No video yet</span>
-            <span className="text-xs opacity-60">{clip.durationSeconds}s · {clip.difficulty}</span>
+            <span className="text-xs opacity-60">
+              {clip.durationSeconds}s · {clip.difficulty}
+            </span>
           </div>
         )}
       </div>
@@ -187,7 +211,9 @@ function ClipRow({ clip, row, onChanged }: { clip: HazardClip; row?: ClipVideoRo
         </p>
         <p className="mt-1 text-[11px] uppercase tracking-wider text-muted-foreground">
           Slug: {clip.slug}
-          {row?.updated_at && <> · Updated {new Date(row.updated_at).toLocaleDateString("en-GB")}</>}
+          {row?.updated_at && (
+            <> · Updated {new Date(row.updated_at).toLocaleDateString("en-GB")}</>
+          )}
         </p>
 
         <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
@@ -199,7 +225,11 @@ function ClipRow({ clip, row, onChanged }: { clip: HazardClip; row?: ClipVideoRo
             onChange={onFile}
           />
           <Button onClick={onPick} disabled={uploading} className="rounded-none">
-            {hasVideo ? <RefreshCcw className="mr-2 h-3.5 w-3.5" /> : <Upload className="mr-2 h-3.5 w-3.5" />}
+            {hasVideo ? (
+              <RefreshCcw className="mr-2 h-3.5 w-3.5" />
+            ) : (
+              <Upload className="mr-2 h-3.5 w-3.5" />
+            )}
             {uploading ? "Uploading…" : hasVideo ? "Replace video" : "Upload MP4"}
           </Button>
           {hasVideo && !uploading && (
@@ -209,7 +239,10 @@ function ClipRow({ clip, row, onChanged }: { clip: HazardClip; row?: ClipVideoRo
           )}
           {uploading && (
             <div className="h-1.5 w-32 overflow-hidden bg-secondary">
-              <div className="h-full bg-accent transition-[width]" style={{ width: `${progress}%` }} />
+              <div
+                className="h-full bg-accent transition-[width]"
+                style={{ width: `${progress}%` }}
+              />
             </div>
           )}
         </div>
@@ -220,8 +253,14 @@ function ClipRow({ clip, row, onChanged }: { clip: HazardClip; row?: ClipVideoRo
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className={`border border-border p-5 ${accent ? "bg-accent text-accent-foreground" : "bg-card"}`}>
-      <div className={`text-[11px] uppercase tracking-[0.18em] ${accent ? "opacity-80" : "text-muted-foreground"}`}>{label}</div>
+    <div
+      className={`border border-border p-5 ${accent ? "bg-accent text-accent-foreground" : "bg-card"}`}
+    >
+      <div
+        className={`text-[11px] uppercase tracking-[0.18em] ${accent ? "opacity-80" : "text-muted-foreground"}`}
+      >
+        {label}
+      </div>
       <div className="mt-3 font-display text-3xl">{value}</div>
     </div>
   );

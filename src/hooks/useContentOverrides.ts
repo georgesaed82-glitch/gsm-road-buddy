@@ -39,9 +39,7 @@ export function useContentOverrides() {
   }
 
   function customItems(kind: ContentKind): ContentOverrideRow[] {
-    return (q.data ?? []).filter(
-      (r) => r.kind === kind && r.item_id.startsWith("custom:"),
-    );
+    return (q.data ?? []).filter((r) => r.kind === kind && r.item_id.startsWith("custom:"));
   }
 
   function getBlocks(kind: ContentKind, id: string): OverrideBlock[] | null {
@@ -72,7 +70,15 @@ export function useContentOverrides() {
     });
   }
 
-  function applyHighway<T extends { slug: string; title: string; description: string; topics: string[]; keyPoints: string[] }>(items: T[]): T[] {
+  function applyHighway<
+    T extends {
+      slug: string;
+      title: string;
+      description: string;
+      topics: string[];
+      keyPoints: string[];
+    },
+  >(items: T[]): T[] {
     return items.map((it) => {
       const o = byKey.get(`highway:${it.slug}`);
       if (!o) return it;

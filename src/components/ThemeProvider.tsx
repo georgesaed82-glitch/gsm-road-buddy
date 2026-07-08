@@ -18,8 +18,13 @@ function applyTokens(tokens: Partial<ThemeTokens>) {
   // Typography
   if (tokens.typography) {
     const { headingFont, bodyFont, baseSize, headingWeight } = tokens.typography;
-    if (bodyFont) root.style.setProperty("--font-sans", `"${bodyFont}", ui-sans-serif, system-ui, sans-serif`);
-    if (headingFont) root.style.setProperty("--font-display", `"${headingFont}", ui-sans-serif, system-ui, sans-serif`);
+    if (bodyFont)
+      root.style.setProperty("--font-sans", `"${bodyFont}", ui-sans-serif, system-ui, sans-serif`);
+    if (headingFont)
+      root.style.setProperty(
+        "--font-display",
+        `"${headingFont}", ui-sans-serif, system-ui, sans-serif`,
+      );
     if (baseSize) root.style.setProperty("--theme-base-size", baseSize);
     if (headingWeight) root.style.setProperty("--theme-heading-weight", headingWeight);
   }
@@ -45,14 +50,17 @@ function applyTokens(tokens: Partial<ThemeTokens>) {
 
   // Mobile overrides via media query support token
   if (tokens.mobile) {
-    if (tokens.mobile.baseSize) root.style.setProperty("--theme-mobile-base-size", tokens.mobile.baseSize);
+    if (tokens.mobile.baseSize)
+      root.style.setProperty("--theme-mobile-base-size", tokens.mobile.baseSize);
     if (tokens.mobile.sectionSpacing)
       root.style.setProperty("--theme-mobile-section-spacing", tokens.mobile.sectionSpacing);
   }
 
   // Brand: favicon + document title fallback
   if (tokens.brand?.faviconUrl) {
-    const existing = document.querySelector<HTMLLinkElement>("link[rel~='icon'][data-theme-managed='1']");
+    const existing = document.querySelector<HTMLLinkElement>(
+      "link[rel~='icon'][data-theme-managed='1']",
+    );
     if (existing) existing.href = tokens.brand.faviconUrl;
     else {
       const link = document.createElement("link");
@@ -67,9 +75,7 @@ function applyTokens(tokens: Partial<ThemeTokens>) {
 function loadGoogleFonts(fonts: string[]) {
   const uniq = Array.from(new Set(fonts.filter(Boolean)));
   if (!uniq.length) return;
-  const family = uniq
-    .map((f) => `family=${encodeURIComponent(f)}:wght@400;500;600;700`)
-    .join("&");
+  const family = uniq.map((f) => `family=${encodeURIComponent(f)}:wght@400;500;600;700`).join("&");
   const href = `https://fonts.googleapis.com/css2?${family}&display=swap`;
   const existing = document.querySelector<HTMLLinkElement>("link[data-theme-fonts='1']");
   if (existing) {

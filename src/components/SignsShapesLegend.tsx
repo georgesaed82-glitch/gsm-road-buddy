@@ -17,9 +17,9 @@ export function SignsShapesLegend() {
         </span>
       </div>
       <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-        The shape and colour of a traffic sign tells you what kind of message it
-        is giving — even before you read the words or symbol. Learn these first
-        and every sign in the Highway Code becomes easier to understand.
+        The shape and colour of a traffic sign tells you what kind of message it is giving — even
+        before you read the words or symbol. Learn these first and every sign in the Highway Code
+        becomes easier to understand.
       </p>
 
       {/* Shapes */}
@@ -54,29 +54,28 @@ export function SignsShapesLegend() {
         <p className="font-display text-sm">Sign background colours</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           <ColourRow swatch="#0033a0" fg="#fff" label="Blue rectangle">
-            Direction signs on <strong>motorways</strong>. Also used on smaller
-            blue circles to give a positive order (mandatory turn, keep left,
-            mini-roundabout).
+            Direction signs on <strong>motorways</strong>. Also used on smaller blue circles to give
+            a positive order (mandatory turn, keep left, mini-roundabout).
           </ColourRow>
           <ColourRow swatch="#0e7c3a" fg="#fff" label="Green rectangle">
-            Direction signs on <strong>primary routes</strong> (major A-roads).
-            Route numbers for motorways appear inside a blue patch.
+            Direction signs on <strong>primary routes</strong> (major A-roads). Route numbers for
+            motorways appear inside a blue patch.
           </ColourRow>
           <ColourRow swatch="#ffffff" fg="#000" label="White rectangle">
-            Direction signs on <strong>local, non-primary roads</strong>. Route
-            numbers keep the colour of the road they lead to.
+            Direction signs on <strong>local, non-primary roads</strong>. Route numbers keep the
+            colour of the road they lead to.
           </ColourRow>
           <ColourRow swatch="#7a4a1e" fg="#fff" label="Brown rectangle">
-            <strong>Tourist information</strong> and attractions — museums,
-            castles, gardens, viewpoints and picnic areas.
+            <strong>Tourist information</strong> and attractions — museums, castles, gardens,
+            viewpoints and picnic areas.
           </ColourRow>
           <ColourRow swatch="#ffcc00" fg="#000" label="Yellow rectangle">
-            <strong>Diversion</strong> routes and temporary traffic-management
-            information (roadworks, incidents).
+            <strong>Diversion</strong> routes and temporary traffic-management information
+            (roadworks, incidents).
           </ColourRow>
           <ColourRow swatch="#e60012" fg="#fff" label="Red border / red ring">
-            <strong>Warning</strong> (red-bordered triangle) and{" "}
-            <strong>prohibition</strong> (red ring — you must not do this).
+            <strong>Warning</strong> (red-bordered triangle) and <strong>prohibition</strong> (red
+            ring — you must not do this).
           </ColourRow>
         </div>
       </div>
@@ -85,31 +84,43 @@ export function SignsShapesLegend() {
       <div className="mt-6 rounded-sm border border-primary/40 bg-primary/5 p-4">
         <p className="font-display text-sm text-primary">Quick rule to remember</p>
         <ul className="mt-2 grid gap-1 text-sm text-foreground sm:grid-cols-2">
-          <li>• <strong>Triangle</strong> = warning</li>
-          <li>• <strong>Circle with red ring</strong> = do NOT</li>
-          <li>• <strong>Blue circle</strong> = you MUST</li>
-          <li>• <strong>Rectangle</strong> = information / direction</li>
-          <li>• <strong>Octagon</strong> = STOP</li>
-          <li>• <strong>Downward triangle</strong> = GIVE WAY</li>
-          <li>• <strong>Blue</strong> background = motorway</li>
-          <li>• <strong>Green</strong> background = primary route (A-road)</li>
-          <li>• <strong>White</strong> background = local road</li>
-          <li>• <strong>Brown</strong> background = tourist attraction</li>
+          <li>
+            • <strong>Triangle</strong> = warning
+          </li>
+          <li>
+            • <strong>Circle with red ring</strong> = do NOT
+          </li>
+          <li>
+            • <strong>Blue circle</strong> = you MUST
+          </li>
+          <li>
+            • <strong>Rectangle</strong> = information / direction
+          </li>
+          <li>
+            • <strong>Octagon</strong> = STOP
+          </li>
+          <li>
+            • <strong>Downward triangle</strong> = GIVE WAY
+          </li>
+          <li>
+            • <strong>Blue</strong> background = motorway
+          </li>
+          <li>
+            • <strong>Green</strong> background = primary route (A-road)
+          </li>
+          <li>
+            • <strong>White</strong> background = local road
+          </li>
+          <li>
+            • <strong>Brown</strong> background = tourist attraction
+          </li>
         </ul>
       </div>
     </section>
   );
 }
 
-function ShapeCard({
-  icon,
-  title,
-  body,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-}) {
+function ShapeCard({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
     <div className="flex gap-3 rounded-sm border border-border bg-background p-3">
       <div className="text-primary" aria-hidden="true">

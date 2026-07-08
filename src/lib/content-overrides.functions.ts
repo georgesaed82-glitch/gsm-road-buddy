@@ -96,14 +96,16 @@ export const listContentOverrides = createServerFn({ method: "GET" }).handler(
             ...data,
             blocks: data.blocks.map((b) => ({
               ...b,
-              image_url: b.image_path ? signedMap.get(b.image_path) ?? null : b.image_url ?? null,
+              image_url: b.image_path
+                ? (signedMap.get(b.image_path) ?? null)
+                : (b.image_url ?? null),
             })),
           }
         : data;
       return {
         ...r,
         data: nextData,
-        image_url: r.image_path ? signedMap.get(r.image_path) ?? null : null,
+        image_url: r.image_path ? (signedMap.get(r.image_path) ?? null) : null,
       };
     });
   },
@@ -176,10 +178,12 @@ export const reorderContentOverrides = createServerFn({ method: "POST" })
 
 export const deleteContentOverride = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({
-      kind: z.enum(KIND_VALUES),
-      item_id: z.string(),
-    }).parse(d),
+    z
+      .object({
+        kind: z.enum(KIND_VALUES),
+        item_id: z.string(),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");

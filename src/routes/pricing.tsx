@@ -15,7 +15,8 @@ export const Route = createFileRoute("/pricing")({
       { title: "Pricing | GSM Driving School" },
       {
         name: "description",
-        content: "Flexible driving lesson packages at GSM Driving School. Single lessons, 12-hour blocks, intensive, weekend, refresher and Pass Plus courses.",
+        content:
+          "Flexible driving lesson packages at GSM Driving School. Single lessons, 12-hour blocks, intensive, weekend, refresher and Pass Plus courses.",
       },
       {
         property: "og:title",
@@ -87,7 +88,11 @@ function PricingPage() {
                     ))}
                   </ul>
                   <div className="mt-6 flex flex-col gap-2">
-                    <Button asChild variant={pkg.popular ? "default" : "outline"} className="w-full gap-2">
+                    <Button
+                      asChild
+                      variant={pkg.popular ? "default" : "outline"}
+                      className="w-full gap-2"
+                    >
                       <a
                         href={waHref}
                         target="_blank"
@@ -98,11 +103,12 @@ function PricingPage() {
                         {pkg.cta_label || "WhatsApp us"}
                       </a>
                     </Button>
-                    <Button asChild variant="ghost" className="w-full gap-2 text-muted-foreground hover:text-primary">
-                      <a
-                        href={emailHref}
-                        onClick={() => trackContactClick("email", pkg.name)}
-                      >
+                    <Button
+                      asChild
+                      variant="ghost"
+                      className="w-full gap-2 text-muted-foreground hover:text-primary"
+                    >
+                      <a href={emailHref} onClick={() => trackContactClick("email", pkg.name)}>
                         <Mail className="h-4 w-4" />
                         Email us
                       </a>
@@ -118,14 +124,12 @@ function PricingPage() {
               Need pricing details?
             </h3>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-              Every learner is different. Call or email us for a personalised quote based on your experience and goals.
+              Every learner is different. Call or email us for a personalised quote based on your
+              experience and goals.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild variant="outline" className="h-11 gap-2">
-                <a
-                  href={waHref}
-                  onClick={() => trackContactClick("whatsapp", "Pricing CTA")}
-                >
+                <a href={waHref} onClick={() => trackContactClick("whatsapp", "Pricing CTA")}>
                   <Phone className="h-4 w-4" />
                   WhatsApp us
                 </a>

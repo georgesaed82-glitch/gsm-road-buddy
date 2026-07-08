@@ -11,8 +11,7 @@ export const Route = createFileRoute("/downloads")({
       { title: "Downloads | GSM Driving School" },
       {
         name: "description",
-        content:
-          "Free driving guides, cheat sheets and study PDFs from GSM Driving School.",
+        content: "Free driving guides, cheat sheets and study PDFs from GSM Driving School.",
       },
       { property: "og:title", content: "Downloads | GSM Driving School" },
       {
@@ -50,7 +49,9 @@ function DownloadsPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <nav className="mb-4 text-sm text-muted-foreground" aria-label="Breadcrumb">
-        <Link to="/" className="hover:text-foreground">Home</Link>
+        <Link to="/" className="hover:text-foreground">
+          Home
+        </Link>
         <span className="mx-2">/</span>
         <span className="text-foreground">Downloads</span>
       </nav>

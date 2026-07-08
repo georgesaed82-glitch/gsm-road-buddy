@@ -156,7 +156,10 @@ export const getErrorStats = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false })
       .limit(2000);
     const list = rows ?? [];
-    const byFp = new Map<string, { fingerprint: string; message: string; route: string | null; count: number; last: string }>();
+    const byFp = new Map<
+      string,
+      { fingerprint: string; message: string; route: string | null; count: number; last: string }
+    >();
     for (const r of list) {
       const fp = r.fingerprint ?? r.message;
       const cur = byFp.get(fp);
@@ -164,7 +167,13 @@ export const getErrorStats = createServerFn({ method: "POST" })
         cur.count += 1;
         if (r.created_at > cur.last) cur.last = r.created_at;
       } else {
-        byFp.set(fp, { fingerprint: fp, message: r.message, route: r.route, count: 1, last: r.created_at });
+        byFp.set(fp, {
+          fingerprint: fp,
+          message: r.message,
+          route: r.route,
+          count: 1,
+          last: r.created_at,
+        });
       }
     }
     const grouped = [...byFp.values()].sort((a, b) => b.count - a.count).slice(0, 25);

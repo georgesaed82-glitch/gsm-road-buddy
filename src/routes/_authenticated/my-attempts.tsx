@@ -93,9 +93,13 @@ function MyAttemptsPage() {
                               !isCorrect && !isPicked && "border-border bg-background opacity-70",
                             )}
                           >
-                            <span>{String.fromCharCode(65 + oi)}. {opt}</span>
+                            <span>
+                              {String.fromCharCode(65 + oi)}. {opt}
+                            </span>
                             {isCorrect && <span className="ml-2 text-emerald-700">✓ correct</span>}
-                            {isPicked && !isCorrect && <span className="ml-2 text-destructive">← your answer</span>}
+                            {isPicked && !isCorrect && (
+                              <span className="ml-2 text-destructive">← your answer</span>
+                            )}
                           </div>
                         );
                       })}
@@ -105,7 +109,8 @@ function MyAttemptsPage() {
                     </div>
                     {item.explanation && (
                       <p className="mt-2 text-xs text-muted-foreground">
-                        <span className="font-semibold text-foreground">Why:</span> {item.explanation}
+                        <span className="font-semibold text-foreground">Why:</span>{" "}
+                        {item.explanation}
                       </p>
                     )}
                   </div>
@@ -121,9 +126,9 @@ function MyAttemptsPage() {
   return (
     <PortalShell eyebrow="GSM Plus" title="My attempts">
       <p className="max-w-2xl text-sm text-muted-foreground">
-        Every quiz you finish on this device is saved here — mock tests, road
-        signs, road markings and theory practice. Open one to see the exact
-        questions, your answers and where you went wrong.
+        Every quiz you finish on this device is saved here — mock tests, road signs, road markings
+        and theory practice. Open one to see the exact questions, your answers and where you went
+        wrong.
       </p>
 
       {list.length === 0 ? (
@@ -147,7 +152,9 @@ function MyAttemptsPage() {
                     </div>
                   </div>
                   <div className="text-sm">
-                    <span className="font-display text-lg">{a.score}/{a.total}</span>{" "}
+                    <span className="font-display text-lg">
+                      {a.score}/{a.total}
+                    </span>{" "}
                     <span className="text-muted-foreground">({pct}%)</span>
                   </div>
                   <Button size="sm" className="rounded-none" onClick={() => setOpenId(a.id)}>

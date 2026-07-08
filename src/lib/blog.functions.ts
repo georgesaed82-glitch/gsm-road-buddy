@@ -87,7 +87,12 @@ export const listCategories = createServerFn({ method: "GET" }).handler(
 
 const categoryInput = z.object({
   id: z.string().uuid().optional(),
-  slug: z.string().trim().min(1).max(80).regex(/^[a-z0-9-]+$/, "lowercase, digits, hyphens only"),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(80)
+    .regex(/^[a-z0-9-]+$/, "lowercase, digits, hyphens only"),
   name: z.string().trim().min(1).max(120),
   description: z.string().max(500).nullable().optional(),
   order_index: z.number().int().min(0).max(9999),
@@ -238,7 +243,9 @@ export const upsertPost = createServerFn({ method: "POST" })
       ...rest,
       category_id: rest.category_id ?? null,
       published_at:
-        rest.published && !rest.published_at ? new Date().toISOString() : rest.published_at ?? null,
+        rest.published && !rest.published_at
+          ? new Date().toISOString()
+          : (rest.published_at ?? null),
     };
     if (id) {
       const { error } = await supabaseAdmin.from("blog_posts").update(payload).eq("id", id);
@@ -397,7 +404,9 @@ export const listDownloads = createServerFn({ method: "GET" }).handler(
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("downloads")
-      .select("id, title, description, storage_path, mime_type, size_bytes, category, order_index, enabled")
+      .select(
+        "id, title, description, storage_path, mime_type, size_bytes, category, order_index, enabled",
+      )
       .order("order_index");
     if (error) throw new Error(error.message);
     return Promise.all((data ?? []).map((r) => shapeDownload(r)));
@@ -409,7 +418,9 @@ export const listPublishedDownloads = createServerFn({ method: "GET" }).handler(
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("downloads")
-      .select("id, title, description, storage_path, mime_type, size_bytes, category, order_index, enabled")
+      .select(
+        "id, title, description, storage_path, mime_type, size_bytes, category, order_index, enabled",
+      )
       .eq("enabled", true)
       .order("order_index");
     if (error) throw new Error(error.message);

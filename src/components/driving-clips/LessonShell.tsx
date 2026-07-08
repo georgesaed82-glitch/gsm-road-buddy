@@ -1,5 +1,21 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles, Lightbulb, Target, HelpCircle, Quote, ArrowRight, ArrowLeft, ChevronDown, Circle } from "lucide-react";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Sparkles,
+  Lightbulb,
+  Target,
+  HelpCircle,
+  Quote,
+  ArrowRight,
+  ArrowLeft,
+  ChevronDown,
+  Circle,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { useLessonProgress } from "@/lib/lessonProgress";
@@ -172,14 +188,23 @@ export function LessonShell({
               }}
               label={playing ? "Pause" : t >= 1 ? "Replay" : "Play"}
             >
-              {playing ? <Pause className="h-4 w-4" /> : t >= 1 ? <RotateCcw className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              {playing ? (
+                <Pause className="h-4 w-4" />
+              ) : t >= 1 ? (
+                <RotateCcw className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
             </ControlButton>
             <ControlButton onClick={reset} label="Restart">
               <RotateCcw className="h-4 w-4" />
             </ControlButton>
           </div>
         </div>
-        <div className="relative w-full overflow-hidden bg-[#1a1a1c]" style={{ aspectRatio: "16/9" }}>
+        <div
+          className="relative w-full overflow-hidden bg-[#1a1a1c]"
+          style={{ aspectRatio: "16/9" }}
+        >
           <Zoomable
             label={`${lesson.title} — animated diagram`}
             aspectRatio="16/9"
@@ -190,18 +215,18 @@ export function LessonShell({
               {lesson.render(t)}
               {/* Consistent GSM brand + UK convention overlay across every clip */}
               <div className="pointer-events-none absolute inset-0">
-            <div className="absolute left-3 top-3 rounded-md bg-black/55 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/85">
-              UK · Left-hand traffic
-            </div>
-            <div className="absolute right-0 top-1/2 hidden -translate-y-1/2 rounded-l-md bg-black/55 px-1.5 py-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85 [writing-mode:vertical-rl] sm:block">
-              GSM
-            </div>
-            <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-md bg-black/55 px-2 py-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-accent" />
-              <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85">
-                GSM Driving School
-              </span>
-            </div>
+                <div className="absolute left-3 top-3 rounded-md bg-black/55 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/85">
+                  UK · Left-hand traffic
+                </div>
+                <div className="absolute right-0 top-1/2 hidden -translate-y-1/2 rounded-l-md bg-black/55 px-1.5 py-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85 [writing-mode:vertical-rl] sm:block">
+                  GSM
+                </div>
+                <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-md bg-black/55 px-2 py-1">
+                  <span className="inline-block h-2 w-2 rounded-full bg-accent" />
+                  <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/85">
+                    GSM Driving School
+                  </span>
+                </div>
               </div>
             </div>
           </Zoomable>
@@ -262,7 +287,10 @@ export function LessonShell({
         </div>
         {/* Scrub bar */}
         <div className="relative h-1.5 w-full bg-secondary">
-          <div className="absolute left-0 top-0 h-full bg-accent" style={{ width: `${t * 100}%` }} />
+          <div
+            className="absolute left-0 top-0 h-full bg-accent"
+            style={{ width: `${t * 100}%` }}
+          />
           {questions.map((qq, i) => (
             <div
               key={i}
@@ -330,7 +358,9 @@ export function LessonShell({
         title="What, when and why"
       >
         <div className="prose-sm space-y-3 text-sm leading-relaxed">
-          <p className="font-semibold uppercase tracking-wider text-accent text-xs">What we're doing</p>
+          <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+            What we're doing
+          </p>
           <p>{lesson.objective}</p>
           {lesson.why}
         </div>
@@ -359,15 +389,30 @@ export function LessonShell({
               <li key={i} className="rounded-lg border border-border/60 bg-background/40 p-3">
                 <div className="flex gap-2 leading-relaxed">
                   <span className="mt-0.5 text-red-500">✕</span>
-                  <span><span className="text-[10px] uppercase tracking-wider text-red-500 mr-2">Wrong</span>{m.wrong}</span>
+                  <span>
+                    <span className="text-[10px] uppercase tracking-wider text-red-500 mr-2">
+                      Wrong
+                    </span>
+                    {m.wrong}
+                  </span>
                 </div>
                 <div className="mt-2 flex gap-2 leading-relaxed text-muted-foreground">
                   <span className="mt-0.5 text-accent">↳</span>
-                  <span><span className="text-[10px] uppercase tracking-wider text-accent mr-2">Why it's wrong</span>{m.why}</span>
+                  <span>
+                    <span className="text-[10px] uppercase tracking-wider text-accent mr-2">
+                      Why it's wrong
+                    </span>
+                    {m.why}
+                  </span>
                 </div>
                 <div className="mt-2 flex gap-2 leading-relaxed">
                   <span className="mt-0.5 text-emerald-600">✓</span>
-                  <span><span className="text-[10px] uppercase tracking-wider text-emerald-600 mr-2">Correct</span>{m.right}</span>
+                  <span>
+                    <span className="text-[10px] uppercase tracking-wider text-emerald-600 mr-2">
+                      Correct
+                    </span>
+                    {m.right}
+                  </span>
                 </div>
               </li>
             ))}
@@ -524,16 +569,17 @@ function Collapse({
     tone === "default" && "border-border bg-card",
   );
   const eyebrowTone =
-    tone === "warn"
-      ? "text-red-500"
-      : tone === "tip"
-        ? "text-emerald-600"
-        : "text-accent";
+    tone === "warn" ? "text-red-500" : tone === "tip" ? "text-emerald-600" : "text-accent";
   return (
     <details className={wrap}>
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
         <div className="min-w-0">
-          <div className={cn("flex items-center gap-2 text-[11px] uppercase tracking-[0.2em]", eyebrowTone)}>
+          <div
+            className={cn(
+              "flex items-center gap-2 text-[11px] uppercase tracking-[0.2em]",
+              eyebrowTone,
+            )}
+          >
             {icon} {eyebrow}
           </div>
           <div className="mt-1 font-display text-base leading-snug">{title}</div>

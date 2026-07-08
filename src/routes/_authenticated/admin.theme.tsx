@@ -10,7 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   getThemeSettings,
   saveThemeDraft,
@@ -110,7 +116,7 @@ function mergeDeep(base: ThemeTokens, patch: Partial<ThemeTokens>): ThemeTokens 
 }
 
 function AdminThemePage() {
-const qc = useQueryClient();
+  const qc = useQueryClient();
   const getSettingsFn = useServerFn(getThemeSettings);
   const saveDraftFn = useServerFn(saveThemeDraft);
   const publishFn = useServerFn(publishTheme);
@@ -145,10 +151,7 @@ const qc = useQueryClient();
   // Push preview tokens into iframe whenever they change.
   useEffect(() => {
     const send = () => {
-      iframeRef.current?.contentWindow?.postMessage(
-        { type: "gsm-theme-preview", tokens },
-        "*",
-      );
+      iframeRef.current?.contentWindow?.postMessage({ type: "gsm-theme-preview", tokens }, "*");
     };
     send();
     const handler = (ev: MessageEvent) => {
@@ -234,8 +237,16 @@ const qc = useQueryClient();
             </TabsList>
 
             <TabsContent value="brand" className="space-y-4 pt-4">
-              <FieldText label="Business name" value={tokens.brand.name} onChange={(v) => patch({ brand: { ...tokens.brand, name: v } })} />
-              <FieldText label="Tagline" value={tokens.brand.tagline} onChange={(v) => patch({ brand: { ...tokens.brand, tagline: v } })} />
+              <FieldText
+                label="Business name"
+                value={tokens.brand.name}
+                onChange={(v) => patch({ brand: { ...tokens.brand, name: v } })}
+              />
+              <FieldText
+                label="Tagline"
+                value={tokens.brand.tagline}
+                onChange={(v) => patch({ brand: { ...tokens.brand, tagline: v } })}
+              />
               <FieldImage
                 label="Logo URL"
                 value={tokens.brand.logoUrl}
@@ -262,42 +273,126 @@ const qc = useQueryClient();
             </TabsContent>
 
             <TabsContent value="typography" className="space-y-4 pt-4">
-              <FontField label="Heading font" value={tokens.typography.headingFont} onChange={(v) => patch({ typography: { ...tokens.typography, headingFont: v } })} />
-              <FontField label="Body font" value={tokens.typography.bodyFont} onChange={(v) => patch({ typography: { ...tokens.typography, bodyFont: v } })} />
-              <FieldText label="Base size (px)" value={tokens.typography.baseSize} onChange={(v) => patch({ typography: { ...tokens.typography, baseSize: v } })} />
-              <FieldText label="Heading weight" value={tokens.typography.headingWeight} onChange={(v) => patch({ typography: { ...tokens.typography, headingWeight: v } })} />
+              <FontField
+                label="Heading font"
+                value={tokens.typography.headingFont}
+                onChange={(v) => patch({ typography: { ...tokens.typography, headingFont: v } })}
+              />
+              <FontField
+                label="Body font"
+                value={tokens.typography.bodyFont}
+                onChange={(v) => patch({ typography: { ...tokens.typography, bodyFont: v } })}
+              />
+              <FieldText
+                label="Base size (px)"
+                value={tokens.typography.baseSize}
+                onChange={(v) => patch({ typography: { ...tokens.typography, baseSize: v } })}
+              />
+              <FieldText
+                label="Heading weight"
+                value={tokens.typography.headingWeight}
+                onChange={(v) => patch({ typography: { ...tokens.typography, headingWeight: v } })}
+              />
             </TabsContent>
 
             <TabsContent value="buttons" className="space-y-4 pt-4">
-              <FieldText label="Radius" value={tokens.buttons.radius} onChange={(v) => patch({ buttons: { ...tokens.buttons, radius: v } })} />
-              <FieldText label="Font weight" value={tokens.buttons.weight} onChange={(v) => patch({ buttons: { ...tokens.buttons, weight: v } })} />
-              <ShadowField label="Shadow" value={tokens.buttons.shadow} onChange={(v) => patch({ buttons: { ...tokens.buttons, shadow: v } })} />
-              <SwitchField label="Uppercase labels" value={tokens.buttons.uppercase} onChange={(v) => patch({ buttons: { ...tokens.buttons, uppercase: v } })} />
+              <FieldText
+                label="Radius"
+                value={tokens.buttons.radius}
+                onChange={(v) => patch({ buttons: { ...tokens.buttons, radius: v } })}
+              />
+              <FieldText
+                label="Font weight"
+                value={tokens.buttons.weight}
+                onChange={(v) => patch({ buttons: { ...tokens.buttons, weight: v } })}
+              />
+              <ShadowField
+                label="Shadow"
+                value={tokens.buttons.shadow}
+                onChange={(v) => patch({ buttons: { ...tokens.buttons, shadow: v } })}
+              />
+              <SwitchField
+                label="Uppercase labels"
+                value={tokens.buttons.uppercase}
+                onChange={(v) => patch({ buttons: { ...tokens.buttons, uppercase: v } })}
+              />
             </TabsContent>
 
             <TabsContent value="layout" className="space-y-4 pt-4">
-              <FieldText label="Card radius" value={tokens.layout.radius} onChange={(v) => patch({ layout: { ...tokens.layout, radius: v } })} />
-              <FieldText label="Container max width" value={tokens.layout.containerMaxWidth} onChange={(v) => patch({ layout: { ...tokens.layout, containerMaxWidth: v } })} />
-              <FieldText label="Section spacing" value={tokens.layout.sectionSpacing} onChange={(v) => patch({ layout: { ...tokens.layout, sectionSpacing: v } })} />
-              <FieldText label="Card border width" value={tokens.layout.cardBorder} onChange={(v) => patch({ layout: { ...tokens.layout, cardBorder: v } })} />
-              <ShadowField label="Card shadow" value={tokens.layout.cardShadow} onChange={(v) => patch({ layout: { ...tokens.layout, cardShadow: v } })} />
+              <FieldText
+                label="Card radius"
+                value={tokens.layout.radius}
+                onChange={(v) => patch({ layout: { ...tokens.layout, radius: v } })}
+              />
+              <FieldText
+                label="Container max width"
+                value={tokens.layout.containerMaxWidth}
+                onChange={(v) => patch({ layout: { ...tokens.layout, containerMaxWidth: v } })}
+              />
+              <FieldText
+                label="Section spacing"
+                value={tokens.layout.sectionSpacing}
+                onChange={(v) => patch({ layout: { ...tokens.layout, sectionSpacing: v } })}
+              />
+              <FieldText
+                label="Card border width"
+                value={tokens.layout.cardBorder}
+                onChange={(v) => patch({ layout: { ...tokens.layout, cardBorder: v } })}
+              />
+              <ShadowField
+                label="Card shadow"
+                value={tokens.layout.cardShadow}
+                onChange={(v) => patch({ layout: { ...tokens.layout, cardShadow: v } })}
+              />
             </TabsContent>
 
             <TabsContent value="header" className="space-y-4 pt-4">
-              <SwitchField label="Sticky header" value={tokens.header.sticky} onChange={(v) => patch({ header: { ...tokens.header, sticky: v } })} />
-              <SwitchField label="Transparent when at top" value={tokens.header.transparent} onChange={(v) => patch({ header: { ...tokens.header, transparent: v } })} />
-              <SwitchField label="Show tagline" value={tokens.header.showTagline} onChange={(v) => patch({ header: { ...tokens.header, showTagline: v } })} />
+              <SwitchField
+                label="Sticky header"
+                value={tokens.header.sticky}
+                onChange={(v) => patch({ header: { ...tokens.header, sticky: v } })}
+              />
+              <SwitchField
+                label="Transparent when at top"
+                value={tokens.header.transparent}
+                onChange={(v) => patch({ header: { ...tokens.header, transparent: v } })}
+              />
+              <SwitchField
+                label="Show tagline"
+                value={tokens.header.showTagline}
+                onChange={(v) => patch({ header: { ...tokens.header, showTagline: v } })}
+              />
             </TabsContent>
 
             <TabsContent value="footer" className="space-y-4 pt-4">
-              <SwitchField label="Show social links" value={tokens.footer.showSocial} onChange={(v) => patch({ footer: { ...tokens.footer, showSocial: v } })} />
-              <SwitchField label="Show areas covered" value={tokens.footer.showAreas} onChange={(v) => patch({ footer: { ...tokens.footer, showAreas: v } })} />
-              <FieldText label="Copyright text" value={tokens.footer.copyright} onChange={(v) => patch({ footer: { ...tokens.footer, copyright: v } })} />
+              <SwitchField
+                label="Show social links"
+                value={tokens.footer.showSocial}
+                onChange={(v) => patch({ footer: { ...tokens.footer, showSocial: v } })}
+              />
+              <SwitchField
+                label="Show areas covered"
+                value={tokens.footer.showAreas}
+                onChange={(v) => patch({ footer: { ...tokens.footer, showAreas: v } })}
+              />
+              <FieldText
+                label="Copyright text"
+                value={tokens.footer.copyright}
+                onChange={(v) => patch({ footer: { ...tokens.footer, copyright: v } })}
+              />
             </TabsContent>
 
             <TabsContent value="mobile" className="space-y-4 pt-4">
-              <FieldText label="Mobile base font size" value={tokens.mobile.baseSize} onChange={(v) => patch({ mobile: { ...tokens.mobile, baseSize: v } })} />
-              <FieldText label="Mobile section spacing" value={tokens.mobile.sectionSpacing} onChange={(v) => patch({ mobile: { ...tokens.mobile, sectionSpacing: v } })} />
+              <FieldText
+                label="Mobile base font size"
+                value={tokens.mobile.baseSize}
+                onChange={(v) => patch({ mobile: { ...tokens.mobile, baseSize: v } })}
+              />
+              <FieldText
+                label="Mobile section spacing"
+                value={tokens.mobile.sectionSpacing}
+                onChange={(v) => patch({ mobile: { ...tokens.mobile, sectionSpacing: v } })}
+              />
             </TabsContent>
 
             <TabsContent value="assets" className="pt-4">
@@ -329,8 +424,14 @@ const qc = useQueryClient();
         {/* Live preview column */}
         <div className="space-y-2 xl:sticky xl:top-6 xl:h-fit">
           <div className="flex items-center justify-between">
-            <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Live preview</div>
-            <Button size="sm" variant="ghost" onClick={() => iframeRef.current?.contentWindow?.location.reload()}>
+            <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              Live preview
+            </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => iframeRef.current?.contentWindow?.location.reload()}
+            >
               <RefreshCw className="mr-2 h-4 w-4" /> Reload
             </Button>
           </div>
@@ -406,7 +507,11 @@ function ColorField({
       />
       <div className="min-w-0 flex-1">
         <Label className="text-xs text-muted-foreground">{label}</Label>
-        <Input value={value} onChange={(e) => onChange(e.target.value)} className="mt-1 font-mono text-xs" />
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="mt-1 font-mono text-xs"
+        />
       </div>
       <input
         type="color"
@@ -491,11 +596,19 @@ function FieldImage({
       <div className="flex items-center gap-3">
         {value ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={value} alt="" className="h-12 w-12 rounded border border-border object-contain" />
+          <img
+            src={value}
+            alt=""
+            className="h-12 w-12 rounded border border-border object-contain"
+          />
         ) : (
           <div className="h-12 w-12 rounded border border-dashed border-border" />
         )}
-        <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Paste image URL" />
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Paste image URL"
+        />
       </div>
       {assets.length > 0 && (
         <Select onValueChange={(v) => onChange(v)}>
@@ -578,7 +691,9 @@ function AssetsPanel({
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => navigator.clipboard.writeText(a.url).then(() => toast.success("URL copied"))}
+                onClick={() =>
+                  navigator.clipboard.writeText(a.url).then(() => toast.success("URL copied"))
+                }
                 title="Copy URL"
               >
                 <CopyIcon className="h-3.5 w-3.5" />

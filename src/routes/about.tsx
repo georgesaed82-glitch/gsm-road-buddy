@@ -64,8 +64,8 @@ const DEFAULT_KEY_POINTS = [
 const KEY_POINT_ICONS: Record<string, typeof UserCheck> = {
   "dvsa-approved": UserCheck,
   "pass-rate": Star,
-  "flexible": Sun,
-  "friendly": Headphones,
+  flexible: Sun,
+  friendly: Headphones,
 };
 
 const DEFAULT_FAQS = [
@@ -78,7 +78,8 @@ const DEFAULT_FAQS = [
   {
     id: "automatic-lessons",
     name: "Do you offer automatic lessons?",
-    description: "Yes — we offer both automatic and manual lessons. Please check with your instructor to confirm what car and transmission they will be using for your lessons.",
+    description:
+      "Yes — we offer both automatic and manual lessons. Please check with your instructor to confirm what car and transmission they will be using for your lessons.",
   },
   {
     id: "pick-instructor",
@@ -115,13 +116,14 @@ function AboutPage() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <p className="text-lg leading-relaxed text-muted-foreground">
             GSM Driving School was founded with a simple mission: help every learner pass their test
-            and stay safe on the road. From nervous first-time drivers to experienced licence-holders
-            who need a refresher, we treat every student with patience, respect, and expert tuition.
+            and stay safe on the road. From nervous first-time drivers to experienced
+            licence-holders who need a refresher, we treat every student with patience, respect, and
+            expert tuition.
           </p>
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-            Our instructors are fully certified, insured, and passionate about road safety. We use modern,
-            dual-control vehicles and keep our booking process simple so you can spend more time learning
-            and less time on admin.
+            Our instructors are fully certified, insured, and passionate about road safety. We use
+            modern, dual-control vehicles and keep our booking process simple so you can spend more
+            time learning and less time on admin.
           </p>
         </div>
       </section>
@@ -134,7 +136,7 @@ function AboutPage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {keyPoints.map((point) => {
               const Icon = KEY_POINT_ICONS[point.id] ?? UserCheck;
-              const titleId = point.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              const titleId = point.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
               return (
                 <Card
                   key={point.id}
@@ -167,15 +169,15 @@ function AboutPage() {
             {values.map((value) => {
               const Icon = VALUE_ICONS[value.id] ?? Shield;
               return (
-              <Card key={value.id} className="border-border bg-background">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold">{value.name}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{value.description}</p>
-                </CardContent>
-              </Card>
+                <Card key={value.id} className="border-border bg-background">
+                  <CardContent className="p-6">
+                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-display text-lg font-semibold">{value.name}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{value.description}</p>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>

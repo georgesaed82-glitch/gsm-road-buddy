@@ -25,8 +25,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { theoryCategories } from "@/data/theory";
 import {
@@ -229,15 +241,20 @@ function AdminTheoryCms() {
       if (published === "yes" && !r.is_published) return false;
       if (published === "no" && r.is_published) return false;
       if (needle) {
-        const hay = `${r.question} ${r.explanation} ${r.tags.join(" ")} ${r.source_id ?? ""}`.toLowerCase();
+        const hay =
+          `${r.question} ${r.explanation} ${r.tags.join(" ")} ${r.source_id ?? ""}`.toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       return true;
     });
-    if (sort === "updated") list = list.slice().sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+    if (sort === "updated")
+      list = list.slice().sort((a, b) => b.updated_at.localeCompare(a.updated_at));
     if (sort === "category")
-      list = list.slice().sort((a, b) => a.category.localeCompare(b.category) || a.sort_order - b.sort_order);
-    if (sort === "question") list = list.slice().sort((a, b) => a.question.localeCompare(b.question));
+      list = list
+        .slice()
+        .sort((a, b) => a.category.localeCompare(b.category) || a.sort_order - b.sort_order);
+    if (sort === "question")
+      list = list.slice().sort((a, b) => a.question.localeCompare(b.question));
     return list;
   }, [rows, q, category, difficulty, published, sort]);
 
@@ -435,16 +452,21 @@ function AdminTheoryCms() {
     const header = parsed[0].map((h) => h.trim().toLowerCase());
     const idx = (name: string) => header.indexOf(name);
     const need = ["category", "question", "option1", "option2", "correct_index"];
-    for (const n of need) if (idx(n) === -1) {
-      toast.error(`CSV missing column: ${n}`);
-      return;
-    }
+    for (const n of need)
+      if (idx(n) === -1) {
+        toast.error(`CSV missing column: ${n}`);
+        return;
+      }
     const rowsOut = parsed.slice(1).map((cols) => {
-      const opts = ["option1", "option2", "option3", "option4"].map((k) => cols[idx(k)] ?? "").filter((v) => v.trim());
+      const opts = ["option1", "option2", "option3", "option4"]
+        .map((k) => cols[idx(k)] ?? "")
+        .filter((v) => v.trim());
       const opex = ["opt1_expl", "opt2_expl", "opt3_expl", "opt4_expl"]
-        .map((k) => (idx(k) === -1 ? "" : cols[idx(k)] ?? ""))
+        .map((k) => (idx(k) === -1 ? "" : (cols[idx(k)] ?? "")))
         .slice(0, opts.length);
-      const rawDiff = (idx("difficulty") === -1 ? "medium" : cols[idx("difficulty")] ?? "medium").trim().toLowerCase();
+      const rawDiff = (idx("difficulty") === -1 ? "medium" : (cols[idx("difficulty")] ?? "medium"))
+        .trim()
+        .toLowerCase();
       const diff: TheoryDifficulty = rawDiff === "easy" || rawDiff === "hard" ? rawDiff : "medium";
       return {
         source_id: idx("source_id") === -1 ? null : (cols[idx("source_id")] || "").trim() || null,
@@ -465,7 +487,9 @@ function AdminTheoryCms() {
         is_published:
           idx("is_published") === -1
             ? true
-            : ["false", "0", "no"].indexOf((cols[idx("is_published")] || "").trim().toLowerCase()) === -1,
+            : ["false", "0", "no"].indexOf(
+                (cols[idx("is_published")] || "").trim().toLowerCase(),
+              ) === -1,
       };
     });
     try {
@@ -490,16 +514,22 @@ function AdminTheoryCms() {
           />
         </div>
         <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-[180px]"><SelectValue placeholder="Category" /></SelectTrigger>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All categories</SelectItem>
             {theoryCategories.map((c) => (
-              <SelectItem key={c.slug} value={c.slug}>{c.title}</SelectItem>
+              <SelectItem key={c.slug} value={c.slug}>
+                {c.title}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <Select value={difficulty} onValueChange={setDifficulty}>
-          <SelectTrigger className="w-[140px]"><SelectValue placeholder="Difficulty" /></SelectTrigger>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Difficulty" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All difficulty</SelectItem>
             <SelectItem value="easy">Easy</SelectItem>
@@ -508,7 +538,9 @@ function AdminTheoryCms() {
           </SelectContent>
         </Select>
         <Select value={published} onValueChange={setPublished}>
-          <SelectTrigger className="w-[140px]"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All status</SelectItem>
             <SelectItem value="yes">Published</SelectItem>
@@ -516,7 +548,9 @@ function AdminTheoryCms() {
           </SelectContent>
         </Select>
         <Select value={sort} onValueChange={(v) => setSort(v as typeof sort)}>
-          <SelectTrigger className="w-[160px]"><SelectValue placeholder="Sort" /></SelectTrigger>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="order">Manual order</SelectItem>
             <SelectItem value="updated">Recently updated</SelectItem>
@@ -527,8 +561,12 @@ function AdminTheoryCms() {
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Button onClick={openNew}><Plus className="mr-1 h-4 w-4" /> New question</Button>
-        <Button variant="outline" onClick={doExport}><Download className="mr-1 h-4 w-4" /> Export CSV</Button>
+        <Button onClick={openNew}>
+          <Plus className="mr-1 h-4 w-4" /> New question
+        </Button>
+        <Button variant="outline" onClick={doExport}>
+          <Download className="mr-1 h-4 w-4" /> Export CSV
+        </Button>
         <input
           ref={fileRef}
           type="file"
@@ -539,7 +577,9 @@ function AdminTheoryCms() {
             if (f) doImport(f).then(() => (fileRef.current!.value = ""));
           }}
         />
-        <Button variant="outline" onClick={() => fileRef.current?.click()}><Upload className="mr-1 h-4 w-4" /> Import CSV</Button>
+        <Button variant="outline" onClick={() => fileRef.current?.click()}>
+          <Upload className="mr-1 h-4 w-4" /> Import CSV
+        </Button>
         <div className="ml-auto text-sm text-muted-foreground">
           {filtered.length} of {rows.length} question{rows.length === 1 ? "" : "s"}
         </div>
@@ -548,18 +588,28 @@ function AdminTheoryCms() {
       {selected.size > 0 && (
         <div className="mb-4 flex flex-wrap items-center gap-2 rounded border border-border bg-secondary/50 p-3">
           <span className="text-sm font-medium">{selected.size} selected</span>
-          <Button size="sm" variant="outline" onClick={() => doBulkPublish(true)}><Eye className="mr-1 h-4 w-4" /> Publish</Button>
-          <Button size="sm" variant="outline" onClick={() => doBulkPublish(false)}><EyeOff className="mr-1 h-4 w-4" /> Unpublish</Button>
+          <Button size="sm" variant="outline" onClick={() => doBulkPublish(true)}>
+            <Eye className="mr-1 h-4 w-4" /> Publish
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => doBulkPublish(false)}>
+            <EyeOff className="mr-1 h-4 w-4" /> Unpublish
+          </Button>
           <Select onValueChange={doBulkCategory}>
-            <SelectTrigger className="h-8 w-[180px]"><SelectValue placeholder="Set category…" /></SelectTrigger>
+            <SelectTrigger className="h-8 w-[180px]">
+              <SelectValue placeholder="Set category…" />
+            </SelectTrigger>
             <SelectContent>
               {theoryCategories.map((c) => (
-                <SelectItem key={c.slug} value={c.slug}>{c.title}</SelectItem>
+                <SelectItem key={c.slug} value={c.slug}>
+                  {c.title}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select onValueChange={(v) => doBulkDifficulty(v as TheoryDifficulty)}>
-            <SelectTrigger className="h-8 w-[160px]"><SelectValue placeholder="Set difficulty…" /></SelectTrigger>
+            <SelectTrigger className="h-8 w-[160px]">
+              <SelectValue placeholder="Set difficulty…" />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="easy">Easy</SelectItem>
               <SelectItem value="medium">Medium</SelectItem>
@@ -569,7 +619,9 @@ function AdminTheoryCms() {
           <Button size="sm" variant="destructive" onClick={() => doDelete([...selected])}>
             <Trash2 className="mr-1 h-4 w-4" /> Delete
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => setSelected(new Set())}>Clear</Button>
+          <Button size="sm" variant="ghost" onClick={() => setSelected(new Set())}>
+            Clear
+          </Button>
         </div>
       )}
 
@@ -577,7 +629,13 @@ function AdminTheoryCms() {
         <table className="w-full text-sm">
           <thead className="bg-secondary/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
-              <th className="w-10 p-3"><Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" /></th>
+              <th className="w-10 p-3">
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={toggleAll}
+                  aria-label="Select all"
+                />
+              </th>
               <th className="p-3">Question</th>
               <th className="p-3">Category</th>
               <th className="p-3">Difficulty</th>
@@ -587,21 +645,42 @@ function AdminTheoryCms() {
           </thead>
           <tbody>
             {isLoading && (
-              <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Loading…</td></tr>
+              <tr>
+                <td colSpan={6} className="p-6 text-center text-muted-foreground">
+                  Loading…
+                </td>
+              </tr>
             )}
             {!isLoading && filtered.length === 0 && (
-              <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">No questions match your filters.</td></tr>
+              <tr>
+                <td colSpan={6} className="p-6 text-center text-muted-foreground">
+                  No questions match your filters.
+                </td>
+              </tr>
             )}
             {filtered.map((r) => (
               <tr key={r.id} className="border-t border-border hover:bg-secondary/30">
-                <td className="p-3"><Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleOne(r.id)} /></td>
                 <td className="p-3">
-                  <button className="text-left font-medium hover:underline" onClick={() => openEdit(r)}>
+                  <Checkbox checked={selected.has(r.id)} onCheckedChange={() => toggleOne(r.id)} />
+                </td>
+                <td className="p-3">
+                  <button
+                    className="text-left font-medium hover:underline"
+                    onClick={() => openEdit(r)}
+                  >
                     {r.question}
                   </button>
                   <div className="mt-1 flex flex-wrap gap-1">
-                    {r.source_id && <Badge variant="outline" className="text-[10px]">{r.source_id}</Badge>}
-                    {r.tags.map((t) => <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>)}
+                    {r.source_id && (
+                      <Badge variant="outline" className="text-[10px]">
+                        {r.source_id}
+                      </Badge>
+                    )}
+                    {r.tags.map((t) => (
+                      <Badge key={t} variant="secondary" className="text-[10px]">
+                        {t}
+                      </Badge>
+                    ))}
                   </div>
                 </td>
                 <td className="p-3 whitespace-nowrap">{r.category}</td>
@@ -615,10 +694,42 @@ function AdminTheoryCms() {
                 </td>
                 <td className="p-3">
                   <div className="flex justify-end gap-1">
-                    <Button aria-label="Move up" size="icon" variant="ghost" onClick={() => doReorder(r.id, "up")} title="Move up"><ArrowUp className="h-4 w-4" /></Button>
-                    <Button aria-label="Move down" size="icon" variant="ghost" onClick={() => doReorder(r.id, "down")} title="Move down"><ArrowDown className="h-4 w-4" /></Button>
-                    <Button aria-label="Copy" size="icon" variant="ghost" onClick={() => doDuplicate(r.id)} title="Duplicate"><Copy className="h-4 w-4" /></Button>
-                    <Button aria-label="Delete" size="icon" variant="ghost" onClick={() => doDelete([r.id])} title="Delete"><Trash2 className="h-4 w-4" /></Button>
+                    <Button
+                      aria-label="Move up"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => doReorder(r.id, "up")}
+                      title="Move up"
+                    >
+                      <ArrowUp className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      aria-label="Move down"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => doReorder(r.id, "down")}
+                      title="Move down"
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      aria-label="Copy"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => doDuplicate(r.id)}
+                      title="Duplicate"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      aria-label="Delete"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => doDelete([r.id])}
+                      title="Delete"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </td>
               </tr>
@@ -637,19 +748,31 @@ function AdminTheoryCms() {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <Label>Category</Label>
-                  <Select value={draft.category} onValueChange={(v) => setDraft({ ...draft, category: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={draft.category}
+                    onValueChange={(v) => setDraft({ ...draft, category: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       {theoryCategories.map((c) => (
-                        <SelectItem key={c.slug} value={c.slug}>{c.title}</SelectItem>
+                        <SelectItem key={c.slug} value={c.slug}>
+                          {c.title}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>Difficulty</Label>
-                  <Select value={draft.difficulty} onValueChange={(v) => setDraft({ ...draft, difficulty: v as TheoryDifficulty })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={draft.difficulty}
+                    onValueChange={(v) => setDraft({ ...draft, difficulty: v as TheoryDifficulty })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="easy">Easy</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
@@ -673,7 +796,13 @@ function AdminTheoryCms() {
                 <Input
                   value={draft.tags.join(", ")}
                   onChange={(e) =>
-                    setDraft({ ...draft, tags: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })
+                    setDraft({
+                      ...draft,
+                      tags: e.target.value
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter(Boolean),
+                    })
                   }
                 />
               </div>
@@ -685,7 +814,9 @@ function AdminTheoryCms() {
                     key={i}
                     className={cn(
                       "rounded border p-3",
-                      draft.correct_index === i ? "border-emerald-600 bg-emerald-600/5" : "border-border",
+                      draft.correct_index === i
+                        ? "border-emerald-600 bg-emerald-600/5"
+                        : "border-border",
                     )}
                   >
                     <div className="flex items-center gap-2">
@@ -736,9 +867,15 @@ function AdminTheoryCms() {
                 <div className="flex-1">
                   <Label className="mb-1 block">Image</Label>
                   {draft.image_url ? (
-                    <img src={draft.image_url} alt="" className="max-h-40 rounded border border-border" />
+                    <img
+                      src={draft.image_url}
+                      alt=""
+                      className="max-h-40 rounded border border-border"
+                    />
                   ) : (
-                    <p className="text-xs text-muted-foreground">Optional. Save the question first, then upload.</p>
+                    <p className="text-xs text-muted-foreground">
+                      Optional. Save the question first, then upload.
+                    </p>
                   )}
                 </div>
                 <input
@@ -766,7 +903,9 @@ function AdminTheoryCms() {
                   checked={draft.is_published}
                   onCheckedChange={(v) => setDraft({ ...draft, is_published: v === true })}
                 />
-                <Label htmlFor="pub" className="cursor-pointer">Published (visible on the site)</Label>
+                <Label htmlFor="pub" className="cursor-pointer">
+                  Published (visible on the site)
+                </Label>
               </div>
 
               <div>
@@ -777,7 +916,8 @@ function AdminTheoryCms() {
                   placeholder="e.g. alertness-1"
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Set to override a built-in question's content. Leave empty for a brand-new question.
+                  Set to override a built-in question's content. Leave empty for a brand-new
+                  question.
                 </p>
               </div>
             </div>

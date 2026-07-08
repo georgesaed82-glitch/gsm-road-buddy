@@ -34,7 +34,9 @@ export const Route = createFileRoute("/legal/$slug")({
   errorComponent: ({ error }) => (
     <main className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="font-display text-3xl">Something went wrong</h1>
-      <p className="mt-2 text-sm text-muted-foreground">{error instanceof Error ? error.message : "Unknown error"}</p>
+      <p className="mt-2 text-sm text-muted-foreground">
+        {error instanceof Error ? error.message : "Unknown error"}
+      </p>
     </main>
   ),
 });
@@ -46,7 +48,12 @@ function LegalPage() {
       <article className="prose prose-slate max-w-none">
         <h1 className="font-display text-3xl md:text-4xl">{page.title}</h1>
         <p className="text-xs text-muted-foreground">
-          Last updated {new Date(page.updated_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+          Last updated{" "}
+          {new Date(page.updated_at).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
         </p>
         <Markdown>{page.body_markdown}</Markdown>
       </article>

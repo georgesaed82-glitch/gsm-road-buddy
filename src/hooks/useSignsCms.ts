@@ -3,7 +3,14 @@ import { useContentOverrides } from "@/hooks/useContentOverrides";
 import { signs, type Sign, type SignCategory } from "@/data/signs";
 
 const SIGN_CATEGORIES: SignCategory[] = [
-  "warning", "prohibitory", "mandatory", "speed", "information", "direction", "signals", "crossings",
+  "warning",
+  "prohibitory",
+  "mandatory",
+  "speed",
+  "information",
+  "direction",
+  "signals",
+  "crossings",
 ];
 
 /**

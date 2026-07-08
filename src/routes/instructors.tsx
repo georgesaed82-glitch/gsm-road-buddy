@@ -43,7 +43,8 @@ function InstructorsPage() {
             Meet our instructors
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Certified, experienced, and friendly. Choose the instructor who fits your learning style.
+            Certified, experienced, and friendly. Choose the instructor who fits your learning
+            style.
           </p>
         </div>
       </section>
@@ -56,9 +57,15 @@ function InstructorsPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     {instructor.image_url ? (
-                      <img src={instructor.image_url} alt={instructor.name} className="h-14 w-14 rounded-full object-cover" />
+                      <img
+                        src={instructor.image_url}
+                        alt={instructor.name}
+                        className="h-14 w-14 rounded-full object-cover"
+                      />
                     ) : (
-                      <div className={`flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold ${instructor.color}`}>
+                      <div
+                        className={`flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold ${instructor.color}`}
+                      >
                         {instructor.initials}
                       </div>
                     )}
@@ -98,7 +105,9 @@ function InstructorsPage() {
                     )}
                   </div>
                   <Button asChild className="mt-5 w-full">
-                    <Link to={instructor.cta_href || "/contact"}>Book with {instructor.name.split(" ")[0]}</Link>
+                    <Link to={instructor.cta_href || "/contact"}>
+                      Book with {instructor.name.split(" ")[0]}
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>

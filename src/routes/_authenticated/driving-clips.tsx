@@ -2,7 +2,13 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { useMemo, useState } from "react";
 import { CheckCircle2, ChevronDown, Clock, Search, X } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
-import { lessonGroups, totalPlanned, totalReady, type LessonGroup, type PlannedLesson } from "@/data/lessonGroups";
+import {
+  lessonGroups,
+  totalPlanned,
+  totalReady,
+  type LessonGroup,
+  type PlannedLesson,
+} from "@/data/lessonGroups";
 import { useLessonProgress } from "@/lib/lessonProgress";
 import { cn } from "@/lib/utils";
 
@@ -39,8 +45,7 @@ function DrivingClipsPage() {
             l.title.toLowerCase().includes(q) ||
             (l.rule?.toLowerCase().includes(q) ?? false) ||
             g.title.toLowerCase().includes(q);
-          const matchesRule =
-            ruleNum === null || (l.ruleNumbers ?? []).includes(ruleNum);
+          const matchesRule = ruleNum === null || (l.ruleNumbers ?? []).includes(ruleNum);
           return matchesQuery && matchesRule;
         }),
       }))
@@ -61,22 +66,17 @@ function DrivingClipsPage() {
   return (
     <PortalShell eyebrow="Practical" title="Practical Strategy Videos">
       <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        Real UK driving scenarios — turned into short interactive strategy videos.
-        Each lesson is tied to the Highway Code and built to help you
-        understand <em>why</em> we drive the way we do, not just what to
-        memorise. Work through a category, mark lessons complete as you go,
-        and come back to review before your test.
+        Real UK driving scenarios — turned into short interactive strategy videos. Each lesson is
+        tied to the Highway Code and built to help you understand <em>why</em> we drive the way we
+        do, not just what to memorise. Work through a category, mark lessons complete as you go, and
+        come back to review before your test.
       </p>
 
       {/* Progress + counts */}
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
         <Stat label="Lessons ready" value={`${readyCount}`} />
         <Stat label="Full syllabus" value={`${plannedCount}`} />
-        <Stat
-          label="You've completed"
-          value={`${completedInSyllabus} / ${readyCount}`}
-          accent
-        />
+        <Stat label="You've completed" value={`${completedInSyllabus} / ${readyCount}`} accent />
       </div>
 
       {/* Search + rule filter */}
@@ -130,12 +130,7 @@ function DrivingClipsPage() {
       {/* Accordion */}
       <div className="mt-6 space-y-3">
         {(filtering ? filteredGroups : lessonGroups).map((g) => (
-          <GroupAccordion
-            key={g.id}
-            group={g}
-            defaultOpen={filtering}
-            isDone={isDone}
-          />
+          <GroupAccordion key={g.id} group={g} defaultOpen={filtering} isDone={isDone} />
         ))}
         {filtering && filteredGroups.length === 0 && (
           <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
@@ -184,9 +179,7 @@ function GroupAccordion({
       <summary className="flex cursor-pointer list-none items-center gap-3 p-4 [&::-webkit-details-marker]:hidden sm:p-5">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="font-display text-lg leading-tight sm:text-xl">
-              {group.title}
-            </h2>
+            <h2 className="font-display text-lg leading-tight sm:text-xl">{group.title}</h2>
             <span className="rounded-full border border-border bg-background px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               {group.lessons.length} lesson{group.lessons.length === 1 ? "" : "s"}
             </span>
@@ -196,9 +189,7 @@ function GroupAccordion({
               </span>
             )}
           </div>
-          <p className="mt-1 hidden text-sm text-muted-foreground sm:block">
-            {group.blurb}
-          </p>
+          <p className="mt-1 hidden text-sm text-muted-foreground sm:block">{group.blurb}</p>
           {readyInGroup > 0 && (
             <div className="mt-2 flex items-center gap-2">
               <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary sm:max-w-[240px]">
@@ -232,7 +223,9 @@ function LessonRow({ lesson, done }: { lesson: PlannedLesson; done: boolean }) {
       <li className="flex items-start gap-3 rounded-lg border border-dashed border-border bg-background/60 p-3 opacity-80">
         <Clock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-medium leading-snug text-foreground/80 break-words">{lesson.title}</div>
+          <div className="text-sm font-medium leading-snug text-foreground/80 break-words">
+            {lesson.title}
+          </div>
           <div className="mt-0.5 text-[11px] uppercase tracking-wider text-muted-foreground">
             {lesson.rule ?? "Highway Code"} · Coming soon
           </div>
@@ -255,7 +248,9 @@ function LessonRow({ lesson, done }: { lesson: PlannedLesson; done: boolean }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <div className="text-sm font-semibold leading-snug break-words">{lesson.title}</div>
-            <span className="mt-0.5 shrink-0 text-accent transition-transform group-hover/row:translate-x-0.5">→</span>
+            <span className="mt-0.5 shrink-0 text-accent transition-transform group-hover/row:translate-x-0.5">
+              →
+            </span>
           </div>
           {lesson.rule && (
             <div className="mt-0.5 text-[11px] uppercase tracking-wider text-muted-foreground">

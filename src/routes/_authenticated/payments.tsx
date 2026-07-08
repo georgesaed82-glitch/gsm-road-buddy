@@ -26,35 +26,60 @@ const packages = [
     name: "Twelve-hour packages",
     duration: "12 hours",
     description: "A structured block of lessons to build real confidence.",
-    features: ["12 hours 1-to-1 tuition", "Flexible location", "Progress feedback", "Structured goals"],
+    features: [
+      "12 hours 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Structured goals",
+    ],
     popular: true,
   },
   {
     name: "Intensive packages",
     duration: "Intensive",
     description: "Fast-track learning for learners who want to pass quickly.",
-    features: ["Concentrated 1-to-1 tuition", "Flexible location", "Progress feedback", "Mock test included"],
+    features: [
+      "Concentrated 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Mock test included",
+    ],
     popular: false,
   },
   {
     name: "Weekend packages",
     duration: "Weekend",
     description: "Saturday and Sunday sessions that fit around work or study.",
-    features: ["Weekend 1-to-1 tuition", "Flexible location", "Progress feedback", "Flexible booking"],
+    features: [
+      "Weekend 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Flexible booking",
+    ],
     popular: false,
   },
   {
     name: "Refresher packages",
     duration: "Refresher",
     description: "Rebuild confidence after a break or returning to driving.",
-    features: ["Tailored 1-to-1 tuition", "Flexible location", "Progress feedback", "Confidence building"],
+    features: [
+      "Tailored 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Confidence building",
+    ],
     popular: false,
   },
   {
     name: "Pass Plus",
     duration: "Pass Plus",
     description: "Advanced modules for motorway, night and all-weather driving.",
-    features: ["Pass Plus 1-to-1 tuition", "Flexible location", "Progress feedback", "Insurance discount potential"],
+    features: [
+      "Pass Plus 1-to-1 tuition",
+      "Flexible location",
+      "Progress feedback",
+      "Insurance discount potential",
+    ],
     popular: false,
   },
 ];
@@ -63,7 +88,10 @@ function PaymentsPage() {
   const { data: payments = [] } = useQuery({
     queryKey: ["payments"],
     queryFn: async () => {
-      const { data } = await supabase.from("payments").select("*").order("created_at", { ascending: false });
+      const { data } = await supabase
+        .from("payments")
+        .select("*")
+        .order("created_at", { ascending: false });
       return data ?? [];
     },
   });
@@ -71,7 +99,10 @@ function PaymentsPage() {
   const { data: completed = 0 } = useQuery({
     queryKey: ["completed-count"],
     queryFn: async () => {
-      const { count } = await supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).eq("status", "completed");
+      const { count } = await supabase
+        .from("lesson_bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "completed");
       return count ?? 0;
     },
   });
@@ -113,14 +144,21 @@ function PaymentsPage() {
               <CardContent className="pt-0">
                 <ul className="space-y-3">
                   {pkg.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-sm text-muted-foreground"
+                    >
                       <Check className="h-4 w-4 shrink-0 text-success" />
                       {feature}
                     </li>
                   ))}
                 </ul>
                 <div className="mt-6 flex flex-col gap-2">
-                  <Button asChild variant={pkg.popular ? "default" : "outline"} className="w-full gap-2">
+                  <Button
+                    asChild
+                    variant={pkg.popular ? "default" : "outline"}
+                    className="w-full gap-2"
+                  >
                     <a
                       href="https://wa.me/447961585231"
                       target="_blank"
@@ -131,7 +169,11 @@ function PaymentsPage() {
                       WhatsApp us
                     </a>
                   </Button>
-                  <Button asChild variant="ghost" className="w-full gap-2 text-muted-foreground hover:text-primary">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="w-full gap-2 text-muted-foreground hover:text-primary"
+                  >
                     <a
                       href="mailto:gsmdrivingschool@outlook.com"
                       onClick={() => trackContactClick("email", pkg.name)}
@@ -149,11 +191,15 @@ function PaymentsPage() {
         <div className="mt-10 rounded-lg border border-border bg-card p-8 text-center sm:p-10">
           <h3 className="font-display text-2xl font-semibold text-foreground">Need details?</h3>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-            Every learner is different. Call or email us for a personalised quote based on your experience and goals.
+            Every learner is different. Call or email us for a personalised quote based on your
+            experience and goals.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button asChild variant="outline" className="h-11 gap-2">
-              <a href="tel:+447961585231" onClick={() => trackContactClick("phone", "Payments CTA")}>
+              <a
+                href="tel:+447961585231"
+                onClick={() => trackContactClick("phone", "Payments CTA")}
+              >
                 <Phone className="h-4 w-4" />
                 Call us
               </a>
@@ -171,7 +217,9 @@ function PaymentsPage() {
       <section className="mt-12">
         <h2 className="font-display text-2xl">Receipts</h2>
         {payments.length === 0 ? (
-          <p className="mt-4 text-sm text-muted-foreground">No payments yet. Your receipts will appear here after your first booking.</p>
+          <p className="mt-4 text-sm text-muted-foreground">
+            No payments yet. Your receipts will appear here after your first booking.
+          </p>
         ) : (
           <div className="mt-4 overflow-hidden border border-border bg-card">
             <table className="w-full text-sm">
@@ -187,11 +235,16 @@ function PaymentsPage() {
               <tbody>
                 {payments.map((p) => (
                   <tr key={p.id} className="border-t border-border">
-                    <td className="px-5 py-4">{new Date(p.paid_at ?? p.created_at).toLocaleDateString("en-GB")}</td>
+                    <td className="px-5 py-4">
+                      {new Date(p.paid_at ?? p.created_at).toLocaleDateString("en-GB")}
+                    </td>
                     <td className="px-5 py-4 font-medium text-foreground">{p.package_name}</td>
                     <td className="px-5 py-4">{p.hours_purchased}</td>
                     <td className="px-5 py-4">
-                      <Badge variant={p.status === "paid" ? "default" : "outline"} className={p.status === "paid" ? "bg-success text-success-foreground" : ""}>
+                      <Badge
+                        variant={p.status === "paid" ? "default" : "outline"}
+                        className={p.status === "paid" ? "bg-success text-success-foreground" : ""}
+                      >
                         {p.status}
                       </Badge>
                     </td>
@@ -213,8 +266,14 @@ function PaymentsPage() {
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className={`border border-border p-5 ${accent ? "bg-accent text-accent-foreground" : "bg-card"}`}>
-      <div className={`text-[11px] uppercase tracking-[0.18em] ${accent ? "opacity-80" : "text-muted-foreground"}`}>{label}</div>
+    <div
+      className={`border border-border p-5 ${accent ? "bg-accent text-accent-foreground" : "bg-card"}`}
+    >
+      <div
+        className={`text-[11px] uppercase tracking-[0.18em] ${accent ? "opacity-80" : "text-muted-foreground"}`}
+      >
+        {label}
+      </div>
       <div className="mt-3 font-display text-3xl">{value}</div>
     </div>
   );

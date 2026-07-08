@@ -1,14 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/PortalShell";
-import {
-  ArrowUp,
-  Eye,
-  ArrowDown,
-  Compass,
-  Users,
-  AlertTriangle,
-  CheckCircle2,
-} from "lucide-react";
+import { ArrowUp, Eye, ArrowDown, Compass, Users, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/gsm-method")({
   head: () => ({
@@ -76,11 +68,7 @@ const vision = [
       "Read the traffic flow.",
       "Plan your next move.",
     ],
-    ask: [
-      "Can I keep moving?",
-      "Do I need to slow down?",
-      "What could happen next?",
-    ],
+    ask: ["Can I keep moving?", "Do I need to slow down?", "What could happen next?"],
   },
   {
     pct: "15%",
@@ -128,8 +116,8 @@ function GSMMethodPage() {
   return (
     <PortalShell eyebrow="How George teaches" title="The GSM Driving Method">
       <p className="max-w-2xl text-sm text-muted-foreground">
-        The principles, vision system and golden rules George teaches on every
-        lesson. Learn them, live them — they pass the test and outlast it.
+        The principles, vision system and golden rules George teaches on every lesson. Learn them,
+        live them — they pass the test and outlast it.
       </p>
 
       {/* Principles */}
@@ -143,21 +131,14 @@ function GSMMethodPage() {
         </h2>
         <ol className="mt-5 grid gap-3 md:grid-cols-2">
           {principles.map((p, i) => (
-            <li
-              key={p.title}
-              className="border border-border bg-card p-4"
-            >
+            <li key={p.title} className="border border-border bg-card p-4">
               <div className="flex items-baseline gap-2">
                 <span className="font-display text-xs font-semibold text-accent">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h3 className="font-display text-base leading-tight">
-                  {p.title}
-                </h3>
+                <h3 className="font-display text-base leading-tight">{p.title}</h3>
               </div>
-              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                {p.body}
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{p.body}</p>
             </li>
           ))}
         </ol>
@@ -165,15 +146,10 @@ function GSMMethodPage() {
 
       {/* Vision Formula */}
       <section id="vision-formula" className="mt-12 scroll-mt-24">
-        <div className="text-[11px] uppercase tracking-[0.2em] text-accent">
-          GSM Vision Formula
-        </div>
-        <h2 className="mt-1 font-display text-2xl leading-tight">
-          The 15–70–15 scanning method
-        </h2>
+        <div className="text-[11px] uppercase tracking-[0.2em] text-accent">GSM Vision Formula</div>
+        <h2 className="mt-1 font-display text-2xl leading-tight">The 15–70–15 scanning method</h2>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Not an exact scientific percentage — a simple observation system to
-          train your eyes.
+          Not an exact scientific percentage — a simple observation system to train your eyes.
         </p>
         <div className="mt-5 grid gap-4 md:grid-cols-3">
           {vision.map((v) => {
@@ -185,9 +161,7 @@ function GSMMethodPage() {
                     <Icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <div className="font-display text-2xl leading-none">
-                      {v.pct}
-                    </div>
+                    <div className="font-display text-2xl leading-none">{v.pct}</div>
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                       {v.label}
                     </div>
@@ -220,16 +194,11 @@ function GSMMethodPage() {
 
       {/* Funnel + shoulders */}
       <section className="mt-12 grid gap-4 md:grid-cols-2">
-        <div
-          id="funnel-vision"
-          className="scroll-mt-24 border border-border bg-card p-5"
-        >
+        <div id="funnel-vision" className="scroll-mt-24 border border-border bg-card p-5">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-accent">
             <Eye className="h-4 w-4" /> Funnel vision
           </div>
-          <h3 className="mt-1 font-display text-xl leading-tight">
-            Never get tunnel vision
-          </h3>
+          <h3 className="mt-1 font-display text-xl leading-tight">Never get tunnel vision</h3>
           <p className="mt-2 text-sm text-muted-foreground">
             Use funnel vision by scanning constantly:
           </p>
@@ -250,23 +219,15 @@ function GSMMethodPage() {
           </ul>
         </div>
 
-        <div
-          id="watch-shoulders"
-          className="scroll-mt-24 border border-border bg-card p-5"
-        >
+        <div id="watch-shoulders" className="scroll-mt-24 border border-border bg-card p-5">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-accent">
             <Users className="h-4 w-4" /> Watch shoulders, not feet
           </div>
-          <h3 className="mt-1 font-display text-xl leading-tight">
-            Read the person, not the step
-          </h3>
+          <h3 className="mt-1 font-display text-xl leading-tight">Read the person, not the step</h3>
           <p className="mt-2 text-sm text-muted-foreground">
             Don't wait for pedestrians' feet to move.{" "}
-            <span className="text-foreground font-medium">
-              Watch their shoulders.
-            </span>{" "}
-            Shoulders usually turn before a person steps into the road — giving
-            you more time to react.
+            <span className="text-foreground font-medium">Watch their shoulders.</span> Shoulders
+            usually turn before a person steps into the road — giving you more time to react.
           </p>
         </div>
       </section>
@@ -303,9 +264,7 @@ function GSMMethodPage() {
         <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-accent">
           <CheckCircle2 className="h-4 w-4" /> George's Golden Rules
         </div>
-        <h2 className="mt-1 font-display text-2xl leading-tight">
-          Live by these, drive by these
-        </h2>
+        <h2 className="mt-1 font-display text-2xl leading-tight">Live by these, drive by these</h2>
         <ol className="mt-5 grid gap-2 sm:grid-cols-2">
           {goldenRules.map((r, i) => (
             <li

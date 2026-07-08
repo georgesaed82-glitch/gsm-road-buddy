@@ -186,5 +186,7 @@ export function totalPlanned(): number {
 
 /** Ordered list of ready lesson slugs across the whole syllabus — for prev/next navigation. */
 export function orderedReadySlugs(): string[] {
-  return lessonGroups.flatMap((g) => g.lessons.filter((l) => l.status === "ready").map((l) => l.slug));
+  return lessonGroups.flatMap((g) =>
+    g.lessons.filter((l) => l.status === "ready").map((l) => l.slug),
+  );
 }

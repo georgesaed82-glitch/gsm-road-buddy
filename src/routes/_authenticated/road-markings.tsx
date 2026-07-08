@@ -16,7 +16,11 @@ export const Route = createFileRoute("/_authenticated/road-markings")({
   head: () => ({
     meta: [
       { title: "Road markings — GSM Plus" },
-      { name: "description", content: "Every UK road marking explained — centre lines, hazard lines, double whites, zig-zags, yellow lines and red routes." },
+      {
+        name: "description",
+        content:
+          "Every UK road marking explained — centre lines, hazard lines, double whites, zig-zags, yellow lines and red routes.",
+      },
     ],
   }),
   component: RoadMarkingsPage,
@@ -31,9 +35,9 @@ function RoadMarkingsPage() {
     id: r.item_id,
     name: r.name ?? "Custom marking",
     meaning: r.description ?? "",
-    group: (markingGroups.some((g) => g.slug === r.group_slug)
+    group: markingGroups.some((g) => g.slug === r.group_slug)
       ? (r.group_slug as MarkingGroup)
-      : "along"),
+      : "along",
     Visual: emptyVisual,
   }));
   const items = [...baseItems, ...customList]
@@ -42,7 +46,8 @@ function RoadMarkingsPage() {
   return (
     <PortalShell eyebrow="Highway Code" title="Road markings">
       <p className="max-w-2xl text-muted-foreground">
-        Painted markings carry the same authority as signs. Get every one of these on sight — they are worth easy marks on theory and confidence on your practical.
+        Painted markings carry the same authority as signs. Get every one of these on sight — they
+        are worth easy marks on theory and confidence on your practical.
       </p>
 
       <OfflineDownloadButton
@@ -57,7 +62,9 @@ function RoadMarkingsPage() {
           onClick={() => setMode("learn")}
           className={cn(
             "-mb-px border-b-2 px-4 py-2 text-sm transition-colors",
-            mode === "learn" ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+            mode === "learn"
+              ? "border-accent text-foreground"
+              : "border-transparent text-muted-foreground hover:text-foreground",
           )}
         >
           Learn
@@ -66,7 +73,9 @@ function RoadMarkingsPage() {
           onClick={() => setMode("quiz")}
           className={cn(
             "-mb-px border-b-2 px-4 py-2 text-sm transition-colors",
-            mode === "quiz" ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+            mode === "quiz"
+              ? "border-accent text-foreground"
+              : "border-transparent text-muted-foreground hover:text-foreground",
           )}
         >
           Quiz
@@ -77,48 +86,54 @@ function RoadMarkingsPage() {
         <MarkingsQuiz />
       ) : (
         <>
-      <LaneLegend />
+          <LaneLegend />
 
-      <DualCarriagewayJoin />
+          <DualCarriagewayJoin />
 
-      <div className="mt-10 space-y-14">
-        {markingGroups.map((group) => {
-          const groupItems = items.filter((m) => m.group === group.slug);
-          return (
-            <section key={group.slug}>
-              <div className="flex items-baseline gap-3">
-                <h2 className="font-display text-2xl leading-tight sm:text-3xl">{group.title}</h2>
-                <span className="text-sm text-muted-foreground">{groupItems.length}</span>
-              </div>
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{group.blurb}</p>
+          <div className="mt-10 space-y-14">
+            {markingGroups.map((group) => {
+              const groupItems = items.filter((m) => m.group === group.slug);
+              return (
+                <section key={group.slug}>
+                  <div className="flex items-baseline gap-3">
+                    <h2 className="font-display text-2xl leading-tight sm:text-3xl">
+                      {group.title}
+                    </h2>
+                    <span className="text-sm text-muted-foreground">{groupItems.length}</span>
+                  </div>
+                  <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{group.blurb}</p>
 
-              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {groupItems.map((m) => {
-                  const Visual = m.Visual;
-                  const img = get("marking", m.id)?.image_url ?? null;
-                  return (
-                    <article key={m.id} className="border border-border bg-card p-4">
-                      <div className="mx-auto w-40 max-w-full">
-                        <Zoomable label={m.name} aspectRatio="1 / 1" className="block">
-                          <div className="aspect-square overflow-hidden border border-border">
-                            {img ? (
-                              <img src={img} alt={m.name} className="h-full w-full object-cover" />
-                            ) : (
-                              <Visual />
-                            )}
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {groupItems.map((m) => {
+                      const Visual = m.Visual;
+                      const img = get("marking", m.id)?.image_url ?? null;
+                      return (
+                        <article key={m.id} className="border border-border bg-card p-4">
+                          <div className="mx-auto w-40 max-w-full">
+                            <Zoomable label={m.name} aspectRatio="1 / 1" className="block">
+                              <div className="aspect-square overflow-hidden border border-border">
+                                {img ? (
+                                  <img
+                                    src={img}
+                                    alt={m.name}
+                                    className="h-full w-full object-cover"
+                                  />
+                                ) : (
+                                  <Visual />
+                                )}
+                              </div>
+                            </Zoomable>
                           </div>
-                        </Zoomable>
-                      </div>
-                      <h3 className="mt-4 font-display text-lg leading-tight">{m.name}</h3>
-                      <p className="mt-2 text-sm text-muted-foreground">{m.meaning}</p>
-                    </article>
-                  );
-                })}
-              </div>
-            </section>
-          );
-        })}
-      </div>
+                          <h3 className="mt-4 font-display text-lg leading-tight">{m.name}</h3>
+                          <p className="mt-2 text-sm text-muted-foreground">{m.meaning}</p>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
         </>
       )}
     </PortalShell>
@@ -138,7 +153,13 @@ function LaneLegend() {
   const items: { swatch: ReactNode; title: string; body: string }[] = [
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision" aria-hidden>
+        <svg
+          viewBox="0 0 60 60"
+          className="h-full w-full"
+          preserveAspectRatio="xMidYMid meet"
+          shapeRendering="geometricPrecision"
+          aria-hidden
+        >
           {/* Tarmac */}
           <rect width="60" height="60" fill="#2b2b2e" />
           {/* Solid outer edges */}
@@ -157,7 +178,13 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision" aria-hidden>
+        <svg
+          viewBox="0 0 60 60"
+          className="h-full w-full"
+          preserveAspectRatio="xMidYMid meet"
+          shapeRendering="geometricPrecision"
+          aria-hidden
+        >
           <rect width="60" height="60" fill="#2b2b2e" />
           <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
           <rect x="55" y="0" width="2" height="60" fill="#f8fafc" />
@@ -174,17 +201,18 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision" aria-hidden>
+        <svg
+          viewBox="0 0 60 60"
+          className="h-full w-full"
+          preserveAspectRatio="xMidYMid meet"
+          shapeRendering="geometricPrecision"
+          aria-hidden
+        >
           {/* Tarmac + grass verge to the left of the slip road */}
           <rect width="60" height="60" fill="#2b2b2e" />
           <path d="M0 0 L18 0 C 10 22 6 42 4 60 L0 60 Z" fill="#3a5a2a" opacity="0.6" />
           {/* Solid kerbside edge curving in */}
-          <path
-            d="M4 60 C 6 42 10 22 18 0"
-            stroke="#f8fafc"
-            strokeWidth="2"
-            fill="none"
-          />
+          <path d="M4 60 C 6 42 10 22 18 0" stroke="#f8fafc" strokeWidth="2" fill="none" />
           {/* Give-way merge line — Diagram 1010 (short 1m mark : 5m gap ≈ 1:5) */}
           <path
             d="M14 60 C 16 42 20 22 28 0"
@@ -203,7 +231,13 @@ function LaneLegend() {
     },
     {
       swatch: (
-        <svg viewBox="0 0 60 60" className="h-full w-full" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision" aria-hidden>
+        <svg
+          viewBox="0 0 60 60"
+          className="h-full w-full"
+          preserveAspectRatio="xMidYMid meet"
+          shapeRendering="geometricPrecision"
+          aria-hidden
+        >
           <rect width="60" height="60" fill="#2b2b2e" />
           {/* Solid outer edges */}
           <rect x="3" y="0" width="2" height="60" fill="#f8fafc" />
@@ -218,15 +252,7 @@ function LaneLegend() {
           {/* Diagonal chevron stripes — Diagram 1041, 45° across the island */}
           <g clipPath="url(#legend-hatch)">
             {[-36, -30, -24, -18, -12, -6, 0, 6, 12, 18, 24, 30, 36, 42, 48, 54].map((v) => (
-              <line
-                key={v}
-                x1={v}
-                y1={0}
-                x2={v + 60}
-                y2={60}
-                stroke="#f8fafc"
-                strokeWidth="1.4"
-              />
+              <line key={v} x1={v} y1={0} x2={v + 60} y2={60} stroke="#f8fafc" strokeWidth="1.4" />
             ))}
           </g>
           <defs>
@@ -242,10 +268,7 @@ function LaneLegend() {
   ];
 
   return (
-    <section
-      aria-label="Road-marking legend"
-      className="mt-8 border border-border bg-card p-5"
-    >
+    <section aria-label="Road-marking legend" className="mt-8 border border-border bg-card p-5">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -256,7 +279,9 @@ function LaneLegend() {
         <div>
           <h2 className="font-display text-lg leading-tight">On-screen legend</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {open ? "What each painted lane and area means at a glance." : "Tap to show the legend."}
+            {open
+              ? "What each painted lane and area means at a glance."
+              : "Tap to show the legend."}
           </p>
         </div>
         <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground">
@@ -293,7 +318,10 @@ function DualCarriagewayJoin() {
       </div>
 
       <p className="mt-3 max-w-3xl text-sm text-muted-foreground">
-        When joining a dual carriageway, use the join-in lane to build up your speed and match the traffic already on the road. Look for a safe gap, move into the running lane and continue without slowing down. The hatched area is there to keep traffic apart — you must not drive or stop on the hatch.
+        When joining a dual carriageway, use the join-in lane to build up your speed and match the
+        traffic already on the road. Look for a safe gap, move into the running lane and continue
+        without slowing down. The hatched area is there to keep traffic apart — you must not drive
+        or stop on the hatch.
       </p>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -356,7 +384,10 @@ function DualCarriagewayJoinDiagram() {
 
       {/* Solid outer edges (top of carriageway, bottom of slip road) */}
       <rect x="0" y="88" width="400" height="3" fill={PAINT} />
-      <path d="M0 250 L260 250 L340 220 L400 220 L400 217 L341 217 L261 247 L0 247 Z" fill={PAINT} />
+      <path
+        d="M0 250 L260 250 L340 220 L400 220 L400 217 L341 217 L261 247 L0 247 Z"
+        fill={PAINT}
+      />
 
       {/* Lane divider between the two running lanes — long broken (4:2) */}
       {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360].map((x) => (
@@ -431,10 +462,18 @@ function DualCarriagewayJoinDiagram() {
 
       {/* Labels */}
       <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize="10" fill={PAINT}>
-        <text x="8" y="242" opacity="0.9">Join-in lane</text>
-        <text x="8" y="146" opacity="0.9">Left running lane</text>
-        <text x="8" y="112" opacity="0.9">Overtaking lane</text>
-        <text x="240" y="207" opacity="0.9">Hatched area — do not enter</text>
+        <text x="8" y="242" opacity="0.9">
+          Join-in lane
+        </text>
+        <text x="8" y="146" opacity="0.9">
+          Left running lane
+        </text>
+        <text x="8" y="112" opacity="0.9">
+          Overtaking lane
+        </text>
+        <text x="240" y="207" opacity="0.9">
+          Hatched area — do not enter
+        </text>
       </g>
     </svg>
   );

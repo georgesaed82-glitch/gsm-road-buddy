@@ -60,11 +60,13 @@ function safeWrite(list: QuizAttempt[]) {
   }
 }
 
-export function saveAttempt(attempt: Omit<QuizAttempt, "id" | "finishedAt"> & { finishedAt?: number }): QuizAttempt {
+export function saveAttempt(
+  attempt: Omit<QuizAttempt, "id" | "finishedAt"> & { finishedAt?: number },
+): QuizAttempt {
   const id =
-    (typeof crypto !== "undefined" && "randomUUID" in crypto
+    typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2) + Date.now().toString(36));
+      : Math.random().toString(36).slice(2) + Date.now().toString(36);
   const full: QuizAttempt = {
     id,
     finishedAt: attempt.finishedAt ?? Date.now(),

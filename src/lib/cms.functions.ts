@@ -3,7 +3,11 @@ import { z } from "zod";
 import { verifyAdminPasswordServer } from "./portal-access.functions";
 
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
-export type SiteSettingsRow = { key: string; value: { [key: string]: JsonValue }; updated_at: string };
+export type SiteSettingsRow = {
+  key: string;
+  value: { [key: string]: JsonValue };
+  updated_at: string;
+};
 export type NavItemRow = {
   id: string;
   location: "header" | "footer-primary" | "footer-secondary" | "portal";
@@ -146,7 +150,9 @@ export const listPageSeo = createServerFn({ method: "GET" }).handler(
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("page_seo")
-      .select("route, title, description, og_title, og_description, og_image_path, canonical_override, noindex, updated_at");
+      .select(
+        "route, title, description, og_title, og_description, og_image_path, canonical_override, noindex, updated_at",
+      );
     if (error) throw new Error(error.message);
     return (data ?? []) as PageSeoRow[];
   },

@@ -61,7 +61,7 @@ export const getPublishedTheme = createServerFn({ method: "GET" }).handler(
       .eq("id", 1)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return ((data?.published ?? {}) as Partial<ThemeTokens>);
+    return (data?.published ?? {}) as Partial<ThemeTokens>;
   },
 );
 
@@ -85,9 +85,7 @@ export const getThemeSettings = createServerFn({ method: "POST" })
   });
 
 export const saveThemeDraft = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
-    z.object({ draft: z.record(z.string(), z.any()) }).parse(d),
-  )
+  .inputValidator((d) => z.object({ draft: z.record(z.string(), z.any()) }).parse(d))
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -133,10 +131,7 @@ export const resetThemeDraft = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
-      .from("theme_settings")
-      .update({ draft: {} })
-      .eq("id", 1);
+    const { error } = await supabaseAdmin.from("theme_settings").update({ draft: {} }).eq("id", 1);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

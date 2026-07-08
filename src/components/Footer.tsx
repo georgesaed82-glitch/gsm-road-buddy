@@ -1,5 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Car, CreditCard, Star, MessageSquare, Newspaper, HelpCircle, Download } from "lucide-react";
+import {
+  Car,
+  CreditCard,
+  Star,
+  MessageSquare,
+  Newspaper,
+  HelpCircle,
+  Download,
+} from "lucide-react";
 import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -29,26 +37,54 @@ export function Footer() {
             </div>
             <div className="leading-tight text-left">
               <div className="font-display text-lg font-semibold">{business.name}</div>
-              <div className="text-[10px] uppercase tracking-[0.18em] opacity-70">{business.tagline}</div>
+              <div className="text-[10px] uppercase tracking-[0.18em] opacity-70">
+                {business.tagline}
+              </div>
             </div>
           </Link>
           {(social.facebook || social.instagram || social.tiktok || social.youtube) && (
             <div className="flex items-center gap-4 pt-1">
               {social.facebook && (
-                <a href={social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="opacity-80 hover:opacity-100">
+                <a
+                  href={social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="opacity-80 hover:opacity-100"
+                >
                   <FacebookBrandIcon className="h-5 w-5" />
                 </a>
               )}
               {social.instagram && (
-                <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="opacity-80 hover:opacity-100">
+                <a
+                  href={social.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="opacity-80 hover:opacity-100"
+                >
                   <InstagramBrandIcon className="h-5 w-5" />
                 </a>
               )}
               {social.tiktok && (
-                <a href={social.tiktok} target="_blank" rel="noopener noreferrer" className="text-sm opacity-80 hover:opacity-100">TikTok</a>
+                <a
+                  href={social.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm opacity-80 hover:opacity-100"
+                >
+                  TikTok
+                </a>
               )}
               {social.youtube && (
-                <a href={social.youtube} target="_blank" rel="noopener noreferrer" className="text-sm opacity-80 hover:opacity-100">YouTube</a>
+                <a
+                  href={social.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm opacity-80 hover:opacity-100"
+                >
+                  YouTube
+                </a>
               )}
             </div>
           )}

@@ -23,9 +23,24 @@ export type PoliceSignal = {
 };
 
 export const signalGroups: { slug: SignalGroup; title: string; blurb: string }[] = [
-  { slug: "stop", title: "Signals to stop traffic", blurb: "Highway Code rule 105 — signals given by police, traffic officers, VOSA, DVSA examiners, HATOs and school-crossing patrols." },
-  { slug: "beckon", title: "Signals to beckon traffic on", blurb: "Highway Code rule 106 — clear arm movements telling drivers it is safe to proceed from a particular direction." },
-  { slug: "driver", title: "Driver arm signals", blurb: "Highway Code rule 103 — arm signals you give from your own vehicle to reinforce your indicators, especially in bright sunlight or when your indicators are not working." },
+  {
+    slug: "stop",
+    title: "Signals to stop traffic",
+    blurb:
+      "Highway Code rule 105 — signals given by police, traffic officers, VOSA, DVSA examiners, HATOs and school-crossing patrols.",
+  },
+  {
+    slug: "beckon",
+    title: "Signals to beckon traffic on",
+    blurb:
+      "Highway Code rule 106 — clear arm movements telling drivers it is safe to proceed from a particular direction.",
+  },
+  {
+    slug: "driver",
+    title: "Driver arm signals",
+    blurb:
+      "Highway Code rule 103 — arm signals you give from your own vehicle to reinforce your indicators, especially in bright sunlight or when your indicators are not working.",
+  },
 ];
 
 export const policeSignals: PoliceSignal[] = [

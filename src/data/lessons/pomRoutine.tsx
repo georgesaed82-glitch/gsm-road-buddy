@@ -32,12 +32,12 @@ type CheckPoint = {
 };
 
 const CHECKS: CheckPoint[] = [
-  { key: "ls", label: "Left shoulder",   dx: -22, dy:  14, angle: 200 },
-  { key: "lm", label: "Left mirror",     dx: -16, dy:  10, angle: 170 },
-  { key: "ah", label: "Road ahead",      dx:  26, dy:   0, angle:   0 },
-  { key: "im", label: "Interior mirror", dx:   0, dy:  -2, angle: 180 },
-  { key: "rs", label: "Right shoulder",  dx: -22, dy: -14, angle: 160 },
-  { key: "rm", label: "Right mirror",    dx: -16, dy: -10, angle: 190 },
+  { key: "ls", label: "Left shoulder", dx: -22, dy: 14, angle: 200 },
+  { key: "lm", label: "Left mirror", dx: -16, dy: 10, angle: 170 },
+  { key: "ah", label: "Road ahead", dx: 26, dy: 0, angle: 0 },
+  { key: "im", label: "Interior mirror", dx: 0, dy: -2, angle: 180 },
+  { key: "rs", label: "Right shoulder", dx: -22, dy: -14, angle: 160 },
+  { key: "rm", label: "Right mirror", dx: -16, dy: -10, angle: 190 },
 ];
 
 function EgoCar({
@@ -53,7 +53,16 @@ function EgoCar({
 }) {
   return (
     <g transform={`translate(${cx} ${cy})`}>
-      <rect x={-22} y={-11} width={44} height={22} rx={5} fill="#2f6bf0" stroke="#0a0a0a" strokeWidth={0.9} />
+      <rect
+        x={-22}
+        y={-11}
+        width={44}
+        height={22}
+        rx={5}
+        fill="#2f6bf0"
+        stroke="#0a0a0a"
+        strokeWidth={0.9}
+      />
       <rect x={-12} y={-9} width={7} height={18} rx={1} fill="#111" opacity={0.75} />
       <rect x={5} y={-9} width={7} height={18} rx={1} fill="#111" opacity={0.55} />
       <rect x={22} y={-8} width={1.8} height={3} fill="#fff8c0" />
@@ -62,17 +71,32 @@ function EgoCar({
       <rect x={-4} y={11} width={5} height={2} fill="#111" />
       {engineOn && (
         <circle cx={-26} cy={0} r={2.2} fill="#cfd3d8" opacity={0.6}>
-          <animate attributeName="opacity" values="0.6;0.1;0.6" dur="1.2s" repeatCount="indefinite" />
+          <animate
+            attributeName="opacity"
+            values="0.6;0.1;0.6"
+            dur="1.2s"
+            repeatCount="indefinite"
+          />
           <animate attributeName="r" values="2;3.6;2" dur="1.2s" repeatCount="indefinite" />
         </circle>
       )}
       {indicator && (
         <>
           <circle cx={-24} cy={-9} r={1.8} fill="#ffb020">
-            <animate attributeName="opacity" values="1;0.15;1" dur="0.5s" repeatCount="indefinite" />
+            <animate
+              attributeName="opacity"
+              values="1;0.15;1"
+              dur="0.5s"
+              repeatCount="indefinite"
+            />
           </circle>
           <circle cx={22} cy={-9} r={1.8} fill="#ffb020">
-            <animate attributeName="opacity" values="1;0.15;1" dur="0.5s" repeatCount="indefinite" />
+            <animate
+              attributeName="opacity"
+              values="1;0.15;1"
+              dur="0.5s"
+              repeatCount="indefinite"
+            />
           </circle>
         </>
       )}
@@ -83,7 +107,16 @@ function EgoCar({
 function Vehicle({ x, y, color }: { x: number; y: number; color: string }) {
   return (
     <g transform={`translate(${x} ${y})`}>
-      <rect x={-14} y={-8} width={28} height={16} rx={3} fill={color} stroke="#0a0a0a" strokeWidth={0.6} />
+      <rect
+        x={-14}
+        y={-8}
+        width={28}
+        height={16}
+        rx={3}
+        fill={color}
+        stroke="#0a0a0a"
+        strokeWidth={0.6}
+      />
       <rect x={-8} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.65} />
       <rect x={3} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.45} />
       <rect x={-15.6} y={-7} width={1.4} height={3} fill="#ff2a2a" opacity={0.6} />
@@ -92,7 +125,17 @@ function Vehicle({ x, y, color }: { x: number; y: number; color: string }) {
   );
 }
 
-function CheckWedge({ cx, cy, angleDeg, active }: { cx: number; cy: number; angleDeg: number; active: boolean }) {
+function CheckWedge({
+  cx,
+  cy,
+  angleDeg,
+  active,
+}: {
+  cx: number;
+  cy: number;
+  angleDeg: number;
+  active: boolean;
+}) {
   const spread = 55;
   const r = 46;
   const a1 = ((angleDeg - spread / 2) * Math.PI) / 180;
@@ -136,10 +179,10 @@ function PomScene(t: number) {
   const phaseLabel = inPrep
     ? "1 · PREPARATION"
     : inObs && t < 0.75
-    ? "2 · SIX-POINT OBSERVATION"
-    : inObs
-    ? "2b · TIMING — wait for vehicle 7"
-    : "3 · MANOEUVRE";
+      ? "2 · SIX-POINT OBSERVATION"
+      : inObs
+        ? "2b · TIMING — wait for vehicle 7"
+        : "3 · MANOEUVRE";
 
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
@@ -192,7 +235,15 @@ function PomScene(t: number) {
 
       <g transform="translate(20 20)">
         <rect width={360} height={44} rx={6} fill="#000" opacity={0.6} />
-        <text x={12} y={16} fontSize={9} fill={ACCENT} fontWeight={700} letterSpacing="1.5" fontFamily="sans-serif">
+        <text
+          x={12}
+          y={16}
+          fontSize={9}
+          fill={ACCENT}
+          fontWeight={700}
+          letterSpacing="1.5"
+          fontFamily="sans-serif"
+        >
           GSM ROUTINE
         </text>
         <text x={12} y={34} fontSize={13} fill="#fff" fontFamily="sans-serif" fontWeight={600}>
@@ -216,7 +267,14 @@ function PomScene(t: number) {
       {inMan && (
         <g transform="translate(300 100)">
           <circle r={14} fill="none" stroke={GOOD} strokeWidth={1.5} />
-          <text textAnchor="middle" y={4} fontSize={14} fontWeight={800} fill={GOOD} fontFamily="sans-serif">
+          <text
+            textAnchor="middle"
+            y={4}
+            fontSize={14}
+            fontWeight={800}
+            fill={GOOD}
+            fontFamily="sans-serif"
+          >
             ✓
           </text>
         </g>
@@ -249,25 +307,42 @@ export const pomRoutine: Lesson = {
   ],
   why: (
     <>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why the order matters</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Why the order matters
+      </p>
       <p>
-        If you observe <em>before</em> preparing the car, by the time you have the engine on and the gear selected, the road has changed and your information is out of date. Preparation first means when your observation says "go," you can go — smoothly and immediately.
+        If you observe <em>before</em> preparing the car, by the time you have the engine on and the
+        gear selected, the road has changed and your information is out of date. Preparation first
+        means when your observation says "go," you can go — smoothly and immediately.
       </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why six points</p>
       <p>
-        Left shoulder, left mirror, ahead, interior mirror, right shoulder, right mirror. This is one complete sweep — pavement to pavement, front to back. It catches pedestrians and cyclists on the pavement, traffic behind, and anything approaching from the opposite direction before you commit.
+        Left shoulder, left mirror, ahead, interior mirror, right shoulder, right mirror. This is
+        one complete sweep — pavement to pavement, front to back. It catches pedestrians and
+        cyclists on the pavement, traffic behind, and anything approaching from the opposite
+        direction before you commit.
       </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Timing the sweep</p>
       <p>
-        Never start the six-point check the instant a queue arrives — you'll finish it far too early and the picture will change again. If seven vehicles are approaching, keep watching. When vehicle six passes and vehicle seven is the last one, <strong>then</strong> start your sweep. Your check finishes just as the road becomes clear. Smooth, safe, no unnecessary waiting.
+        Never start the six-point check the instant a queue arrives — you'll finish it far too early
+        and the picture will change again. If seven vehicles are approaching, keep watching. When
+        vehicle six passes and vehicle seven is the last one, <strong>then</strong> start your
+        sweep. Your check finishes just as the road becomes clear. Smooth, safe, no unnecessary
+        waiting.
       </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">If you signalled</p>
       <p>
-        If a signal now suggests you are pulling out into a gap you no longer have, cancel it. Then redo the full six-point check. Never move on old information.
+        If a signal now suggests you are pulling out into a gap you no longer have, cancel it. Then
+        redo the full six-point check. Never move on old information.
       </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Smart driving</p>
       <p>
-        Smart driving applies the same thinking beyond POM. If a traffic light is already red, there is no benefit in accelerating towards it — ease off, brake early and smoothly. Often the lights will change while you are still rolling, and you continue without harsh braking or stopping unnecessarily. The benefits: better planning, smoother driving, less stress, better fuel economy, better vehicle control, safer progress — and a higher standard for the DVSA driving test.
+        Smart driving applies the same thinking beyond POM. If a traffic light is already red, there
+        is no benefit in accelerating towards it — ease off, brake early and smoothly. Often the
+        lights will change while you are still rolling, and you continue without harsh braking or
+        stopping unnecessarily. The benefits: better planning, smoother driving, less stress, better
+        fuel economy, better vehicle control, safer progress — and a higher standard for the DVSA
+        driving test.
       </p>
     </>
   ),
@@ -295,10 +370,10 @@ export const pomRoutine: Lesson = {
   durationMs: 22000,
   captions: [
     { at: 0.05, label: "Preparation", detail: "Engine on. Correct gear. Car ready to go." },
-    { at: 0.4,  label: "Six-point check begins", detail: "Left shoulder → left mirror → ahead…" },
-    { at: 0.6,  label: "…continues", detail: "…interior mirror → right shoulder → right mirror." },
+    { at: 0.4, label: "Six-point check begins", detail: "Left shoulder → left mirror → ahead…" },
+    { at: 0.6, label: "…continues", detail: "…interior mirror → right shoulder → right mirror." },
     { at: 0.78, label: "Timing", detail: "Watch vehicle 7 — the last one. Move as it passes." },
-    { at: 0.9,  label: "Manoeuvre", detail: "Signal if needed, then move away smoothly." },
+    { at: 0.9, label: "Manoeuvre", detail: "Signal if needed, then move away smoothly." },
   ],
   questions: [
     {
@@ -307,16 +382,19 @@ export const pomRoutine: Lesson = {
       options: [
         {
           label: "It doesn't matter — you can do them in any order.",
-          explain: "No. If you observe first, by the time the car is ready the road has changed and your information is stale.",
+          explain:
+            "No. If you observe first, by the time the car is ready the road has changed and your information is stale.",
         },
         {
           label: "So the car is ready to move the moment your observation says it's safe.",
           correct: true,
-          explain: "Exactly. Prep first means when the road is clear, you can go — smoothly and without delay.",
+          explain:
+            "Exactly. Prep first means when the road is clear, you can go — smoothly and without delay.",
         },
         {
           label: "Because the examiner only marks preparation.",
-          explain: "No — the examiner marks the whole routine. Order matters because of timing, not marks.",
+          explain:
+            "No — the examiner marks the whole routine. Order matters because of timing, not marks.",
         },
       ],
     },
@@ -336,7 +414,8 @@ export const pomRoutine: Lesson = {
         },
         {
           label: "Only after every vehicle has already gone past.",
-          explain: "That works, but you'll lose time. Time the sweep so it ends as the road clears.",
+          explain:
+            "That works, but you'll lose time. Time the sweep so it ends as the road clears.",
         },
       ],
     },

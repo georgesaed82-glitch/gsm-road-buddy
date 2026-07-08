@@ -19,7 +19,10 @@ export function initSentryOnce() {
         tracesSampleRate: 0.1,
         replaysSessionSampleRate: 0,
         replaysOnErrorSampleRate: 0.5,
-        integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration({ maskAllText: false, blockAllMedia: false })],
+        integrations: [
+          Sentry.browserTracingIntegration(),
+          Sentry.replayIntegration({ maskAllText: false, blockAllMedia: false }),
+        ],
         beforeSend(event) {
           // Drop noisy ResizeObserver warnings.
           if (event.message?.includes("ResizeObserver")) return null;

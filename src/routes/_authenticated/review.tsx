@@ -401,8 +401,8 @@ function Recommendations({
           </div>
           <h2 className="mt-1 font-display text-2xl">Your weakest topics</h2>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Based on your retry accuracy and what's still in your bank. Start with the top card —
-            it needs you the most.
+            Based on your retry accuracy and what's still in your bank. Start with the top card — it
+            needs you the most.
           </p>
         </div>
       </div>
@@ -478,8 +478,8 @@ function EmptyState() {
       <Sparkles className="mx-auto h-8 w-8 text-accent" />
       <h2 className="mt-3 font-display text-2xl">No mistakes saved</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-        Take a mock test or work through a theory category. Any question you get wrong will show
-        up here so you can retry it in seconds.
+        Take a mock test or work through a theory category. Any question you get wrong will show up
+        here so you can retry it in seconds.
       </p>
       <div className="mt-5 flex flex-wrap justify-center gap-2">
         <Button asChild className="rounded-none">
@@ -588,9 +588,7 @@ function ProgressStats({
                   />
                 </div>
                 <div className="text-[10px] text-muted-foreground">{d.label}</div>
-                <div className="text-[10px] font-medium">
-                  {d.total ? `${acc}%` : "—"}
-                </div>
+                <div className="text-[10px] font-medium">{d.total ? `${acc}%` : "—"}</div>
               </div>
             );
           })}
@@ -670,7 +668,9 @@ function CategoryBreakdown({
           <Layers className="h-3.5 w-3.5" />
           Accuracy by category
         </span>
-        <span>{selectedCategory ? "tap a row to switch · again to clear" : "tap a row to drill in"}</span>
+        <span>
+          {selectedCategory ? "tap a row to switch · again to clear" : "tap a row to drill in"}
+        </span>
       </div>
       <ul className="divide-y divide-border border border-border bg-background">
         {rows.map((r) => {
@@ -700,30 +700,30 @@ function CategoryBreakdown({
                 )}
               >
                 <div className="min-w-0">
-                <div className="truncate text-sm font-medium">
-                  {formatCategoryLabel(r.category)}
-                </div>
-                <div className="mt-1.5 h-1.5 w-full overflow-hidden bg-border">
-                  <div
-                    className={cn("h-full", barColor)}
-                    style={{ width: `${r.total === 0 ? 0 : Math.max(4, pct)}%` }}
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="mt-1 text-[11px] text-muted-foreground">
-                  {r.total === 0
-                    ? "No retries yet"
-                    : `${pct}% accuracy · ${r.correct}/${r.total} attempts`}
-                  {r.bank > 0 && ` · ${r.bank} in bank`}
-                </div>
+                  <div className="truncate text-sm font-medium">
+                    {formatCategoryLabel(r.category)}
+                  </div>
+                  <div className="mt-1.5 h-1.5 w-full overflow-hidden bg-border">
+                    <div
+                      className={cn("h-full", barColor)}
+                      style={{ width: `${r.total === 0 ? 0 : Math.max(4, pct)}%` }}
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <div className="mt-1 text-[11px] text-muted-foreground">
+                    {r.total === 0
+                      ? "No retries yet"
+                      : `${pct}% accuracy · ${r.correct}/${r.total} attempts`}
+                    {r.bank > 0 && ` · ${r.bank} in bank`}
+                  </div>
                 </div>
                 <div className="text-right">
-                <div className="font-display text-lg leading-none">
-                  {r.total === 0 ? "—" : `${pct}%`}
-                </div>
-                <div className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  {r.bank > 0 ? `${r.bank} to go` : "cleared"}
-                </div>
+                  <div className="font-display text-lg leading-none">
+                    {r.total === 0 ? "—" : `${pct}%`}
+                  </div>
+                  <div className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    {r.bank > 0 ? `${r.bank} to go` : "cleared"}
+                  </div>
                 </div>
                 <ChevronRight
                   className={cn(

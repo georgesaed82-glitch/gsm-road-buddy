@@ -18,7 +18,9 @@ export const listLegalPages = createServerFn({ method: "GET" }).handler(
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("legal_pages")
-      .select("slug, title, body_markdown, seo_title, seo_description, enabled, sort_order, updated_at")
+      .select(
+        "slug, title, body_markdown, seo_title, seo_description, enabled, sort_order, updated_at",
+      )
       .order("sort_order", { ascending: true });
     if (error) throw new Error(error.message);
     return (data ?? []) as LegalPageRow[];
@@ -31,7 +33,9 @@ export const getLegalPage = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("legal_pages")
-      .select("slug, title, body_markdown, seo_title, seo_description, enabled, sort_order, updated_at")
+      .select(
+        "slug, title, body_markdown, seo_title, seo_description, enabled, sort_order, updated_at",
+      )
       .eq("slug", data.slug)
       .eq("enabled", true)
       .maybeSingle();
@@ -41,7 +45,12 @@ export const getLegalPage = createServerFn({ method: "GET" })
 
 const upsertInput = z.object({
   item: z.object({
-    slug: z.string().trim().min(1).max(60).regex(/^[a-z0-9-]+$/),
+    slug: z
+      .string()
+      .trim()
+      .min(1)
+      .max(60)
+      .regex(/^[a-z0-9-]+$/),
     title: z.string().trim().min(1).max(160),
     body_markdown: z.string().max(200_000),
     seo_title: z.string().max(200).nullable().optional(),

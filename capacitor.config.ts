@@ -1,14 +1,14 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'com.gsmdrivingschool.app',
-  appName: 'GSM Driving School',
-  webDir: 'dist/client',
+  appId: "com.gsmdrivingschool.app",
+  appName: "GSM Driving School",
+  webDir: "dist/client",
   server: {
-    androidScheme: 'https',
+    androidScheme: "https",
   },
   ios: {
-    contentInset: 'always',
+    contentInset: "always",
   },
 };
 

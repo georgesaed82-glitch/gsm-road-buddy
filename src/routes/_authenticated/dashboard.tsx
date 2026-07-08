@@ -3,7 +3,16 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PortalShell } from "@/components/PortalShell";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, Award, ArrowUpRight, CheckCircle2, CloudCheck, CloudOff, Loader2 } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Award,
+  ArrowUpRight,
+  CheckCircle2,
+  CloudCheck,
+  CloudOff,
+  Loader2,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -47,7 +56,9 @@ function saveLocalRating(key: string, rating: number) {
     const obj = loadLocalRatings();
     obj[key] = rating;
     window.localStorage.setItem(LOCAL_RATINGS_KEY, JSON.stringify(obj));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 function DashboardPage() {
@@ -63,7 +74,9 @@ function DashboardPage() {
   const { data: profile } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return null;
       const { data } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
       return data;
@@ -87,7 +100,10 @@ function DashboardPage() {
     queryKey: ["portal-stats"],
     queryFn: async () => {
       const [completed, payments, theory] = await Promise.all([
-        supabase.from("lesson_bookings").select("id", { count: "exact", head: true }).eq("status", "completed"),
+        supabase
+          .from("lesson_bookings")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "completed"),
         supabase.from("payments").select("hours_purchased,amount_pence,status"),
         supabase.from("theory_progress").select("questions_answered,questions_correct"),
       ]);
@@ -112,18 +128,23 @@ function DashboardPage() {
   const hoursRemaining = Math.max(0, (stats?.hoursPurchased ?? 0) - (stats?.completed ?? 0));
 
   return (
-    <PortalShell
-      eyebrow="GSM Plus"
-      title={title}
-      showCopyright
-    >
+    <PortalShell eyebrow="GSM Plus" title={title} showCopyright>
       <p className="-mt-4 mb-6 max-w-full text-xs text-muted-foreground sm:text-sm">
-        {sessionInfo?.email
-          ? <>Signed in with PIN as <span className="break-words font-medium text-foreground">{sessionInfo.email}</span></>
-          : "You're using a shared access code — sign in with your PIN to save progress to your account."}
+        {sessionInfo?.email ? (
+          <>
+            Signed in with PIN as{" "}
+            <span className="break-words font-medium text-foreground">{sessionInfo.email}</span>
+          </>
+        ) : (
+          "You're using a shared access code — sign in with your PIN to save progress to your account."
+        )}
       </p>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Lessons completed" value={String(stats?.completed ?? 0)} icon={CheckCircle2} />
+        <StatCard
+          label="Lessons completed"
+          value={String(stats?.completed ?? 0)}
+          icon={CheckCircle2}
+        />
         <StatCard label="Hours remaining" value={hoursRemaining.toFixed(1)} icon={Clock} accent />
         <StatCard label="Theory accuracy" value={`${stats?.theoryAccuracy ?? 0}%`} icon={Award} />
         <StatCard label="Total paid" value={formatGBP(stats?.spent ?? 0)} icon={Calendar} />
@@ -135,7 +156,10 @@ function DashboardPage() {
         <section className="border border-border bg-card">
           <header className="flex items-center justify-between border-b border-border px-6 py-4">
             <h2 className="font-display text-xl">Upcoming lessons</h2>
-            <Link to="/lessons" className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-accent">
+            <Link
+              to="/lessons"
+              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-accent"
+            >
               All lessons <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </header>
@@ -144,15 +168,24 @@ function DashboardPage() {
               {upcoming.map((b) => (
                 <li key={b.id} className="flex items-center justify-between gap-4 px-6 py-4">
                   <div>
-                    <div className="font-medium text-foreground">{b.instructor_name} · {b.duration_minutes} min</div>
+                    <div className="font-medium text-foreground">
+                      {b.instructor_name} · {b.duration_minutes} min
+                    </div>
                     <div className="mt-0.5 text-sm text-muted-foreground">
-                      {new Date(b.scheduled_at).toLocaleString("en-GB", { dateStyle: "full", timeStyle: "short" })}
+                      {new Date(b.scheduled_at).toLocaleString("en-GB", {
+                        dateStyle: "full",
+                        timeStyle: "short",
+                      })}
                     </div>
                     {b.pickup_location && (
-                      <div className="mt-0.5 text-xs text-muted-foreground">Pickup · {b.pickup_location}</div>
+                      <div className="mt-0.5 text-xs text-muted-foreground">
+                        Pickup · {b.pickup_location}
+                      </div>
                     )}
                   </div>
-                  <Button variant="outline" size="sm">Reschedule</Button>
+                  <Button variant="outline" size="sm">
+                    Reschedule
+                  </Button>
                 </li>
               ))}
             </ul>
@@ -171,10 +204,26 @@ function DashboardPage() {
             <h2 className="font-display text-xl">Keep moving</h2>
           </header>
           <ul className="divide-y divide-border">
-            <QuickAction to="/theory" label="Revise theory" detail="14 categories · ~840 questions" />
-            <QuickAction to="/hazard-perception" label="Hazard perception" detail="Practice on real West London clips" />
-            <QuickAction to="/payments" label="View receipts" detail="Download invoices and check balance" />
-            <QuickAction to="/lessons" label="Lesson history" detail="Instructor notes & skills mastered" />
+            <QuickAction
+              to="/theory"
+              label="Revise theory"
+              detail="14 categories · ~840 questions"
+            />
+            <QuickAction
+              to="/hazard-perception"
+              label="Hazard perception"
+              detail="Practice on real West London clips"
+            />
+            <QuickAction
+              to="/payments"
+              label="View receipts"
+              detail="Download invoices and check balance"
+            />
+            <QuickAction
+              to="/lessons"
+              label="Lesson history"
+              detail="Instructor notes & skills mastered"
+            />
           </ul>
         </section>
       </div>
@@ -182,11 +231,27 @@ function DashboardPage() {
   );
 }
 
-function StatCard({ label, value, icon: Icon, accent }: { label: string; value: string; icon: React.ComponentType<{ className?: string }>; accent?: boolean }) {
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  accent,
+}: {
+  label: string;
+  value: string;
+  icon: React.ComponentType<{ className?: string }>;
+  accent?: boolean;
+}) {
   return (
-    <div className={`border border-border p-5 ${accent ? "bg-accent text-accent-foreground" : "bg-card"}`}>
+    <div
+      className={`border border-border p-5 ${accent ? "bg-accent text-accent-foreground" : "bg-card"}`}
+    >
       <div className="flex items-center justify-between">
-        <span className={`text-[11px] uppercase tracking-[0.18em] ${accent ? "opacity-80" : "text-muted-foreground"}`}>{label}</span>
+        <span
+          className={`text-[11px] uppercase tracking-[0.18em] ${accent ? "opacity-80" : "text-muted-foreground"}`}
+        >
+          {label}
+        </span>
         <Icon className={`h-4 w-4 ${accent ? "opacity-80" : "text-muted-foreground"}`} />
       </div>
       <div className="mt-4 font-display text-3xl">{value}</div>
@@ -197,7 +262,10 @@ function StatCard({ label, value, icon: Icon, accent }: { label: string; value: 
 function QuickAction({ to, label, detail }: { to: string; label: string; detail: string }) {
   return (
     <li>
-      <Link to={to} className="flex items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-secondary">
+      <Link
+        to={to}
+        className="flex items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-secondary"
+      >
         <div>
           <div className="font-medium text-foreground">{label}</div>
           <div className="mt-0.5 text-xs text-muted-foreground">{detail}</div>
@@ -214,17 +282,23 @@ function MarkProgressSection({ signedIn, userId }: { signedIn: boolean; userId: 
   const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
-  useEffect(() => () => {
-    if (savedTimer.current) clearTimeout(savedTimer.current);
-    debounceTimers.current.forEach((t) => clearTimeout(t));
-  }, []);
+  useEffect(
+    () => () => {
+      if (savedTimer.current) clearTimeout(savedTimer.current);
+      debounceTimers.current.forEach((t) => clearTimeout(t));
+    },
+    [],
+  );
 
   type Rating = { skill_key: string; rating: number };
   const { data: ratings = [] } = useQuery({
     queryKey: ["skill-ratings"],
     queryFn: async () => {
       const local = loadLocalRatings();
-      const localList: Rating[] = Object.entries(local).map(([k, v]) => ({ skill_key: k, rating: Number(v) || 0 }));
+      const localList: Rating[] = Object.entries(local).map(([k, v]) => ({
+        skill_key: k,
+        rating: Number(v) || 0,
+      }));
       if (!userId) return localList;
       const { data } = await supabase.from("skill_ratings").select("skill_key, rating");
       const map = new Map(localList.map((r) => [r.skill_key, r.rating]));
@@ -262,7 +336,10 @@ function MarkProgressSection({ signedIn, userId }: { signedIn: boolean; userId: 
         if (userId) {
           const { error } = await supabase
             .from("skill_ratings")
-            .upsert({ user_id: userId, skill_key: key, rating: clean }, { onConflict: "user_id,skill_key" });
+            .upsert(
+              { user_id: userId, skill_key: key, rating: clean },
+              { onConflict: "user_id,skill_key" },
+            );
           if (error) throw error;
         }
         if (clean === 10 && prev !== 10) toast.success("Mastered! 🎉");
@@ -290,16 +367,24 @@ function MarkProgressSection({ signedIn, userId }: { signedIn: boolean; userId: 
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-4">
         <div>
           <h2 className="font-display text-xl">Mark my progress</h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">Tap any number 0 – 10 to update. Saves automatically.</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Tap any number 0 – 10 to update. Saves automatically.
+          </p>
         </div>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           <SaveBadge state={saveState} signedIn={signedIn} />
-          <span>{mastered}/{skillMilestones.length} mastered · {overallPct}%</span>
+          <span>
+            {mastered}/{skillMilestones.length} mastered · {overallPct}%
+          </span>
         </div>
       </header>
       {!signedIn && (
         <div className="border-b border-border bg-amber-50 px-6 py-2 text-xs text-amber-900 dark:bg-amber-500/10 dark:text-amber-100">
-          Not signed in with email — scores save on this device only. <Link to="/auth" className="font-medium underline">Sign in</Link> to sync across devices.
+          Not signed in with email — scores save on this device only.{" "}
+          <Link to="/auth" className="font-medium underline">
+            Sign in
+          </Link>{" "}
+          to sync across devices.
         </div>
       )}
       <ul className="divide-y divide-border">
@@ -309,7 +394,11 @@ function MarkProgressSection({ signedIn, userId }: { signedIn: boolean; userId: 
           return (
             <li key={m.key} className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
               <div className="min-w-[9rem] flex-1">
-                <div className={`text-sm font-medium ${done ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}>{m.name}</div>
+                <div
+                  className={`text-sm font-medium ${done ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}
+                >
+                  {m.name}
+                </div>
                 <div className="mt-1 h-2 w-full max-w-[220px] overflow-hidden rounded-full bg-muted">
                   <div
                     className={`h-full transition-all ${done ? "bg-emerald-500" : "bg-primary"}`}
@@ -341,7 +430,10 @@ function MarkProgressSection({ signedIn, userId }: { signedIn: boolean; userId: 
         })}
       </ul>
       <div className="border-t border-border px-6 py-3 text-right">
-        <Link to="/lessons" className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-accent">
+        <Link
+          to="/lessons"
+          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-accent"
+        >
           Full timeline & history <ArrowUpRight className="h-3.5 w-3.5" />
         </Link>
       </div>
@@ -349,9 +441,34 @@ function MarkProgressSection({ signedIn, userId }: { signedIn: boolean; userId: 
   );
 }
 
-function SaveBadge({ state, signedIn }: { state: "idle" | "saving" | "saved" | "error"; signedIn: boolean }) {
-  if (state === "saving") return <span className="inline-flex items-center gap-1"><Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving…</span>;
-  if (state === "saved") return <span className="inline-flex items-center gap-1 text-emerald-600"><CloudCheck className="h-3.5 w-3.5" /> Saved</span>;
-  if (state === "error") return <span className="inline-flex items-center gap-1 text-destructive"><CloudOff className="h-3.5 w-3.5" /> Error</span>;
-  return <span className="inline-flex items-center gap-1 opacity-70"><CloudCheck className="h-3.5 w-3.5" /> {signedIn ? "Synced" : "On device"}</span>;
+function SaveBadge({
+  state,
+  signedIn,
+}: {
+  state: "idle" | "saving" | "saved" | "error";
+  signedIn: boolean;
+}) {
+  if (state === "saving")
+    return (
+      <span className="inline-flex items-center gap-1">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving…
+      </span>
+    );
+  if (state === "saved")
+    return (
+      <span className="inline-flex items-center gap-1 text-emerald-600">
+        <CloudCheck className="h-3.5 w-3.5" /> Saved
+      </span>
+    );
+  if (state === "error")
+    return (
+      <span className="inline-flex items-center gap-1 text-destructive">
+        <CloudOff className="h-3.5 w-3.5" /> Error
+      </span>
+    );
+  return (
+    <span className="inline-flex items-center gap-1 opacity-70">
+      <CloudCheck className="h-3.5 w-3.5" /> {signedIn ? "Synced" : "On device"}
+    </span>
+  );
 }

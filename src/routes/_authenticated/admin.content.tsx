@@ -19,7 +19,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { OfficialSignImage } from "@/components/OfficialSignImage";
 import { signs, type Sign } from "@/data/signs";
@@ -50,13 +56,28 @@ type Item = {
 
 function toItems(kind: ContentKind): Item[] {
   if (kind === "sign") {
-    return signs.map((s: Sign) => ({ id: s.id, name: s.name, description: s.meaning, group: s.category }));
+    return signs.map((s: Sign) => ({
+      id: s.id,
+      name: s.name,
+      description: s.meaning,
+      group: s.category,
+    }));
   }
   if (kind === "marking") {
-    return roadMarkings.map((m) => ({ id: m.id, name: m.name, description: m.meaning, group: m.group }));
+    return roadMarkings.map((m) => ({
+      id: m.id,
+      name: m.name,
+      description: m.meaning,
+      group: m.group,
+    }));
   }
   if (kind === "signal") {
-    return policeSignals.map((s) => ({ id: s.id, name: s.name, description: s.meaning, group: s.group }));
+    return policeSignals.map((s) => ({
+      id: s.id,
+      name: s.name,
+      description: s.meaning,
+      group: s.group,
+    }));
   }
   return theoryCategories.map((c) => ({
     id: c.slug,
@@ -195,7 +216,8 @@ function AdminContentPage() {
           description: draft.description.trim(),
           group_slug: draft.group_slug || null,
           image_path: draft.image_path,
-          key_points: kind === "highway" ? draft.key_points.map((s) => s.trim()).filter(Boolean) : null,
+          key_points:
+            kind === "highway" ? draft.key_points.map((s) => s.trim()).filter(Boolean) : null,
           topics: kind === "highway" ? draft.topics.map((s) => s.trim()).filter(Boolean) : null,
         },
       });
@@ -272,7 +294,11 @@ function AdminContentPage() {
         overrideSrc={draft.image_url}
       />
     ) : draft.image_url ? (
-      <img src={draft.image_url} alt={draft.name} className="h-40 w-40 object-cover border border-border" />
+      <img
+        src={draft.image_url}
+        alt={draft.name}
+        className="h-40 w-40 object-cover border border-border"
+      />
     ) : (
       <div className="flex h-40 w-40 items-center justify-center border border-dashed border-border text-xs text-muted-foreground">
         Uses built-in illustration
@@ -285,21 +311,34 @@ function AdminContentPage() {
     <AdminShell eyebrow="Admin" title="Edit signs, markings, arm signals & Highway Code">
       <div className="mb-6 grid gap-3 sm:grid-cols-[220px_1fr_auto] sm:items-end">
         <div>
-          <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Section</Label>
+          <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            Section
+          </Label>
           <Select value={kind} onValueChange={(v) => setKind(v as ContentKind)}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="sign">Road signs ({signs.length})</SelectItem>
               <SelectItem value="marking">Road markings ({roadMarkings.length})</SelectItem>
               <SelectItem value="signal">Arm signals ({policeSignals.length})</SelectItem>
-              <SelectItem value="highway">Highway Code topics ({theoryCategories.length})</SelectItem>
+              <SelectItem value="highway">
+                Highway Code topics ({theoryCategories.length})
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div>
-          <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Jump to</Label>
-          <Select value={current.id} onValueChange={(id) => setIndex(items.findIndex((it) => it.id === id))}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+          <Label className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            Jump to
+          </Label>
+          <Select
+            value={current.id}
+            onValueChange={(id) => setIndex(items.findIndex((it) => it.id === id))}
+          >
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent className="max-h-72">
               {items.map((it, i) => (
                 <SelectItem key={it.id} value={it.id}>
@@ -317,7 +356,9 @@ function AdminContentPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="uppercase">{current.id}</Badge>
+            <Badge variant="outline" className="uppercase">
+              {current.id}
+            </Badge>
             {isEdited && (
               <Badge className="bg-emerald-600 text-white">
                 <CheckCircle2 className="mr-1 h-3 w-3" /> edited
@@ -328,7 +369,12 @@ function AdminContentPage() {
             <Button variant="outline" size="sm" onClick={() => go(-1)} disabled={index === 0}>
               <ChevronLeft className="h-4 w-4" /> Prev
             </Button>
-            <Button variant="outline" size="sm" onClick={() => go(1)} disabled={index >= items.length - 1}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => go(1)}
+              disabled={index >= items.length - 1}
+            >
               Next <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -336,36 +382,36 @@ function AdminContentPage() {
         <CardContent className="space-y-5">
           <div className={kind === "highway" ? "" : "grid gap-6 sm:grid-cols-[auto_1fr]"}>
             {kind !== "highway" && (
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex h-44 items-center justify-center">{preview}</div>
-              <div className="flex flex-col gap-2">
-                <label className="inline-flex cursor-pointer items-center gap-2 border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-secondary">
-                  <Upload className="h-3.5 w-3.5" />
-                  {uploading ? "Uploading…" : "Upload image"}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    disabled={uploading}
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) onImageChange(f);
-                      e.currentTarget.value = "";
-                    }}
-                  />
-                </label>
-                {draft.image_url && (
-                  <Button variant="outline" size="sm" onClick={clearImage}>
-                    <X className="mr-1 h-3.5 w-3.5" /> Remove image
-                  </Button>
-                )}
-                {!draft.image_url && (
-                  <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                    <ImageIcon className="h-3 w-3" /> Optional
-                  </span>
-                )}
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex h-44 items-center justify-center">{preview}</div>
+                <div className="flex flex-col gap-2">
+                  <label className="inline-flex cursor-pointer items-center gap-2 border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-secondary">
+                    <Upload className="h-3.5 w-3.5" />
+                    {uploading ? "Uploading…" : "Upload image"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={uploading}
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) onImageChange(f);
+                        e.currentTarget.value = "";
+                      }}
+                    />
+                  </label>
+                  {draft.image_url && (
+                    <Button variant="outline" size="sm" onClick={clearImage}>
+                      <X className="mr-1 h-3.5 w-3.5" /> Remove image
+                    </Button>
+                  )}
+                  {!draft.image_url && (
+                    <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <ImageIcon className="h-3 w-3" /> Optional
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
             )}
 
             <div className="space-y-4">
@@ -393,9 +439,7 @@ function AdminContentPage() {
                       className="mt-1 min-h-[100px]"
                       placeholder="Mirror checks\nBlind spots\nDistractions"
                       value={draft.topics.join("\n")}
-                      onChange={(e) =>
-                        setDraft({ ...draft, topics: e.target.value.split("\n") })
-                      }
+                      onChange={(e) => setDraft({ ...draft, topics: e.target.value.split("\n") })}
                     />
                     <p className="mt-1 text-xs text-muted-foreground">
                       Shown as the pill row above the topic title.
@@ -418,23 +462,28 @@ function AdminContentPage() {
                 </>
               )}
               {kind !== "highway" && (
-              <div>
-                <Label>Category / group</Label>
-                <Select
-                  value={draft.group_slug}
-                  onValueChange={(v) => setDraft({ ...draft, group_slug: v })}
-                >
-                  <SelectTrigger className="mt-1"><SelectValue placeholder="Choose group" /></SelectTrigger>
-                  <SelectContent>
-                    {groupOptionsFor(kind).map((g) => (
-                      <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Category is stored on the override but doesn't yet reshuffle the built-in category filters on the app.
-                </p>
-              </div>
+                <div>
+                  <Label>Category / group</Label>
+                  <Select
+                    value={draft.group_slug}
+                    onValueChange={(v) => setDraft({ ...draft, group_slug: v })}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Choose group" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {groupOptionsFor(kind).map((g) => (
+                        <SelectItem key={g.value} value={g.value}>
+                          {g.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Category is stored on the override but doesn't yet reshuffle the built-in
+                    category filters on the app.
+                  </p>
+                </div>
               )}
             </div>
           </div>
@@ -444,11 +493,7 @@ function AdminContentPage() {
               <Save className="mr-2 h-4 w-4" />
               {saving ? "Saving…" : "Save changes"}
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => setDraft(draftOf(current))}
-              disabled={saving}
-            >
+            <Button variant="outline" onClick={() => setDraft(draftOf(current))} disabled={saving}>
               <RotateCcw className="mr-2 h-4 w-4" />
               Reset editor to original
             </Button>

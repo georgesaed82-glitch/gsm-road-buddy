@@ -25,7 +25,8 @@ export const Route = createFileRoute("/auth")({
       { title: "GSM Plus coming soon | GSM Driving School" },
       {
         name: "description",
-        content: "GSM Plus, the premium learner platform from GSM Driving School, is coming soon. Manage lessons, payments, and progress online.",
+        content:
+          "GSM Plus, the premium learner platform from GSM Driving School, is coming soon. Manage lessons, payments, and progress online.",
       },
     ],
   }),
@@ -40,7 +41,10 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [authMessage, setAuthMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
+  const [authMessage, setAuthMessage] = useState<{
+    type: "error" | "success";
+    text: string;
+  } | null>(null);
   const tracked = useRef(false);
   const verify = useServerFn(verifyPortalAccess);
   const runCaptchaConfig = useServerFn(getCaptchaConfig);
@@ -54,7 +58,9 @@ function AuthPage() {
     if (tracked.current) return;
     tracked.current = true;
     trackContactClick("portal_view", "learner-portal");
-    runCaptchaConfig().then((c) => setSiteKey(c.siteKey)).catch(() => {});
+    runCaptchaConfig()
+      .then((c) => setSiteKey(c.siteKey))
+      .catch(() => {});
     // Restore saved credentials for the learner portal
     if (!isAdmin) {
       try {
@@ -186,11 +192,12 @@ function AuthPage() {
         });
         if (!setErr) linked = true;
       }
-      const successMessage = linked && res.subscription?.email
+      const successMessage =
+        linked && res.subscription?.email
           ? `Signed in as ${res.subscription.email}. Progress will save to your account.`
           : res.subscription?.expires_at
-          ? `Access granted until ${new Date(res.subscription.expires_at).toLocaleDateString()}.`
-          : "Access granted. Welcome to GSM Plus.";
+            ? `Access granted until ${new Date(res.subscription.expires_at).toLocaleDateString()}.`
+            : "Access granted. Welcome to GSM Plus.";
       setAuthMessage({ type: "success", text: successMessage });
       toast.success(successMessage);
       navigate({ to: "/dashboard" });
@@ -207,7 +214,14 @@ function AuthPage() {
       <Card className="w-full max-w-md border-border bg-card text-center">
         <CardHeader>
           <CardTitle className="font-display text-2xl">
-            {isAdmin ? "Admin login" : (<><span className="font-bold">GSM</span> <span className="font-semibold text-accent">PLUS+</span></>)}
+            {isAdmin ? (
+              "Admin login"
+            ) : (
+              <>
+                <span className="font-bold">GSM</span>{" "}
+                <span className="font-semibold text-accent">PLUS+</span>
+              </>
+            )}
           </CardTitle>
           <CardDescription>
             <Badge variant="secondary" className="mt-2">
@@ -288,21 +302,21 @@ function AuthPage() {
             )}
           </form>
           {!isAdmin ? (
-          <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left">
-            <div className="flex items-center gap-2 font-medium">
-              <Mail className="h-4 w-4 text-primary" /> Don't have a PIN yet?
+            <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left">
+              <div className="flex items-center gap-2 font-medium">
+                <Mail className="h-4 w-4 text-primary" /> Don't have a PIN yet?
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Email George at{" "}
+                <a
+                  href="mailto:gsmdrivingschool@outlook.com?subject=Learner%20portal%20PIN%20request"
+                  className="font-medium text-primary underline"
+                >
+                  gsmdrivingschool@outlook.com
+                </a>{" "}
+                to request a PIN for GSM Plus.
+              </p>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Email George at{" "}
-              <a
-                href="mailto:gsmdrivingschool@outlook.com?subject=Learner%20portal%20PIN%20request"
-                className="font-medium text-primary underline"
-              >
-                gsmdrivingschool@outlook.com
-              </a>{" "}
-              to request a PIN for GSM Plus.
-            </p>
-          </div>
           ) : null}
           <Button asChild variant="outline" className="w-full">
             <Link to="/">

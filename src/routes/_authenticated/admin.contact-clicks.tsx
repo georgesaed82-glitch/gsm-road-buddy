@@ -23,7 +23,7 @@ function ContactClicksPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["contact_clicks"],
     queryFn: async (): Promise<Click[]> => {
-      const rows = await fetchClicks({ data: { } });
+      const rows = await fetchClicks({ data: {} });
       return rows as Click[];
     },
     retry: false,
@@ -45,14 +45,14 @@ function ContactClicksPage() {
     .map(([pkg, s]) => ({ pkg, ...s, total: s.whatsapp + s.email + s.phone }))
     .sort((a, b) => b.total - a.total);
 
-  const uniquePortalDays = new Set(
-    portalViews.map((r) => new Date(r.created_at).toDateString()),
-  ).size;
+  const uniquePortalDays = new Set(portalViews.map((r) => new Date(r.created_at).toDateString()))
+    .size;
 
   return (
     <AdminShell eyebrow="Insights" title="Contact clicks">
       <p className="mb-6 text-sm text-muted-foreground">
-        Every time a visitor taps WhatsApp, Email or Call on a package — or opens the Learner portal page — it's logged here. Showing the latest 500.
+        Every time a visitor taps WhatsApp, Email or Call on a package — or opens the Learner portal
+        page — it's logged here. Showing the latest 500.
       </p>
 
       <Card className="mb-8">
@@ -66,11 +66,15 @@ function ContactClicksPage() {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <div>
                 <div className="text-2xl font-display">{portalViews.length}</div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground">Total views</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Total views
+                </div>
               </div>
               <div>
                 <div className="text-2xl font-display">{uniquePortalDays}</div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground">Days with views</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Days with views
+                </div>
               </div>
               <div>
                 <div className="text-2xl font-display">
@@ -78,7 +82,9 @@ function ContactClicksPage() {
                     ? formatDistanceToNow(new Date(portalViews[0].created_at), { addSuffix: true })
                     : "—"}
                 </div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground">Last view</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Last view
+                </div>
               </div>
             </div>
           )}
@@ -136,7 +142,7 @@ function ContactClicksPage() {
                     <span className="font-medium">
                       {r.channel === "portal_view"
                         ? "Learner portal viewed"
-                        : r.package ?? "(unknown)"}
+                        : (r.package ?? "(unknown)")}
                     </span>
                     <span className="ml-2 rounded bg-secondary px-2 py-0.5 text-xs uppercase tracking-wider">
                       {r.channel}

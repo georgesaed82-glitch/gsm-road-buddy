@@ -11,7 +11,11 @@ export const Route = createFileRoute("/_authenticated/police-signals")({
   head: () => ({
     meta: [
       { title: "Arm signals — police, HATOs & drivers | GSM Plus" },
-      { name: "description", content: "Realistic Highway Code illustrations of every hand signal you need — police officers and authorised persons directing traffic, plus the three driver arm signals from rule 103." },
+      {
+        name: "description",
+        content:
+          "Realistic Highway Code illustrations of every hand signal you need — police officers and authorised persons directing traffic, plus the three driver arm signals from rule 103.",
+      },
     ],
   }),
   component: PoliceSignalsPage,
@@ -25,9 +29,9 @@ function PoliceSignalsPage() {
     id: r.item_id,
     name: r.name ?? "Custom signal",
     meaning: r.description ?? "",
-    group: (signalGroups.some((g) => g.slug === r.group_slug)
+    group: signalGroups.some((g) => g.slug === r.group_slug)
       ? (r.group_slug as SignalGroup)
-      : "stop"),
+      : "stop",
     Visual: emptyVisual,
   }));
   const items = [...baseItems, ...customList]
@@ -36,7 +40,9 @@ function PoliceSignalsPage() {
   return (
     <PortalShell eyebrow="Highway Code" title="Arm signals — police, HATOs & drivers">
       <p className="max-w-2xl text-muted-foreground">
-        You must obey signals given by police officers, traffic officers, Highways Agency officers, DVSA examiners and school-crossing patrols. You also need to know the three arm signals you can give from your own vehicle. All of these come up in the theory test and in real life.
+        You must obey signals given by police officers, traffic officers, Highways Agency officers,
+        DVSA examiners and school-crossing patrols. You also need to know the three arm signals you
+        can give from your own vehicle. All of these come up in the theory test and in real life.
       </p>
 
       <OfflineDownloadButton

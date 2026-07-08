@@ -41,8 +41,8 @@ function HighwayCodePage() {
   return (
     <PortalShell eyebrow="Reference" title="The Highway Code — key points">
       <p className="max-w-2xl text-sm text-muted-foreground">
-        The essentials from all 14 DVSA topics, distilled into the things you
-        actually need to remember. Skim before a lesson, revise before a test.
+        The essentials from all 14 DVSA topics, distilled into the things you actually need to
+        remember. Skim before a lesson, revise before a test.
       </p>
 
       <OfflineDownloadButton
@@ -73,7 +73,8 @@ function HighwayCodePage() {
         <div className="mt-1 flex flex-wrap items-end justify-between gap-4">
           <h2 className="font-display text-2xl">All topics — key points</h2>
           <div className="text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">{studiedCount}</span> of {total} studied · {pct}%
+            <span className="font-semibold text-foreground">{studiedCount}</span> of {total} studied
+            · {pct}%
           </div>
         </div>
 
@@ -146,7 +147,11 @@ function HighwayCodePage() {
                     marked ? "text-accent" : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {marked ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+                  {marked ? (
+                    <BookmarkCheck className="h-4 w-4" />
+                  ) : (
+                    <Bookmark className="h-4 w-4" />
+                  )}
                 </button>
               </div>
               <h3 className="mt-2 font-display text-xl">{c.title}</h3>

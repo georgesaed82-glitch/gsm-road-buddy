@@ -54,16 +54,17 @@ function ReviewsPage() {
     return reviews;
   }, [dbRows]);
 
-  const merged = useMemo(() =>
-    source.map((r, i) => {
-      const o = get("review", `r-${i}`);
-      if (!o) return r;
-      return {
-        name: o.name ?? r.name,
-        note: o.description ?? r.note,
-        quote: (o.data?.blocks?.[0]?.body) ?? r.quote,
-      };
-    }),
+  const merged = useMemo(
+    () =>
+      source.map((r, i) => {
+        const o = get("review", `r-${i}`);
+        if (!o) return r;
+        return {
+          name: o.name ?? r.name,
+          note: o.description ?? r.note,
+          quote: o.data?.blocks?.[0]?.body ?? r.quote,
+        };
+      }),
     [get, source],
   );
 
@@ -167,9 +168,7 @@ function ReviewsPage() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {filtered.length === 0 ? (
-            <p className="py-20 text-center text-muted-foreground">
-              No reviews match "{query}".
-            </p>
+            <p className="py-20 text-center text-muted-foreground">No reviews match "{query}".</p>
           ) : (
             <div className="columns-1 gap-6 md:columns-2 lg:columns-3 [&>*]:mb-6 [&>*]:break-inside-avoid">
               {shown.map((r, i) => (

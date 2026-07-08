@@ -52,17 +52,14 @@ export function useTopicProgress() {
     [],
   );
 
-  const toggleStudied = useCallback(
-    (slug: string) => {
-      setStudied((prev) => {
-        const next = new Set(prev);
-        if (next.has(slug)) next.delete(slug);
-        else next.add(slug);
-        return next;
-      });
-    },
-    [],
-  );
+  const toggleStudied = useCallback((slug: string) => {
+    setStudied((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  }, []);
 
   const toggleBookmark = useCallback((slug: string) => {
     setBookmarked((prev) => {

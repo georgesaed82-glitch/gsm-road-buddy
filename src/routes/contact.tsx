@@ -31,12 +31,18 @@ export const Route = createFileRoute("/contact")({
 });
 
 const DAY_LABELS: Record<string, string> = {
-  mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday", fri: "Friday", sat: "Saturday", sun: "Sunday",
+  mon: "Monday",
+  tue: "Tuesday",
+  wed: "Wednesday",
+  thu: "Thursday",
+  fri: "Friday",
+  sat: "Saturday",
+  sun: "Sunday",
 };
 
 function ContactPage() {
   const { business, opening_hours } = useSiteSettings();
-  const hours = (["mon","tue","wed","thu","fri","sat","sun"] as const)
+  const hours = (["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const)
     .filter((k) => opening_hours[k])
     .map((k) => ({ day: DAY_LABELS[k], time: opening_hours[k] }));
   const waHref = `https://wa.me/${business.phone_intl}`;
@@ -108,9 +114,7 @@ function ContactPage() {
                   <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                   <div>
                     <p className="font-medium text-foreground">Address</p>
-                    <p className="text-sm text-muted-foreground">
-                      {business.address}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{business.address}</p>
                   </div>
                 </div>
                 <AreasCovered />
@@ -247,11 +251,14 @@ function DownloadAppButton() {
           <p className="font-medium text-foreground">Install the GSM app</p>
           {platform.ios ? (
             <p className="mt-1">
-              Tap the Share button in Safari, then choose <strong className="text-foreground">Add to Home Screen</strong>.
+              Tap the Share button in Safari, then choose{" "}
+              <strong className="text-foreground">Add to Home Screen</strong>.
             </p>
           ) : (
             <p className="mt-1">
-              Open this site in Chrome, Edge or Samsung Internet, then choose <strong className="text-foreground">Install app</strong> or <strong className="text-foreground">Add to Home screen</strong> from the browser menu.
+              Open this site in Chrome, Edge or Samsung Internet, then choose{" "}
+              <strong className="text-foreground">Install app</strong> or{" "}
+              <strong className="text-foreground">Add to Home screen</strong> from the browser menu.
             </p>
           )}
         </div>

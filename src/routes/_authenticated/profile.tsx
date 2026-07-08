@@ -28,9 +28,15 @@ function ProfilePage() {
   const { data, isLoading } = useQuery({
     queryKey: ["profile-page"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return null;
-      const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
       return { user, profile };
     },
   });
@@ -146,7 +152,9 @@ function ProfilePage() {
               <select
                 id="transmission"
                 value={form.transmission}
-                onChange={(e) => setForm({ ...form, transmission: e.target.value as "manual" | "automatic" })}
+                onChange={(e) =>
+                  setForm({ ...form, transmission: e.target.value as "manual" | "automatic" })
+                }
                 className="h-10 border border-input bg-background px-3 text-sm"
               >
                 <option value="manual">Manual</option>

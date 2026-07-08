@@ -1,4 +1,11 @@
-import { CarToken, CLIP_VIEWBOX, segment, easeInOut, type ClipBeat, type ClipExplanation } from "./ClipShell";
+import {
+  CarToken,
+  CLIP_VIEWBOX,
+  segment,
+  easeInOut,
+  type ClipBeat,
+  type ClipExplanation,
+} from "./ClipShell";
 import type { ReactNode } from "react";
 
 // UK top-down driving clips. Coordinate rules (screen y grows downward):
@@ -41,7 +48,8 @@ const turningRight: ClipDef = {
   slug: "turning-right",
   title: "Turning right at a junction",
   rule: "Rules 179–181",
-  summary: "Approach in the left lane, position just left of centre, wait, then turn into the left-hand lane of the new road.",
+  summary:
+    "Approach in the left lane, position just left of centre, wait, then turn into the left-hand lane of the new road.",
   explanation: {
     what: "We are turning right from a major road into a side road while staying on the correct UK side of the road.",
     when: "Use this whenever you need to turn right across oncoming traffic at a junction.",
@@ -55,10 +63,26 @@ const turningRight: ClipDef = {
     ],
   },
   beats: [
-    { at: 0, label: "Mirror–Signal–Manoeuvre on approach", detail: "Check interior + right-hand mirror. Signal right in good time. Reduce speed." },
-    { at: 0.25, label: "Position just left of the centre line", detail: "Rule 179 — position lets traffic behind pass on your left." },
-    { at: 0.5, label: "Wait — give way to oncoming traffic", detail: "Only turn when there is a safe gap. Do not creep into the oncoming lane." },
-    { at: 0.75, label: "Turn into the left-hand lane of the new road", detail: "Don't cut the corner. Straighten up, cancel the signal, mirror again." },
+    {
+      at: 0,
+      label: "Mirror–Signal–Manoeuvre on approach",
+      detail: "Check interior + right-hand mirror. Signal right in good time. Reduce speed.",
+    },
+    {
+      at: 0.25,
+      label: "Position just left of the centre line",
+      detail: "Rule 179 — position lets traffic behind pass on your left.",
+    },
+    {
+      at: 0.5,
+      label: "Wait — give way to oncoming traffic",
+      detail: "Only turn when there is a safe gap. Do not creep into the oncoming lane.",
+    },
+    {
+      at: 0.75,
+      label: "Turn into the left-hand lane of the new road",
+      detail: "Don't cut the corner. Straighten up, cancel the signal, mirror again.",
+    },
   ],
   render: (t) => {
     // Approach: heading 0 (north), in LEFT half (x=310) then drift toward centre-position (x=332).
@@ -101,9 +125,33 @@ const turningRight: ClipDef = {
         {/* Horizontal side road (destination) — extends east */}
         <rect x="400" y="180" width="240" height="80" fill="url(#tarmac-g)" />
         {/* Centre lines */}
-        <line x1="340" y1="0" x2="340" y2="180" stroke={PAINT} strokeWidth="2" strokeDasharray="18 14" />
-        <line x1="340" y1="260" x2="340" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="18 14" />
-        <line x1="400" y1="220" x2="640" y2="220" stroke={PAINT} strokeWidth="2" strokeDasharray="18 14" />
+        <line
+          x1="340"
+          y1="0"
+          x2="340"
+          y2="180"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="18 14"
+        />
+        <line
+          x1="340"
+          y1="260"
+          x2="340"
+          y2="360"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="18 14"
+        />
+        <line
+          x1="400"
+          y1="220"
+          x2="640"
+          y2="220"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="18 14"
+        />
         {/* Give-way markings on side road entry */}
         <path d="M 400 180 L 400 260" stroke={PAINT} strokeWidth="2.5" strokeDasharray="8 6" />
         {/* Oncoming — RIGHT half of vertical road */}
@@ -130,7 +178,8 @@ const meetingTraffic: ClipDef = {
   slug: "meeting-traffic",
   title: "Meeting oncoming traffic on a narrow road",
   rule: "Rules 155–156",
-  summary: "Parked cars on your side of the road — give way to oncoming traffic before you go through the gap.",
+  summary:
+    "Parked cars on your side of the road — give way to oncoming traffic before you go through the gap.",
   explanation: {
     what: "We are dealing with parked vehicles that narrow our lane while another vehicle is coming towards us.",
     when: "Use this on narrow streets whenever the obstruction is on your side and there may not be room for both vehicles.",
@@ -144,10 +193,27 @@ const meetingTraffic: ClipDef = {
     ],
   },
   beats: [
-    { at: 0, label: "Scan ahead for oncoming traffic", detail: "Parked cars on your side of the road obstruct your lane." },
-    { at: 0.25, label: "Slow and hold back behind a parked car", detail: "Rule 155 — give priority when the obstruction is on your side." },
-    { at: 0.55, label: "Oncoming car passes — hold your position", detail: "A brief thank-you nod is polite. Never wave — another driver may not see the pedestrian." },
-    { at: 0.75, label: "Move off when the road is clear", detail: "Mirror, signal briefly, check for pedestrians before pulling out." },
+    {
+      at: 0,
+      label: "Scan ahead for oncoming traffic",
+      detail: "Parked cars on your side of the road obstruct your lane.",
+    },
+    {
+      at: 0.25,
+      label: "Slow and hold back behind a parked car",
+      detail: "Rule 155 — give priority when the obstruction is on your side.",
+    },
+    {
+      at: 0.55,
+      label: "Oncoming car passes — hold your position",
+      detail:
+        "A brief thank-you nod is polite. Never wave — another driver may not see the pedestrian.",
+    },
+    {
+      at: 0.75,
+      label: "Move off when the road is clear",
+      detail: "Mirror, signal briefly, check for pedestrians before pulling out.",
+    },
   ],
   render: (t) => {
     // Ego east → TOP lane (y=160). Parked cars along TOP kerb (y=145).
@@ -163,13 +229,27 @@ const meetingTraffic: ClipDef = {
         <RoadDefs />
         <rect width="640" height="360" fill={GRASS} />
         <rect x="0" y="130" width="640" height="120" fill="url(#tarmac-g)" />
-        <line x1="0" y1="190" x2="640" y2="190" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
+        <line
+          x1="0"
+          y1="190"
+          x2="640"
+          y2="190"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 14"
+        />
         {/* Parked cars along TOP kerb (ego's side) — heading east */}
         {[240, 400, 560].map((x) => (
           <CarToken key={x} x={x} y={148} heading={90} color="#7c7c85" scale={0.9} />
         ))}
         {/* Ego — TOP lane */}
-        <CarToken x={egoX} y={172} heading={90} color="#e5484d" indicator={t > 0.7 && t < 0.85 ? "right" : null} />
+        <CarToken
+          x={egoX}
+          y={172}
+          heading={90}
+          color="#e5484d"
+          indicator={t > 0.7 && t < 0.85 ? "right" : null}
+        />
         {/* Oncoming — BOTTOM lane, heading west */}
         {t > 0.3 && t < 0.62 && <CarToken x={oncomingX} y={215} heading={270} color="#4a90e2" />}
       </svg>
@@ -199,10 +279,27 @@ const zebra: ClipDef = {
     ],
   },
   beats: [
-    { at: 0, label: "See the Belisha beacons", detail: "Yellow flashing globes are your first cue a zebra is ahead." },
-    { at: 0.25, label: "Scan both pavements — pedestrian waiting", detail: "Rule H2 — approach prepared to stop and normally give way to anyone waiting." },
-    { at: 0.5, label: "Stop before the zig-zags", detail: "Never stop on the crossing itself. No overtaking or parking on the zig-zags (Rule 191)." },
-    { at: 0.8, label: "Wait until they have finished crossing", detail: "Move off smoothly. Never wave pedestrians across — another driver may not see them." },
+    {
+      at: 0,
+      label: "See the Belisha beacons",
+      detail: "Yellow flashing globes are your first cue a zebra is ahead.",
+    },
+    {
+      at: 0.25,
+      label: "Scan both pavements — pedestrian waiting",
+      detail: "Rule H2 — approach prepared to stop and normally give way to anyone waiting.",
+    },
+    {
+      at: 0.5,
+      label: "Stop before the zig-zags",
+      detail:
+        "Never stop on the crossing itself. No overtaking or parking on the zig-zags (Rule 191).",
+    },
+    {
+      at: 0.8,
+      label: "Wait until they have finished crossing",
+      detail: "Move off smoothly. Never wave pedestrians across — another driver may not see them.",
+    },
   ],
   render: (t) => {
     // Ego in TOP lane at y=160. Approaches, stops before zig-zags, waits, moves off.
@@ -225,10 +322,28 @@ const zebra: ClipDef = {
         <rect x="0" y="240" width="640" height="30" fill="#a9a4a0" />
         {/* Road */}
         <rect x="0" y="120" width="640" height="120" fill="url(#tarmac-g)" />
-        <line x1="0" y1="180" x2="640" y2="180" stroke={PAINT} strokeWidth="1.5" strokeDasharray="14 12" />
+        <line
+          x1="0"
+          y1="180"
+          x2="640"
+          y2="180"
+          stroke={PAINT}
+          strokeWidth="1.5"
+          strokeDasharray="14 12"
+        />
         {/* Zig-zags */}
-        <path d="M 200 120 L 210 128 L 220 120 L 230 128 L 240 120 L 250 128 L 260 120 L 270 128 L 280 120 L 290 128 L 300 120 L 310 128 L 320 120" stroke={PAINT} strokeWidth="2" fill="none" />
-        <path d="M 200 240 L 210 232 L 220 240 L 230 232 L 240 240 L 250 232 L 260 240 L 270 232 L 280 240 L 290 232 L 300 240 L 310 232 L 320 240" stroke={PAINT} strokeWidth="2" fill="none" />
+        <path
+          d="M 200 120 L 210 128 L 220 120 L 230 128 L 240 120 L 250 128 L 260 120 L 270 128 L 280 120 L 290 128 L 300 120 L 310 128 L 320 120"
+          stroke={PAINT}
+          strokeWidth="2"
+          fill="none"
+        />
+        <path
+          d="M 200 240 L 210 232 L 220 240 L 230 232 L 240 240 L 250 232 L 260 240 L 270 232 L 280 240 L 290 232 L 300 240 L 310 232 L 320 240"
+          stroke={PAINT}
+          strokeWidth="2"
+          fill="none"
+        />
         {/* Zebra stripes */}
         {[0, 1, 2, 3, 4, 5].map((i) => (
           <rect key={i} x={330 + i * 18} y={120} width={10} height={120} fill={PAINT} />
@@ -261,7 +376,8 @@ const spiralRoundabout: ClipDef = {
   slug: "spiral-roundabout",
   title: "Spiral / multi-lane roundabouts",
   rule: "Rules 184–190",
-  summary: "Choose the right lane on approach, give way to the right, follow the spiral markings round, signal to exit.",
+  summary:
+    "Choose the right lane on approach, give way to the right, follow the spiral markings round, signal to exit.",
   explanation: {
     what: "We are using a multi-lane UK roundabout by choosing the correct lane, giving way to the right, and following the marked path.",
     when: "Use this at spiral or multi-lane roundabouts where lane arrows and road markings guide each exit.",
@@ -275,15 +391,37 @@ const spiralRoundabout: ClipDef = {
     ],
   },
   beats: [
-    { at: 0, label: "Choose your lane on approach", detail: "Turning right or more than half way? Right-hand lane. Turning left or first exit? Left-hand lane." },
-    { at: 0.25, label: "Give way to traffic from the right", detail: "Rule 185 — unless signs or markings say otherwise." },
-    { at: 0.5, label: "Follow the spiral markings round", detail: "Lanes drop away in the correct order — do not change lanes across a solid white spiral." },
-    { at: 0.8, label: "Signal left as you pass the exit before yours", detail: "Check the mirror on the exit side, straighten up and go." },
+    {
+      at: 0,
+      label: "Choose your lane on approach",
+      detail:
+        "Turning right or more than half way? Right-hand lane. Turning left or first exit? Left-hand lane.",
+    },
+    {
+      at: 0.25,
+      label: "Give way to traffic from the right",
+      detail: "Rule 185 — unless signs or markings say otherwise.",
+    },
+    {
+      at: 0.5,
+      label: "Follow the spiral markings round",
+      detail:
+        "Lanes drop away in the correct order — do not change lanes across a solid white spiral.",
+    },
+    {
+      at: 0.8,
+      label: "Signal left as you pass the exit before yours",
+      detail: "Check the mirror on the exit side, straighten up and go.",
+    },
   ],
   render: (t) => {
-    const cx = 320, cy = 180, r = 88;
+    const cx = 320,
+      cy = 180,
+      r = 88;
     // Approach: heading 0 (north), LEFT half of vertical road (x≈305), from y=345 to y=cy+r+ish.
-    let x = 305, y = 345, heading = 0;
+    let x = 305,
+      y = 345,
+      heading = 0;
 
     if (t < 0.2) {
       const k = easeInOut(t / 0.2);
@@ -304,7 +442,7 @@ const spiralRoundabout: ClipDef = {
       // Exit north on LEFT half.
       const k = easeInOut((t - 0.85) / 0.15);
       x = 305;
-      y = (cy - r) - (cy - r) * k;
+      y = cy - r - (cy - r) * k;
       heading = 0;
     }
 
@@ -319,19 +457,65 @@ const spiralRoundabout: ClipDef = {
         <circle cx={cx} cy={cy} r={120} fill="url(#tarmac-g)" />
         <circle cx={cx} cy={cy} r={35} fill={GRASS} stroke={PAINT} strokeWidth="2" />
         {/* Lane division on ring */}
-        <circle cx={cx} cy={cy} r={78} fill="none" stroke={PAINT} strokeWidth="1.5" strokeDasharray="10 8" />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={78}
+          fill="none"
+          stroke={PAINT}
+          strokeWidth="1.5"
+          strokeDasharray="10 8"
+        />
         {/* Give-way marks at each entry */}
         <path d="M 285 275 L 355 275" stroke={PAINT} strokeWidth="2" strokeDasharray="6 5" />
         <path d="M 285 85 L 355 85" stroke={PAINT} strokeWidth="2" strokeDasharray="6 5" />
         <path d="M 415 155 L 415 205" stroke={PAINT} strokeWidth="2" strokeDasharray="6 5" />
         <path d="M 225 155 L 225 205" stroke={PAINT} strokeWidth="2" strokeDasharray="6 5" />
         {/* Centre lines on arms */}
-        <line x1="320" y1="0" x2="320" y2="60" stroke={PAINT} strokeWidth="2" strokeDasharray="16 12" />
-        <line x1="320" y1="300" x2="320" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="16 12" />
-        <line x1="0" y1="180" x2="200" y2="180" stroke={PAINT} strokeWidth="2" strokeDasharray="16 12" />
-        <line x1="440" y1="180" x2="640" y2="180" stroke={PAINT} strokeWidth="2" strokeDasharray="16 12" />
+        <line
+          x1="320"
+          y1="0"
+          x2="320"
+          y2="60"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 12"
+        />
+        <line
+          x1="320"
+          y1="300"
+          x2="320"
+          y2="360"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 12"
+        />
+        <line
+          x1="0"
+          y1="180"
+          x2="200"
+          y2="180"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 12"
+        />
+        <line
+          x1="440"
+          y1="180"
+          x2="640"
+          y2="180"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 12"
+        />
         {/* Ego */}
-        <CarToken x={x} y={y} heading={heading} color="#e5484d" indicator={t > 0.62 && t < 0.86 ? "left" : t < 0.2 ? "left" : null} />
+        <CarToken
+          x={x}
+          y={y}
+          heading={heading}
+          color="#e5484d"
+          indicator={t > 0.62 && t < 0.86 ? "left" : t < 0.2 ? "left" : null}
+        />
       </svg>
     );
   },
@@ -359,10 +543,27 @@ const yellowBox: ClipDef = {
     ],
   },
   beats: [
-    { at: 0, label: "Check the exit before entering", detail: "Rule 174 — do not enter unless your exit is clear." },
-    { at: 0.3, label: "Exit is blocked — wait behind the box", detail: "Blocking a yellow box is enforceable (£70+ fine in many areas)." },
-    { at: 0.55, label: "Exit clears — now proceed", detail: "Only enter once you can drive right through without stopping in the box." },
-    { at: 0.8, label: "Turning right? One exception applies", detail: "You MAY enter and wait in the box if the only thing blocking your exit is oncoming traffic." },
+    {
+      at: 0,
+      label: "Check the exit before entering",
+      detail: "Rule 174 — do not enter unless your exit is clear.",
+    },
+    {
+      at: 0.3,
+      label: "Exit is blocked — wait behind the box",
+      detail: "Blocking a yellow box is enforceable (£70+ fine in many areas).",
+    },
+    {
+      at: 0.55,
+      label: "Exit clears — now proceed",
+      detail: "Only enter once you can drive right through without stopping in the box.",
+    },
+    {
+      at: 0.8,
+      label: "Turning right? One exception applies",
+      detail:
+        "You MAY enter and wait in the box if the only thing blocking your exit is oncoming traffic.",
+    },
   ],
   render: (t) => {
     // Ego TOP lane y=160. Approach → stop before box (x=260) → proceed once blocker clears.
@@ -388,13 +589,57 @@ const yellowBox: ClipDef = {
         <rect x="0" y="130" width="640" height="120" fill="url(#tarmac-g)" />
         <rect x="280" y="0" width="120" height="360" fill="url(#tarmac-g)" />
         {/* Yellow box */}
-        <rect x="280" y="130" width="120" height="120" fill="none" stroke="#f5c518" strokeWidth="3" />
-        <path d="M 280 130 L 400 250 M 280 250 L 400 130 M 280 190 L 400 190 M 340 130 L 340 250" stroke="#f5c518" strokeWidth="1.5" />
+        <rect
+          x="280"
+          y="130"
+          width="120"
+          height="120"
+          fill="none"
+          stroke="#f5c518"
+          strokeWidth="3"
+        />
+        <path
+          d="M 280 130 L 400 250 M 280 250 L 400 130 M 280 190 L 400 190 M 340 130 L 340 250"
+          stroke="#f5c518"
+          strokeWidth="1.5"
+        />
         {/* Lane centre lines */}
-        <line x1="0" y1="190" x2="280" y2="190" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
-        <line x1="400" y1="190" x2="640" y2="190" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
-        <line x1="340" y1="0" x2="340" y2="130" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
-        <line x1="340" y1="250" x2="340" y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="16 14" />
+        <line
+          x1="0"
+          y1="190"
+          x2="280"
+          y2="190"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 14"
+        />
+        <line
+          x1="400"
+          y1="190"
+          x2="640"
+          y2="190"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 14"
+        />
+        <line
+          x1="340"
+          y1="0"
+          x2="340"
+          y2="130"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 14"
+        />
+        <line
+          x1="340"
+          y1="250"
+          x2="340"
+          y2="360"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="16 14"
+        />
         {/* Blocker — TOP lane */}
         {t < 0.62 && <CarToken x={blockerX} y={160} heading={90} color="#7c7c85" />}
         {/* Ego — TOP lane */}
@@ -417,7 +662,8 @@ const smartMotorway: ClipDef = {
   slug: "smart-motorway",
   title: "Motorway lane change — mirrors, signal, manoeuvre",
   rule: "Rules 133, 161, 267",
-  summary: "Interior mirror first, then door mirror, wait if unsafe, signal, blind-spot check, then move — one lane at a time.",
+  summary:
+    "Interior mirror first, then door mirror, wait if unsafe, signal, blind-spot check, then move — one lane at a time.",
   explanation: {
     what: "Changing from lane 1 to lane 2 on a motorway to overtake a slower vehicle.",
     when: "Any time you need to move out on a multi-lane road — motorway, dual carriageway, or wide urban route.",
@@ -433,15 +679,53 @@ const smartMotorway: ClipDef = {
     ],
   },
   beats: [
-    { at: 0.00, label: "Plan — slower vehicle ahead", detail: "You are in lane 1 with a slower car ahead. Decide early that you will overtake." },
-    { at: 0.10, label: "Interior mirror first", detail: "Check overall traffic behind. This gives the big picture before any specific-lane check." },
-    { at: 0.22, label: "Right door mirror", detail: "Judge the speed and distance of anything already in lane 2 behind you." },
-    { at: 0.34, label: "Not safe — vehicle closing in lane 2", detail: "A faster car is approaching in the lane you want. Hold your position and let it pass." },
-    { at: 0.52, label: "Vehicle has passed — mirrors again", detail: "Re-check interior, then right door mirror. Never rely on your first check." },
-    { at: 0.64, label: "Signal right", detail: "Give a full, clear signal in good time so drivers behind can plan around you." },
-    { at: 0.72, label: "Blind-spot check", detail: "Quick glance over your right shoulder — mirrors alone cannot see the blind spot." },
-    { at: 0.80, label: "Smooth change into lane 2", detail: "One steady steering movement. Keep the same speed or accelerate slightly." },
-    { at: 0.92, label: "Cancel signal, settle centred", detail: "Cancel the indicator and centre the car in lane 2." },
+    {
+      at: 0.0,
+      label: "Plan — slower vehicle ahead",
+      detail: "You are in lane 1 with a slower car ahead. Decide early that you will overtake.",
+    },
+    {
+      at: 0.1,
+      label: "Interior mirror first",
+      detail:
+        "Check overall traffic behind. This gives the big picture before any specific-lane check.",
+    },
+    {
+      at: 0.22,
+      label: "Right door mirror",
+      detail: "Judge the speed and distance of anything already in lane 2 behind you.",
+    },
+    {
+      at: 0.34,
+      label: "Not safe — vehicle closing in lane 2",
+      detail:
+        "A faster car is approaching in the lane you want. Hold your position and let it pass.",
+    },
+    {
+      at: 0.52,
+      label: "Vehicle has passed — mirrors again",
+      detail: "Re-check interior, then right door mirror. Never rely on your first check.",
+    },
+    {
+      at: 0.64,
+      label: "Signal right",
+      detail: "Give a full, clear signal in good time so drivers behind can plan around you.",
+    },
+    {
+      at: 0.72,
+      label: "Blind-spot check",
+      detail: "Quick glance over your right shoulder — mirrors alone cannot see the blind spot.",
+    },
+    {
+      at: 0.8,
+      label: "Smooth change into lane 2",
+      detail: "One steady steering movement. Keep the same speed or accelerate slightly.",
+    },
+    {
+      at: 0.92,
+      label: "Cancel signal, settle centred",
+      detail: "Cancel the indicator and centre the car in lane 2.",
+    },
   ],
   render: (t) => {
     // Lane geometry.
@@ -454,7 +738,7 @@ const smartMotorway: ClipDef = {
 
     // Ego position — sits mostly fixed in lane 1 (x=160, y=270) then moves
     // to lane 2 (x=240) between t=0.80 and t=0.90.
-    const changeT = Math.min(1, Math.max(0, (t - 0.80) / 0.10));
+    const changeT = Math.min(1, Math.max(0, (t - 0.8) / 0.1));
     const egoX = 160 + (240 - 160) * easeInOut(changeT);
     const egoY = 270;
 
@@ -464,26 +748,30 @@ const smartMotorway: ClipDef = {
     // Following blue car in lane 2. Starts off-screen bottom, closes on ego
     // between 0.15 and 0.34, passes ego on the right 0.34..0.52, then gone.
     const blueY = segment(t, [
-      [0.00, 460],
+      [0.0, 460],
       [0.15, 420],
       [0.34, 320],
       [0.52, -40],
-      [1.00, -40],
+      [1.0, -40],
     ]);
     const blueVisible = t < 0.55;
 
     // Mirror-check schedule.
     type Mirror = "interior" | "right" | null;
     const activeMirror: Mirror =
-      t >= 0.10 && t < 0.22 ? "interior" :
-      t >= 0.22 && t < 0.34 ? "right" :
-      t >= 0.52 && t < 0.60 ? "interior" :
-      t >= 0.60 && t < 0.66 ? "right" :
-      null;
-    const showBlindSpot = t >= 0.72 && t < 0.80;
+      t >= 0.1 && t < 0.22
+        ? "interior"
+        : t >= 0.22 && t < 0.34
+          ? "right"
+          : t >= 0.52 && t < 0.6
+            ? "interior"
+            : t >= 0.6 && t < 0.66
+              ? "right"
+              : null;
+    const showBlindSpot = t >= 0.72 && t < 0.8;
     const showSignal = t >= 0.64 && t < 0.92;
-    const showWaitBadge = t >= 0.34 && t < 0.50;
-    const showSafeBadge = t >= 0.60 && t < 0.66;
+    const showWaitBadge = t >= 0.34 && t < 0.5;
+    const showSafeBadge = t >= 0.6 && t < 0.66;
 
     // Approach-distance readout while the blue car is visible in the right mirror.
     const distMetres = Math.max(5, Math.round((blueY - egoY) * 0.6));
@@ -504,20 +792,77 @@ const smartMotorway: ClipDef = {
 
         <rect width="640" height="360" fill={GRASS} />
         {/* Carriageway */}
-        <rect x={laneEdges[0]} y="0" width={laneEdges[4] - laneEdges[0]} height="360" fill="url(#tarmac-g)" />
+        <rect
+          x={laneEdges[0]}
+          y="0"
+          width={laneEdges[4] - laneEdges[0]}
+          height="360"
+          fill="url(#tarmac-g)"
+        />
         {/* Hard-shoulder inner solid line */}
         <line x1={laneEdges[1]} y1="0" x2={laneEdges[1]} y2="360" stroke={PAINT} strokeWidth="2" />
         {/* Lane dividers (dashed, scrolling) */}
-        <line x1={laneEdges[2]} y1="0" x2={laneEdges[2]} y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="24 22" strokeDashoffset={-dashOffset} />
-        <line x1={laneEdges[3]} y1="0" x2={laneEdges[3]} y2="360" stroke={PAINT} strokeWidth="2" strokeDasharray="24 22" strokeDashoffset={-dashOffset} />
+        <line
+          x1={laneEdges[2]}
+          y1="0"
+          x2={laneEdges[2]}
+          y2="360"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="24 22"
+          strokeDashoffset={-dashOffset}
+        />
+        <line
+          x1={laneEdges[3]}
+          y1="0"
+          x2={laneEdges[3]}
+          y2="360"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="24 22"
+          strokeDashoffset={-dashOffset}
+        />
         {/* Outer edges */}
         <line x1={laneEdges[0]} y1="0" x2={laneEdges[0]} y2="360" stroke={PAINT} strokeWidth="2" />
         <line x1={laneEdges[4]} y1="0" x2={laneEdges[4]} y2="360" stroke={PAINT} strokeWidth="2" />
 
         {/* Lane numbers (subtle) */}
-        <text x="160" y="24" textAnchor="middle" fill={PAINT} opacity="0.5" fontSize="10" fontFamily="Arial" fontWeight="700">LANE 1</text>
-        <text x="240" y="24" textAnchor="middle" fill={PAINT} opacity="0.5" fontSize="10" fontFamily="Arial" fontWeight="700">LANE 2</text>
-        <text x="320" y="24" textAnchor="middle" fill={PAINT} opacity="0.5" fontSize="10" fontFamily="Arial" fontWeight="700">LANE 3</text>
+        <text
+          x="160"
+          y="24"
+          textAnchor="middle"
+          fill={PAINT}
+          opacity="0.5"
+          fontSize="10"
+          fontFamily="Arial"
+          fontWeight="700"
+        >
+          LANE 1
+        </text>
+        <text
+          x="240"
+          y="24"
+          textAnchor="middle"
+          fill={PAINT}
+          opacity="0.5"
+          fontSize="10"
+          fontFamily="Arial"
+          fontWeight="700"
+        >
+          LANE 2
+        </text>
+        <text
+          x="320"
+          y="24"
+          textAnchor="middle"
+          fill={PAINT}
+          opacity="0.5"
+          fontSize="10"
+          fontFamily="Arial"
+          fontWeight="700"
+        >
+          LANE 3
+        </text>
 
         {/* Silver slower car ahead in lane 1 */}
         <CarToken x={160} y={silverY} heading={0} color="#9aa0a6" />
@@ -575,49 +920,144 @@ const smartMotorway: ClipDef = {
             >
               <animate attributeName="r" values="14;22;14" dur="1s" repeatCount="indefinite" />
             </circle>
-            <text x={egoX + 46} y={egoY + 8} fill="#ffd166" fontSize="10" fontWeight="800" fontFamily="Arial">BLIND SPOT</text>
+            <text
+              x={egoX + 46}
+              y={egoY + 8}
+              fill="#ffd166"
+              fontSize="10"
+              fontWeight="800"
+              fontFamily="Arial"
+            >
+              BLIND SPOT
+            </text>
           </g>
         )}
 
         {/* Distance readout to closing car while it is visible in the right mirror */}
         {activeMirror === "right" && blueVisible && blueY > egoY && (
           <g>
-            <line x1={egoX + 40} y1={egoY + 6} x2={240} y2={blueY - 12} stroke="#7ad2ff" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.9" />
-            <rect x={260} y={(egoY + blueY) / 2 - 10} width={70} height={20} rx={3} fill="#0b1b2b" opacity="0.9" />
-            <text x={295} y={(egoY + blueY) / 2 + 4} textAnchor="middle" fill="#7ad2ff" fontSize="11" fontWeight="800" fontFamily="Arial">~{distMetres} m</text>
+            <line
+              x1={egoX + 40}
+              y1={egoY + 6}
+              x2={240}
+              y2={blueY - 12}
+              stroke="#7ad2ff"
+              strokeWidth="1.5"
+              strokeDasharray="3 3"
+              opacity="0.9"
+            />
+            <rect
+              x={260}
+              y={(egoY + blueY) / 2 - 10}
+              width={70}
+              height={20}
+              rx={3}
+              fill="#0b1b2b"
+              opacity="0.9"
+            />
+            <text
+              x={295}
+              y={(egoY + blueY) / 2 + 4}
+              textAnchor="middle"
+              fill="#7ad2ff"
+              fontSize="11"
+              fontWeight="800"
+              fontFamily="Arial"
+            >
+              ~{distMetres} m
+            </text>
           </g>
         )}
 
         {/* Ego */}
-        <CarToken x={egoX} y={egoY} heading={0} color="#e5484d" indicator={showSignal ? "right" : null} />
+        <CarToken
+          x={egoX}
+          y={egoY}
+          heading={0}
+          color="#e5484d"
+          indicator={showSignal ? "right" : null}
+        />
 
         {/* Mirror HUD — top-right corner */}
         <g transform="translate(470 40)">
           <rect x="0" y="0" width="150" height="70" rx="6" fill="#0a0a0a" opacity="0.85" />
-          <text x="75" y="14" textAnchor="middle" fill="#bbb" fontSize="8" fontWeight="800" fontFamily="Arial" letterSpacing="1">MIRROR CHECK</text>
+          <text
+            x="75"
+            y="14"
+            textAnchor="middle"
+            fill="#bbb"
+            fontSize="8"
+            fontWeight="800"
+            fontFamily="Arial"
+            letterSpacing="1"
+          >
+            MIRROR CHECK
+          </text>
           {/* Interior */}
           <g transform="translate(18 24)">
-            <rect width="36" height="20" rx="3"
+            <rect
+              width="36"
+              height="20"
+              rx="3"
               fill={activeMirror === "interior" ? "#ffd166" : "#1a1a1a"}
-              stroke={activeMirror === "interior" ? "#ffd166" : "#555"} />
-            <text x="18" y="14" textAnchor="middle" fontSize="8" fontWeight="800"
-              fill={activeMirror === "interior" ? "#0a0a0a" : "#bbb"} fontFamily="Arial">INT</text>
-            <text x="18" y="56" textAnchor="middle" fill="#888" fontSize="7" fontFamily="Arial">interior</text>
+              stroke={activeMirror === "interior" ? "#ffd166" : "#555"}
+            />
+            <text
+              x="18"
+              y="14"
+              textAnchor="middle"
+              fontSize="8"
+              fontWeight="800"
+              fill={activeMirror === "interior" ? "#0a0a0a" : "#bbb"}
+              fontFamily="Arial"
+            >
+              INT
+            </text>
+            <text x="18" y="56" textAnchor="middle" fill="#888" fontSize="7" fontFamily="Arial">
+              interior
+            </text>
           </g>
           {/* Left door (never active in this clip — shown for context) */}
           <g transform="translate(58 24)" opacity="0.55">
             <rect width="36" height="20" rx="3" fill="#1a1a1a" stroke="#555" />
-            <text x="18" y="14" textAnchor="middle" fontSize="8" fontWeight="800" fill="#bbb" fontFamily="Arial">L</text>
-            <text x="18" y="56" textAnchor="middle" fill="#666" fontSize="7" fontFamily="Arial">left</text>
+            <text
+              x="18"
+              y="14"
+              textAnchor="middle"
+              fontSize="8"
+              fontWeight="800"
+              fill="#bbb"
+              fontFamily="Arial"
+            >
+              L
+            </text>
+            <text x="18" y="56" textAnchor="middle" fill="#666" fontSize="7" fontFamily="Arial">
+              left
+            </text>
           </g>
           {/* Right door */}
           <g transform="translate(98 24)">
-            <rect width="36" height="20" rx="3"
+            <rect
+              width="36"
+              height="20"
+              rx="3"
               fill={activeMirror === "right" ? "#7ad2ff" : "#1a1a1a"}
-              stroke={activeMirror === "right" ? "#7ad2ff" : "#555"} />
-            <text x="18" y="14" textAnchor="middle" fontSize="8" fontWeight="800"
-              fill={activeMirror === "right" ? "#0a0a0a" : "#bbb"} fontFamily="Arial">R</text>
-            <text x="18" y="56" textAnchor="middle" fill="#888" fontSize="7" fontFamily="Arial">right door</text>
+              stroke={activeMirror === "right" ? "#7ad2ff" : "#555"}
+            />
+            <text
+              x="18"
+              y="14"
+              textAnchor="middle"
+              fontSize="8"
+              fontWeight="800"
+              fill={activeMirror === "right" ? "#0a0a0a" : "#bbb"}
+              fontFamily="Arial"
+            >
+              R
+            </text>
+            <text x="18" y="56" textAnchor="middle" fill="#888" fontSize="7" fontFamily="Arial">
+              right door
+            </text>
           </g>
         </g>
 
@@ -625,13 +1065,35 @@ const smartMotorway: ClipDef = {
         {showWaitBadge && (
           <g>
             <rect x="180" y="300" width="280" height="34" rx="6" fill="#7a1215" />
-            <text x="320" y="322" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="900" fontFamily="Arial" letterSpacing="1">WAIT — VEHICLE CLOSING</text>
+            <text
+              x="320"
+              y="322"
+              textAnchor="middle"
+              fill="#fff"
+              fontSize="14"
+              fontWeight="900"
+              fontFamily="Arial"
+              letterSpacing="1"
+            >
+              WAIT — VEHICLE CLOSING
+            </text>
           </g>
         )}
         {showSafeBadge && (
           <g>
             <rect x="200" y="300" width="240" height="34" rx="6" fill="#155e2b" />
-            <text x="320" y="322" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="900" fontFamily="Arial" letterSpacing="1">SAFE TO MOVE</text>
+            <text
+              x="320"
+              y="322"
+              textAnchor="middle"
+              fill="#fff"
+              fontSize="14"
+              fontWeight="900"
+              fontFamily="Arial"
+              letterSpacing="1"
+            >
+              SAFE TO MOVE
+            </text>
           </g>
         )}
       </svg>
@@ -651,7 +1113,8 @@ const laneDiscipline: ClipDef = {
   slug: "lane-discipline",
   title: "Lane discipline & positioning",
   rule: "Rule 264",
-  summary: "Sit centred in your lane. Straddling the lane divider is dangerous and a common test fault.",
+  summary:
+    "Sit centred in your lane. Straddling the lane divider is dangerous and a common test fault.",
   explanation: {
     what: "We are keeping the car centred in its lane on a dual carriageway and avoiding lane straddling.",
     when: "Use this on any multi-lane road, especially when traffic is beside you or you are preparing to overtake.",
@@ -665,10 +1128,27 @@ const laneDiscipline: ClipDef = {
     ],
   },
   beats: [
-    { at: 0, label: "Two cars driving side-by-side", detail: "Rule 264 — keep to the left-hand lane (lane 1) unless overtaking." },
-    { at: 0.22, label: "The right-hand car is STRADDLING the lane line", detail: "Sitting on the divider blocks other traffic and is a common test fault." },
-    { at: 0.5, label: "Correct: settle into the centre of your lane", detail: "Aim for the middle of the lane — you should see roughly equal road on either side of the bonnet." },
-    { at: 0.78, label: "Both cars now correctly positioned", detail: "Steady speed, centred in each lane, safe side-by-side spacing." },
+    {
+      at: 0,
+      label: "Two cars driving side-by-side",
+      detail: "Rule 264 — keep to the left-hand lane (lane 1) unless overtaking.",
+    },
+    {
+      at: 0.22,
+      label: "The right-hand car is STRADDLING the lane line",
+      detail: "Sitting on the divider blocks other traffic and is a common test fault.",
+    },
+    {
+      at: 0.5,
+      label: "Correct: settle into the centre of your lane",
+      detail:
+        "Aim for the middle of the lane — you should see roughly equal road on either side of the bonnet.",
+    },
+    {
+      at: 0.78,
+      label: "Both cars now correctly positioned",
+      detail: "Steady speed, centred in each lane, safe side-by-side spacing.",
+    },
   ],
   render: (t) => {
     // Road y∈[130,310]. Lane 1 (top) centre y=170. Lane 2 (bottom) centre y=250. Divider y=220.
@@ -697,7 +1177,16 @@ const laneDiscipline: ClipDef = {
         <rect x="0" y="110" width="640" height="20" fill={GRASS} />
         <rect x="0" y="130" width="640" height="180" fill="url(#tarmac-g)" />
         {/* Lane divider */}
-        <line x1="0" y1="220" x2="640" y2="220" stroke={PAINT} strokeWidth="2" strokeDasharray="24 20" strokeDashoffset={-dashOffset} />
+        <line
+          x1="0"
+          y1="220"
+          x2="640"
+          y2="220"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="24 20"
+          strokeDashoffset={-dashOffset}
+        />
         {/* Outer edges */}
         <line x1="0" y1="130" x2="640" y2="130" stroke={PAINT} strokeWidth="2" />
         <line x1="0" y1="310" x2="640" y2="310" stroke={PAINT} strokeWidth="2" />
@@ -710,10 +1199,36 @@ const laneDiscipline: ClipDef = {
         {/* Straddling marker: red ✕ over the offending car and label */}
         {isStraddling && (
           <g opacity={xPulse}>
-            <line x1={badX - 18} y1={220 - 18} x2={badX + 18} y2={220 + 18} stroke="#ff3b30" strokeWidth="4" strokeLinecap="round" />
-            <line x1={badX + 18} y1={220 - 18} x2={badX - 18} y2={220 + 18} stroke="#ff3b30" strokeWidth="4" strokeLinecap="round" />
+            <line
+              x1={badX - 18}
+              y1={220 - 18}
+              x2={badX + 18}
+              y2={220 + 18}
+              stroke="#ff3b30"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+            <line
+              x1={badX + 18}
+              y1={220 - 18}
+              x2={badX - 18}
+              y2={220 + 18}
+              stroke="#ff3b30"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
             <rect x={badX + 26} y={205} width={110} height={22} fill="#ff3b30" rx={3} />
-            <text x={badX + 81} y={220} textAnchor="middle" fill="#fff" fontFamily="Arial" fontWeight="800" fontSize="12">STRADDLING</text>
+            <text
+              x={badX + 81}
+              y={220}
+              textAnchor="middle"
+              fill="#fff"
+              fontFamily="Arial"
+              fontWeight="800"
+              fontSize="12"
+            >
+              STRADDLING
+            </text>
           </g>
         )}
 
@@ -722,9 +1237,26 @@ const laneDiscipline: ClipDef = {
         {t > 0.45 && (
           <g>
             <circle cx={goodX} cy={goodY - 30} r="10" fill="#3fa34d" />
-            <path d={`M ${goodX - 5} ${goodY - 30} L ${goodX - 1} ${goodY - 26} L ${goodX + 6} ${goodY - 34}`} stroke="#fff" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d={`M ${goodX - 5} ${goodY - 30} L ${goodX - 1} ${goodY - 26} L ${goodX + 6} ${goodY - 34}`}
+              stroke="#fff"
+              strokeWidth="2.5"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
             <rect x={goodX + 14} y={goodY - 41} width={90} height={20} fill="#3fa34d" rx={3} />
-            <text x={goodX + 59} y={goodY - 27} textAnchor="middle" fill="#fff" fontFamily="Arial" fontWeight="800" fontSize="11">CENTRED</text>
+            <text
+              x={goodX + 59}
+              y={goodY - 27}
+              textAnchor="middle"
+              fill="#fff"
+              fontFamily="Arial"
+              fontWeight="800"
+              fontSize="11"
+            >
+              CENTRED
+            </text>
           </g>
         )}
 
@@ -732,7 +1264,14 @@ const laneDiscipline: ClipDef = {
         {t > 0.6 && (
           <g>
             <circle cx={badX} cy={badY - 30} r="10" fill="#3fa34d" />
-            <path d={`M ${badX - 5} ${badY - 30} L ${badX - 1} ${badY - 26} L ${badX + 6} ${badY - 34}`} stroke="#fff" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d={`M ${badX - 5} ${badY - 30} L ${badX - 1} ${badY - 26} L ${badX + 6} ${badY - 34}`}
+              stroke="#fff"
+              strokeWidth="2.5"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </g>
         )}
       </svg>
@@ -749,7 +1288,8 @@ const slipRoadJoin: ClipDef = {
   slug: "slip-road-join",
   title: "Joining a dual carriageway from a slip road",
   rule: "Rule 259",
-  summary: "Build up speed on the slip road, match the traffic already in lane 1, and slot into a safe gap — ideally in front of the following car, not braking into it.",
+  summary:
+    "Build up speed on the slip road, match the traffic already in lane 1, and slot into a safe gap — ideally in front of the following car, not braking into it.",
   explanation: {
     what: "We are joining a dual carriageway from a slip road by matching traffic speed and merging into a safe gap.",
     when: "Use this whenever a slip road joins a faster road such as a dual carriageway or motorway.",
@@ -763,10 +1303,29 @@ const slipRoadJoin: ClipDef = {
     ],
   },
   beats: [
-    { at: 0, label: "Build up speed on the slip road", detail: "Accelerate along the slip road so you can match the speed of traffic already in lane 1 (Rule 259)." },
-    { at: 0.25, label: "Mirror + shoulder check for a gap", detail: "A car is following behind in lane 1 — glance over your right shoulder as well as the mirrors." },
-    { at: 0.5, label: "Match speed, signal right, slot in ahead of it", detail: "Aim to slide into the gap in front of the following car — do NOT drift in and force them to brake." },
-    { at: 0.8, label: "Cancel signal, settle into lane 1", detail: "You are now safely in lane 1, at traffic speed, with the following car behind you." },
+    {
+      at: 0,
+      label: "Build up speed on the slip road",
+      detail:
+        "Accelerate along the slip road so you can match the speed of traffic already in lane 1 (Rule 259).",
+    },
+    {
+      at: 0.25,
+      label: "Mirror + shoulder check for a gap",
+      detail:
+        "A car is following behind in lane 1 — glance over your right shoulder as well as the mirrors.",
+    },
+    {
+      at: 0.5,
+      label: "Match speed, signal right, slot in ahead of it",
+      detail:
+        "Aim to slide into the gap in front of the following car — do NOT drift in and force them to brake.",
+    },
+    {
+      at: 0.8,
+      label: "Cancel signal, settle into lane 1",
+      detail: "You are now safely in lane 1, at traffic speed, with the following car behind you.",
+    },
   ],
   render: (t) => {
     // Main carriageway y∈[140,280]. Lane 1 top (centre y=175), lane 2 bottom (centre y=245).
@@ -805,17 +1364,22 @@ const slipRoadJoin: ClipDef = {
         <RoadDefs />
         <rect width="640" height="360" fill={GRASS} />
         {/* Slip road (top-left, curving down into carriageway) */}
-        <path
-          d="M 0 0 L 260 0 Q 360 20 420 140 L 420 175 L 0 175 Z"
-          fill="url(#tarmac-g)"
-        />
+        <path d="M 0 0 L 260 0 Q 360 20 420 140 L 420 175 L 0 175 Z" fill="url(#tarmac-g)" />
         {/* Main carriageway */}
         <rect x="0" y="140" width="640" height="140" fill="url(#tarmac-g)" />
         {/* Slip-road outer edge (solid) */}
         <path d="M 260 0 Q 360 20 420 140" stroke={PAINT} strokeWidth="2" fill="none" />
         {/* Joining markings — short broken white line ("joining studs") on the
             merge between slip road and lane 1 */}
-        <line x1="0" y1="140" x2="420" y2="140" stroke={PAINT} strokeWidth="2" strokeDasharray="8 8" />
+        <line
+          x1="0"
+          y1="140"
+          x2="420"
+          y2="140"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="8 8"
+        />
         {/* Chevron arrows pointing into lane 1 on the merge zone */}
         {[80, 160, 240, 320].map((cx) => (
           <path
@@ -829,7 +1393,15 @@ const slipRoadJoin: ClipDef = {
           />
         ))}
         {/* Lane divider on main carriageway */}
-        <line x1="0" y1="210" x2="640" y2="210" stroke={PAINT} strokeWidth="2" strokeDasharray="20 18" />
+        <line
+          x1="0"
+          y1="210"
+          x2="640"
+          y2="210"
+          stroke={PAINT}
+          strokeWidth="2"
+          strokeDasharray="20 18"
+        />
         {/* Outer edges */}
         <line x1="420" y1="140" x2="640" y2="140" stroke={PAINT} strokeWidth="2" />
         <line x1="0" y1="280" x2="640" y2="280" stroke={PAINT} strokeWidth="2" />
@@ -841,13 +1413,29 @@ const slipRoadJoin: ClipDef = {
         <CarToken x={fastX} y={245} heading={90} color="#7c7c85" />
 
         {/* Ego */}
-        <CarToken x={x} y={y} heading={heading} color="#e5484d" indicator={t > 0.4 && t < 0.85 ? "right" : null} />
+        <CarToken
+          x={x}
+          y={y}
+          heading={heading}
+          color="#e5484d"
+          indicator={t > 0.4 && t < 0.85 ? "right" : null}
+        />
 
         {/* Speed cue: "MATCH SPEED" badge during the merge */}
         {t > 0.35 && t < 0.7 && (
           <g>
             <rect x="220" y="300" width="200" height="26" fill="#111" opacity="0.85" rx={4} />
-            <text x="320" y="318" textAnchor="middle" fill="#ffb020" fontFamily="Arial" fontWeight="800" fontSize="13">MATCH SPEED · SLOT IN AHEAD</text>
+            <text
+              x="320"
+              y="318"
+              textAnchor="middle"
+              fill="#ffb020"
+              fontFamily="Arial"
+              fontWeight="800"
+              fontSize="13"
+            >
+              MATCH SPEED · SLOT IN AHEAD
+            </text>
           </g>
         )}
       </svg>

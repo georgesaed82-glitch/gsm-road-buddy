@@ -54,15 +54,9 @@ function OfficerBase({
       <ellipse cx="108" cy="184" rx="10" ry="4" fill={BOOT} />
 
       {/* Torso — tapered, dark uniform */}
-      <path
-        d="M74 96 Q100 90 126 96 L130 150 Q100 156 70 150 Z"
-        fill={UNIFORM}
-      />
+      <path d="M74 96 Q100 90 126 96 L130 150 Q100 156 70 150 Z" fill={UNIFORM} />
       {/* Hi-vis tabard */}
-      <path
-        d="M78 98 Q100 94 122 98 L124 148 Q100 152 76 148 Z"
-        fill={HI_VIS}
-      />
+      <path d="M78 98 Q100 94 122 98 L124 148 Q100 152 76 148 Z" fill={HI_VIS} />
       {/* Reflective silver bands */}
       <rect x="78" y="118" width="46" height="4" fill={HI_VIS_STRIPE} />
       <rect x="78" y="134" width="46" height="4" fill={HI_VIS_STRIPE} />
@@ -87,20 +81,12 @@ function OfficerBase({
           {/* Nose */}
           <path d="M100 72 L99 77 L101 77 Z" fill={SKIN_SHADE} opacity="0.6" />
           {/* Mouth */}
-          <path
-            d="M96 80 Q100 82 104 80"
-            fill="none"
-            stroke={SKIN_SHADE}
-            strokeWidth="1"
-          />
+          <path d="M96 80 Q100 82 104 80" fill="none" stroke={SKIN_SHADE} strokeWidth="1" />
         </>
       )}
 
       {/* Peaked police cap */}
-      <path
-        d="M84 56 Q100 42 116 56 L118 62 L82 62 Z"
-        fill={HAT}
-      />
+      <path d="M84 56 Q100 42 116 56 L118 62 L82 62 Z" fill={HAT} />
       {/* Cap band (Sillitoe tartan feel — simple black band) */}
       <rect x="82" y="62" width="36" height="5" fill={HAT} />
       {/* Peak */}
@@ -126,46 +112,44 @@ function Arm({ side, pose }: { side: "left" | "right"; pose: ArmPose }) {
   const sy = 100;
 
   // Hand + elbow endpoints per pose (elbow adds a subtle bend).
-  const ends: Record<
-    ArmPose,
-    { ex: number; ey: number; hx: number; hy: number; palmRot: number }
-  > = {
-    down: {
-      ex: sx + (side === "left" ? -4 : 4),
-      ey: sy + 24,
-      hx: sx + (side === "left" ? -6 : 6),
-      hy: sy + 46,
-      palmRot: 0,
-    },
-    up: {
-      ex: sx + (side === "left" ? -6 : 6),
-      ey: sy - 24,
-      hx: sx + (side === "left" ? -8 : 8),
-      hy: sy - 54,
-      palmRot: 0, // palm facing outward (toward camera)
-    },
-    "out-side": {
-      ex: side === "left" ? sx - 24 : sx + 24,
-      ey: sy,
-      hx: side === "left" ? sx - 52 : sx + 52,
-      hy: sy,
-      palmRot: side === "left" ? -90 : 90,
-    },
-    across: {
-      ex: 100,
-      ey: sy - 4,
-      hx: side === "left" ? sx + 30 : sx - 30,
-      hy: sy - 8,
-      palmRot: side === "left" ? 90 : -90,
-    },
-    wave: {
-      ex: side === "left" ? sx - 18 : sx + 18,
-      ey: sy - 4,
-      hx: side === "left" ? sx - 38 : sx + 38,
-      hy: sy - 22,
-      palmRot: side === "left" ? -60 : 60,
-    },
-  };
+  const ends: Record<ArmPose, { ex: number; ey: number; hx: number; hy: number; palmRot: number }> =
+    {
+      down: {
+        ex: sx + (side === "left" ? -4 : 4),
+        ey: sy + 24,
+        hx: sx + (side === "left" ? -6 : 6),
+        hy: sy + 46,
+        palmRot: 0,
+      },
+      up: {
+        ex: sx + (side === "left" ? -6 : 6),
+        ey: sy - 24,
+        hx: sx + (side === "left" ? -8 : 8),
+        hy: sy - 54,
+        palmRot: 0, // palm facing outward (toward camera)
+      },
+      "out-side": {
+        ex: side === "left" ? sx - 24 : sx + 24,
+        ey: sy,
+        hx: side === "left" ? sx - 52 : sx + 52,
+        hy: sy,
+        palmRot: side === "left" ? -90 : 90,
+      },
+      across: {
+        ex: 100,
+        ey: sy - 4,
+        hx: side === "left" ? sx + 30 : sx - 30,
+        hy: sy - 8,
+        palmRot: side === "left" ? 90 : -90,
+      },
+      wave: {
+        ex: side === "left" ? sx - 18 : sx + 18,
+        ey: sy - 4,
+        hx: side === "left" ? sx - 38 : sx + 38,
+        hy: sy - 22,
+        palmRot: side === "left" ? -60 : 60,
+      },
+    };
 
   const { ex, ey, hx, hy, palmRot } = ends[pose];
 
@@ -267,7 +251,15 @@ function DriverBase({ pose }: { pose: DriverPose }) {
       <rect width="200" height="200" fill={BG} />
       {/* Road */}
       <rect x="0" y="150" width="200" height="50" fill="#cbd5e1" />
-      <line x1="0" y1="170" x2="200" y2="170" stroke={PAINT_STRIPE} strokeWidth="3" strokeDasharray="10 8" />
+      <line
+        x1="0"
+        y1="170"
+        x2="200"
+        y2="170"
+        stroke={PAINT_STRIPE}
+        strokeWidth="3"
+        strokeDasharray="10 8"
+      />
 
       {/* Car body — 3/4 rear view */}
       {/* Roof */}
@@ -288,7 +280,16 @@ function DriverBase({ pose }: { pose: DriverPose }) {
       <rect x="34" y="102" width="14" height="8" rx="1.5" fill={ARROW} />
       <rect x="152" y="102" width="14" height="8" rx="1.5" fill={ARROW} />
       {/* Number plate */}
-      <rect x="80" y="122" width="40" height="10" rx="1" fill="#fde68a" stroke={CAR_DARK} strokeWidth="1" />
+      <rect
+        x="80"
+        y="122"
+        width="40"
+        height="10"
+        rx="1"
+        fill="#fde68a"
+        stroke={CAR_DARK}
+        strokeWidth="1"
+      />
       {/* Wheels */}
       <circle cx="52" cy="150" r="12" fill={WHEEL} />
       <circle cx="52" cy="150" r="4" fill="#4b5563" />
@@ -314,7 +315,16 @@ function DriverBase({ pose }: { pose: DriverPose }) {
       <circle cx={arm.elbowX} cy={arm.elbowY} r="3.5" fill={SKIN_SHADE} />
       {/* Hand / palm */}
       <g transform={`translate(${arm.hx} ${arm.hy}) rotate(${arm.palmRot})`}>
-        <rect x="-6" y="-3" width="12" height="14" rx="3" fill={SKIN} stroke={SKIN_SHADE} strokeWidth="1" />
+        <rect
+          x="-6"
+          y="-3"
+          width="12"
+          height="14"
+          rx="3"
+          fill={SKIN}
+          stroke={SKIN_SHADE}
+          strokeWidth="1"
+        />
         <line x1="-3.5" y1="0" x2="-3.5" y2="10" stroke={SKIN_SHADE} strokeWidth="0.7" />
         <line x1="0" y1="0" x2="0" y2="10" stroke={SKIN_SHADE} strokeWidth="0.7" />
         <line x1="3.5" y1="0" x2="3.5" y2="10" stroke={SKIN_SHADE} strokeWidth="0.7" />

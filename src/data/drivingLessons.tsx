@@ -64,14 +64,40 @@ function SpeedAdjustmentScene(t: number) {
       <line x1={0} y1={238} x2={640} y2={238} stroke={PAINT} strokeWidth={1.5} />
       {/* Centre dashes */}
       {Array.from({ length: 16 }).map((_, i) => (
-        <rect key={i} x={i * 40 + ((t * 40) % 40) - 40} y={198} width={20} height={4} fill={PAINT} />
+        <rect
+          key={i}
+          x={i * 40 + ((t * 40) % 40) - 40}
+          y={198}
+          width={20}
+          height={4}
+          fill={PAINT}
+        />
       ))}
       {/* 40 speed limit sign */}
       <g transform="translate(80 90)">
         <circle r={22} fill="#fff" stroke="#c8102e" strokeWidth={5} />
-        <text textAnchor="middle" y={7} fontSize={20} fontWeight={800} fill="#111" fontFamily="sans-serif">40</text>
+        <text
+          textAnchor="middle"
+          y={7}
+          fontSize={20}
+          fontWeight={800}
+          fill="#111"
+          fontFamily="sans-serif"
+        >
+          40
+        </text>
       </g>
-      <text x={80} y={132} textAnchor="middle" fontSize={9} fill="#fff" opacity={0.6} fontFamily="sans-serif">SPEED LIMIT</text>
+      <text
+        x={80}
+        y={132}
+        textAnchor="middle"
+        fontSize={9}
+        fill="#fff"
+        opacity={0.6}
+        fontFamily="sans-serif"
+      >
+        SPEED LIMIT
+      </text>
 
       {/* Lead grey car (top-down) */}
       <Car x={leadX} y={roadY} color="#8a8a8f" braking={false} />
@@ -81,11 +107,15 @@ function SpeedAdjustmentScene(t: number) {
       {/* Speed HUD */}
       <g transform="translate(20 300)">
         <rect width={180} height={44} rx={6} fill="#000" opacity={0.55} />
-        <text x={12} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">YOUR SPEED</text>
+        <text x={12} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">
+          YOUR SPEED
+        </text>
         <text x={12} y={38} fontSize={20} fill="#fff" fontWeight={700} fontFamily="sans-serif">
           {Math.round(egoSpeed)} mph
         </text>
-        <text x={100} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">CAR AHEAD</text>
+        <text x={100} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">
+          CAR AHEAD
+        </text>
         <text x={100} y={38} fontSize={20} fill="#f5f5f0" fontWeight={700} fontFamily="sans-serif">
           {leadSpeed} mph
         </text>
@@ -110,7 +140,16 @@ function Car({
   // Car heading east (right). Draw horizontally.
   return (
     <g transform={`translate(${x} ${y})`}>
-      <rect x={-14} y={-8} width={28} height={16} rx={3} fill={color} stroke="#0a0a0a" strokeWidth={0.6} />
+      <rect
+        x={-14}
+        y={-8}
+        width={28}
+        height={16}
+        rx={3}
+        fill={color}
+        stroke="#0a0a0a"
+        strokeWidth={0.6}
+      />
       <rect x={-8} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.7} />
       <rect x={3} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.5} />
       {/* headlights (front = right) */}
@@ -158,10 +197,21 @@ const speedAdjustment: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>The speed limit is the <strong>maximum legal speed in ideal conditions</strong> — not a target. Driving to the conditions is what actually keeps you (and everyone around you) safe. Rain, spray, low sun, heavy traffic, roadworks or a queue ahead all shorten the safe speed long before the number on the sign does.</p>
+      <p>
+        The speed limit is the <strong>maximum legal speed in ideal conditions</strong> — not a
+        target. Driving to the conditions is what actually keeps you (and everyone around you) safe.
+        Rain, spray, low sun, heavy traffic, roadworks or a queue ahead all shorten the safe speed
+        long before the number on the sign does.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Every time the road ahead changes: weather, visibility, traffic flow, a hazard you can see coming, or a vehicle in front travelling slower than the limit. If in doubt, the answer is always to ease off first and reassess.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Every time the road ahead changes: weather, visibility, traffic flow, a hazard you can see
+        coming, or a vehicle in front travelling slower than the limit. If in doubt, the answer is
+        always to ease off first and reassess.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Look far ahead — read the road, weather and traffic well before you get there.</li>
         <li>Match your speed to the slowest safe factor (flow, visibility, hazards).</li>
@@ -191,10 +241,22 @@ const speedAdjustment: Lesson = {
     "Always adjust your speed to what you can see, the space available and the developing hazards — not simply the number on the speed limit sign.",
   durationMs: 22000,
   captions: [
-    { at: 0, label: "40 mph road ahead", detail: "You're cruising at the limit. Speed limit sign confirmed." },
-    { at: 0.25, label: "Grey car ahead is slower", detail: "Reading the road: the vehicle ahead is at ~35 mph." },
+    {
+      at: 0,
+      label: "40 mph road ahead",
+      detail: "You're cruising at the limit. Speed limit sign confirmed.",
+    },
+    {
+      at: 0.25,
+      label: "Grey car ahead is slower",
+      detail: "Reading the road: the vehicle ahead is at ~35 mph.",
+    },
     { at: 0.45, label: "Decision point", detail: "The gap is closing — what would you do?" },
-    { at: 0.6, label: "Match speed and hold the gap", detail: "Ease off, drop to 35 mph, keep a safe 2-second gap." },
+    {
+      at: 0.6,
+      label: "Match speed and hold the gap",
+      detail: "Ease off, drop to 35 mph, keep a safe 2-second gap.",
+    },
     { at: 0.85, label: "Smooth follow", detail: "Flow with the traffic. Smooth is safe." },
   ],
   questions: [
@@ -266,7 +328,9 @@ function TwoSecondRuleScene(t: number) {
   const safe = wet ? gapSeconds >= 4 : gapSeconds >= 2;
   const gapColor = safe ? "#22c55e" : gapSeconds >= 1.5 ? "#f59e0b" : "#ef4444";
 
-  const roadColor = wet ? `rgb(${28 - 4 * wetProgress}, ${28 - 4 * wetProgress}, ${34 + 6 * wetProgress})` : "#2b2b2e";
+  const roadColor = wet
+    ? `rgb(${28 - 4 * wetProgress}, ${28 - 4 * wetProgress}, ${34 + 6 * wetProgress})`
+    : "#2b2b2e";
 
   const brakeLights = t > 0.42 && t < 0.5;
 
@@ -277,7 +341,15 @@ function TwoSecondRuleScene(t: number) {
           <stop offset="0" stopColor={wet ? "#20232a" : "#1a1a1c"} />
           <stop offset="1" stopColor={wet ? "#141519" : "#111"} />
         </linearGradient>
-        <pattern id="rain" x="0" y="0" width="6" height="12" patternUnits="userSpaceOnUse" patternTransform={`translate(0 ${(t * 400) % 12})`}>
+        <pattern
+          id="rain"
+          x="0"
+          y="0"
+          width="6"
+          height="12"
+          patternUnits="userSpaceOnUse"
+          patternTransform={`translate(0 ${(t * 400) % 12})`}
+        >
           <line x1="3" y1="0" x2="1" y2="8" stroke="#a8c8ff" strokeWidth="0.6" opacity="0.55" />
         </pattern>
       </defs>
@@ -287,22 +359,79 @@ function TwoSecondRuleScene(t: number) {
       {/* Road */}
       <rect x={0} y={160} width={640} height={80} fill={roadColor} />
       {/* Wet sheen */}
-      {wet && <rect x={0} y={160} width={640} height={80} fill="#4a6b8a" opacity={0.08 * wetProgress + 0.05} />}
+      {wet && (
+        <rect
+          x={0}
+          y={160}
+          width={640}
+          height={80}
+          fill="#4a6b8a"
+          opacity={0.08 * wetProgress + 0.05}
+        />
+      )}
       {/* Edge lines */}
-      <line x1={0} y1={162} x2={640} y2={162} stroke={PAINT} strokeWidth={1.5} opacity={wet ? 0.75 : 1} />
-      <line x1={0} y1={238} x2={640} y2={238} stroke={PAINT} strokeWidth={1.5} opacity={wet ? 0.75 : 1} />
+      <line
+        x1={0}
+        y1={162}
+        x2={640}
+        y2={162}
+        stroke={PAINT}
+        strokeWidth={1.5}
+        opacity={wet ? 0.75 : 1}
+      />
+      <line
+        x1={0}
+        y1={238}
+        x2={640}
+        y2={238}
+        stroke={PAINT}
+        strokeWidth={1.5}
+        opacity={wet ? 0.75 : 1}
+      />
       {/* Centre dashes */}
       {Array.from({ length: 16 }).map((_, i) => (
-        <rect key={i} x={i * 40 + ((t * 40) % 40) - 40} y={198} width={20} height={4} fill={PAINT} opacity={wet ? 0.7 : 1} />
+        <rect
+          key={i}
+          x={i * 40 + ((t * 40) % 40) - 40}
+          y={198}
+          width={20}
+          height={4}
+          fill={PAINT}
+          opacity={wet ? 0.7 : 1}
+        />
       ))}
       {/* Rain overlay */}
       {wet && <rect x={0} y={0} width={640} height={360} fill="url(#rain)" opacity={wetProgress} />}
 
       {/* Gap indicator between the two cars */}
       <g>
-        <line x1={egoX + 16} y1={roadY - 26} x2={leadX - 16} y2={roadY - 26} stroke={gapColor} strokeWidth={2} strokeDasharray="4 3" />
-        <rect x={(egoX + leadX) / 2 - 28} y={roadY - 42} width={56} height={18} rx={4} fill="#000" opacity={0.7} />
-        <text x={(egoX + leadX) / 2} y={roadY - 29} textAnchor="middle" fontSize={11} fontWeight={700} fill={gapColor} fontFamily="sans-serif">
+        <line
+          x1={egoX + 16}
+          y1={roadY - 26}
+          x2={leadX - 16}
+          y2={roadY - 26}
+          stroke={gapColor}
+          strokeWidth={2}
+          strokeDasharray="4 3"
+        />
+        <rect
+          x={(egoX + leadX) / 2 - 28}
+          y={roadY - 42}
+          width={56}
+          height={18}
+          rx={4}
+          fill="#000"
+          opacity={0.7}
+        />
+        <text
+          x={(egoX + leadX) / 2}
+          y={roadY - 29}
+          textAnchor="middle"
+          fontSize={11}
+          fontWeight={700}
+          fill={gapColor}
+          fontFamily="sans-serif"
+        >
           {gapSeconds.toFixed(1)}s
         </text>
       </g>
@@ -317,7 +446,14 @@ function TwoSecondRuleScene(t: number) {
         <text x={12} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">
           {wet ? "WET · SAFE GAP" : "DRY · SAFE GAP"}
         </text>
-        <text x={12} y={38} fontSize={20} fill={safe ? "#22c55e" : "#ef4444"} fontWeight={700} fontFamily="sans-serif">
+        <text
+          x={12}
+          y={38}
+          fontSize={20}
+          fill={safe ? "#22c55e" : "#ef4444"}
+          fontWeight={700}
+          fontFamily="sans-serif"
+        >
           {wet ? "4 seconds" : "2 seconds"}
         </text>
       </g>
@@ -342,7 +478,16 @@ function Car2({
 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
-      <rect x={-14} y={-8} width={28} height={16} rx={3} fill={color} stroke="#0a0a0a" strokeWidth={0.6} />
+      <rect
+        x={-14}
+        y={-8}
+        width={28}
+        height={16}
+        rx={3}
+        fill={color}
+        stroke="#0a0a0a"
+        strokeWidth={0.6}
+      />
       <rect x={-8} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.7} />
       <rect x={3} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.5} />
       <rect x={14} y={-7} width={1.6} height={3} fill="#fff8c0" />
@@ -351,7 +496,13 @@ function Car2({
       <rect x={-15.6} y={4} width={1.6} height={3} fill={braking ? "#ff2a2a" : "#5a1010"} />
       {wipers && (
         <line x1={7} y1={-6} x2={3} y2={6} stroke="#ddd" strokeWidth={0.8}>
-          <animateTransform attributeName="transform" type="rotate" values="-15 5 0;15 5 0;-15 5 0" dur="0.8s" repeatCount="indefinite" />
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            values="-15 5 0;15 5 0;-15 5 0"
+            dur="0.8s"
+            repeatCount="indefinite"
+          />
         </line>
       )}
       {indicator === "right" && (
@@ -393,13 +544,27 @@ const twoSecondRule: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>The gap in front of you is your <strong>thinking time and braking distance</strong>. Most rear-end shunts happen because the driver behind was simply too close to react. A proper gap also lets you <em>see</em> more — brake lights, hazards and junctions arrive early, so the whole drive gets smoother.</p>
+      <p>
+        The gap in front of you is your <strong>thinking time and braking distance</strong>. Most
+        rear-end shunts happen because the driver behind was simply too close to react. A proper gap
+        also lets you <em>see</em> more — brake lights, hazards and junctions arrive early, so the
+        whole drive gets smoother.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Every single time you are following another vehicle — town, country or dual carriageway. Two seconds in the dry, four in the wet, more still in ice, spray or behind a large vehicle you can't see past.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Every single time you are following another vehicle — town, country or dual carriageway. Two
+        seconds in the dry, four in the wet, more still in ice, spray or behind a large vehicle you
+        can't see past.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Pick a fixed point (sign, drain, lamp post) as the car in front passes it.</li>
-        <li>Count "only a fool breaks the two-second rule" — you should finish after your car passes it.</li>
+        <li>
+          Count "only a fool breaks the two-second rule" — you should finish after your car passes
+          it.
+        </li>
         <li>If you finish before, you're too close — ease off, don't brake.</li>
         <li>In rain, spray or low grip, double it: count it twice.</li>
         <li>If a car cuts in, drop back and rebuild the gap — don't fight for it.</li>
@@ -426,11 +591,31 @@ const twoSecondRule: Lesson = {
     "Two seconds in the dry, four in the wet, ten on ice — the gap in front of you is the time you have to think, react and stop.",
   durationMs: 22000,
   captions: [
-    { at: 0, label: "Dry road, following a grey car", detail: "You settle in behind at a comfortable speed." },
-    { at: 0.25, label: "The gap is closing", detail: "The counter is dropping below 2 seconds — you're getting too close." },
-    { at: 0.5, label: "Decision point — the rain starts", detail: "The surface is turning wet. What's the safe gap now?" },
-    { at: 0.7, label: "Ease off and drop back", detail: "Extend the gap to 4 seconds for the wet road." },
-    { at: 0.9, label: "Safe following distance restored", detail: "Green counter — you're back in control." },
+    {
+      at: 0,
+      label: "Dry road, following a grey car",
+      detail: "You settle in behind at a comfortable speed.",
+    },
+    {
+      at: 0.25,
+      label: "The gap is closing",
+      detail: "The counter is dropping below 2 seconds — you're getting too close.",
+    },
+    {
+      at: 0.5,
+      label: "Decision point — the rain starts",
+      detail: "The surface is turning wet. What's the safe gap now?",
+    },
+    {
+      at: 0.7,
+      label: "Ease off and drop back",
+      detail: "Extend the gap to 4 seconds for the wet road.",
+    },
+    {
+      at: 0.9,
+      label: "Safe following distance restored",
+      detail: "Green counter — you're back in control.",
+    },
   ],
   questions: [
     {
@@ -439,8 +624,7 @@ const twoSecondRule: Lesson = {
       options: [
         {
           label: "The same 2 seconds — you're already at the limit",
-          explain:
-            "No. Wet roads double stopping distances. 2 seconds is only enough in the dry.",
+          explain: "No. Wet roads double stopping distances. 2 seconds is only enough in the dry.",
         },
         {
           label: "At least 4 seconds — double the dry gap",
@@ -539,7 +723,15 @@ function ZebraCrossingScene(t: number) {
         <rect key={i} x={crossingX + i * 14} y={161} width={9} height={78} fill={PAINT} />
       ))}
       {/* Give-way triangles (dashed line before the stripes) */}
-      <line x1={crossingX - 6} y1={162} x2={crossingX - 6} y2={238} stroke={PAINT} strokeDasharray="4 3" strokeWidth={1.2} />
+      <line
+        x1={crossingX - 6}
+        y1={162}
+        x2={crossingX - 6}
+        y2={238}
+        stroke={PAINT}
+        strokeDasharray="4 3"
+        strokeWidth={1.2}
+      />
       {/* Belisha beacons */}
       <Belisha x={crossingX + 4} y={130} on={t % 1 < 0.5} />
       <Belisha x={crossingX + crossingW - 4} y={280} on={t % 1 >= 0.5} />
@@ -551,8 +743,22 @@ function ZebraCrossingScene(t: number) {
       <g transform={`translate(${pedX} ${pedY})`}>
         <circle r={3.2} cy={-6} fill="#f5d6a0" stroke="#1a1a1c" strokeWidth={0.4} />
         <rect x={-3} y={-3} width={6} height={9} fill="#c8102e" />
-        <line x1={-1.5} y1={6} x2={-1.5 + pedWalkPhase * 1.5} y2={11} stroke="#1a1a1c" strokeWidth={1.2} />
-        <line x1={1.5} y1={6} x2={1.5 - pedWalkPhase * 1.5} y2={11} stroke="#1a1a1c" strokeWidth={1.2} />
+        <line
+          x1={-1.5}
+          y1={6}
+          x2={-1.5 + pedWalkPhase * 1.5}
+          y2={11}
+          stroke="#1a1a1c"
+          strokeWidth={1.2}
+        />
+        <line
+          x1={1.5}
+          y1={6}
+          x2={1.5 - pedWalkPhase * 1.5}
+          y2={11}
+          stroke="#1a1a1c"
+          strokeWidth={1.2}
+        />
       </g>
 
       {/* HUD */}
@@ -561,10 +767,21 @@ function ZebraCrossingScene(t: number) {
         <text x={12} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">
           ZEBRA CROSSING AHEAD
         </text>
-        <text x={12} y={38} fontSize={16} fontWeight={700} fontFamily="sans-serif"
+        <text
+          x={12}
+          y={38}
+          fontSize={16}
+          fontWeight={700}
+          fontFamily="sans-serif"
           fill={t < 0.3 ? "#f5f5f0" : t < 0.6 ? "#f59e0b" : t < 0.9 ? "#ef4444" : "#22c55e"}
         >
-          {t < 0.3 ? "Scan and slow" : t < 0.6 ? "Brake progressively" : t < 0.9 ? "Stopped — give way" : "Clear — move off"}
+          {t < 0.3
+            ? "Scan and slow"
+            : t < 0.6
+              ? "Brake progressively"
+              : t < 0.9
+                ? "Stopped — give way"
+                : "Clear — move off"}
         </text>
       </g>
     </svg>
@@ -604,7 +821,8 @@ const zebraCrossing: Lesson = {
     "Is the vehicle behind me too close — do I need to warn them with brake lights early?",
     "If I stop, will the crossing be clear before I move off?",
   ],
-  ruleHeadline: "You MUST give way to anyone on the crossing — and be ready to stop for anyone waiting to cross.",
+  ruleHeadline:
+    "You MUST give way to anyone on the crossing — and be ready to stop for anyone waiting to cross.",
   ruleBullets: [
     "Look for the flashing yellow Belisha beacons and zig-zag lines on approach",
     "Slow down and be prepared to stop — every time",
@@ -615,10 +833,20 @@ const zebraCrossing: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>A zebra crossing gives pedestrians <strong>priority</strong> — it's the law, not a courtesy. The beacons and zig-zags exist so you have room to <em>see</em>, <em>slow</em> and <em>stop</em> smoothly. Late, heavy braking is how pedestrians get hit and how the driver behind rear-ends you.</p>
+      <p>
+        A zebra crossing gives pedestrians <strong>priority</strong> — it's the law, not a courtesy.
+        The beacons and zig-zags exist so you have room to <em>see</em>, <em>slow</em> and{" "}
+        <em>stop</em> smoothly. Late, heavy braking is how pedestrians get hit and how the driver
+        behind rear-ends you.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>The moment you spot the beacons or the zig-zag lines — day or night, wet or dry. If anyone is on the crossing, or clearly about to step on, you MUST stop.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        The moment you spot the beacons or the zig-zag lines — day or night, wet or dry. If anyone
+        is on the crossing, or clearly about to step on, you MUST stop.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>See the beacons — ease off the accelerator, cover the brake.</li>
         <li>Scan the pavements, not just the stripes — who's walking towards it?</li>
@@ -648,16 +876,33 @@ const zebraCrossing: Lesson = {
     "Zebra crossings belong to the pedestrian. Your job is to see them early, stop smoothly and only move off when the crossing is completely clear.",
   durationMs: 22000,
   captions: [
-    { at: 0, label: "Beacons and zig-zags visible ahead", detail: "Ease off the accelerator — start scanning the pavement." },
-    { at: 0.25, label: "Pedestrian at the kerb", detail: "They're looking at the crossing — assume they will step on." },
+    {
+      at: 0,
+      label: "Beacons and zig-zags visible ahead",
+      detail: "Ease off the accelerator — start scanning the pavement.",
+    },
+    {
+      at: 0.25,
+      label: "Pedestrian at the kerb",
+      detail: "They're looking at the crossing — assume they will step on.",
+    },
     { at: 0.5, label: "Decision point", detail: "What should you do now?" },
-    { at: 0.65, label: "Stopped at the give-way line", detail: "Handbrake on, watch the crossing." },
-    { at: 0.92, label: "Crossing clear — move off smoothly", detail: "Mirror check, release, gently away." },
+    {
+      at: 0.65,
+      label: "Stopped at the give-way line",
+      detail: "Handbrake on, watch the crossing.",
+    },
+    {
+      at: 0.92,
+      label: "Crossing clear — move off smoothly",
+      detail: "Mirror check, release, gently away.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "A pedestrian is waiting at the kerb of a zebra crossing, looking at it. What should you do?",
+      prompt:
+        "A pedestrian is waiting at the kerb of a zebra crossing, looking at it. What should you do?",
       options: [
         {
           label: "Keep going — they haven't stepped on yet",
@@ -694,7 +939,14 @@ function HorizontalRoad({ t, roadColor = "#2b2b2e" }: { t: number; roadColor?: s
       <line x1={0} y1={162} x2={640} y2={162} stroke={PAINT} strokeWidth={1.5} />
       <line x1={0} y1={238} x2={640} y2={238} stroke={PAINT} strokeWidth={1.5} />
       {Array.from({ length: 16 }).map((_, i) => (
-        <rect key={i} x={i * 40 + ((t * 40) % 40) - 40} y={198} width={20} height={4} fill={PAINT} />
+        <rect
+          key={i}
+          x={i * 40 + ((t * 40) % 40) - 40}
+          y={198}
+          width={20}
+          height={4}
+          fill={PAINT}
+        />
       ))}
     </g>
   );
@@ -714,13 +966,32 @@ function Sky({ id }: { id: string }) {
   );
 }
 
-function Hud({ label, value, tone = "info" }: { label: string; value: string; tone?: "info" | "good" | "warn" | "bad" }) {
-  const color = tone === "good" ? "#22c55e" : tone === "warn" ? "#f59e0b" : tone === "bad" ? "#ef4444" : "#f5f5f0";
+function Hud({
+  label,
+  value,
+  tone = "info",
+}: {
+  label: string;
+  value: string;
+  tone?: "info" | "good" | "warn" | "bad";
+}) {
+  const color =
+    tone === "good"
+      ? "#22c55e"
+      : tone === "warn"
+        ? "#f59e0b"
+        : tone === "bad"
+          ? "#ef4444"
+          : "#f5f5f0";
   return (
     <g transform="translate(20 300)">
       <rect width={220} height={44} rx={6} fill="#000" opacity={0.6} />
-      <text x={12} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">{label}</text>
-      <text x={12} y={38} fontSize={18} fontWeight={700} fill={color} fontFamily="sans-serif">{value}</text>
+      <text x={12} y={18} fontSize={10} fill="#9ca3af" fontFamily="sans-serif">
+        {label}
+      </text>
+      <text x={12} y={38} fontSize={18} fontWeight={700} fill={color} fontFamily="sans-serif">
+        {value}
+      </text>
     </g>
   );
 }
@@ -749,14 +1020,33 @@ function UphillScene(t: number) {
       <path d={shoulderPath} stroke={PAINT} strokeWidth={1.5} fill="none" opacity={0.5} />
       {/* Centre dashes */}
       {Array.from({ length: 12 }).map((_, i) => {
-        const p = (i + (t * 2)) / 12;
+        const p = (i + t * 2) / 12;
         const x = 640 * p;
         const y = 260 - 120 * p;
-        return <rect key={i} x={x - 10} y={y - 2} width={16} height={3} fill={PAINT} transform={`rotate(-10.6 ${x} ${y})`} />;
+        return (
+          <rect
+            key={i}
+            x={x - 10}
+            y={y - 2}
+            width={16}
+            height={3}
+            fill={PAINT}
+            transform={`rotate(-10.6 ${x} ${y})`}
+          />
+        );
       })}
       {/* Car (rotated to match incline, angle ~-10.6°) */}
       <g transform={`translate(${cx} ${cy - 8}) rotate(-10.6)`}>
-        <rect x={-18} y={-10} width={36} height={20} rx={4} fill="#2f6bf0" stroke="#0a0a0a" strokeWidth={0.6} />
+        <rect
+          x={-18}
+          y={-10}
+          width={36}
+          height={20}
+          rx={4}
+          fill="#2f6bf0"
+          stroke="#0a0a0a"
+          strokeWidth={0.6}
+        />
         <rect x={-10} y={-8} width={10} height={5} fill="#111" opacity={0.7} />
         <circle cx={-12} cy={10} r={4} fill="#111" />
         <circle cx={12} cy={10} r={4} fill="#111" />
@@ -772,7 +1062,8 @@ const goingUphill: Lesson = {
   title: "Going uphill",
   category: "Highway Code • Practical Driving Skills",
   rule: "Rule 160",
-  objective: "Learn how to keep the car moving smoothly uphill by accelerating early — before gravity slows you down.",
+  objective:
+    "Learn how to keep the car moving smoothly uphill by accelerating early — before gravity slows you down.",
   think: [
     "How steep is the hill and how heavy is my car with passengers?",
     "Am I in the right gear for the incline?",
@@ -791,10 +1082,19 @@ const goingUphill: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Gravity is constantly pulling your speed down on an uphill. If you wait for the speedo to sag you're already playing catch-up — the engine strains, you drop out of the flow, and the driver behind starts to close in.</p>
+      <p>
+        Gravity is constantly pulling your speed down on an uphill. If you wait for the speedo to
+        sag you're already playing catch-up — the engine strains, you drop out of the flow, and the
+        driver behind starts to close in.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Any noticeable incline — motorway climbs, country lane rises, even a gentle town gradient. The steeper the hill, the earlier you plan.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Any noticeable incline — motorway climbs, country lane rises, even a gentle town gradient.
+        The steeper the hill, the earlier you plan.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Read the hill early — decide the gear before you get to it.</li>
         <li>Feed in more accelerator on the approach, not once the speed has dropped.</li>
@@ -821,19 +1121,44 @@ const goingUphill: Lesson = {
   keyTakeaway: "Gravity slows you down uphill — accelerate early, drive smoothly and never crawl.",
   durationMs: 18000,
   captions: [
-    { at: 0, label: "Hill ahead — plan the climb", detail: "Look at the incline before you get to it." },
-    { at: 0.35, label: "Speed sagging", detail: "Gravity is winning — you needed more accelerator earlier." },
+    {
+      at: 0,
+      label: "Hill ahead — plan the climb",
+      detail: "Look at the incline before you get to it.",
+    },
+    {
+      at: 0.35,
+      label: "Speed sagging",
+      detail: "Gravity is winning — you needed more accelerator earlier.",
+    },
     { at: 0.5, label: "Decision point", detail: "What should you do now?" },
-    { at: 0.75, label: "More accelerator, smooth power", detail: "Speed recovers, the car pulls cleanly." },
+    {
+      at: 0.75,
+      label: "More accelerator, smooth power",
+      detail: "Speed recovers, the car pulls cleanly.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "You're climbing a hill and the speedo has dropped from 40 to 28 mph. What should you do?",
+      prompt:
+        "You're climbing a hill and the speedo has dropped from 40 to 28 mph. What should you do?",
       options: [
-        { label: "Do nothing — the hill will end eventually", explain: "No. You'll hold up traffic and reach the crest at a dangerously low speed." },
-        { label: "Accelerate progressively and change down if needed", correct: true, explain: "Correct. Feed in the accelerator smoothly. If the engine is straining, drop a gear so the car has power to climb." },
-        { label: "Slam the accelerator to the floor", explain: "No. Sudden acceleration wastes fuel and unsettles the car. Smooth and progressive is the answer." },
+        {
+          label: "Do nothing — the hill will end eventually",
+          explain: "No. You'll hold up traffic and reach the crest at a dangerously low speed.",
+        },
+        {
+          label: "Accelerate progressively and change down if needed",
+          correct: true,
+          explain:
+            "Correct. Feed in the accelerator smoothly. If the engine is straining, drop a gear so the car has power to climb.",
+        },
+        {
+          label: "Slam the accelerator to the floor",
+          explain:
+            "No. Sudden acceleration wastes fuel and unsettles the car. Smooth and progressive is the answer.",
+        },
       ],
     },
   ],
@@ -858,13 +1183,32 @@ function DownhillScene(t: number) {
       <path d="M0 140 L640 260" stroke="#2b2b2e" strokeWidth={70} fill="none" />
       <path d="M0 140 L640 260" stroke={PAINT} strokeWidth={1.5} fill="none" />
       {Array.from({ length: 12 }).map((_, i) => {
-        const p = (i + (t * 2)) / 12;
+        const p = (i + t * 2) / 12;
         const x = 640 * p;
         const y = 140 + 120 * p;
-        return <rect key={i} x={x - 10} y={y - 2} width={16} height={3} fill={PAINT} transform={`rotate(10.6 ${x} ${y})`} />;
+        return (
+          <rect
+            key={i}
+            x={x - 10}
+            y={y - 2}
+            width={16}
+            height={3}
+            fill={PAINT}
+            transform={`rotate(10.6 ${x} ${y})`}
+          />
+        );
       })}
       <g transform={`translate(${cx} ${cy - 8}) rotate(10.6)`}>
-        <rect x={-18} y={-10} width={36} height={20} rx={4} fill="#2f6bf0" stroke="#0a0a0a" strokeWidth={0.6} />
+        <rect
+          x={-18}
+          y={-10}
+          width={36}
+          height={20}
+          rx={4}
+          fill="#2f6bf0"
+          stroke="#0a0a0a"
+          strokeWidth={0.6}
+        />
         <rect x={-10} y={-8} width={10} height={5} fill="#111" opacity={0.7} />
         <circle cx={-12} cy={10} r={4} fill="#111" />
         <circle cx={12} cy={10} r={4} fill="#111" />
@@ -880,7 +1224,8 @@ const goingDownhill: Lesson = {
   title: "Going downhill",
   category: "Highway Code • Practical Driving Skills",
   rule: "Rule 160",
-  objective: "Learn how to control your speed downhill using engine braking and gentle foot brake — never allow the hill to run away with you.",
+  objective:
+    "Learn how to control your speed downhill using engine braking and gentle foot brake — never allow the hill to run away with you.",
   think: [
     "How steep is the descent?",
     "What gear am I in — will engine braking help?",
@@ -899,10 +1244,20 @@ const goingDownhill: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Gravity <em>accelerates</em> you downhill. If you don't manage speed you arrive at the bottom too fast for the junction, bend or queue that's waiting. Engine braking (lower gear) does the quiet work; the foot brake is only for fine-tuning — not for fighting the whole hill.</p>
+      <p>
+        Gravity <em>accelerates</em> you downhill. If you don't manage speed you arrive at the
+        bottom too fast for the junction, bend or queue that's waiting. Engine braking (lower gear)
+        does the quiet work; the foot brake is only for fine-tuning — not for fighting the whole
+        hill.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Any descent — steep country lanes, motorway drops, town hills into a junction. The steeper the hill and the closer the hazard at the bottom, the earlier the gear must come down.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Any descent — steep country lanes, motorway drops, town hills into a junction. The steeper
+        the hill and the closer the hazard at the bottom, the earlier the gear must come down.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Change down BEFORE the descent — let the engine hold you back.</li>
         <li>Keep both hands on the wheel — never coast in neutral.</li>
@@ -926,22 +1281,44 @@ const goingDownhill: Lesson = {
     "Foot brake = gentle, progressive",
     "Bigger gap downhill",
   ],
-  keyTakeaway: "Gravity increases speed downhill — use a lower gear and gentle brake, never allow the hill to control the car.",
+  keyTakeaway:
+    "Gravity increases speed downhill — use a lower gear and gentle brake, never allow the hill to control the car.",
   durationMs: 18000,
   captions: [
     { at: 0, label: "Descent begins", detail: "Change down now — before the hill takes over." },
-    { at: 0.35, label: "Speed climbing fast", detail: "Gravity is doing the work — you need to intervene." },
+    {
+      at: 0.35,
+      label: "Speed climbing fast",
+      detail: "Gravity is doing the work — you need to intervene.",
+    },
     { at: 0.5, label: "Decision point", detail: "What's the safest way to control your speed?" },
-    { at: 0.75, label: "Gentle foot brake", detail: "Speed settles. Brake lights on to warn behind." },
+    {
+      at: 0.75,
+      label: "Gentle foot brake",
+      detail: "Speed settles. Brake lights on to warn behind.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "You're descending a steep hill and your speed has climbed to 48 mph in a 40 zone. How should you control the car?",
+      prompt:
+        "You're descending a steep hill and your speed has climbed to 48 mph in a 40 zone. How should you control the car?",
       options: [
-        { label: "Slam the brakes hard", explain: "No. Harsh braking downhill can lock the wheels or trigger ABS. Progressive is safer." },
-        { label: "Change down a gear and use gentle foot brake", correct: true, explain: "Correct. A lower gear gives you engine braking. Add gentle foot brake to trim the speed — smooth and controlled." },
-        { label: "Slip into neutral to save fuel", explain: "Never coast in neutral. You lose engine braking and control over the car." },
+        {
+          label: "Slam the brakes hard",
+          explain:
+            "No. Harsh braking downhill can lock the wheels or trigger ABS. Progressive is safer.",
+        },
+        {
+          label: "Change down a gear and use gentle foot brake",
+          correct: true,
+          explain:
+            "Correct. A lower gear gives you engine braking. Add gentle foot brake to trim the speed — smooth and controlled.",
+        },
+        {
+          label: "Slip into neutral to save fuel",
+          explain: "Never coast in neutral. You lose engine braking and control over the car.",
+        },
       ],
     },
   ],
@@ -958,8 +1335,8 @@ function MeetingTrafficScene(t: number) {
   //  B (0.45–1.00) WAITING POSITION — half in, half out, 2 m gap,
   //     cyclist overtakes, then right mirror + right shoulder check
   //     before moving off.
-  const kerbY = roadY - 12;          // "fully tucked in" line
-  const halfInY = roadY - 4;         // half-in-half-out line
+  const kerbY = roadY - 12; // "fully tucked in" line
+  const halfInY = roadY - 4; // half-in-half-out line
 
   // Phase A trajectory: ego rolls to the waiting point at x≈240 and eases half in.
   const aK = Math.min(1, t / 0.45);
@@ -1010,7 +1387,16 @@ function MeetingTrafficScene(t: number) {
       {/* Parked cars on the left verge (top pavement) */}
       {[100, 190, 280].map((px) => (
         <g key={px} transform={`translate(${px} 178)`}>
-          <rect x={-14} y={-8} width={28} height={16} rx={3} fill="#c8c8cc" stroke="#0a0a0a" strokeWidth={0.5} />
+          <rect
+            x={-14}
+            y={-8}
+            width={28}
+            height={16}
+            rx={3}
+            fill="#c8c8cc"
+            stroke="#0a0a0a"
+            strokeWidth={0.5}
+          />
           <rect x={-8} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.7} />
           <rect x={3} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.5} />
         </g>
@@ -1018,9 +1404,33 @@ function MeetingTrafficScene(t: number) {
       {/* 2-metre gap in front while waiting */}
       {showGap2m && (
         <g>
-          <line x1={egoX + 16} y1={halfInY} x2={280 - 14} y2={halfInY} stroke="#22c55e" strokeWidth={1.6} strokeDasharray="4 3" />
-          <rect x={(egoX + 280) / 2 - 22} y={halfInY - 16} width={44} height={13} rx={3} fill="#000" opacity={0.7} />
-          <text x={(egoX + 280) / 2} y={halfInY - 6} textAnchor="middle" fontSize={9} fontWeight={700} fill="#22c55e" fontFamily="sans-serif">
+          <line
+            x1={egoX + 16}
+            y1={halfInY}
+            x2={280 - 14}
+            y2={halfInY}
+            stroke="#22c55e"
+            strokeWidth={1.6}
+            strokeDasharray="4 3"
+          />
+          <rect
+            x={(egoX + 280) / 2 - 22}
+            y={halfInY - 16}
+            width={44}
+            height={13}
+            rx={3}
+            fill="#000"
+            opacity={0.7}
+          />
+          <text
+            x={(egoX + 280) / 2}
+            y={halfInY - 6}
+            textAnchor="middle"
+            fontSize={9}
+            fontWeight={700}
+            fill="#22c55e"
+            fontFamily="sans-serif"
+          >
             2 m
           </text>
         </g>
@@ -1030,8 +1440,24 @@ function MeetingTrafficScene(t: number) {
       {/* "Half in / half out" markers when waiting */}
       {showGap2m && (
         <g opacity={0.85}>
-          <line x1={egoX - 30} y1={halfInY - 14} x2={egoX - 30} y2={halfInY + 14} stroke="#f7c948" strokeWidth={1} strokeDasharray="2 2" />
-          <text x={egoX - 34} y={halfInY - 18} textAnchor="end" fontSize={8} fill="#f7c948" fontFamily="sans-serif" fontWeight={700}>
+          <line
+            x1={egoX - 30}
+            y1={halfInY - 14}
+            x2={egoX - 30}
+            y2={halfInY + 14}
+            stroke="#f7c948"
+            strokeWidth={1}
+            strokeDasharray="2 2"
+          />
+          <text
+            x={egoX - 34}
+            y={halfInY - 18}
+            textAnchor="end"
+            fontSize={8}
+            fill="#f7c948"
+            fontFamily="sans-serif"
+            fontWeight={700}
+          >
             HALF IN / HALF OUT
           </text>
         </g>
@@ -1052,7 +1478,15 @@ function MeetingTrafficScene(t: number) {
             <animate attributeName="r" values="6;12;6" dur="0.9s" repeatCount="indefinite" />
             <animate attributeName="opacity" values="1;0.3;1" dur="0.9s" repeatCount="indefinite" />
           </circle>
-          <text x={egoX + 20} y={egoY - 18} fontSize={8.5} fill="#C97845" fontWeight={800} letterSpacing="1.2" fontFamily="sans-serif">
+          <text
+            x={egoX + 20}
+            y={egoY - 18}
+            fontSize={8.5}
+            fill="#C97845"
+            fontWeight={800}
+            letterSpacing="1.2"
+            fontFamily="sans-serif"
+          >
             RIGHT MIRROR + RIGHT SHOULDER
           </text>
         </g>
@@ -1087,7 +1521,8 @@ const meetingTraffic: Lesson = {
   title: "Meeting traffic on a narrow road",
   category: "Highway Code • Practical Driving Skills",
   rule: "Rules 163, 166",
-  objective: "Learn how to judge available space against safe speed when meeting oncoming traffic past parked cars.",
+  objective:
+    "Learn how to judge available space against safe speed when meeting oncoming traffic past parked cars.",
   think: [
     "Whose side is the obstruction on — do I have priority?",
     "How much space is there between me and the parked cars?",
@@ -1109,10 +1544,20 @@ const meetingTraffic: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>The narrower the gap, the less time you have to react to an opening door, a child running out, or a wobble from the oncoming car. Speed is only safe if the gap can absorb a mistake — yours or theirs. <strong>Less space = less speed.</strong></p>
+      <p>
+        The narrower the gap, the less time you have to react to an opening door, a child running
+        out, or a wobble from the oncoming car. Speed is only safe if the gap can absorb a mistake —
+        yours or theirs. <strong>Less space = less speed.</strong>
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Any time parked cars, skips, works or a narrow lane squeeze the road — especially when another vehicle is coming the other way. If the obstruction is on <em>your</em> side, priority is <em>theirs</em>.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Any time parked cars, skips, works or a narrow lane squeeze the road — especially when
+        another vehicle is coming the other way. If the obstruction is on <em>your</em> side,
+        priority is <em>theirs</em>.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Scan the row ahead — find the pinch point early.</li>
         <li>If the obstruction is on your side, be ready to give way.</li>
@@ -1121,18 +1566,33 @@ const meetingTraffic: Lesson = {
         <li>Make eye contact with the oncoming driver — read their intent, don't guess.</li>
       </ol>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Waiting position</p>
-      <p>When you have to wait for another vehicle to come through, stop <strong>half in, half out</strong>:</p>
+      <p>
+        When you have to wait for another vehicle to come through, stop{" "}
+        <strong>half in, half out</strong>:
+      </p>
       <ul className="list-disc space-y-1 pl-5">
         <li>Too close to the left — you look parked.</li>
         <li>Too far out — you make the road too narrow.</li>
         <li>Half in, half out — clearly says “I’m waiting”.</li>
-        <li>Leave about <strong>2 m</strong> in front of you (<strong>2.5 m</strong> for larger vehicles) so you can pull away safely.</li>
+        <li>
+          Leave about <strong>2 m</strong> in front of you (<strong>2.5 m</strong> for larger
+          vehicles) so you can pull away safely.
+        </li>
       </ul>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Before you move off</p>
-      <p>Ask yourself: <em>“Who could overtake me?”</em> Anyone on two wheels — cyclists and motorbikes. So always:</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Before you move off
+      </p>
+      <p>
+        Ask yourself: <em>“Who could overtake me?”</em> Anyone on two wheels — cyclists and
+        motorbikes. So always:
+      </p>
       <ul className="list-disc space-y-1 pl-5">
-        <li>Check the <strong>right mirror</strong>.</li>
-        <li>Check the <strong>right shoulder</strong> (blind spot).</li>
+        <li>
+          Check the <strong>right mirror</strong>.
+        </li>
+        <li>
+          Check the <strong>right shoulder</strong> (blind spot).
+        </li>
         <li>Watch for a vehicle emerging from a driveway too.</li>
       </ul>
     </>
@@ -1163,40 +1623,82 @@ const meetingTraffic: Lesson = {
     "Less space, less speed. If you have to wait: half in, half out, 2 m in front — and always check right mirror + right shoulder before moving off.",
   durationMs: 40000,
   captions: [
-    { at: 0, label: "Approaching parked cars", detail: "Scan the row ahead — pick your smallest gap." },
+    {
+      at: 0,
+      label: "Approaching parked cars",
+      detail: "Scan the row ahead — pick your smallest gap.",
+    },
     { at: 0.3, label: "Oncoming car approaching", detail: "You'll meet somewhere in the middle." },
-    { at: 0.45, label: "Waiting position", detail: "Half in, half out — never tucked in like a parked car." },
-    { at: 0.55, label: "Leave a 2 m gap in front", detail: "2 m for cars, 2.5 m for larger vehicles — room to pull away." },
-    { at: 0.7, label: "Who could overtake you?", detail: "Anyone on two wheels — cyclists and motorbikes." },
-    { at: 0.78, label: "Right mirror + right shoulder", detail: "Final check before moving. Blind spot, cyclists, driveway." },
-    { at: 0.92, label: "Move off smoothly", detail: "Signal, mirrors, and go — only when it’s clear." },
+    {
+      at: 0.45,
+      label: "Waiting position",
+      detail: "Half in, half out — never tucked in like a parked car.",
+    },
+    {
+      at: 0.55,
+      label: "Leave a 2 m gap in front",
+      detail: "2 m for cars, 2.5 m for larger vehicles — room to pull away.",
+    },
+    {
+      at: 0.7,
+      label: "Who could overtake you?",
+      detail: "Anyone on two wheels — cyclists and motorbikes.",
+    },
+    {
+      at: 0.78,
+      label: "Right mirror + right shoulder",
+      detail: "Final check before moving. Blind spot, cyclists, driveway.",
+    },
+    {
+      at: 0.92,
+      label: "Move off smoothly",
+      detail: "Signal, mirrors, and go — only when it’s clear.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "You have about ¼ metre of clearance between you and both the parked cars and the oncoming vehicle. What speed is safe?",
+      prompt:
+        "You have about ¼ metre of clearance between you and both the parked cars and the oncoming vehicle. What speed is safe?",
       options: [
-        { label: "The speed limit — 30 mph", explain: "No. Less space, less speed. 30 mph would leave you no time to react to a door opening." },
-        { label: "Around 7 mph — walking pace", correct: true, explain: "Correct. A quarter-metre gap means around 7 mph — walking pace. Enough to react to a door, wobble or pedestrian." },
-        { label: "Stop completely and wait", explain: "Not needed here — there IS a gap. Stopping unnecessarily blocks the flow. Filter through slowly." },
+        {
+          label: "The speed limit — 30 mph",
+          explain:
+            "No. Less space, less speed. 30 mph would leave you no time to react to a door opening.",
+        },
+        {
+          label: "Around 7 mph — walking pace",
+          correct: true,
+          explain:
+            "Correct. A quarter-metre gap means around 7 mph — walking pace. Enough to react to a door, wobble or pedestrian.",
+        },
+        {
+          label: "Stop completely and wait",
+          explain:
+            "Not needed here — there IS a gap. Stopping unnecessarily blocks the flow. Filter through slowly.",
+        },
       ],
     },
     {
       at: 0.82,
-      prompt: "You’ve been waiting half in / half out for oncoming traffic to pass. What must you check before moving off again?",
+      prompt:
+        "You’ve been waiting half in / half out for oncoming traffic to pass. What must you check before moving off again?",
       options: [
         {
           label: "Just the interior mirror — you can see everything from there",
-          explain: "No — the interior mirror won’t show a cyclist alongside your right side. You need the right mirror AND right shoulder.",
+          explain:
+            "No — the interior mirror won’t show a cyclist alongside your right side. You need the right mirror AND right shoulder.",
         },
         {
           label: "Right mirror and right shoulder (blind spot)",
           correct: true,
-          explain: "Correct. A cyclist or motorbike could have slipped past while you were waiting, or a vehicle could be emerging from a driveway. Right mirror + right shoulder — every time.",
+          explain:
+            "Correct. A cyclist or motorbike could have slipped past while you were waiting, or a vehicle could be emerging from a driveway. Right mirror + right shoulder — every time.",
         },
         {
           label: "Nothing — the road was clear when you stopped",
-          explain: "No. Things change while you’re waiting. Always do a fresh right mirror + right shoulder check before moving.",
+          explain:
+            "No. Things change while you’re waiting. Always do a fresh right mirror + right shoulder check before moving.",
         },
       ],
     },
@@ -1224,7 +1726,14 @@ function LaneDisciplineScene(t: number) {
       {[190, 220].map((y) => (
         <g key={y}>
           {Array.from({ length: 16 }).map((_, i) => (
-            <rect key={i} x={i * 40 + ((t * 40) % 40) - 40} y={y - 1} width={20} height={2} fill={PAINT} />
+            <rect
+              key={i}
+              x={i * 40 + ((t * 40) % 40) - 40}
+              y={y - 1}
+              width={20}
+              height={2}
+              fill={PAINT}
+            />
           ))}
         </g>
       ))}
@@ -1232,15 +1741,35 @@ function LaneDisciplineScene(t: number) {
       <line x1={0} y1={250} x2={640} y2={250} stroke={PAINT} strokeWidth={1.5} />
       {/* Slow lorry in left lane */}
       <g transform={`translate(${hazardX - 40 + t * 50} 235)`}>
-        <rect x={-24} y={-10} width={48} height={20} rx={2} fill={hazardActive ? "#f59e0b" : "#c8c8cc"} stroke="#0a0a0a" strokeWidth={0.6} />
+        <rect
+          x={-24}
+          y={-10}
+          width={48}
+          height={20}
+          rx={2}
+          fill={hazardActive ? "#f59e0b" : "#c8c8cc"}
+          stroke="#0a0a0a"
+          strokeWidth={0.6}
+        />
         <rect x={-24} y={-10} width={12} height={20} fill="#6b6b70" />
-        {hazardActive && <circle cx={0} cy={0} r={30} fill="none" stroke="#f59e0b" strokeWidth={1.5} opacity={0.4}>
-          <animate attributeName="r" values="24;34;24" dur="1.4s" repeatCount="indefinite" />
-        </circle>}
+        {hazardActive && (
+          <circle cx={0} cy={0} r={30} fill="none" stroke="#f59e0b" strokeWidth={1.5} opacity={0.4}>
+            <animate attributeName="r" values="24;34;24" dur="1.4s" repeatCount="indefinite" />
+          </circle>
+        )}
       </g>
       {/* Ego */}
-      <Car2 x={egoX} y={laneY} color="#2f6bf0" indicator={t > 0.2 && t < 0.28 ? "right" : t > 0.62 && t < 0.72 ? "left" : null} />
-      <Hud label="LANE" value={laneY === 235 ? "Left — normal" : "Middle — overtaking"} tone={laneY === 235 ? "good" : "warn"} />
+      <Car2
+        x={egoX}
+        y={laneY}
+        color="#2f6bf0"
+        indicator={t > 0.2 && t < 0.28 ? "right" : t > 0.62 && t < 0.72 ? "left" : null}
+      />
+      <Hud
+        label="LANE"
+        value={laneY === 235 ? "Left — normal" : "Middle — overtaking"}
+        tone={laneY === 235 ? "good" : "warn"}
+      />
     </svg>
   );
 }
@@ -1250,7 +1779,8 @@ const laneDiscipline: Lesson = {
   title: "Dual carriageway lane discipline",
   category: "Highway Code • Motorways & Dual Carriageways",
   rule: "Rules 137, 264",
-  objective: "Learn why the left lane is your normal driving lane — and how to overtake safely then return to it.",
+  objective:
+    "Learn why the left lane is your normal driving lane — and how to overtake safely then return to it.",
   think: [
     "Which lane should I be in for normal cruising?",
     "Am I overtaking or just sitting in the middle lane out of habit?",
@@ -1269,16 +1799,28 @@ const laneDiscipline: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Middle-lane hogging is one of the biggest causes of frustration and dangerous overtaking on UK dual carriageways. The left lane is <strong>your lane</strong>, whatever your speed — the other lanes exist purely to overtake and return.</p>
+      <p>
+        Middle-lane hogging is one of the biggest causes of frustration and dangerous overtaking on
+        UK dual carriageways. The left lane is <strong>your lane</strong>, whatever your speed — the
+        other lanes exist purely to overtake and return.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>All the time on a dual carriageway or motorway: default to the left. Move out only to overtake something slower, then move back once you've passed and there's a clear gap.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        All the time on a dual carriageway or motorway: default to the left. Move out only to
+        overtake something slower, then move back once you've passed and there's a clear gap.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Mirrors — check well before you move.</li>
         <li>Signal right in good time — don't drift silently across.</li>
         <li>Move out only when there's a clear, safe gap.</li>
         <li>Overtake decisively — no lingering alongside.</li>
-        <li>Once you can see the whole car you've passed in your interior mirror, signal left and return to the left lane.</li>
+        <li>
+          Once you can see the whole car you've passed in your interior mirror, signal left and
+          return to the left lane.
+        </li>
       </ol>
     </>
   ),
@@ -1296,22 +1838,40 @@ const laneDiscipline: Lesson = {
     "Mirror, Signal, Blind spot, Manoeuvre",
     "Never undertake — change lane properly",
   ],
-  keyTakeaway: "The left lane is your normal driving lane on every dual carriageway. Overtake when needed, then get back left.",
+  keyTakeaway:
+    "The left lane is your normal driving lane on every dual carriageway. Overtake when needed, then get back left.",
   durationMs: 22000,
   captions: [
     { at: 0, label: "Cruising in the left lane", detail: "Correct — your normal driving lane." },
     { at: 0.25, label: "Slow lorry ahead — plan to overtake", detail: "Mirror, signal, move out." },
     { at: 0.5, label: "Decision point", detail: "You're past the lorry — what next?" },
-    { at: 0.75, label: "Return to the left lane", detail: "Mirror, signal, blind spot, back to home." },
+    {
+      at: 0.75,
+      label: "Return to the left lane",
+      detail: "Mirror, signal, blind spot, back to home.",
+    },
   ],
   questions: [
     {
       at: 0.5,
       prompt: "You've overtaken a lorry and the left lane is now clear. What should you do?",
       options: [
-        { label: "Stay in the middle lane in case of more slow traffic", explain: "No. That's middle-lane hogging — it holds up faster traffic and forces others to undertake." },
-        { label: "Mirror, signal, blind spot, return to the left lane", correct: true, explain: "Correct. The left lane is your normal driving lane. Return to it as soon as it is safe." },
-        { label: "Move to the right lane just in case", explain: "No — the right lane is for overtaking only. If you're not overtaking, get back left." },
+        {
+          label: "Stay in the middle lane in case of more slow traffic",
+          explain:
+            "No. That's middle-lane hogging — it holds up faster traffic and forces others to undertake.",
+        },
+        {
+          label: "Mirror, signal, blind spot, return to the left lane",
+          correct: true,
+          explain:
+            "Correct. The left lane is your normal driving lane. Return to it as soon as it is safe.",
+        },
+        {
+          label: "Move to the right lane just in case",
+          explain:
+            "No — the right lane is for overtaking only. If you're not overtaking, get back left.",
+        },
       ],
     },
   ],
@@ -1339,15 +1899,32 @@ function LaneMergeScene(t: number) {
       <path d="M0 160 L500 200 L500 240 L0 200 Z" fill="#2b2b2e" />
       {/* Merge chevrons */}
       {Array.from({ length: 6 }).map((_, i) => (
-        <path key={i} d={`M${360 + i * 22} 178 l10 6 l-10 6`} stroke={PAINT} strokeWidth={1.6} fill="none" />
+        <path
+          key={i}
+          d={`M${360 + i * 22} 178 l10 6 l-10 6`}
+          stroke={PAINT}
+          strokeWidth={1.6}
+          fill="none"
+        />
       ))}
       {/* Lane markings */}
       {Array.from({ length: 12 }).map((_, i) => (
-        <rect key={i} x={i * 45 + ((t * 45) % 45) - 45} y={218} width={20} height={3} fill={PAINT} />
+        <rect
+          key={i}
+          x={i * 45 + ((t * 45) % 45) - 45}
+          y={218}
+          width={20}
+          height={3}
+          fill={PAINT}
+        />
       ))}
       <Car2 x={egoX} y={egoY} color="#2f6bf0" indicator={t > 0.35 && t < 0.7 ? "left" : null} />
       <Car2 x={otherX} y={215} color="#8a8a8f" />
-      <Hud label="MERGE PHASE" value={t < 0.35 ? "Mirror + Signal" : t < 0.7 ? "Position + Blind spot" : "Merged smoothly"} tone={t < 0.7 ? "warn" : "good"} />
+      <Hud
+        label="MERGE PHASE"
+        value={t < 0.35 ? "Mirror + Signal" : t < 0.7 ? "Position + Blind spot" : "Merged smoothly"}
+        tone={t < 0.7 ? "warn" : "good"}
+      />
     </svg>
   );
 }
@@ -1357,7 +1934,8 @@ const laneMerging: Lesson = {
   title: "Lane merging",
   category: "Highway Code • Practical Driving Skills",
   rule: "Rules 134, 267",
-  objective: "Learn how to merge smoothly when a lane ends — using Mirror, Signal, Position, Speed, Merge.",
+  objective:
+    "Learn how to merge smoothly when a lane ends — using Mirror, Signal, Position, Speed, Merge.",
   think: [
     "How far ahead does my lane end — do I have time?",
     "Who is beside me and behind me?",
@@ -1376,16 +1954,28 @@ const laneMerging: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Most merge incidents come from one of two drivers: the one who leaves it too late, or the one who refuses to let anyone in. A smooth merge is a <strong>shared act</strong> — signal, match speed, take the gap. It keeps the traffic flowing for everyone behind you.</p>
+      <p>
+        Most merge incidents come from one of two drivers: the one who leaves it too late, or the
+        one who refuses to let anyone in. A smooth merge is a <strong>shared act</strong> — signal,
+        match speed, take the gap. It keeps the traffic flowing for everyone behind you.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Slip-road joins onto dual carriageways or motorways, lanes closing at roadworks, and any "merge in turn" signage. The rule is the same — early planning, matched speed, taking your turn cleanly.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Slip-road joins onto dual carriageways or motorways, lanes closing at roadworks, and any
+        "merge in turn" signage. The rule is the same — early planning, matched speed, taking your
+        turn cleanly.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Look far ahead — spot the merge early, plan the gap.</li>
         <li>Mirrors — check the lane you're joining well before the point of no return.</li>
         <li>Signal in good time so the other driver can plan too.</li>
         <li>Match the speed of the traffic — do not join slower than the flow.</li>
-        <li>Take the gap smoothly, thank the driver, then settle at a proper following distance.</li>
+        <li>
+          Take the gap smoothly, thank the driver, then settle at a proper following distance.
+        </li>
       </ol>
     </>
   ),
@@ -1407,18 +1997,34 @@ const laneMerging: Lesson = {
   durationMs: 36000,
   captions: [
     { at: 0, label: "Lane ends ahead", detail: "Read the chevrons — plan the merge now." },
-    { at: 0.35, label: "Signal on, matching speed", detail: "Give other drivers time to see and react." },
+    {
+      at: 0.35,
+      label: "Signal on, matching speed",
+      detail: "Give other drivers time to see and react.",
+    },
     { at: 0.5, label: "Decision point", detail: "Someone's beside you — what do you do?" },
     { at: 0.8, label: "Merged and settled", detail: "Signal off. Smooth is safe." },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "As you signal to merge, a driver next to you accelerates to close the gap. What's the safest move?",
+      prompt:
+        "As you signal to merge, a driver next to you accelerates to close the gap. What's the safest move?",
       options: [
-        { label: "Force your way in — you signalled first", explain: "No. Fighting for the gap risks a side-swipe. Confrontation is never worth it." },
-        { label: "Let them past and take the next gap", correct: true, explain: "Correct. Ease off, let the competitive driver go, and move into the gap behind them. Smooth beats stubborn." },
-        { label: "Stop in the lane until they yield", explain: "No. Stopping in a live lane is dangerous — the driver behind won't expect it." },
+        {
+          label: "Force your way in — you signalled first",
+          explain: "No. Fighting for the gap risks a side-swipe. Confrontation is never worth it.",
+        },
+        {
+          label: "Let them past and take the next gap",
+          correct: true,
+          explain:
+            "Correct. Ease off, let the competitive driver go, and move into the gap behind them. Smooth beats stubborn.",
+        },
+        {
+          label: "Stop in the lane until they yield",
+          explain: "No. Stopping in a live lane is dangerous — the driver behind won't expect it.",
+        },
       ],
     },
   ],
@@ -1445,7 +2051,7 @@ type LaneChangeStep = {
 };
 
 const LANE_CHANGE_STEPS: LaneChangeStep[] = [
-  { id: 1, label: "Observe ahead", at: 0.00 },
+  { id: 1, label: "Observe ahead", at: 0.0 },
   { id: 2, label: "Interior mirror", at: 0.08 },
   { id: 3, label: "Right door mirror", at: 0.18 },
   { id: 4, label: "Reference point", at: 0.28 },
@@ -1454,7 +2060,7 @@ const LANE_CHANGE_STEPS: LaneChangeStep[] = [
   { id: 7, label: "Match speed", at: 0.56 },
   { id: 8, label: "Smooth lane change", at: 0.66 },
   { id: 9, label: "Cancel signal", at: 0.82 },
-  { id: 10, label: "Continue scanning", at: 0.90 },
+  { id: 10, label: "Continue scanning", at: 0.9 },
 ];
 
 function stepAt(t: number): LaneChangeStep {
@@ -1481,7 +2087,7 @@ function ChangingLanesScene(t: number) {
   // Stays around x=200 in the left region; moves from lane 1 to lane 2 during 0.66..0.80.
   const egoX = 200;
   const changeStart = 0.66;
-  const changeEnd = 0.80;
+  const changeEnd = 0.8;
   let egoY = lane1Y;
   if (t > changeStart) {
     const k = Math.min(1, Math.max(0, (t - changeStart) / (changeEnd - changeStart)));
@@ -1530,12 +2136,10 @@ function ChangingLanesScene(t: number) {
 
   // ── Which mirror is being checked right now (for on-canvas cones) ──
   const activeMirror: "interior" | "right" | null =
-    t >= 0.08 && t < 0.18 ? "interior"
-    : t >= 0.18 && t < 0.34 ? "right"
-    : null;
+    t >= 0.08 && t < 0.18 ? "interior" : t >= 0.18 && t < 0.34 ? "right" : null;
 
   // ── Safe-to-move status banner ──
-  const showWait = t >= 0.10 && t < 0.24 && !inBothMirrors;
+  const showWait = t >= 0.1 && t < 0.24 && !inBothMirrors;
   const showSafe = t >= 0.24 && t < 0.42 && inBothMirrors;
 
   // Distance in metres from ego to follower (screen px ~= 0.5 m).
@@ -1583,32 +2187,55 @@ function ChangingLanesScene(t: number) {
       {[lane3Y + 30, lane2Y + 30].map((y, li) => (
         <g key={li}>
           {Array.from({ length: 12 }).map((_, i) => (
-            <rect
-              key={i}
-              x={i * 45 - scroll}
-              y={y - 1.5}
-              width={26}
-              height={3}
-              fill={PAINT}
-            />
+            <rect key={i} x={i * 45 - scroll} y={y - 1.5} width={26} height={3} fill={PAINT} />
           ))}
         </g>
       ))}
 
       {/* Lane numbers */}
-      <g fontFamily="ui-sans-serif, system-ui, sans-serif" fontSize={9} fill="#ffffff" opacity={0.35}>
-        <text x={12} y={lane3Y - 4}>LANE 3</text>
-        <text x={12} y={lane2Y - 4}>LANE 2</text>
-        <text x={12} y={lane1Y - 4}>LANE 1</text>
+      <g
+        fontFamily="ui-sans-serif, system-ui, sans-serif"
+        fontSize={9}
+        fill="#ffffff"
+        opacity={0.35}
+      >
+        <text x={12} y={lane3Y - 4}>
+          LANE 3
+        </text>
+        <text x={12} y={lane2Y - 4}>
+          LANE 2
+        </text>
+        <text x={12} y={lane1Y - 4}>
+          LANE 1
+        </text>
       </g>
 
       {/* HGV ahead in lane 1 (top-down block) */}
       <g transform={`translate(${hgvX} ${lane1Y})`}>
-        <rect x={-28} y={-11} width={56} height={22} rx={2} fill="#d1d5db" stroke="#0a0a0a" strokeWidth={0.6} />
+        <rect
+          x={-28}
+          y={-11}
+          width={56}
+          height={22}
+          rx={2}
+          fill="#d1d5db"
+          stroke="#0a0a0a"
+          strokeWidth={0.6}
+        />
         <rect x={16} y={-9} width={10} height={18} rx={1} fill="#4b5563" />
         <rect x={-27} y={-10} width={1.6} height={3} fill="#5a1010" />
         <rect x={-27} y={7} width={1.6} height={3} fill="#5a1010" />
-        <text x={0} y={3} textAnchor="middle" fontSize={7} fill="#111" fontFamily="sans-serif" fontWeight={700}>HGV · {hgvSpeed}</text>
+        <text
+          x={0}
+          y={3}
+          textAnchor="middle"
+          fontSize={7}
+          fill="#111"
+          fontFamily="sans-serif"
+          fontWeight={700}
+        >
+          HGV · {hgvSpeed}
+        </text>
       </g>
 
       {/* Follower silver car in lane 2, coming up from behind */}
@@ -1619,20 +2246,43 @@ function ChangingLanesScene(t: number) {
         <>
           <Car2 x={bsX} y={bsY} color="#dc2626" indicator="left" />
           {/* Warning pulse */}
-          <circle cx={bsX} cy={bsY} r={22} fill="none" stroke="#ef4444" strokeWidth={2} opacity={0.85}>
+          <circle
+            cx={bsX}
+            cy={bsY}
+            r={22}
+            fill="none"
+            stroke="#ef4444"
+            strokeWidth={2}
+            opacity={0.85}
+          >
             <animate attributeName="r" values="18;28;18" dur="1s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.85;0.2;0.85" dur="1s" repeatCount="indefinite" />
+            <animate
+              attributeName="opacity"
+              values="0.85;0.2;0.85"
+              dur="1s"
+              repeatCount="indefinite"
+            />
           </circle>
         </>
       )}
 
       {/* Blind-spot cone on ego (right-rear wedge) */}
       <g transform={`translate(${egoX} ${egoY})`}>
-        <path d="M 10 -6 L 60 -34 L 60 -8 Z" fill="#ef4444" opacity={t > 0.42 && t < 0.66 ? 0.35 : 0.12} />
+        <path
+          d="M 10 -6 L 60 -34 L 60 -8 Z"
+          fill="#ef4444"
+          opacity={t > 0.42 && t < 0.66 ? 0.35 : 0.12}
+        />
       </g>
 
       {/* Ego car */}
-      <Car2 x={egoX} y={egoY} color="#2f6bf0" indicator={signalOn ? "right" : null} braking={false} />
+      <Car2
+        x={egoX}
+        y={egoY}
+        color="#2f6bf0"
+        indicator={signalOn ? "right" : null}
+        braking={false}
+      />
 
       {/* Field-of-vision cone from ego, in the direction of the mirror being checked */}
       {activeMirror === "interior" && (
@@ -1649,7 +2299,14 @@ function ChangingLanesScene(t: number) {
             strokeDasharray="4 4"
             opacity={0.7}
           />
-          <text x={20} y={egoY - 84} fontSize={9} fontWeight={800} fill="#fbbf24" fontFamily="sans-serif">
+          <text
+            x={20}
+            y={egoY - 84}
+            fontSize={9}
+            fontWeight={800}
+            fill="#fbbf24"
+            fontFamily="sans-serif"
+          >
             INTERIOR MIRROR VIEW
           </text>
         </g>
@@ -1668,7 +2325,14 @@ function ChangingLanesScene(t: number) {
             strokeDasharray="4 4"
             opacity={0.75}
           />
-          <text x={20} y={egoY - 62} fontSize={9} fontWeight={800} fill="#38bdf8" fontFamily="sans-serif">
+          <text
+            x={20}
+            y={egoY - 62}
+            fontSize={9}
+            fontWeight={800}
+            fill="#38bdf8"
+            fontFamily="sans-serif"
+          >
             RIGHT DOOR MIRROR VIEW
           </text>
           {/* Distance readout to the follower while it is in the right-mirror view */}
@@ -1739,7 +2403,16 @@ function ChangingLanesScene(t: number) {
       {/* Motorway sign — subtle 70 limit ahead */}
       <g transform="translate(340 70)">
         <circle r={16} fill="#fff" stroke="#c8102e" strokeWidth={4} />
-        <text textAnchor="middle" y={5} fontSize={15} fontWeight={800} fill="#111" fontFamily="sans-serif">70</text>
+        <text
+          textAnchor="middle"
+          y={5}
+          fontSize={15}
+          fontWeight={800}
+          fill="#111"
+          fontFamily="sans-serif"
+        >
+          70
+        </text>
       </g>
 
       {/* ────── RIGHT-HAND HUD ────── */}
@@ -1748,8 +2421,12 @@ function ChangingLanesScene(t: number) {
 
       {/* HUD header — current step */}
       <g transform="translate(452 14)">
-        <text fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1.5">STEP {String(step.id).padStart(2, "0")} / 10</text>
-        <text y={18} fontSize={13} fontWeight={700} fill="#ffffff" fontFamily="sans-serif">{step.label}</text>
+        <text fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1.5">
+          STEP {String(step.id).padStart(2, "0")} / 10
+        </text>
+        <text y={18} fontSize={13} fontWeight={700} fill="#ffffff" fontFamily="sans-serif">
+          {step.label}
+        </text>
       </g>
 
       {/* Interior mirror module */}
@@ -1765,7 +2442,14 @@ function ChangingLanesScene(t: number) {
           // Rear-view: show a small silver car if follower is in interior-mirror range.
           return (
             <g>
-              <rect x={cx - w / 2 + 6} y={cy - 12} width={w - 12} height={24} rx={3} fill="#050506" />
+              <rect
+                x={cx - w / 2 + 6}
+                y={cy - 12}
+                width={w - 12}
+                height={24}
+                rx={3}
+                fill="#050506"
+              />
               {inInteriorMirror ? (
                 <g transform={`translate(${cx} ${cy + 2})`}>
                   {/* Distant view: small car */}
@@ -1774,7 +2458,16 @@ function ChangingLanesScene(t: number) {
                   <rect x={1} y={-3} width={5} height={6} rx={1} fill="#111" opacity={0.5} />
                 </g>
               ) : (
-                <text x={cx} y={cy + 3} textAnchor="middle" fontSize={8} fill="#4b5563" fontFamily="sans-serif">clear</text>
+                <text
+                  x={cx}
+                  y={cy + 3}
+                  textAnchor="middle"
+                  fontSize={8}
+                  fill="#4b5563"
+                  fontFamily="sans-serif"
+                >
+                  clear
+                </text>
               )}
             </g>
           );
@@ -1794,7 +2487,10 @@ function ChangingLanesScene(t: number) {
           return (
             <g>
               {/* trapezoid mirror shape */}
-              <path d={`M ${cx - w / 2 + 10} ${cy - 12} L ${cx + w / 2 - 6} ${cy - 8} L ${cx + w / 2 - 6} ${cy + 8} L ${cx - w / 2 + 10} ${cy + 12} Z`} fill="#050506" />
+              <path
+                d={`M ${cx - w / 2 + 10} ${cy - 12} L ${cx + w / 2 - 6} ${cy - 8} L ${cx + w / 2 - 6} ${cy + 8} L ${cx - w / 2 + 10} ${cy + 12} Z`}
+                fill="#050506"
+              />
               {inRightMirror ? (
                 <g transform={`translate(${cx + 4} ${cy + 1})`}>
                   <rect x={-10} y={-5} width={20} height={10} rx={1.5} fill="#c0c0c6" />
@@ -1802,7 +2498,16 @@ function ChangingLanesScene(t: number) {
                   <rect x={2} y={-4} width={6} height={8} rx={1} fill="#111" opacity={0.5} />
                 </g>
               ) : (
-                <text x={cx} y={cy + 3} textAnchor="middle" fontSize={8} fill="#4b5563" fontFamily="sans-serif">clear</text>
+                <text
+                  x={cx}
+                  y={cy + 3}
+                  textAnchor="middle"
+                  fontSize={8}
+                  fill="#4b5563"
+                  fontFamily="sans-serif"
+                >
+                  clear
+                </text>
               )}
             </g>
           );
@@ -1811,21 +2516,46 @@ function ChangingLanesScene(t: number) {
 
       {/* Reference-point verdict pill */}
       <g transform="translate(452 192)">
-        <rect width={176} height={30} rx={4} fill={inBothMirrors ? "#052e16" : "#3a0e0e"} stroke={inBothMirrors ? "#22c55e" : "#ef4444"} strokeWidth={1} />
+        <rect
+          width={176}
+          height={30}
+          rx={4}
+          fill={inBothMirrors ? "#052e16" : "#3a0e0e"}
+          stroke={inBothMirrors ? "#22c55e" : "#ef4444"}
+          strokeWidth={1}
+        />
         <circle cx={12} cy={15} r={5} fill={inBothMirrors ? "#22c55e" : "#ef4444"} />
-        <text x={24} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">REFERENCE POINT</text>
+        <text x={24} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">
+          REFERENCE POINT
+        </text>
         <text x={24} y={25} fontSize={10} fill="#ffffff" fontWeight={700} fontFamily="sans-serif">
-          {inBothMirrors ? "Visible in BOTH — safe" : inRightMirror ? "Right mirror only — too close" : "Waiting…"}
+          {inBothMirrors
+            ? "Visible in BOTH — safe"
+            : inRightMirror
+              ? "Right mirror only — too close"
+              : "Waiting…"}
         </text>
       </g>
 
       {/* Blind-spot indicator */}
       <g transform="translate(452 230)">
-        <rect width={176} height={30} rx={4} fill={bsShow ? "#3a0e0e" : "#111318"} stroke={bsShow ? "#ef4444" : "#2a2a2f"} strokeWidth={1} />
+        <rect
+          width={176}
+          height={30}
+          rx={4}
+          fill={bsShow ? "#3a0e0e" : "#111318"}
+          stroke={bsShow ? "#ef4444" : "#2a2a2f"}
+          strokeWidth={1}
+        />
         <g transform="translate(12 15)">
-          <path d="M -6 -5 L 6 -5 L 8 0 L 6 5 L -6 5 L -8 0 Z" fill={bsShow ? "#ef4444" : "#4b5563"} />
+          <path
+            d="M -6 -5 L 6 -5 L 8 0 L 6 5 L -6 5 L -8 0 Z"
+            fill={bsShow ? "#ef4444" : "#4b5563"}
+          />
         </g>
-        <text x={24} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">BLIND SPOT</text>
+        <text x={24} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">
+          BLIND SPOT
+        </text>
         <text x={24} y={25} fontSize={10} fill="#ffffff" fontWeight={700} fontFamily="sans-serif">
           {bsShow ? "Car in Lane 3 moving across!" : "Shoulder check — clear"}
         </text>
@@ -1834,26 +2564,55 @@ function ChangingLanesScene(t: number) {
       {/* Speed matcher */}
       <g transform="translate(452 268)">
         <rect width={176} height={44} rx={4} fill="#111318" stroke="#2a2a2f" strokeWidth={1} />
-        <text x={12} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">SPEED · MATCH FLOW</text>
-        <text x={12} y={34} fontSize={18} fontWeight={800} fill="#ffffff" fontFamily="sans-serif">
-          {Math.round(egoSpeed)}<tspan fontSize={10} fontWeight={500} fill="#9ca3af"> mph</tspan>
+        <text x={12} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">
+          SPEED · MATCH FLOW
         </text>
-        <text x={100} y={20} fontSize={8} fill="#9ca3af" fontFamily="sans-serif">target</text>
-        <text x={100} y={34} fontSize={14} fontWeight={700} fill={egoSpeed >= 68 ? "#22c55e" : "#f59e0b"} fontFamily="sans-serif">70 mph</text>
+        <text x={12} y={34} fontSize={18} fontWeight={800} fill="#ffffff" fontFamily="sans-serif">
+          {Math.round(egoSpeed)}
+          <tspan fontSize={10} fontWeight={500} fill="#9ca3af">
+            {" "}
+            mph
+          </tspan>
+        </text>
+        <text x={100} y={20} fontSize={8} fill="#9ca3af" fontFamily="sans-serif">
+          target
+        </text>
+        <text
+          x={100}
+          y={34}
+          fontSize={14}
+          fontWeight={700}
+          fill={egoSpeed >= 68 ? "#22c55e" : "#f59e0b"}
+          fontFamily="sans-serif"
+        >
+          70 mph
+        </text>
       </g>
 
       {/* Signal indicator */}
       <g transform="translate(452 320)">
         <rect width={176} height={28} rx={4} fill="#111318" stroke="#2a2a2f" strokeWidth={1} />
-        <text x={12} y={12} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">SIGNAL</text>
+        <text x={12} y={12} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">
+          SIGNAL
+        </text>
         <g transform="translate(150 14)">
-          <path d="M -14 -4 L -4 -4 L -4 -8 L 6 0 L -4 8 L -4 4 L -14 4 Z" fill={signalOn ? "#f59e0b" : "#374151"}>
+          <path
+            d="M -14 -4 L -4 -4 L -4 -8 L 6 0 L -4 8 L -4 4 L -14 4 Z"
+            fill={signalOn ? "#f59e0b" : "#374151"}
+          >
             {signalOn && (
-              <animate attributeName="opacity" values="1;0.25;1" dur="0.6s" repeatCount="indefinite" />
+              <animate
+                attributeName="opacity"
+                values="1;0.25;1"
+                dur="0.6s"
+                repeatCount="indefinite"
+              />
             )}
           </path>
         </g>
-        <text x={12} y={23} fontSize={10} fontWeight={700} fill="#ffffff" fontFamily="sans-serif">{signalOn ? "RIGHT · ON" : "OFF"}</text>
+        <text x={12} y={23} fontSize={10} fontWeight={700} fill="#ffffff" fontFamily="sans-serif">
+          {signalOn ? "RIGHT · ON" : "OFF"}
+        </text>
       </g>
     </svg>
   );
@@ -1881,13 +2640,35 @@ function MirrorModule({
   const stroke = highlight ? "#22c55e" : active ? "#f59e0b" : "#2a2a2f";
   return (
     <g transform={`translate(${x} ${y})`}>
-      <rect width={width} height={height} rx={5} fill="#111318" stroke={stroke} strokeWidth={active || highlight ? 1.5 : 1} />
+      <rect
+        width={width}
+        height={height}
+        rx={5}
+        fill="#111318"
+        stroke={stroke}
+        strokeWidth={active || highlight ? 1.5 : 1}
+      />
       {active && (
-        <rect width={width} height={height} rx={5} fill="none" stroke={stroke} strokeWidth={2} opacity={0.5}>
-          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.1s" repeatCount="indefinite" />
+        <rect
+          width={width}
+          height={height}
+          rx={5}
+          fill="none"
+          stroke={stroke}
+          strokeWidth={2}
+          opacity={0.5}
+        >
+          <animate
+            attributeName="opacity"
+            values="0.8;0.2;0.8"
+            dur="1.1s"
+            repeatCount="indefinite"
+          />
         </rect>
       )}
-      <text x={10} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">{label}</text>
+      <text x={10} y={13} fontSize={8} fill="#9ca3af" fontFamily="sans-serif" letterSpacing="1">
+        {label}
+      </text>
       {/* Mirror surface */}
       <g>{drawMirrorContent(width / 2, height / 2 + 6, width - 20)}</g>
     </g>
@@ -1935,28 +2716,39 @@ const changingLanes: Lesson = {
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
       <p>
-        At motorway speeds a car can close 40 metres every second. Mirrors alone cannot
-        confirm a safe move — the offside blind spot hides an entire car. The GSM
-        routine layers the checks so nothing is left to chance and the decision to
-        move becomes a <strong>system</strong>, not a guess.
+        At motorway speeds a car can close 40 metres every second. Mirrors alone cannot confirm a
+        safe move — the offside blind spot hides an entire car. The GSM routine layers the checks so
+        nothing is left to chance and the decision to move becomes a <strong>system</strong>, not a
+        guess.
       </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">The reference point</p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        The reference point
+      </p>
       <p>
-        Check your interior mirror, then your right door mirror. If the vehicle
-        behind you is visible in <strong>BOTH mirrors at the same time</strong>, that
-        is normally enough space to move safely. If it is visible only in the right
-        mirror, it is too close — hold your position and wait for the gap to open.
+        Check your interior mirror, then your right door mirror. If the vehicle behind you is
+        visible in <strong>BOTH mirrors at the same time</strong>, that is normally enough space to
+        move safely. If it is visible only in the right mirror, it is too close — hold your position
+        and wait for the gap to open.
       </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Every lane change on a dual carriageway or motorway — to overtake, to leave, or to make room for merging traffic. Same routine, every time.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Every lane change on a dual carriageway or motorway — to overtake, to leave, or to make room
+        for merging traffic. Same routine, every time.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Observe ahead — spot the reason for the change early.</li>
         <li>Interior mirror — assess the traffic behind you.</li>
         <li>Right door mirror — check the lane you are moving into.</li>
-        <li>Reference point — car behind visible in <em>both</em> mirrors = safe distance.</li>
+        <li>
+          Reference point — car behind visible in <em>both</em> mirrors = safe distance.
+        </li>
         <li>Signal right — give other drivers time to plan around you.</li>
-        <li>Blind-spot check over your right shoulder — a car from Lane 3 could be moving across too.</li>
+        <li>
+          Blind-spot check over your right shoulder — a car from Lane 3 could be moving across too.
+        </li>
         <li>Match your speed to the traffic in the lane you are joining.</li>
         <li>Move smoothly across — one steady steering input, no drifting.</li>
         <li>Cancel the signal once you are settled in the new lane.</li>
@@ -1978,17 +2770,20 @@ const changingLanes: Lesson = {
     {
       wrong: "Glancing at the interior mirror and moving straight across.",
       why: "The offside blind spot hides an entire car. Mirror-only lane changes are the classic motorway side-swipe.",
-      right: "Interior mirror → right mirror → reference point → signal → shoulder check. Only then, move.",
+      right:
+        "Interior mirror → right mirror → reference point → signal → shoulder check. Only then, move.",
     },
     {
       wrong: "Moving into Lane 2 at your current speed when the flow is 10 mph faster.",
       why: "The car behind has to brake sharply — a real risk on a motorway. It also feels aggressive and unpredictable to other drivers.",
-      right: "Match the target-lane speed BEFORE you steer across. Smooth in, no braking required behind you.",
+      right:
+        "Match the target-lane speed BEFORE you steer across. Smooth in, no braking required behind you.",
     },
     {
       wrong: "Starting the move, then hesitating half-way across because someone flashed.",
       why: "Hesitation is the second-most-dangerous thing on a motorway. Other drivers can't read a half-committed manoeuvre.",
-      right: "Complete the observation routine BEFORE you steer. Once you've decided, commit smoothly.",
+      right:
+        "Complete the observation routine BEFORE you steer. Once you've decided, commit smoothly.",
     },
   ],
   gsmTips: [
@@ -2003,16 +2798,48 @@ const changingLanes: Lesson = {
     "Trust the system — Observe, Mirror, Reference point, Signal, Blind spot, Match speed, Move, Cancel, Scan. Same routine every lane, every time.",
   durationMs: 36000,
   captions: [
-    { at: 0.00, label: "Observe ahead", detail: "Slower HGV in Lane 1 — plan the move now, not later." },
-    { at: 0.08, label: "Interior mirror", detail: "Assess the traffic behind you. What is coming up?" },
+    {
+      at: 0.0,
+      label: "Observe ahead",
+      detail: "Slower HGV in Lane 1 — plan the move now, not later.",
+    },
+    {
+      at: 0.08,
+      label: "Interior mirror",
+      detail: "Assess the traffic behind you. What is coming up?",
+    },
     { at: 0.18, label: "Right door mirror", detail: "Check the lane you are moving into." },
-    { at: 0.28, label: "Reference point — safe gap", detail: "The silver car is visible in BOTH mirrors at once. That's the reference point." },
-    { at: 0.38, label: "Signal right", detail: "Signal in good time so other drivers can plan around you." },
-    { at: 0.46, label: "Blind-spot check", detail: "Physical look over your right shoulder — someone from Lane 3 could be moving too." },
-    { at: 0.56, label: "Match speed", detail: "Accelerate to match the flow in Lane 2 BEFORE you steer across." },
-    { at: 0.66, label: "Smooth lane change", detail: "One steady steering input — no drifting, no hesitation." },
+    {
+      at: 0.28,
+      label: "Reference point — safe gap",
+      detail: "The silver car is visible in BOTH mirrors at once. That's the reference point.",
+    },
+    {
+      at: 0.38,
+      label: "Signal right",
+      detail: "Signal in good time so other drivers can plan around you.",
+    },
+    {
+      at: 0.46,
+      label: "Blind-spot check",
+      detail: "Physical look over your right shoulder — someone from Lane 3 could be moving too.",
+    },
+    {
+      at: 0.56,
+      label: "Match speed",
+      detail: "Accelerate to match the flow in Lane 2 BEFORE you steer across.",
+    },
+    {
+      at: 0.66,
+      label: "Smooth lane change",
+      detail: "One steady steering input — no drifting, no hesitation.",
+    },
     { at: 0.82, label: "Cancel signal", detail: "Settled in Lane 2 — cancel the indicator." },
-    { at: 0.90, label: "Continue scanning", detail: "Mirrors, road ahead, position — the routine never stops." },
+    {
+      at: 0.9,
+      label: "Continue scanning",
+      detail: "Mirrors, road ahead, position — the routine never stops.",
+    },
   ],
   questions: [
     {
@@ -2056,8 +2883,7 @@ const changingLanes: Lesson = {
         },
         {
           label: "Only if the road is busy",
-          explain:
-            "No. Same routine every time — the day you skip it is the day someone is there.",
+          explain: "No. Same routine every time — the day you skip it is the day someone is there.",
         },
       ],
     },
@@ -2078,7 +2904,7 @@ function JunctionClearScene(t: number) {
   // Phase B (0.5..1): correct — ego stops BEFORE the box after answering.
   let egoX: number;
   if (t < 0.5) {
-    egoX = -20 + (395 - (-20)) * easeInOut(t / 0.5); // stops in the box at x=395
+    egoX = -20 + (395 - -20) * easeInOut(t / 0.5); // stops in the box at x=395
   } else {
     egoX = 340; // stopped before the yellow box
   }
@@ -2091,12 +2917,31 @@ function JunctionClearScene(t: number) {
       <rect x={sideRoadX - 30} y={240} width={60} height={120} fill="#2b2b2e" />
       <rect x={sideRoadX - 30} y={240} width={60} height={2} fill={PAINT} />
       {/* Yellow box junction */}
-      <rect x={sideRoadX - 40} y={162} width={80} height={76} fill="none" stroke="#f5c518" strokeWidth={1.5} />
+      <rect
+        x={sideRoadX - 40}
+        y={162}
+        width={80}
+        height={76}
+        fill="none"
+        stroke="#f5c518"
+        strokeWidth={1.5}
+      />
       {Array.from({ length: 8 }).map((_, i) => (
-        <line key={i} x1={sideRoadX - 40 + i * 10} y1={162} x2={sideRoadX - 40 + i * 10 + 20} y2={238} stroke="#f5c518" strokeWidth={1} opacity={0.7} />
+        <line
+          key={i}
+          x1={sideRoadX - 40 + i * 10}
+          y1={162}
+          x2={sideRoadX - 40 + i * 10 + 20}
+          y2={238}
+          stroke="#f5c518"
+          strokeWidth={1}
+          opacity={0.7}
+        />
       ))}
       {/* Queue */}
-      {queueXs.map((qx) => <Car2 key={qx} x={qx} y={200} color="#8a8a8f" />)}
+      {queueXs.map((qx) => (
+        <Car2 key={qx} x={qx} y={200} color="#8a8a8f" />
+      ))}
       {/* Ego */}
       <Car2 x={egoX} y={200} color="#2f6bf0" braking={t < 0.05 || (t > 0.4 && t < 0.55)} />
       {/* Side-road car */}
@@ -2117,7 +2962,8 @@ const keepingJunctionsClear: Lesson = {
   title: "Keeping junctions clear",
   category: "Highway Code • Practical Driving Skills",
   rule: "Rule 174",
-  objective: "Learn why you must never enter a junction — especially a yellow box — unless your exit is clear.",
+  objective:
+    "Learn why you must never enter a junction — especially a yellow box — unless your exit is clear.",
   think: [
     "Where is my exit — is there room for my car to fully clear the junction?",
     "Is the traffic ahead stationary or still moving?",
@@ -2136,12 +2982,23 @@ const keepingJunctionsClear: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Blocking a junction seizes the whole road. One car sat in a yellow box can stop dozens of others — including emergency vehicles. What we do for others, they do for us: keeping junctions clear is how UK traffic actually flows.</p>
+      <p>
+        Blocking a junction seizes the whole road. One car sat in a yellow box can stop dozens of
+        others — including emergency vehicles. What we do for others, they do for us: keeping
+        junctions clear is how UK traffic actually flows.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Every junction with a queue on the other side — yellow-box junctions, T-junctions, mini-roundabouts, staggered crossroads. If your exit isn't clear, you don't enter.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Every junction with a queue on the other side — yellow-box junctions, T-junctions,
+        mini-roundabouts, staggered crossroads. If your exit isn't clear, you don't enter.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
-        <li>Look at your <em>exit</em>, not just the light or the give-way.</li>
+        <li>
+          Look at your <em>exit</em>, not just the light or the give-way.
+        </li>
         <li>Ask: "Is there a full car's length of clear road for me on the other side?"</li>
         <li>If not, stop before the junction — even on a green light.</li>
         <li>Wait for the queue to move enough to fit you, then go.</li>
@@ -2163,22 +3020,44 @@ const keepingJunctionsClear: Lesson = {
     "Right-turn exception — waiting for oncoming is fine",
     "What we do for others, they do for us",
   ],
-  keyTakeaway: "Only enter a junction — especially a yellow box — if your exit is completely clear.",
+  keyTakeaway:
+    "Only enter a junction — especially a yellow box — if your exit is completely clear.",
   durationMs: 22000,
   captions: [
     { at: 0, label: "Traffic queue ahead", detail: "The exit past the junction is blocked." },
-    { at: 0.35, label: "Common mistake — moving in anyway", detail: "You've blocked the side road." },
+    {
+      at: 0.35,
+      label: "Common mistake — moving in anyway",
+      detail: "You've blocked the side road.",
+    },
     { at: 0.5, label: "Decision point", detail: "What should you have done?" },
-    { at: 0.75, label: "Stopped before the box", detail: "Side-road car can now emerge — everyone flows." },
+    {
+      at: 0.75,
+      label: "Stopped before the box",
+      detail: "Side-road car can now emerge — everyone flows.",
+    },
   ],
   questions: [
     {
       at: 0.5,
       prompt: "The traffic ahead is stationary past a yellow box junction. Should you enter?",
       options: [
-        { label: "Yes — inch forward with the queue", explain: "No. If your car will end up stopped in the box, you'll block the side road. Never enter." },
-        { label: "No — wait before the box until your exit is clear", correct: true, explain: "Correct. Yellow box means only enter if you can clear it. Waiting before the box keeps the side road open." },
-        { label: "Only if you're turning right", explain: "Half right — you may WAIT in the box when turning right against oncoming traffic. But if the exit is blocked, you still stay out." },
+        {
+          label: "Yes — inch forward with the queue",
+          explain:
+            "No. If your car will end up stopped in the box, you'll block the side road. Never enter.",
+        },
+        {
+          label: "No — wait before the box until your exit is clear",
+          correct: true,
+          explain:
+            "Correct. Yellow box means only enter if you can clear it. Waiting before the box keeps the side road open.",
+        },
+        {
+          label: "Only if you're turning right",
+          explain:
+            "Half right — you may WAIT in the box when turning right against oncoming traffic. But if the exit is blocked, you still stay out.",
+        },
       ],
     },
   ],
@@ -2235,7 +3114,14 @@ function Hedge({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
         <circle key={i} cx={x + 6 + i * 10} cy={y + 4} r={5} fill="#3d6a2f" />
       ))}
       {Array.from({ length: Math.max(3, Math.floor(w / 10)) }).map((_, i) => (
-        <circle key={`b${i}`} cx={x + 10 + i * 10} cy={y + h - 4} r={4} fill="#254a1c" opacity={0.7} />
+        <circle
+          key={`b${i}`}
+          cx={x + 10 + i * 10}
+          cy={y + h - 4}
+          r={4}
+          fill="#254a1c"
+          opacity={0.7}
+        />
       ))}
     </g>
   );
@@ -2256,7 +3142,16 @@ function House({ x, y, w = 40, h = 44 }: { x: number; y: number; w?: number; h?:
 function ParkedCar({ x, y, color = "#6b6b70" }: { x: number; y: number; color?: string }) {
   return (
     <g transform={`translate(${x} ${y})`}>
-      <rect x={-12} y={-7} width={24} height={14} rx={3} fill={color} stroke="#111" strokeWidth={0.5} />
+      <rect
+        x={-12}
+        y={-7}
+        width={24}
+        height={14}
+        rx={3}
+        fill={color}
+        stroke="#111"
+        strokeWidth={0.5}
+      />
       <rect x={-7} y={-5} width={4} height={10} rx={1} fill="#111" opacity={0.6} />
       <rect x={3} y={-5} width={4} height={10} rx={1} fill="#111" opacity={0.6} />
     </g>
@@ -2369,12 +3264,37 @@ function ClosedJunctionScene(t: number) {
       <rect x={520} y={110} width={100} height={4} fill="#6b4a2a" />
 
       {/* Red visibility cones — blocked view left + right from ego eye position */}
-      <VisibilityCone x={320} y={egoY - 4} angle={180} spread={22} length={90} color="#dc2626" opacity={0.32} />
-      <VisibilityCone x={320} y={egoY - 4} angle={0} spread={22} length={90} color="#dc2626" opacity={0.32} />
+      <VisibilityCone
+        x={320}
+        y={egoY - 4}
+        angle={180}
+        spread={22}
+        length={90}
+        color="#dc2626"
+        opacity={0.32}
+      />
+      <VisibilityCone
+        x={320}
+        y={egoY - 4}
+        angle={0}
+        spread={22}
+        length={90}
+        color="#dc2626"
+        opacity={0.32}
+      />
 
       {/* Solid red STOP line — a closed junction is a MUST-STOP junction */}
       <rect x={282} y={216} width={76} height={10} fill="#c8102e" opacity={0.95} />
-      <text x={320} y={224} textAnchor="middle" fontSize={8} fill="#fff" fontWeight={900} fontFamily="sans-serif" letterSpacing={1.5}>
+      <text
+        x={320}
+        y={224}
+        textAnchor="middle"
+        fontSize={8}
+        fill="#fff"
+        fontWeight={900}
+        fontFamily="sans-serif"
+        letterSpacing={1.5}
+      >
         STOP
       </text>
 
@@ -2386,14 +3306,28 @@ function ClosedJunctionScene(t: number) {
       {/* Header labels */}
       <g>
         <rect x={12} y={12} width={210} height={54} rx={6} fill="#000" opacity={0.72} />
-        <text x={22} y={30} fontSize={11} fill="#fca5a5" fontFamily="sans-serif" fontWeight={800}>CLOSED JUNCTION</text>
-        <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">Limited visibility</text>
-        <text x={22} y={60} fontSize={10} fill="#fca5a5" fontFamily="sans-serif" fontWeight={800}>YOU MUST STOP</text>
+        <text x={22} y={30} fontSize={11} fill="#fca5a5" fontFamily="sans-serif" fontWeight={800}>
+          CLOSED JUNCTION
+        </text>
+        <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">
+          Limited visibility
+        </text>
+        <text x={22} y={60} fontSize={10} fill="#fca5a5" fontFamily="sans-serif" fontWeight={800}>
+          YOU MUST STOP
+        </text>
       </g>
 
       <Hud
         label="PHASE"
-        value={t < 0.35 ? "Approach — brake early" : t < 0.55 ? "MUST STOP at give-way" : t < 0.82 ? "Creep — eyes past the hedge" : "GO — safe gap found"}
+        value={
+          t < 0.35
+            ? "Approach — brake early"
+            : t < 0.55
+              ? "MUST STOP at give-way"
+              : t < 0.82
+                ? "Creep — eyes past the hedge"
+                : "GO — safe gap found"
+        }
         tone={t < 0.82 ? "warn" : "good"}
       />
     </svg>
@@ -2425,10 +3359,21 @@ const closedJunction: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>You cannot borrow the priority of a road you cannot see. The red cones in the diagram show exactly how much of the main road is hidden — cyclists, motorbikes and cars are all in those blind wedges, and they will arrive before you can react. A closed junction is the most common place a new driver has a serious collision, so we remove the guesswork: we stop.</p>
+      <p>
+        You cannot borrow the priority of a road you cannot see. The red cones in the diagram show
+        exactly how much of the main road is hidden — cyclists, motorbikes and cars are all in those
+        blind wedges, and they will arrive before you can react. A closed junction is the most
+        common place a new driver has a serious collision, so we remove the guesswork: we stop.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Every single time the view is blocked — parked cars either side, tall hedges, walls, fences, a bend, poor light, or a "STOP" sign / solid white line at the mouth. If you cannot see cleanly both ways from your seat, treat it as closed and stop.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Every single time the view is blocked — parked cars either side, tall hedges, walls, fences,
+        a bend, poor light, or a "STOP" sign / solid white line at the mouth. If you cannot see
+        cleanly both ways from your seat, treat it as closed and stop.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Approach in the correct gear, brakes covered, ready to stop.</li>
         <li>STOP fully at the give-way line — car still, handbrake if needed.</li>
@@ -2451,22 +3396,26 @@ const closedJunction: Lesson = {
     {
       wrong: "Rolling through the give-way line without a full stop.",
       why: "At a closed junction your eyes can't see past the hedge until the car has stopped — a rolling car commits you before you've seen anything.",
-      right: "Come to a complete stop AT the line first, then creep forward slowly to a second stop where your eyes clear the view.",
+      right:
+        "Come to a complete stop AT the line first, then creep forward slowly to a second stop where your eyes clear the view.",
     },
     {
       wrong: "Creeping out too far, too fast — the bonnet ends up in the main road.",
       why: "A fast creep uses road space you haven't checked yet. If a car is close, you can't retreat and you've forced them to brake.",
-      right: "Creep in inches, not feet. Cover the brake. Move only as fast as your view is opening.",
+      right:
+        "Creep in inches, not feet. Cover the brake. Move only as fast as your view is opening.",
     },
     {
       wrong: "Only looking the way you're turning (usually right).",
       why: "Cars come from BOTH directions on a two-way road. Cyclists and motorbikes on your left are the ones that get hit.",
-      right: "Right → Left → Right again, every time. Three clean checks minimum before you commit.",
+      right:
+        "Right → Left → Right again, every time. Three clean checks minimum before you commit.",
     },
     {
       wrong: "Missing a bike hidden behind a parked car or a van.",
       why: "Bikes are narrow. A single glance past a parked van can hide a whole cyclist. Motorbikes appear from nowhere at 40mph.",
-      right: "Move your head, not just your eyes. Look AROUND the blocker before you go — treat every gap as a possible bike.",
+      right:
+        "Move your head, not just your eyes. Look AROUND the blocker before you go — treat every gap as a possible bike.",
     },
     {
       wrong: "Pulling out on hope — 'nothing was coming last time'.",
@@ -2485,19 +3434,49 @@ const closedJunction: Lesson = {
     "Closed junction — you MUST stop. Only after a full stop can you creep, look and go.",
   durationMs: 22000,
   captions: [
-    { at: 0, label: "Approaching — this is a CLOSED junction", detail: "Parked cars both sides, tall hedges, houses close to the road." },
-    { at: 0.35, label: "MUST STOP at the give-way line", detail: "Full stop — wheels still. No rolling into it." },
-    { at: 0.55, label: "Creep — inch forward until you can see", detail: "Move only until your eyes get past the hedge line." },
-    { at: 0.82, label: "GO — safe gap confirmed", detail: "Only now does the car move properly onto the main road." },
+    {
+      at: 0,
+      label: "Approaching — this is a CLOSED junction",
+      detail: "Parked cars both sides, tall hedges, houses close to the road.",
+    },
+    {
+      at: 0.35,
+      label: "MUST STOP at the give-way line",
+      detail: "Full stop — wheels still. No rolling into it.",
+    },
+    {
+      at: 0.55,
+      label: "Creep — inch forward until you can see",
+      detail: "Move only until your eyes get past the hedge line.",
+    },
+    {
+      at: 0.82,
+      label: "GO — safe gap confirmed",
+      detail: "Only now does the car move properly onto the main road.",
+    },
   ],
   questions: [
     {
       at: 0.55,
-      prompt: "You've arrived at a closed junction — hedges and parked cars block your view. What must you do?",
+      prompt:
+        "You've arrived at a closed junction — hedges and parked cars block your view. What must you do?",
       options: [
-        { label: "Slow to a crawl and roll straight out", explain: "No. A closed junction means you MUST stop — a rolling entry is guessing with your car." },
-        { label: "Come to a full STOP, then creep forward until your eyes clear the hedge, then go when safe", correct: true, explain: "Correct. Closed junction = full stop first. Then you creep, then you look, then you go." },
-        { label: "Move over to the wrong side of the road to see better", explain: "Dangerous — you'd be blocking oncoming traffic and still not have priority." },
+        {
+          label: "Slow to a crawl and roll straight out",
+          explain:
+            "No. A closed junction means you MUST stop — a rolling entry is guessing with your car.",
+        },
+        {
+          label:
+            "Come to a full STOP, then creep forward until your eyes clear the hedge, then go when safe",
+          correct: true,
+          explain:
+            "Correct. Closed junction = full stop first. Then you creep, then you look, then you go.",
+        },
+        {
+          label: "Move over to the wrong side of the road to see better",
+          explain: "Dangerous — you'd be blocking oncoming traffic and still not have priority.",
+        },
       ],
     },
   ],
@@ -2530,8 +3509,24 @@ function OpenJunctionScene(t: number) {
       <Tree x={520} y={300} r={8} />
 
       {/* Green visibility cones — sweeping unobstructed left + right */}
-      <VisibilityCone x={320} y={egoY - 4} angle={180} spread={38} length={300} color="#16a34a" opacity={0.22} />
-      <VisibilityCone x={320} y={egoY - 4} angle={0} spread={38} length={300} color="#16a34a" opacity={0.22} />
+      <VisibilityCone
+        x={320}
+        y={egoY - 4}
+        angle={180}
+        spread={38}
+        length={300}
+        color="#16a34a"
+        opacity={0.22}
+      />
+      <VisibilityCone
+        x={320}
+        y={egoY - 4}
+        angle={0}
+        spread={38}
+        length={300}
+        color="#16a34a"
+        opacity={0.22}
+      />
 
       {/* Ego */}
       <g transform={`translate(320 ${egoY}) rotate(-90)`}>
@@ -2541,14 +3536,26 @@ function OpenJunctionScene(t: number) {
       {/* Header labels */}
       <g>
         <rect x={12} y={12} width={210} height={54} rx={6} fill="#000" opacity={0.72} />
-        <text x={22} y={30} fontSize={11} fill="#86efac" fontFamily="sans-serif" fontWeight={800}>OPEN JUNCTION</text>
-        <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">Visibility is open</text>
-        <text x={22} y={60} fontSize={10} fill="#86efac" fontFamily="sans-serif" fontWeight={800}>Coast through if safe</text>
+        <text x={22} y={30} fontSize={11} fill="#86efac" fontFamily="sans-serif" fontWeight={800}>
+          OPEN JUNCTION
+        </text>
+        <text x={22} y={46} fontSize={10} fill="#fff" fontFamily="sans-serif">
+          Visibility is open
+        </text>
+        <text x={22} y={60} fontSize={10} fill="#86efac" fontFamily="sans-serif" fontWeight={800}>
+          Coast through if safe
+        </text>
       </g>
 
       <Hud
         label="PHASE"
-        value={t < 0.5 ? "Approach — look early both ways" : t < 0.85 ? "Visibility open — coast through" : "Emerging smoothly"}
+        value={
+          t < 0.5
+            ? "Approach — look early both ways"
+            : t < 0.85
+              ? "Visibility open — coast through"
+              : "Emerging smoothly"
+        }
         tone="good"
       />
     </svg>
@@ -2581,16 +3588,35 @@ const openJunction: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>An open junction gives you back a big chunk of the main road with your eyes. The green cones show it — wide, unblocked, both ways. Stopping here for no reason wastes fuel, brakes and time and, worse, teaches you to freeze at every give-way line. If you can genuinely see, you have already done the work — you can coast through.</p>
+      <p>
+        An open junction gives you back a big chunk of the main road with your eyes. The green cones
+        show it — wide, unblocked, both ways. Stopping here for no reason wastes fuel, brakes and
+        time and, worse, teaches you to freeze at every give-way line. If you can genuinely see, you
+        have already done the work — you can coast through.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Only when the view is properly open: no parked cars near the mouth, no tall hedges, no walls or bends hiding the main road, no rain or low sun killing your view. The moment any of those change — you're treating it as closed again.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Only when the view is properly open: no parked cars near the mouth, no tall hedges, no walls
+        or bends hiding the main road, no rain or low sun killing your view. The moment any of those
+        change — you're treating it as closed again.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Read the junction early — parked cars? hedges? walls? Nothing? Good.</li>
         <li>Mirrors, signal, position — full routine, same as any junction.</li>
-        <li>Look RIGHT, LEFT, then RIGHT again well before the give-way line — three checks minimum.</li>
-        <li>If visibility stays open and the road is clear, ease off — do not brake harshly — and coast through in the correct gear.</li>
-        <li>If anything closes the view or a vehicle appears, stop at the line and treat it as a closed junction.</li>
+        <li>
+          Look RIGHT, LEFT, then RIGHT again well before the give-way line — three checks minimum.
+        </li>
+        <li>
+          If visibility stays open and the road is clear, ease off — do not brake harshly — and
+          coast through in the correct gear.
+        </li>
+        <li>
+          If anything closes the view or a vehicle appears, stop at the line and treat it as a
+          closed junction.
+        </li>
       </ol>
     </>
   ),
@@ -2607,27 +3633,32 @@ const openJunction: Lesson = {
     {
       wrong: "Stopping dead at every give-way even when the view is wide open.",
       why: "Unnecessary stops break traffic flow, invite rear-end shunts and teach you to react instead of plan.",
-      right: "Look far, look early. If the road is genuinely clear, keep coasting — smooth beats stopped.",
+      right:
+        "Look far, look early. If the road is genuinely clear, keep coasting — smooth beats stopped.",
     },
     {
       wrong: "Looking once, right at the line — trying to decide at the last second.",
       why: "By the time you're at the line you've already run out of room to coast. Late looking becomes braking.",
-      right: "Start scanning 5–6 car lengths before the give-way. Decide early — the line is where you act, not think.",
+      right:
+        "Start scanning 5–6 car lengths before the give-way. Decide early — the line is where you act, not think.",
     },
     {
       wrong: "Treating 'open junction' as 'main road' and not giving way.",
       why: "Open only means you can SEE — it doesn't remove the priority. Traffic on the main road still comes first.",
-      right: "You still give way. Coasting is only allowed when there's genuinely no one to give way to.",
+      right:
+        "You still give way. Coasting is only allowed when there's genuinely no one to give way to.",
     },
     {
       wrong: "Coasting through when the view has closed — parked van, bend, heavy rain.",
       why: "Conditions change. A junction that was open yesterday can be closed today. Coasting on habit is how it goes wrong.",
-      right: "Re-read the view every time. The moment it closes — treat it as a closed junction and stop.",
+      right:
+        "Re-read the view every time. The moment it closes — treat it as a closed junction and stop.",
     },
     {
       wrong: "Only scanning the near lane — missing the fast car in the far lane.",
       why: "A car 100m away at 50mph reaches you in about 4 seconds. If you only scanned 50m, you never saw them.",
-      right: "Look as far as your eyes will stretch. If you can see the road bend or vanishing point, use it.",
+      right:
+        "Look as far as your eyes will stretch. If you can see the road bend or vanishing point, use it.",
     },
   ],
   gsmTips: [
@@ -2637,22 +3668,47 @@ const openJunction: Lesson = {
     "Smooth throttle beats braking hard",
     "The moment the view closes — you stop",
   ],
-  keyTakeaway:
-    "Open junction, open view — coast through. Closed view — stop. The road decides.",
+  keyTakeaway: "Open junction, open view — coast through. Closed view — stop. The road decides.",
   durationMs: 22000,
   captions: [
-    { at: 0, label: "Approaching an OPEN junction", detail: "Wide view, no parked cars, houses set well back." },
-    { at: 0.35, label: "Look early — right, left, right", detail: "Three checks minimum — green cones, I can already see both directions." },
-    { at: 0.7, label: "Visibility open — coast through", detail: "Main road is clear, adjust speed and continue smoothly." },
+    {
+      at: 0,
+      label: "Approaching an OPEN junction",
+      detail: "Wide view, no parked cars, houses set well back.",
+    },
+    {
+      at: 0.35,
+      label: "Look early — right, left, right",
+      detail: "Three checks minimum — green cones, I can already see both directions.",
+    },
+    {
+      at: 0.7,
+      label: "Visibility open — coast through",
+      detail: "Main road is clear, adjust speed and continue smoothly.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "You approach an open junction. The view is genuinely wide and the main road is empty. Should you stop?",
+      prompt:
+        "You approach an open junction. The view is genuinely wide and the main road is empty. Should you stop?",
       options: [
-        { label: "Yes — every give-way means a full stop", explain: "No. Give-way means give priority, not always stop. With an open view and a clear road you can coast through." },
-        { label: "No — as long as visibility stays open and the road is clear, coast through smoothly", correct: true, explain: "Correct. Open junction, open view, clear road = coast through. If the view closes, you stop." },
-        { label: "No — accelerate through without looking", explain: "Never. Open doesn't mean skip the look. Look first, then coast." },
+        {
+          label: "Yes — every give-way means a full stop",
+          explain:
+            "No. Give-way means give priority, not always stop. With an open view and a clear road you can coast through.",
+        },
+        {
+          label:
+            "No — as long as visibility stays open and the road is clear, coast through smoothly",
+          correct: true,
+          explain:
+            "Correct. Open junction, open view, clear road = coast through. If the view closes, you stop.",
+        },
+        {
+          label: "No — accelerate through without looking",
+          explain: "Never. Open doesn't mean skip the look. Look first, then coast.",
+        },
       ],
     },
   ],
@@ -2680,13 +3736,41 @@ function OvertakingScene(t: number) {
       {/* Speed limit sign */}
       <g transform="translate(80 90)">
         <circle r={22} fill="#fff" stroke="#c8102e" strokeWidth={5} />
-        <text textAnchor="middle" y={7} fontSize={20} fontWeight={800} fill="#111" fontFamily="sans-serif">40</text>
+        <text
+          textAnchor="middle"
+          y={7}
+          fontSize={20}
+          fontWeight={800}
+          fill="#111"
+          fontFamily="sans-serif"
+        >
+          40
+        </text>
       </g>
       <Car2 x={leadX} y={roadY} color="#8a8a8f" />
-      <Car2 x={egoX} y={egoY} color="#2f6bf0" indicator={shouldOvertake && t > 0.55 && t < 0.7 ? "right" : shouldOvertake && t > 0.85 && t < 0.95 ? "left" : null} />
+      <Car2
+        x={egoX}
+        y={egoY}
+        color="#2f6bf0"
+        indicator={
+          shouldOvertake && t > 0.55 && t < 0.7
+            ? "right"
+            : shouldOvertake && t > 0.85 && t < 0.95
+              ? "left"
+              : null
+        }
+      />
       <Hud
         label={t < 0.5 ? "LEAD 35 in 40" : "LEAD 25 in 40"}
-        value={t < 0.5 ? "Stay behind" : t < 0.65 ? "Overtake if safe" : t < 0.9 ? "Overtaking…" : "Back to left"}
+        value={
+          t < 0.5
+            ? "Stay behind"
+            : t < 0.65
+              ? "Overtake if safe"
+              : t < 0.9
+                ? "Overtaking…"
+                : "Back to left"
+        }
         tone={t < 0.5 ? "good" : "warn"}
       />
     </svg>
@@ -2717,16 +3801,30 @@ const overtaking: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Most overtakes save you less than 30 seconds over an entire journey. The cost of getting one wrong is a head-on collision. Slightly slower traffic is <em>not</em> a reason to overtake — significantly slower traffic on a long, clear, legal stretch is.</p>
+      <p>
+        Most overtakes save you less than 30 seconds over an entire journey. The cost of getting one
+        wrong is a head-on collision. Slightly slower traffic is <em>not</em> a reason to overtake —
+        significantly slower traffic on a long, clear, legal stretch is.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Only when it is necessary, legal and safe: a clearly slower vehicle, a long clear view ahead, no solid white lines, no bends, brows, junctions, crossings or oncoming traffic within the overtake and its recovery.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Only when it is necessary, legal and safe: a clearly slower vehicle, a long clear view
+        ahead, no solid white lines, no bends, brows, junctions, crossings or oncoming traffic
+        within the overtake and its recovery.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Ask: do I actually NEED to overtake, or am I just impatient?</li>
         <li>Position back a little — improve your view past the vehicle in front.</li>
-        <li>Mirrors, signal, look — commit only when the view is <em>fully</em> clear.</li>
+        <li>
+          Mirrors, signal, look — commit only when the view is <em>fully</em> clear.
+        </li>
         <li>Overtake briskly using the power you have — no lingering alongside.</li>
-        <li>See the whole car in your interior mirror, signal left, return smoothly to the left.</li>
+        <li>
+          See the whole car in your interior mirror, signal left, return smoothly to the left.
+        </li>
       </ol>
     </>
   ),
@@ -2744,23 +3842,54 @@ const overtaking: Lesson = {
     "Mirror → Signal → Blind spot → Overtake → Mirror → Return",
     "Never overtake on a solid white line",
   ],
-  keyTakeaway: "Overtake only when it is both necessary and safe — the speed limit is not a reason on its own.",
+  keyTakeaway:
+    "Overtake only when it is both necessary and safe — the speed limit is not a reason on its own.",
   durationMs: 22000,
   captions: [
-    { at: 0, label: "Lead car doing 35 in a 40", detail: "Slightly under the limit — no reason to overtake." },
+    {
+      at: 0,
+      label: "Lead car doing 35 in a 40",
+      detail: "Slightly under the limit — no reason to overtake.",
+    },
     { at: 0.35, label: "Stay behind, keep the gap", detail: "Necessary? No." },
-    { at: 0.5, label: "New scenario — lead now doing 25", detail: "Now it may be worth overtaking, IF safe." },
-    { at: 0.75, label: "Mirror, signal, blind spot, overtake", detail: "Clear view, clear road — commit." },
-    { at: 0.9, label: "Back to the left lane", detail: "Overtake complete, mirror, signal, return." },
+    {
+      at: 0.5,
+      label: "New scenario — lead now doing 25",
+      detail: "Now it may be worth overtaking, IF safe.",
+    },
+    {
+      at: 0.75,
+      label: "Mirror, signal, blind spot, overtake",
+      detail: "Clear view, clear road — commit.",
+    },
+    {
+      at: 0.9,
+      label: "Back to the left lane",
+      detail: "Overtake complete, mirror, signal, return.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "You've been following a car doing 35 mph in a 40 mph zone for a mile. Should you overtake?",
+      prompt:
+        "You've been following a car doing 35 mph in a 40 mph zone for a mile. Should you overtake?",
       options: [
-        { label: "Yes — the limit is 40 so you're entitled to it", explain: "No. The limit is a maximum, not a target. Overtaking to gain 5 mph rarely justifies the risk." },
-        { label: "No — the speed difference is too small", correct: true, explain: "Correct. Overtake only when it is both necessary AND safe. A 5 mph gain isn't necessary." },
-        { label: "Yes if the road is clear — always take the chance", explain: "Safe road alone isn't enough. Overtakes must also be necessary — this one isn't." },
+        {
+          label: "Yes — the limit is 40 so you're entitled to it",
+          explain:
+            "No. The limit is a maximum, not a target. Overtaking to gain 5 mph rarely justifies the risk.",
+        },
+        {
+          label: "No — the speed difference is too small",
+          correct: true,
+          explain:
+            "Correct. Overtake only when it is both necessary AND safe. A 5 mph gain isn't necessary.",
+        },
+        {
+          label: "Yes if the road is clear — always take the chance",
+          explain:
+            "Safe road alone isn't enough. Overtakes must also be necessary — this one isn't.",
+        },
       ],
     },
   ],
@@ -2796,7 +3925,13 @@ function BlindSpotScene(t: number) {
       )}
       <Hud
         label="OTHER VEHICLE POSITION"
-        value={otherX < 270 ? "Behind — visible in mirror" : inBlindSpot ? "IN BLIND SPOT" : "Ahead — visible"}
+        value={
+          otherX < 270
+            ? "Behind — visible in mirror"
+            : inBlindSpot
+              ? "IN BLIND SPOT"
+              : "Ahead — visible"
+        }
         tone={inBlindSpot ? "bad" : "good"}
       />
     </svg>
@@ -2808,7 +3943,8 @@ const blindSpots: Lesson = {
   title: "Blind spots",
   category: "Highway Code • Practical Driving Skills",
   rule: "Rule 161",
-  objective: "Learn where your blind spots are, why sitting alongside another vehicle is dangerous, and how to move out of them.",
+  objective:
+    "Learn where your blind spots are, why sitting alongside another vehicle is dangerous, and how to move out of them.",
   think: [
     "Where are the vehicles around me right now?",
     "Is one of them just outside my mirror view?",
@@ -2827,16 +3963,27 @@ const blindSpots: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Every car has areas the mirrors don't show — behind the door pillars, over the shoulder. A cyclist, motorbike or car sitting there is <strong>invisible</strong> to you. Whoever changes lane first without a shoulder check is the one who causes the collision.</p>
+      <p>
+        Every car has areas the mirrors don't show — behind the door pillars, over the shoulder. A
+        cyclist, motorbike or car sitting there is <strong>invisible</strong> to you. Whoever
+        changes lane first without a shoulder check is the one who causes the collision.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Before <em>every</em> lane change, pull-away, merge, overtake, and before opening the door when parked. Especially on dual carriageways, at slip-roads and around cyclists.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Before <em>every</em> lane change, pull-away, merge, overtake, and before opening the door
+        when parked. Especially on dual carriageways, at slip-roads and around cyclists.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Mirrors first — interior, then the door mirror for the side you're moving.</li>
         <li>Signal in good time to warn others of your intent.</li>
         <li>Quick shoulder check on the moving side — that's your blind-spot look.</li>
         <li>Only when the mirror AND the shoulder check are clean, move smoothly.</li>
-        <li>Never rely on the other driver seeing you — always assume you're invisible in theirs too.</li>
+        <li>
+          Never rely on the other driver seeing you — always assume you're invisible in theirs too.
+        </li>
       </ol>
     </>
   ),
@@ -2854,22 +4001,44 @@ const blindSpots: Lesson = {
     "Assume you're invisible until proven otherwise",
     "Lorry blind spots are HUGE — stay out of them",
   ],
-  keyTakeaway: "Blind spots are where mirrors don't reach — check over your shoulder, never sit alongside.",
+  keyTakeaway:
+    "Blind spots are where mirrors don't reach — check over your shoulder, never sit alongside.",
   durationMs: 18000,
   captions: [
     { at: 0, label: "Other vehicle behind — visible in mirror", detail: "Everything's fine." },
-    { at: 0.4, label: "Vehicle now in your blind spot", detail: "Mirror shows nothing — but they're there." },
+    {
+      at: 0.4,
+      label: "Vehicle now in your blind spot",
+      detail: "Mirror shows nothing — but they're there.",
+    },
     { at: 0.5, label: "Decision point", detail: "You need to change lane. Now what?" },
-    { at: 0.8, label: "Cleared — ahead of you", detail: "Now visible again. Shoulder-check before any move." },
+    {
+      at: 0.8,
+      label: "Cleared — ahead of you",
+      detail: "Now visible again. Shoulder-check before any move.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "You want to change lane. Your mirrors show the lane beside you is clear. Is it safe to move?",
+      prompt:
+        "You want to change lane. Your mirrors show the lane beside you is clear. Is it safe to move?",
       options: [
-        { label: "Yes — the mirrors are clear", explain: "No. Mirrors have blind spots. A car could be exactly there and you'd never see it." },
-        { label: "Only after a quick shoulder check confirms the blind spot", correct: true, explain: "Correct. Mirror + shoulder check. If both are clear, then move." },
-        { label: "Move slowly across — they'll get out of the way", explain: "Absolutely not. If they're there and you drift into them, it's your fault and their nightmare." },
+        {
+          label: "Yes — the mirrors are clear",
+          explain:
+            "No. Mirrors have blind spots. A car could be exactly there and you'd never see it.",
+        },
+        {
+          label: "Only after a quick shoulder check confirms the blind spot",
+          correct: true,
+          explain: "Correct. Mirror + shoulder check. If both are clear, then move.",
+        },
+        {
+          label: "Move slowly across — they'll get out of the way",
+          explain:
+            "Absolutely not. If they're there and you drift into them, it's your fault and their nightmare.",
+        },
       ],
     },
   ],
@@ -2905,21 +4074,79 @@ function StretchVisionScene(t: number) {
       <circle cx={318} cy={140} r={3} fill="#ef4444" />
       {/* Distant sign */}
       <rect x={420} y={140} width={30} height={20} fill="#c8102e" />
-      <text x={435} y={155} textAnchor="middle" fontSize={11} fontWeight={800} fill="#fff" fontFamily="sans-serif">30</text>
+      <text
+        x={435}
+        y={155}
+        textAnchor="middle"
+        fontSize={11}
+        fontWeight={800}
+        fill="#fff"
+        fontFamily="sans-serif"
+      >
+        30
+      </text>
       {/* Road markings on tarmac */}
-      <text x={320} y={295} textAnchor="middle" fontSize={9} fill={PAINT} fontFamily="sans-serif">SLOW</text>
+      <text x={320} y={295} textAnchor="middle" fontSize={9} fill={PAINT} fontFamily="sans-serif">
+        SLOW
+      </text>
       {/* Dashboard */}
       <rect x={0} y={300} width={640} height={60} fill="#0a0a0a" />
-      <rect x={280} y={310} width={80} height={40} rx={4} fill="#141416" stroke="#3a3a3d" strokeWidth={1} />
-      <text x={320} y={335} textAnchor="middle" fontSize={16} fontWeight={700} fill="#f5f5f0" fontFamily="sans-serif">30</text>
+      <rect
+        x={280}
+        y={310}
+        width={80}
+        height={40}
+        rx={4}
+        fill="#141416"
+        stroke="#3a3a3d"
+        strokeWidth={1}
+      />
+      <text
+        x={320}
+        y={335}
+        textAnchor="middle"
+        fontSize={16}
+        fontWeight={700}
+        fill="#f5f5f0"
+        fontFamily="sans-serif"
+      >
+        30
+      </text>
       {/* Zone highlights */}
-      <rect x={0} y={0} width={640} height={54} fill="#f5c518" opacity={phase === 0 ? 0.18 : 0.03} />
-      <rect x={0} y={54} width={640} height={216} fill="#22c55e" opacity={phase === 1 ? 0.14 : 0.03} />
-      <rect x={0} y={270} width={640} height={30} fill="#2f6bf0" opacity={phase === 2 ? 0.18 : 0.03} />
+      <rect
+        x={0}
+        y={0}
+        width={640}
+        height={54}
+        fill="#f5c518"
+        opacity={phase === 0 ? 0.18 : 0.03}
+      />
+      <rect
+        x={0}
+        y={54}
+        width={640}
+        height={216}
+        fill="#22c55e"
+        opacity={phase === 1 ? 0.14 : 0.03}
+      />
+      <rect
+        x={0}
+        y={270}
+        width={640}
+        height={30}
+        fill="#2f6bf0"
+        opacity={phase === 2 ? 0.18 : 0.03}
+      />
       {/* Labels */}
-      <text x={20} y={24} fontSize={12} fontWeight={700} fill="#f5c518" fontFamily="sans-serif">15% — HIGH · signs, lights, distant hazards</text>
-      <text x={20} y={160} fontSize={12} fontWeight={700} fill="#22c55e" fontFamily="sans-serif">70% — AHEAD · traffic flow & developing hazards</text>
-      <text x={20} y={288} fontSize={12} fontWeight={700} fill="#7dbaff" fontFamily="sans-serif">15% — LOW · markings & area near the bonnet</text>
+      <text x={20} y={24} fontSize={12} fontWeight={700} fill="#f5c518" fontFamily="sans-serif">
+        15% — HIGH · signs, lights, distant hazards
+      </text>
+      <text x={20} y={160} fontSize={12} fontWeight={700} fill="#22c55e" fontFamily="sans-serif">
+        70% — AHEAD · traffic flow & developing hazards
+      </text>
+      <text x={20} y={288} fontSize={12} fontWeight={700} fill="#7dbaff" fontFamily="sans-serif">
+        15% — LOW · markings & area near the bonnet
+      </text>
     </svg>
   );
 }
@@ -2929,7 +4156,8 @@ const stretchVision: Lesson = {
   title: "Stretch your vision · GSM 15–70–15",
   category: "Highway Code • GSM Driving Method",
   rule: "Rules 146, 154",
-  objective: "Learn the GSM 15–70–15 scanning method — how to distribute your attention so you're never surprised.",
+  objective:
+    "Learn the GSM 15–70–15 scanning method — how to distribute your attention so you're never surprised.",
   think: [
     "Am I looking as far ahead as I can?",
     "Have I checked high — signs, lights, developing hazards?",
@@ -2948,10 +4176,20 @@ const stretchVision: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Drivers who stare just over the bonnet are always <em>reacting</em>. Drivers who stretch their vision are always <em>planning</em>. The eyes lead the car — look further, drive smoother, brake less, save fuel, stay calmer.</p>
+      <p>
+        Drivers who stare just over the bonnet are always <em>reacting</em>. Drivers who stretch
+        their vision are always <em>planning</em>. The eyes lead the car — look further, drive
+        smoother, brake less, save fuel, stay calmer.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Constantly — town, country and dual carriageway. Especially on approach to junctions, roundabouts, bends, brows and traffic queues. If your eyes are close to the car, your reaction time already is too.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Constantly — town, country and dual carriageway. Especially on approach to junctions,
+        roundabouts, bends, brows and traffic queues. If your eyes are close to the car, your
+        reaction time already is too.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
         <li>Lift your eyes to the furthest point you can see down the road.</li>
         <li>Scan back towards the car in a natural sweep — near, mid, far, mirrors.</li>
@@ -2973,17 +4211,20 @@ const stretchVision: Lesson = {
     {
       wrong: "Staring at the bonnet of the car in front — 'chasing the bonnet'.",
       why: "You react to their brake lights instead of the road. You brake late, follow too close and miss everything happening 100m ahead.",
-      right: "Look THROUGH and OVER the car in front. Use their windows if you can. Your eyes should live where they'll be in 8 seconds, not now.",
+      right:
+        "Look THROUGH and OVER the car in front. Use their windows if you can. Your eyes should live where they'll be in 8 seconds, not now.",
     },
     {
       wrong: "Never lifting your gaze to signs and traffic lights.",
       why: "You get surprised by red lights, missed turns and speed limits. Late information means late braking or a missed exit.",
-      right: "15% of your scan goes HIGH. Read every sign and light before you're under it — plan the phase, plan the lane.",
+      right:
+        "15% of your scan goes HIGH. Read every sign and light before you're under it — plan the phase, plan the lane.",
     },
     {
       wrong: "Never dropping your gaze to the kerb and lane markings.",
       why: "Cyclists sit at the kerb. Speed humps, wet paint and drain covers live low. Miss them and you swerve at the last second.",
-      right: "15% goes LOW. Sweep the kerb, the give-way lines, the paint. Once per scan, then eyes back up and forward.",
+      right:
+        "15% goes LOW. Sweep the kerb, the give-way lines, the paint. Once per scan, then eyes back up and forward.",
     },
     {
       wrong: "Locking eyes on one hazard — a cyclist, a bus, a pedestrian — until they're gone.",
@@ -2997,22 +4238,44 @@ const stretchVision: Lesson = {
     "Look FAR — plan, don't react",
     "Don't chase the bonnet",
   ],
-  keyTakeaway: "Stretch your vision using GSM 15–70–15 — look high, look far, look low, keep moving.",
+  keyTakeaway:
+    "Stretch your vision using GSM 15–70–15 — look high, look far, look low, keep moving.",
   durationMs: 18000,
   captions: [
     { at: 0, label: "15% HIGH — signs and lights", detail: "Scan the top of the scene first." },
-    { at: 0.33, label: "70% AHEAD — the big picture", detail: "Most of your attention lives here." },
+    {
+      at: 0.33,
+      label: "70% AHEAD — the big picture",
+      detail: "Most of your attention lives here.",
+    },
     { at: 0.5, label: "Decision point", detail: "Where should the majority of your attention be?" },
-    { at: 0.66, label: "15% LOW — markings and kerb", detail: "Sweep low to complete the pattern." },
+    {
+      at: 0.66,
+      label: "15% LOW — markings and kerb",
+      detail: "Sweep low to complete the pattern.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "Using the GSM 15–70–15 method, where should the majority of your attention be while driving?",
+      prompt:
+        "Using the GSM 15–70–15 method, where should the majority of your attention be while driving?",
       options: [
-        { label: "Right over the bonnet", explain: "No. That's exactly what 'chasing the bonnet' means — you'll always be reacting late." },
-        { label: "Well ahead — around 70% of your scan", correct: true, explain: "Correct. 70% of your attention belongs well ahead, reading traffic flow. 15% high for signs and lights, 15% low for markings and kerb." },
-        { label: "Split evenly across the mirrors", explain: "Mirrors matter, but they're not the majority of your scan — the road ahead is." },
+        {
+          label: "Right over the bonnet",
+          explain:
+            "No. That's exactly what 'chasing the bonnet' means — you'll always be reacting late.",
+        },
+        {
+          label: "Well ahead — around 70% of your scan",
+          correct: true,
+          explain:
+            "Correct. 70% of your attention belongs well ahead, reading traffic flow. 15% high for signs and lights, 15% low for markings and kerb.",
+        },
+        {
+          label: "Split evenly across the mirrors",
+          explain: "Mirrors matter, but they're not the majority of your scan — the road ahead is.",
+        },
       ],
     },
   ],
@@ -3029,7 +4292,12 @@ function PlanStopLookGoScene(t: number) {
   // Ego on vertical side road approaching main road (heading north = up).
   const startY = 340;
   const stopY = 200;
-  const egoY = t < 0.6 ? startY - (startY - stopY) * easeInOut(t / 0.6) : t < 0.75 ? stopY : stopY - (t - 0.75) * 400;
+  const egoY =
+    t < 0.6
+      ? startY - (startY - stopY) * easeInOut(t / 0.6)
+      : t < 0.75
+        ? stopY
+        : stopY - (t - 0.75) * 400;
   const egoX = t < 0.75 ? 200 : 200 + (t - 0.75) * 500;
   const heading = t < 0.75 ? 0 : 90 * easeInOut((t - 0.75) / 0.25);
   const phase = t < 0.35 ? "SLOW" : t < 0.55 ? "OBSERVE" : t < 0.7 ? "DECIDE" : "PROCEED";
@@ -3043,7 +4311,14 @@ function PlanStopLookGoScene(t: number) {
       <line x1={0} y1={202} x2={640} y2={202} stroke={PAINT} strokeWidth={1.4} />
       <line x1={0} y1={258} x2={640} y2={258} stroke={PAINT} strokeWidth={1.4} />
       {Array.from({ length: 16 }).map((_, i) => (
-        <rect key={i} x={i * 40 + ((t * 40) % 40) - 40} y={228} width={20} height={4} fill={PAINT} />
+        <rect
+          key={i}
+          x={i * 40 + ((t * 40) % 40) - 40}
+          y={228}
+          width={20}
+          height={4}
+          fill={PAINT}
+        />
       ))}
       {/* Side road vertical */}
       <rect x={170} y={260} width={60} height={100} fill="#2b2b2e" />
@@ -3091,18 +4366,47 @@ const planStopLookGo: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Half of all junction incidents come from a driver who was going too fast to actually observe — or who observed but never decided. <strong>Plan to Stop</strong> buys you the time to see. <strong>Look to Go</strong> turns that seeing into a clean decision.</p>
+      <p>
+        Half of all junction incidents come from a driver who was going too fast to actually observe
+        — or who observed but never decided. <strong>Plan to Stop</strong> buys you the time to see.{" "}
+        <strong>Look to Go</strong> turns that seeing into a clean decision.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Only at <strong>open-visibility</strong> junctions — open Give Ways, open crossroads and roundabouts where you can see approaching traffic early. Good visibility allows early decision making while keeping traffic flowing smoothly.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we DO NOT do it</p>
-      <p>At <strong>closed</strong> T-junctions and any junction where your view is blocked by parked vehicles, hedges, walls or buildings. There you must stop at the Give Way line, complete full observations, and use Creep and Peep until you have a genuine view. Teaching "Look to Go" at a closed junction would encourage learners to look for gaps before they can actually see the road.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Only at <strong>open-visibility</strong> junctions — open Give Ways, open crossroads and
+        roundabouts where you can see approaching traffic early. Good visibility allows early
+        decision making while keeping traffic flowing smoothly.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        When we DO NOT do it
+      </p>
+      <p>
+        At <strong>closed</strong> T-junctions and any junction where your view is blocked by parked
+        vehicles, hedges, walls or buildings. There you must stop at the Give Way line, complete
+        full observations, and use Creep and Peep until you have a genuine view. Teaching "Look to
+        Go" at a closed junction would encourage learners to look for gaps before they can actually
+        see the road.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
-        <li><strong>Plan</strong> — mirrors, signal, position, gear, brakes covered.</li>
-        <li><strong>Stop</strong> — arrive slowly enough that stopping is easy, not a rescue.</li>
-        <li><strong>Look</strong> — right, left, right again. Blockers, gap, opportunity (BGL).</li>
-        <li><strong>Go</strong> — only when the gap is genuine, not on hope.</li>
-        <li>If anything changes mid-look — a cyclist, a fast car, a closing van — re-stop and start again.</li>
+        <li>
+          <strong>Plan</strong> — mirrors, signal, position, gear, brakes covered.
+        </li>
+        <li>
+          <strong>Stop</strong> — arrive slowly enough that stopping is easy, not a rescue.
+        </li>
+        <li>
+          <strong>Look</strong> — right, left, right again. Blockers, gap, opportunity (BGL).
+        </li>
+        <li>
+          <strong>Go</strong> — only when the gap is genuine, not on hope.
+        </li>
+        <li>
+          If anything changes mid-look — a cyclist, a fast car, a closing van — re-stop and start
+          again.
+        </li>
       </ol>
     </>
   ),
@@ -3118,22 +4422,26 @@ const planStopLookGo: Lesson = {
     {
       wrong: "Arriving at the junction still doing 25mph.",
       why: "You've given yourself no time to observe. You'll either brake hard at the line or roll out on hope.",
-      right: "Off the gas early, let the car slow itself, cover the brake. Arrive slow enough that stopping is easy.",
+      right:
+        "Off the gas early, let the car slow itself, cover the brake. Arrive slow enough that stopping is easy.",
     },
     {
       wrong: "A quick glance either way — 'looking' without actually seeing.",
       why: "Your eyes moved, but your brain didn't process. That's why drivers say 'I looked but I didn't see them'.",
-      right: "Two clean looks each way. Say out loud what you see — 'red car, gap, cyclist'. Naming forces seeing.",
+      right:
+        "Two clean looks each way. Say out loud what you see — 'red car, gap, cyclist'. Naming forces seeing.",
     },
     {
       wrong: "Creeping out because the driver behind is impatient.",
       why: "Their impatience isn't your problem — a collision is. You commit to gaps that don't exist.",
-      right: "Ignore the pressure behind. Make one clear decision on the actual road, not the mirror.",
+      right:
+        "Ignore the pressure behind. Make one clear decision on the actual road, not the mirror.",
     },
     {
       wrong: "Stopping at an open junction that plainly doesn't need it.",
       why: "Unnecessary stops break flow, confuse other drivers and encourage rear-end shunts.",
-      right: "Open view + clear road = coast through. Plan to stop — but only stop if the road tells you to.",
+      right:
+        "Open view + clear road = coast through. Plan to stop — but only stop if the road tells you to.",
     },
   ],
   gsmTips: [
@@ -3156,9 +4464,21 @@ const planStopLookGo: Lesson = {
       at: 0.5,
       prompt: "In the GSM approach routine, what is the correct order at a junction?",
       options: [
-        { label: "See · Slow · Decide · Proceed", explain: "You have to slow first — otherwise you don't have time to see or decide." },
-        { label: "Slow · Observe · See · Decide · Proceed", correct: true, explain: "Correct. Slow first, then observe, see what's there, decide, and only then proceed." },
-        { label: "Proceed · Observe · Correct", explain: "Definitely not — proceeding before observing is how junction collisions happen." },
+        {
+          label: "See · Slow · Decide · Proceed",
+          explain: "You have to slow first — otherwise you don't have time to see or decide.",
+        },
+        {
+          label: "Slow · Observe · See · Decide · Proceed",
+          correct: true,
+          explain:
+            "Correct. Slow first, then observe, see what's there, decide, and only then proceed.",
+        },
+        {
+          label: "Proceed · Observe · Correct",
+          explain:
+            "Definitely not — proceeding before observing is how junction collisions happen.",
+        },
       ],
     },
   ],
@@ -3229,7 +4549,15 @@ function BGLStrip({ t }: { t: number }) {
     <g transform="translate(0 322)">
       <rect x={90} y={0} width={460} height={30} rx={15} fill="#000" opacity={0.75} />
       <circle cx={112} cy={15} r={11} fill="#22c55e" />
-      <text x={112} y={19} textAnchor="middle" fontSize={13} fontWeight={800} fill="#0a0a0a" fontFamily="sans-serif">
+      <text
+        x={112}
+        y={19}
+        textAnchor="middle"
+        fontSize={13}
+        fontWeight={800}
+        fill="#0a0a0a"
+        fontFamily="sans-serif"
+      >
         {active.letter}
       </text>
       <text x={132} y={19} fontSize={11} fill="#fff" fontFamily="sans-serif">
@@ -3306,12 +4634,12 @@ function RoundaboutScene(t: number) {
     t < 0.2
       ? "APPROACH · signal right"
       : t < 0.32
-      ? "GIVE WAY · traffic from right"
-      : t < 0.6
-      ? "CIRCULATE · stay in lane"
-      : t < 0.75
-      ? "SIGNAL LEFT before exit"
-      : "EXIT · cancel signal";
+        ? "GIVE WAY · traffic from right"
+        : t < 0.6
+          ? "CIRCULATE · stay in lane"
+          : t < 0.75
+            ? "SIGNAL LEFT before exit"
+            : "EXIT · cancel signal";
 
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
@@ -3331,21 +4659,94 @@ function RoundaboutScene(t: number) {
       {/* Central island (grass) */}
       <circle cx={cx} cy={cy} r={rInner} fill={GRASS} stroke={PAINT} strokeWidth={1.2} />
       {/* Lane divider on the ring */}
-      <circle cx={cx} cy={cy} r={(rOuter + rInner) / 2} fill="none" stroke={PAINT} strokeWidth={1} strokeDasharray="4 6" opacity={0.6} />
+      <circle
+        cx={cx}
+        cy={cy}
+        r={(rOuter + rInner) / 2}
+        fill="none"
+        stroke={PAINT}
+        strokeWidth={1}
+        strokeDasharray="4 6"
+        opacity={0.6}
+      />
       {/* Give-way dashed lines at each entry */}
       {/* south entry */}
-      <line x1={cx - 40} y1={cy + rOuter + 2} x2={cx + 40} y2={cy + rOuter + 2} stroke={PAINT} strokeWidth={2} strokeDasharray="6 4" />
+      <line
+        x1={cx - 40}
+        y1={cy + rOuter + 2}
+        x2={cx + 40}
+        y2={cy + rOuter + 2}
+        stroke={PAINT}
+        strokeWidth={2}
+        strokeDasharray="6 4"
+      />
       {/* west entry */}
-      <line x1={cx - rOuter - 2} y1={cy - 40} x2={cx - rOuter - 2} y2={cy + 40} stroke={PAINT} strokeWidth={2} strokeDasharray="6 4" />
+      <line
+        x1={cx - rOuter - 2}
+        y1={cy - 40}
+        x2={cx - rOuter - 2}
+        y2={cy + 40}
+        stroke={PAINT}
+        strokeWidth={2}
+        strokeDasharray="6 4"
+      />
       {/* east entry */}
-      <line x1={cx + rOuter + 2} y1={cy - 40} x2={cx + rOuter + 2} y2={cy + 40} stroke={PAINT} strokeWidth={2} strokeDasharray="6 4" />
+      <line
+        x1={cx + rOuter + 2}
+        y1={cy - 40}
+        x2={cx + rOuter + 2}
+        y2={cy + 40}
+        stroke={PAINT}
+        strokeWidth={2}
+        strokeDasharray="6 4"
+      />
       {/* north entry */}
-      <line x1={cx - 40} y1={cy - rOuter - 2} x2={cx + 40} y2={cy - rOuter - 2} stroke={PAINT} strokeWidth={2} strokeDasharray="6 4" />
+      <line
+        x1={cx - 40}
+        y1={cy - rOuter - 2}
+        x2={cx + 40}
+        y2={cy - rOuter - 2}
+        stroke={PAINT}
+        strokeWidth={2}
+        strokeDasharray="6 4"
+      />
       {/* Centre lines on arms */}
-      <line x1={cx} y1={cy + rOuter + 6} x2={cx} y2={360} stroke={PAINT} strokeWidth={1} strokeDasharray="8 8" />
-      <line x1={cx} y1={0} x2={cx} y2={cy - rOuter - 6} stroke={PAINT} strokeWidth={1} strokeDasharray="8 8" />
-      <line x1={cx + rOuter + 6} y1={cy} x2={640} y2={cy} stroke={PAINT} strokeWidth={1} strokeDasharray="8 8" />
-      <line x1={0} y1={cy} x2={cx - rOuter - 6} y2={cy} stroke={PAINT} strokeWidth={1} strokeDasharray="8 8" />
+      <line
+        x1={cx}
+        y1={cy + rOuter + 6}
+        x2={cx}
+        y2={360}
+        stroke={PAINT}
+        strokeWidth={1}
+        strokeDasharray="8 8"
+      />
+      <line
+        x1={cx}
+        y1={0}
+        x2={cx}
+        y2={cy - rOuter - 6}
+        stroke={PAINT}
+        strokeWidth={1}
+        strokeDasharray="8 8"
+      />
+      <line
+        x1={cx + rOuter + 6}
+        y1={cy}
+        x2={640}
+        y2={cy}
+        stroke={PAINT}
+        strokeWidth={1}
+        strokeDasharray="8 8"
+      />
+      <line
+        x1={0}
+        y1={cy}
+        x2={cx - rOuter - 6}
+        y2={cy}
+        stroke={PAINT}
+        strokeWidth={1}
+        strokeDasharray="8 8"
+      />
 
       {/* Direction arrows on the ring (clockwise) */}
       {Array.from({ length: 8 }).map((_, i) => {
@@ -3371,9 +4772,31 @@ function RoundaboutScene(t: number) {
       </g>
 
       {/* Exit labels */}
-      <text x={cx} y={30} textAnchor="middle" fontSize={10} fill="#fff" opacity={0.7} fontFamily="sans-serif">2nd exit — straight on</text>
-      <text x={20} y={cy - 46} fontSize={10} fill="#fff" opacity={0.85} fontFamily="sans-serif">3rd exit — your exit</text>
-      <text x={620} y={cy - 46} textAnchor="end" fontSize={10} fill="#fff" opacity={0.7} fontFamily="sans-serif">1st exit — left</text>
+      <text
+        x={cx}
+        y={30}
+        textAnchor="middle"
+        fontSize={10}
+        fill="#fff"
+        opacity={0.7}
+        fontFamily="sans-serif"
+      >
+        2nd exit — straight on
+      </text>
+      <text x={20} y={cy - 46} fontSize={10} fill="#fff" opacity={0.85} fontFamily="sans-serif">
+        3rd exit — your exit
+      </text>
+      <text
+        x={620}
+        y={cy - 46}
+        textAnchor="end"
+        fontSize={10}
+        fill="#fff"
+        opacity={0.7}
+        fontFamily="sans-serif"
+      >
+        1st exit — left
+      </text>
 
       <Hud label="PHASE" value={phase} tone={t < 0.32 ? "warn" : t > 0.75 ? "good" : "info"} />
 
@@ -3400,7 +4823,8 @@ const roundabouts: Lesson = {
     "Am I looking through the roundabout, not just at it?",
     "When will I signal left to tell everyone I'm leaving?",
   ],
-  ruleHeadline: "Give way to traffic from your right. Right exit = signal right, then signal left before you leave.",
+  ruleHeadline:
+    "Give way to traffic from your right. Right exit = signal right, then signal left before you leave.",
   ruleBullets: [
     "PLAN — mirrors, signal, correct lane, brake early",
     "STOP — only if you have to; give way to traffic from your right",
@@ -3412,16 +4836,39 @@ const roundabouts: Lesson = {
   why: (
     <>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">Why we do it</p>
-      <p>Roundabouts fail for two reasons: drivers don't <strong>signal</strong> their intentions, and they don't look far enough <strong>right</strong> to spot priority traffic. Clear signals + proper right-look = every other driver can plan around you safely.</p>
+      <p>
+        Roundabouts fail for two reasons: drivers don't <strong>signal</strong> their intentions,
+        and they don't look far enough <strong>right</strong> to spot priority traffic. Clear
+        signals + proper right-look = every other driver can plan around you safely.
+      </p>
       <p className="font-semibold uppercase tracking-wider text-accent text-xs">When we do it</p>
-      <p>Every roundabout — mini, standard, or large multi-lane. The formula never changes: <strong>Plan → Stop → Look → Go</strong>, using <strong>BGL</strong> (Blockers, Gap, Look for opportunity) at the give-way.</p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">How we do it — the steps</p>
+      <p>
+        Every roundabout — mini, standard, or large multi-lane. The formula never changes:{" "}
+        <strong>Plan → Stop → Look → Go</strong>, using <strong>BGL</strong> (Blockers, Gap, Look
+        for opportunity) at the give-way.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        How we do it — the steps
+      </p>
       <ol className="list-decimal space-y-1 pl-5">
-        <li><strong>Plan</strong> — mirrors, signal (right for right exit, none for straight ahead, left for left), correct lane, correct gear.</li>
-        <li><strong>Stop</strong> — arrive slow enough that stopping is easy at the give-way line.</li>
-        <li><strong>Look</strong> — hard right. BGL: what's <em>blocking</em> my view, where's the <em>gap</em>, look for <em>opportunity</em>.</li>
-        <li><strong>Go</strong> — take a genuine gap; never bully your way in.</li>
-        <li>Signal <strong>left</strong> as you pass the exit before yours so the driver waiting can move.</li>
+        <li>
+          <strong>Plan</strong> — mirrors, signal (right for right exit, none for straight ahead,
+          left for left), correct lane, correct gear.
+        </li>
+        <li>
+          <strong>Stop</strong> — arrive slow enough that stopping is easy at the give-way line.
+        </li>
+        <li>
+          <strong>Look</strong> — hard right. BGL: what's <em>blocking</em> my view, where's the{" "}
+          <em>gap</em>, look for <em>opportunity</em>.
+        </li>
+        <li>
+          <strong>Go</strong> — take a genuine gap; never bully your way in.
+        </li>
+        <li>
+          Signal <strong>left</strong> as you pass the exit before yours so the driver waiting can
+          move.
+        </li>
       </ol>
     </>
   ),
@@ -3445,30 +4892,54 @@ const roundabouts: Lesson = {
     "Right exit: signal right, give way to the right, signal left before leaving — every roundabout, every time.",
   durationMs: 24000,
   captions: [
-    { at: 0, label: "APPROACH — signal right", detail: "Right exit needs a right signal on approach." },
-    { at: 0.22, label: "GIVE WAY — traffic from the right", detail: "The red car has priority. Wait for a safe gap." },
+    {
+      at: 0,
+      label: "APPROACH — signal right",
+      detail: "Right exit needs a right signal on approach.",
+    },
+    {
+      at: 0.22,
+      label: "GIVE WAY — traffic from the right",
+      detail: "The red car has priority. Wait for a safe gap.",
+    },
     { at: 0.4, label: "CIRCULATE — stay in lane", detail: "Right lane all the way round." },
-    { at: 0.5, label: "Decision point", detail: "When exactly do you switch from right to left signal?" },
-    { at: 0.62, label: "SIGNAL LEFT before your exit", detail: "As you pass the exit before yours, change to a left signal." },
-    { at: 0.8, label: "EXIT — cancel signal", detail: "Smooth exit, mirrors, back up to a safe cruise speed." },
+    {
+      at: 0.5,
+      label: "Decision point",
+      detail: "When exactly do you switch from right to left signal?",
+    },
+    {
+      at: 0.62,
+      label: "SIGNAL LEFT before your exit",
+      detail: "As you pass the exit before yours, change to a left signal.",
+    },
+    {
+      at: 0.8,
+      label: "EXIT — cancel signal",
+      detail: "Smooth exit, mirrors, back up to a safe cruise speed.",
+    },
   ],
   questions: [
     {
       at: 0.5,
-      prompt: "You're taking the 3rd exit at a 4-arm roundabout (a right turn). When should you switch from a right signal to a left signal?",
+      prompt:
+        "You're taking the 3rd exit at a 4-arm roundabout (a right turn). When should you switch from a right signal to a left signal?",
       options: [
         {
           label: "Right as you enter the roundabout",
-          explain: "Too early — a left signal on entry tells the driver on your right you're taking the first exit. You'll confuse them.",
+          explain:
+            "Too early — a left signal on entry tells the driver on your right you're taking the first exit. You'll confuse them.",
         },
         {
           label: "As you pass the exit before yours",
           correct: true,
-          explain: "Correct. Once you're past the exit before yours, change to a left signal so the driver on the next arm knows you're leaving.",
+          explain:
+            "Correct. Once you're past the exit before yours, change to a left signal so the driver on the next arm knows you're leaving.",
         },
         {
           label: "Only after you've left the roundabout",
-          explain: "Too late — nobody on the roundabout or waiting at your exit knows you're coming off.",
+          explain:
+            "Too late — nobody on the roundabout or waiting at your exit knows you're coming off.",
         },
       ],
     },

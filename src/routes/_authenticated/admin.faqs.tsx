@@ -38,7 +38,7 @@ function FaqsAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-try {
+    try {
       await saveFn({
         data: {
           item: {
@@ -63,7 +63,7 @@ try {
       setDrafts((cur) => cur.filter((_, i) => i !== idx));
       return;
     }
-if (!confirm("Delete this FAQ?")) return;
+    if (!confirm("Delete this FAQ?")) return;
     try {
       await delFn({ data: { id: d.id } });
       toast.success("Deleted");
@@ -98,9 +98,7 @@ if (!confirm("Delete this FAQ?")) return;
         </Button>
       </div>
       <div className="space-y-3">
-        {drafts.length === 0 && (
-          <p className="text-sm text-muted-foreground">No FAQs yet.</p>
-        )}
+        {drafts.length === 0 && <p className="text-sm text-muted-foreground">No FAQs yet.</p>}
         {drafts.map((d, i) => (
           <Card key={d.id}>
             <CardHeader className="flex flex-row items-center justify-between gap-2 p-3">

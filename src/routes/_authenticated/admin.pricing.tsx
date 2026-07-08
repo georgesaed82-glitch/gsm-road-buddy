@@ -64,9 +64,12 @@ function PricingAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-setSavingId(d.id || "new");
+    setSavingId(d.id || "new");
     try {
-      const features = d.featuresText.split("\n").map((s) => s.trim()).filter(Boolean);
+      const features = d.featuresText
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean);
       await saveFn({
         data: {
           item: {
@@ -93,7 +96,7 @@ setSavingId(d.id || "new");
 
   const remove = async (id: string) => {
     if (!confirm("Delete this package?")) return;
-try {
+    try {
       await delFn({ data: { id } });
       toast.success("Deleted");
       invalidate();
@@ -103,7 +106,7 @@ try {
   };
 
   const move = async (idx: number, dir: -1 | 1) => {
-const next = [...drafts];
+    const next = [...drafts];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
     [next[idx], next[target]] = [next[target], next[idx]];
@@ -122,7 +125,10 @@ const next = [...drafts];
   return (
     <AdminShell eyebrow="Admin" title="Pricing packages">
       <div className="mb-4 flex justify-end">
-        <Button onClick={addNew}><Plus className="mr-1 h-4 w-4" />Add package</Button>
+        <Button onClick={addNew}>
+          <Plus className="mr-1 h-4 w-4" />
+          Add package
+        </Button>
       </div>
       <div className="grid gap-6">
         {drafts.map((d, idx) => (
@@ -140,26 +146,92 @@ const next = [...drafts];
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <Button aria-label="Move up" size="icon" variant="ghost" onClick={() => move(idx, -1)} disabled={idx === 0 || !d.id}><ArrowUp className="h-4 w-4" /></Button>
-                <Button aria-label="Move down" size="icon" variant="ghost" onClick={() => move(idx, 1)} disabled={idx === drafts.length - 1 || !d.id}><ArrowDown className="h-4 w-4" /></Button>
+                <Button
+                  aria-label="Move up"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => move(idx, -1)}
+                  disabled={idx === 0 || !d.id}
+                >
+                  <ArrowUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  aria-label="Move down"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => move(idx, 1)}
+                  disabled={idx === drafts.length - 1 || !d.id}
+                >
+                  <ArrowDown className="h-4 w-4" />
+                </Button>
                 {d.id ? (
-                  <Button aria-label="Delete" size="icon" variant="ghost" onClick={() => remove(d.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  <Button
+                    aria-label="Delete"
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => remove(d.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
                 ) : (
-                  <Button size="icon" variant="ghost" onClick={() => setDrafts(drafts.filter((_, i) => i !== idx))}><X className="h-4 w-4" /></Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => setDrafts(drafts.filter((_, i) => i !== idx))}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 )}
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
-                <div><Label>Name</Label><Input className="mt-1" value={d.name} onChange={(e) => patch(idx, { name: e.target.value })} /></div>
-                <div><Label>Duration / price label</Label><Input className="mt-1" value={d.duration} onChange={(e) => patch(idx, { duration: e.target.value })} /></div>
-                <div><Label>CTA label</Label><Input className="mt-1" value={d.cta_label} onChange={(e) => patch(idx, { cta_label: e.target.value })} /></div>
-                <div className="sm:col-span-2"><Label>Description</Label><Textarea className="mt-1" value={d.description} onChange={(e) => patch(idx, { description: e.target.value })} /></div>
-                <div className="sm:col-span-2"><Label>Features (one per line)</Label><Textarea rows={5} className="mt-1" value={d.featuresText} onChange={(e) => patch(idx, { featuresText: e.target.value })} /></div>
+                <div>
+                  <Label>Name</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.name}
+                    onChange={(e) => patch(idx, { name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Duration / price label</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.duration}
+                    onChange={(e) => patch(idx, { duration: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>CTA label</Label>
+                  <Input
+                    className="mt-1"
+                    value={d.cta_label}
+                    onChange={(e) => patch(idx, { cta_label: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Description</Label>
+                  <Textarea
+                    className="mt-1"
+                    value={d.description}
+                    onChange={(e) => patch(idx, { description: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Features (one per line)</Label>
+                  <Textarea
+                    rows={5}
+                    className="mt-1"
+                    value={d.featuresText}
+                    onChange={(e) => patch(idx, { featuresText: e.target.value })}
+                  />
+                </div>
               </div>
               <div className="flex justify-end">
                 <Button onClick={() => save(d)} disabled={savingId === (d.id || "new")}>
-                  <Save className="mr-1 h-4 w-4" />{savingId === (d.id || "new") ? "Saving…" : "Save"}
+                  <Save className="mr-1 h-4 w-4" />
+                  {savingId === (d.id || "new") ? "Saving…" : "Save"}
                 </Button>
               </div>
             </CardContent>

@@ -21,7 +21,8 @@ declare global {
 }
 
 function extractMessageAndStack(error: unknown): { message: string; stack: string | null } {
-  if (error instanceof Error) return { message: error.message || String(error), stack: error.stack ?? null };
+  if (error instanceof Error)
+    return { message: error.message || String(error), stack: error.stack ?? null };
   if (typeof error === "string") return { message: error, stack: null };
   try {
     return { message: JSON.stringify(error).slice(0, 500), stack: null };
@@ -70,7 +71,9 @@ export function reportLovableError(error: unknown, context: Record<string, unkno
 
   // Forward to Sentry when it has been initialised.
   try {
-    const sentry = (window as unknown as { Sentry?: { captureException?: (e: unknown, hint?: unknown) => void } }).Sentry;
+    const sentry = (
+      window as unknown as { Sentry?: { captureException?: (e: unknown, hint?: unknown) => void } }
+    ).Sentry;
     sentry?.captureException?.(error, { extra: context });
   } catch {
     /* ignore */

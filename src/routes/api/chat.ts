@@ -81,10 +81,15 @@ export const Route = createFileRoute("/api/chat")({
         if (!upstream.ok || !upstream.body) {
           const text = await upstream.text().catch(() => "");
           if (upstream.status === 429) {
-            return new Response("Rate limit reached. Please try again in a moment.", { status: 429 });
+            return new Response("Rate limit reached. Please try again in a moment.", {
+              status: 429,
+            });
           }
           if (upstream.status === 402) {
-            return new Response("AI credits exhausted. Please contact George directly via WhatsApp.", { status: 402 });
+            return new Response(
+              "AI credits exhausted. Please contact George directly via WhatsApp.",
+              { status: 402 },
+            );
           }
           return new Response(text || "AI gateway error", { status: upstream.status || 500 });
         }

@@ -61,7 +61,7 @@ export const runDiagnostics = createServerFn({ method: "POST" })
       };
     }
 
-    let supabaseAdmin: typeof import("@/integrations/supabase/client.server")["supabaseAdmin"];
+    let supabaseAdmin: (typeof import("@/integrations/supabase/client.server"))["supabaseAdmin"];
     try {
       ({ supabaseAdmin } = await import("@/integrations/supabase/client.server"));
     } catch (e) {

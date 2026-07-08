@@ -9,9 +9,17 @@ export const Route = createFileRoute("/areas/")({
   head: () => ({
     meta: [
       { title: "West London Driving Lesson Areas | GSM Driving School" },
-      { name: "description", content: "GSM Driving School covers Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and Fulham. Find driving lessons in your postcode." },
+      {
+        name: "description",
+        content:
+          "GSM Driving School covers Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and Fulham. Find driving lessons in your postcode.",
+      },
       { property: "og:title", content: "West London Driving Lesson Areas | GSM Driving School" },
-      { property: "og:description", content: "Driving lessons across W2, W4, W8, W10, W11, W12, W14 and SW6. Local instructor, manual & automatic." },
+      {
+        property: "og:description",
+        content:
+          "Driving lessons across W2, W4, W8, W10, W11, W12, W14 and SW6. Local instructor, manual & automatic.",
+      },
       { property: "og:url", content: "https://www.gsmdrivingschool.com/areas" },
     ],
     links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/areas" }],
@@ -31,9 +39,12 @@ function AreasIndex() {
     <div className="flex flex-col">
       <section className="bg-secondary/40 py-10 sm:py-12">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Areas we cover</h1>
+          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+            Areas we cover
+          </h1>
           <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
-            DVSA-approved driving lessons across West London. Pick your area for postcode-specific lesson info, routes and FAQs.
+            DVSA-approved driving lessons across West London. Pick your area for postcode-specific
+            lesson info, routes and FAQs.
           </p>
         </div>
       </section>

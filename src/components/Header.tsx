@@ -80,7 +80,8 @@ export function Header() {
   const navigate = useNavigate();
   const { business, footer } = useSiteSettings();
   const { items: dbNav } = useNavItems("header");
-  const navLinks = dbNav.length > 0 ? dbNav.map((n) => ({ to: n.href, label: n.label })) : DEFAULT_NAV_LINKS;
+  const navLinks =
+    dbNav.length > 0 ? dbNav.map((n) => ({ to: n.href, label: n.label })) : DEFAULT_NAV_LINKS;
   const whatsappHref = `https://wa.me/${business.phone_intl}`;
   const emailHref = `mailto:${business.email}`;
 
@@ -98,7 +99,13 @@ export function Header() {
     navigate({ to: "/", replace: true });
   };
 
-  const isPortalActive = pathname.startsWith("/dashboard") || pathname.startsWith("/theory") || pathname.startsWith("/hazard-perception") || pathname.startsWith("/lessons") || pathname.startsWith("/payments") || pathname.startsWith("/profile");
+  const isPortalActive =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/theory") ||
+    pathname.startsWith("/hazard-perception") ||
+    pathname.startsWith("/lessons") ||
+    pathname.startsWith("/payments") ||
+    pathname.startsWith("/profile");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-md">
@@ -106,8 +113,12 @@ export function Header() {
         <Link to="/" className="flex min-w-0 items-center gap-3 text-primary sm:gap-3.5">
           <Monogram />
           <div className="min-w-0 leading-tight">
-            <div className="truncate font-display text-[17px] font-semibold tracking-tight sm:text-[18px]">{business.name}</div>
-            <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{business.tagline}</div>
+            <div className="truncate font-display text-[17px] font-semibold tracking-tight sm:text-[18px]">
+              {business.name}
+            </div>
+            <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              {business.tagline}
+            </div>
           </div>
         </Link>
 
@@ -136,7 +147,9 @@ export function Header() {
                   />
                 )}
                 {link.label}
-                {active && <span className="absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-accent" />}
+                {active && (
+                  <span className="absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-accent" />
+                )}
               </Link>
             );
           })}
@@ -180,7 +193,12 @@ export function Header() {
             </a>
           </div>
           {isAuthed ? (
-            <Button size="sm" variant="ghost" onClick={handleSignOut} className="hidden md:inline-flex">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleSignOut}
+              className="hidden md:inline-flex"
+            >
               <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
             </Button>
           ) : (
@@ -202,16 +220,25 @@ export function Header() {
                 <Menu className="h-5 w-5 text-accent" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="flex w-[300px] flex-col overflow-hidden overscroll-contain bg-background p-0">
+            <SheetContent
+              side="right"
+              className="flex w-[300px] flex-col overflow-hidden overscroll-contain bg-background p-0"
+            >
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
 
               {/* Header: branding stays fixed at the top of the sheet */}
               <div className="shrink-0 px-5 py-4">
-                <Link to="/" className="flex items-center gap-3 text-primary" onClick={() => setOpen(false)}>
+                <Link
+                  to="/"
+                  className="flex items-center gap-3 text-primary"
+                  onClick={() => setOpen(false)}
+                >
                   <Monogram />
                   <div className="leading-tight">
                     <span className="font-display text-lg font-semibold">{business.name}</span>
-                    <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{business.tagline}</div>
+                    <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      {business.tagline}
+                    </div>
                   </div>
                 </Link>
               </div>
@@ -221,8 +248,11 @@ export function Header() {
                 {/* Public pages grid */}
                 <nav className="grid grid-cols-2 gap-1.5">
                   {navLinks.map((link, index) => {
-                    const Icon = (link as { icon?: typeof Download }).icon ?? getMobileIcon(link.to, link.label);
-                    const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
+                    const Icon =
+                      (link as { icon?: typeof Download }).icon ??
+                      getMobileIcon(link.to, link.label);
+                    const active =
+                      pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
                     const isLastOdd = index === navLinks.length - 1 && navLinks.length % 2 === 1;
                     return (
                       <Link
@@ -237,7 +267,9 @@ export function Header() {
                             : "text-foreground hover:border-accent/40 hover:bg-accent/5 hover:text-primary",
                         )}
                       >
-                        <Icon className={cn("h-4 w-4", active ? "text-accent" : "text-accent/70")} />
+                        <Icon
+                          className={cn("h-4 w-4", active ? "text-accent" : "text-accent/70")}
+                        />
                         <span>{link.label}</span>
                       </Link>
                     );
@@ -251,13 +283,13 @@ export function Header() {
                     onClick={() => setOpen(false)}
                     className={cn(
                       "flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/[0.04] p-3 text-center font-display text-sm leading-tight text-primary transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 active:scale-[0.99]",
-                      isPortalActive
-                        ? "border-accent/50 bg-accent/10 shadow-sm"
-                        : "",
+                      isPortalActive ? "border-accent/50 bg-accent/10 shadow-sm" : "",
                     )}
                   >
                     <Lock className="h-4 w-4 text-accent" />
-                    <span className="inline-flex items-center gap-1"><GsmPlus /> <span>login</span></span>
+                    <span className="inline-flex items-center gap-1">
+                      <GsmPlus /> <span>login</span>
+                    </span>
                   </Link>
                 </div>
 
@@ -269,7 +301,12 @@ export function Header() {
                     </Button>
                   ) : (
                     <Button asChild className="w-full" variant="ghost">
-                      <Link to="/auth" search={{ admin: 1 }} onClick={() => setOpen(false)} aria-label="Admin login">
+                      <Link
+                        to="/auth"
+                        search={{ admin: 1 }}
+                        onClick={() => setOpen(false)}
+                        aria-label="Admin login"
+                      >
                         <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
                       </Link>
                     </Button>
@@ -280,7 +317,9 @@ export function Header() {
               {/* Footer: disclaimer and legal info pinned at the bottom */}
               <div className="shrink-0 border-t border-border/60 bg-background px-5 py-3">
                 <DVSADisclaimer variant="compact" />
-                {footer.copy && <p className="mt-1.5 text-[10px] text-muted-foreground">{footer.copy}</p>}
+                {footer.copy && (
+                  <p className="mt-1.5 text-[10px] text-muted-foreground">{footer.copy}</p>
+                )}
               </div>
             </SheetContent>
           </Sheet>

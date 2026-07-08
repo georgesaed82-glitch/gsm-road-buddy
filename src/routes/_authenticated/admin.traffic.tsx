@@ -2,7 +2,12 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getTrafficStats, getSectionBreakdown, type TrafficStats, type SectionBreakdown } from "@/lib/admin-stats.functions";
+import {
+  getTrafficStats,
+  getSectionBreakdown,
+  type TrafficStats,
+  type SectionBreakdown,
+} from "@/lib/admin-stats.functions";
 import { AdminShell } from "@/components/AdminShell";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -68,7 +73,8 @@ function TrafficPage() {
   return (
     <AdminShell eyebrow="Insights" title="Traffic & sections">
       <p className="mb-6 text-sm text-muted-foreground">
-        Where visitors come from (app vs browser), what device they use, and which sections they look at most.
+        Where visitors come from (app vs browser), what device they use, and which sections they
+        look at most.
       </p>
 
       <div className="mb-6 flex flex-wrap gap-2">
@@ -90,9 +96,21 @@ function TrafficPage() {
 
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <StatCard label="Total views" value={isLoading ? "…" : String(total)} sub="all visits" />
-        <StatCard label="Unique sessions" value={isLoading ? "…" : String(data?.uniqueSessions ?? 0)} sub="distinct devices" />
-        <StatCard label="From app" value={isLoading ? "…" : `${bySurface.app}`} sub={`${appPct}% of views`} />
-        <StatCard label="From browser" value={isLoading ? "…" : `${bySurface.browser}`} sub={`${browserPct}% of views`} />
+        <StatCard
+          label="Unique sessions"
+          value={isLoading ? "…" : String(data?.uniqueSessions ?? 0)}
+          sub="distinct devices"
+        />
+        <StatCard
+          label="From app"
+          value={isLoading ? "…" : `${bySurface.app}`}
+          sub={`${appPct}% of views`}
+        />
+        <StatCard
+          label="From browser"
+          value={isLoading ? "…" : `${bySurface.browser}`}
+          sub={`${browserPct}% of views`}
+        />
       </div>
 
       <Card className="mb-8">
@@ -107,12 +125,26 @@ function TrafficPage() {
           ) : (
             <>
               <div className="mb-2 flex h-3 w-full overflow-hidden rounded-full bg-secondary">
-                <div className="h-3 bg-primary" style={{ width: `${appPct}%` }} title={`App ${appPct}%`} />
-                <div className="h-3 bg-accent" style={{ width: `${browserPct}%` }} title={`Browser ${browserPct}%`} />
+                <div
+                  className="h-3 bg-primary"
+                  style={{ width: `${appPct}%` }}
+                  title={`App ${appPct}%`}
+                />
+                <div
+                  className="h-3 bg-accent"
+                  style={{ width: `${browserPct}%` }}
+                  title={`Browser ${browserPct}%`}
+                />
               </div>
               <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-primary" />App {bySurface.app} ({appPct}%)</span>
-                <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-accent" />Browser {bySurface.browser} ({browserPct}%)</span>
+                <span>
+                  <span className="mr-1 inline-block h-2 w-2 rounded-full bg-primary" />
+                  App {bySurface.app} ({appPct}%)
+                </span>
+                <span>
+                  <span className="mr-1 inline-block h-2 w-2 rounded-full bg-accent" />
+                  Browser {bySurface.browser} ({browserPct}%)
+                </span>
                 {bySurface.unknown > 0 && <span>Unknown {bySurface.unknown}</span>}
               </div>
             </>
@@ -220,7 +252,9 @@ function TrafficPage() {
               </tbody>
             </table>
           )}
-          <p className="mt-3 text-xs text-muted-foreground">Tip: click a section to see its platform and device breakdown for the selected range.</p>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Tip: click a section to see its platform and device breakdown for the selected range.
+          </p>
         </CardContent>
       </Card>
 
@@ -242,13 +276,18 @@ function TrafficPage() {
                       <div className="h-2 flex-1 rounded-full bg-secondary">
                         <div className="h-2 rounded-full bg-primary" style={{ width: `${pct}%` }} />
                       </div>
-                      <span className="w-20 text-right tabular-nums">{s.views} ({pct}%)</span>
+                      <span className="w-20 text-right tabular-nums">
+                        {s.views} ({pct}%)
+                      </span>
                     </li>
                   );
                 })}
               </ul>
             )}
-            <p className="mt-3 text-xs text-muted-foreground">"Direct" = typed URL, home-screen app, or hidden referrer. "Internal" = navigated between pages on this site.</p>
+            <p className="mt-3 text-xs text-muted-foreground">
+              "Direct" = typed URL, home-screen app, or hidden referrer. "Internal" = navigated
+              between pages on this site.
+            </p>
           </CardContent>
         </Card>
 
@@ -283,7 +322,16 @@ function TrafficPage() {
         </Card>
       </div>
 
-      {selectedPath && <SectionDrilldown path={selectedPath} label={labelForPath(selectedPath)} rangeDays={rangeDays} data={section} loading={sectionLoading} onClose={() => setSelectedPath(null)} />}
+      {selectedPath && (
+        <SectionDrilldown
+          path={selectedPath}
+          label={labelForPath(selectedPath)}
+          rangeDays={rangeDays}
+          data={section}
+          loading={sectionLoading}
+          onClose={() => setSelectedPath(null)}
+        />
+      )}
 
       <Card>
         <CardHeader>
@@ -300,8 +348,16 @@ function TrafficPage() {
                 return (
                   <div key={s.date} className="flex min-w-[28px] flex-col items-center gap-1">
                     <div className="flex h-[120px] w-6 flex-col-reverse overflow-hidden rounded bg-secondary">
-                      <div className="w-full bg-primary" style={{ height: `${appH}px` }} title={`App: ${s.app}`} />
-                      <div className="w-full bg-accent" style={{ height: `${browserH}px` }} title={`Browser: ${s.browser}`} />
+                      <div
+                        className="w-full bg-primary"
+                        style={{ height: `${appH}px` }}
+                        title={`App: ${s.app}`}
+                      />
+                      <div
+                        className="w-full bg-accent"
+                        style={{ height: `${browserH}px` }}
+                        title={`Browser: ${s.browser}`}
+                      />
                     </div>
                     <span className="text-[10px] text-muted-foreground">{s.date.slice(5)}</span>
                   </div>
@@ -310,14 +366,21 @@ function TrafficPage() {
             </div>
           )}
           <div className="mt-3 flex gap-4 text-xs text-muted-foreground">
-            <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-primary" />App</span>
-            <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-accent" />Browser</span>
+            <span>
+              <span className="mr-1 inline-block h-2 w-2 rounded-full bg-primary" />
+              App
+            </span>
+            <span>
+              <span className="mr-1 inline-block h-2 w-2 rounded-full bg-accent" />
+              Browser
+            </span>
           </div>
         </CardContent>
       </Card>
 
       <p className="mt-6 text-xs text-muted-foreground">
-        "App" = opened from the installed home-screen app (standalone mode). "Browser" = opened in Safari/Chrome/etc. Older visits recorded before app tracking will show as browser.
+        "App" = opened from the installed home-screen app (standalone mode). "Browser" = opened in
+        Safari/Chrome/etc. Older visits recorded before app tracking will show as browser.
       </p>
     </AdminShell>
   );
@@ -361,24 +424,37 @@ function SectionDrilldown({
     <Card className="mb-8 border-primary/40">
       <CardHeader className="flex flex-row items-start justify-between gap-4">
         <div>
-          <div className="text-xs uppercase tracking-wider text-muted-foreground">Section drilldown · last {rangeDays === 1 ? "24h" : `${rangeDays} days`}</div>
+          <div className="text-xs uppercase tracking-wider text-muted-foreground">
+            Section drilldown · last {rangeDays === 1 ? "24h" : `${rangeDays} days`}
+          </div>
           <h2 className="font-display text-lg">{label}</h2>
           <div className="text-xs text-muted-foreground">{path}</div>
         </div>
-        <button onClick={onClose} className="text-sm text-muted-foreground underline hover:text-foreground">Close</button>
+        <button
+          onClick={onClose}
+          className="text-sm text-muted-foreground underline hover:text-foreground"
+        >
+          Close
+        </button>
       </CardHeader>
       <CardContent>
         {loading ? (
           <p className="text-sm text-muted-foreground">Loading…</p>
         ) : total === 0 ? (
-          <p className="text-sm text-muted-foreground">No visits recorded for this section in the selected range.</p>
+          <p className="text-sm text-muted-foreground">
+            No visits recorded for this section in the selected range.
+          </p>
         ) : (
           <>
             <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
               <StatCard label="Views" value={String(total)} />
               <StatCard label="Sessions" value={String(data?.uniqueSessions ?? 0)} />
               <StatCard label="From app" value={String(bySurface.app)} sub={`${appPct}%`} />
-              <StatCard label="From browser" value={String(bySurface.browser)} sub={`${browserPct}%`} />
+              <StatCard
+                label="From browser"
+                value={String(bySurface.browser)}
+                sub={`${browserPct}%`}
+              />
             </div>
 
             <div className="mb-6">
@@ -387,8 +463,14 @@ function SectionDrilldown({
                 <div className="h-3 bg-accent" style={{ width: `${browserPct}%` }} />
               </div>
               <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-primary" />App {bySurface.app} ({appPct}%)</span>
-                <span><span className="mr-1 inline-block h-2 w-2 rounded-full bg-accent" />Browser {bySurface.browser} ({browserPct}%)</span>
+                <span>
+                  <span className="mr-1 inline-block h-2 w-2 rounded-full bg-primary" />
+                  App {bySurface.app} ({appPct}%)
+                </span>
+                <span>
+                  <span className="mr-1 inline-block h-2 w-2 rounded-full bg-accent" />
+                  Browser {bySurface.browser} ({browserPct}%)
+                </span>
                 {bySurface.unknown > 0 && <span>Unknown {bySurface.unknown}</span>}
               </div>
             </div>
@@ -410,7 +492,10 @@ function SectionDrilldown({
                       <li key={lbl as string} className="flex items-center gap-3">
                         <span className="w-32 shrink-0 text-muted-foreground">{lbl}</span>
                         <div className="h-2 flex-1 rounded-full bg-secondary">
-                          <div className="h-2 rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                          <div
+                            className="h-2 rounded-full bg-primary"
+                            style={{ width: `${pct}%` }}
+                          />
                         </div>
                         <span className="w-16 text-right tabular-nums">{c}</span>
                       </li>
@@ -458,9 +543,14 @@ function SectionDrilldown({
                         <li key={s.source} className="flex items-center gap-3">
                           <span className="w-28 shrink-0 text-muted-foreground">{s.source}</span>
                           <div className="h-2 flex-1 rounded-full bg-secondary">
-                            <div className="h-2 rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                            <div
+                              className="h-2 rounded-full bg-primary"
+                              style={{ width: `${pct}%` }}
+                            />
                           </div>
-                          <span className="w-20 text-right tabular-nums">{s.views} ({pct}%)</span>
+                          <span className="w-20 text-right tabular-nums">
+                            {s.views} ({pct}%)
+                          </span>
                         </li>
                       );
                     })}
@@ -470,7 +560,9 @@ function SectionDrilldown({
               <div>
                 <h3 className="mb-2 text-sm font-semibold">Top referrers</h3>
                 {(data?.topReferrers ?? []).length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No external referrers for this section.</p>
+                  <p className="text-sm text-muted-foreground">
+                    No external referrers for this section.
+                  </p>
                 ) : (
                   <table className="w-full text-sm">
                     <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
@@ -504,8 +596,16 @@ function SectionDrilldown({
                     return (
                       <div key={s.date} className="flex min-w-[28px] flex-col items-center gap-1">
                         <div className="flex h-[100px] w-6 flex-col-reverse overflow-hidden rounded bg-secondary">
-                          <div className="w-full bg-primary" style={{ height: `${appH}px` }} title={`App: ${s.app}`} />
-                          <div className="w-full bg-accent" style={{ height: `${browserH}px` }} title={`Browser: ${s.browser}`} />
+                          <div
+                            className="w-full bg-primary"
+                            style={{ height: `${appH}px` }}
+                            title={`App: ${s.app}`}
+                          />
+                          <div
+                            className="w-full bg-accent"
+                            style={{ height: `${browserH}px` }}
+                            title={`Browser: ${s.browser}`}
+                          />
                         </div>
                         <span className="text-[10px] text-muted-foreground">{s.date.slice(5)}</span>
                       </div>

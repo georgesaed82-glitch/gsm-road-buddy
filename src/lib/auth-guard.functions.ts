@@ -182,55 +182,59 @@ export const getAttemptState = createServerFn({ method: "POST" })
  */
 export const studentSignIn = createServerFn({ method: "POST" })
   .inputValidator((d: { email: string; password: string; captchaToken?: string | null }) => d)
-  .handler(async ({ data }): Promise<{
-    ok: boolean;
-    reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed";
-    retryAfterSeconds?: number;
-    captchaRequiredNext?: boolean;
-    session?: { access_token: string; refresh_token: string };
-  }> => {
-    const email = (data.email || "").trim().toLowerCase();
-    const password = data.password || "";
-    if (!email || !password) return { ok: false, reason: "invalid" };
+  .handler(
+    async ({
+      data,
+    }): Promise<{
+      ok: boolean;
+      reason?: "invalid" | "locked" | "captcha_required" | "captcha_failed";
+      retryAfterSeconds?: number;
+      captchaRequiredNext?: boolean;
+      session?: { access_token: string; refresh_token: string };
+    }> => {
+      const email = (data.email || "").trim().toLowerCase();
+      const password = data.password || "";
+      if (!email || !password) return { ok: false, reason: "invalid" };
 
-    const state = await evaluateAttemptState(email);
-    if (state.locked) {
-      return { ok: false, reason: "locked", retryAfterSeconds: state.retryAfterSeconds };
-    }
-    let captchaVerified = false;
-    if (state.required) {
-      captchaVerified = await verifyTurnstileToken(data.captchaToken);
-      if (!captchaVerified) {
-        await recordAttempt(email, "student_signin", false, false);
-        return { ok: false, reason: data.captchaToken ? "captcha_failed" : "captcha_required" };
+      const state = await evaluateAttemptState(email);
+      if (state.locked) {
+        return { ok: false, reason: "locked", retryAfterSeconds: state.retryAfterSeconds };
       }
-    }
+      let captchaVerified = false;
+      if (state.required) {
+        captchaVerified = await verifyTurnstileToken(data.captchaToken);
+        if (!captchaVerified) {
+          await recordAttempt(email, "student_signin", false, false);
+          return { ok: false, reason: data.captchaToken ? "captcha_failed" : "captcha_required" };
+        }
+      }
 
-    const SUPABASE_URL = process.env.SUPABASE_URL!;
-    const SUPABASE_PUBLISHABLE_KEY =
-      process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY;
-    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-      return { ok: false, reason: "invalid" };
-    }
-    const { createClient } = await import("@supabase/supabase-js");
-    const stateless = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
-    });
-    const { data: signed, error } = await stateless.auth.signInWithPassword({ email, password });
-    if (error || !signed?.session) {
-      await recordAttempt(email, "student_signin", false, captchaVerified);
-      const after = await evaluateAttemptState(email);
-      return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
-    }
-    await recordAttempt(email, "student_signin", true, captchaVerified);
-    return {
-      ok: true,
-      session: {
-        access_token: signed.session.access_token,
-        refresh_token: signed.session.refresh_token,
-      },
-    };
-  });
+      const SUPABASE_URL = process.env.SUPABASE_URL!;
+      const SUPABASE_PUBLISHABLE_KEY =
+        process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY;
+      if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+        return { ok: false, reason: "invalid" };
+      }
+      const { createClient } = await import("@supabase/supabase-js");
+      const stateless = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
+      });
+      const { data: signed, error } = await stateless.auth.signInWithPassword({ email, password });
+      if (error || !signed?.session) {
+        await recordAttempt(email, "student_signin", false, captchaVerified);
+        const after = await evaluateAttemptState(email);
+        return { ok: false, reason: "invalid", captchaRequiredNext: after.required };
+      }
+      await recordAttempt(email, "student_signin", true, captchaVerified);
+      return {
+        ok: true,
+        session: {
+          access_token: signed.session.access_token,
+          refresh_token: signed.session.refresh_token,
+        },
+      };
+    },
+  );
 
 // Helpers re-used by portal-access.functions.ts
 export async function guardCodeAttempt(
@@ -239,7 +243,11 @@ export async function guardCodeAttempt(
   captchaToken: string | null | undefined,
 ): Promise<
   | { proceed: true; captchaVerified: boolean }
-  | { proceed: false; reason: "locked" | "captcha_required" | "captcha_failed"; retryAfterSeconds: number }
+  | {
+      proceed: false;
+      reason: "locked" | "captcha_required" | "captcha_failed";
+      retryAfterSeconds: number;
+    }
 > {
   const kind: "access_code" | "admin_code" = mode === "admin" ? "admin_code" : "access_code";
   const state = await evaluateAttemptState(passwordFingerprint);
@@ -278,8 +286,11 @@ export async function logCodeAttempt(
 /** Stable fingerprint for a raw access code (never stored in plain text). */
 export async function fingerprintCode(code: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code));
-  return "code:" + Array.from(new Uint8Array(buf))
-    .slice(0, 12)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+  return (
+    "code:" +
+    Array.from(new Uint8Array(buf))
+      .slice(0, 12)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("")
+  );
 }

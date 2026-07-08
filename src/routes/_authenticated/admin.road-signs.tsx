@@ -85,9 +85,9 @@ function AdminRoadSignsPage() {
       id: r.item_id,
       name: r.name ?? "Custom sign",
       meaning: r.description ?? "",
-      category: (CATS.some((c) => c.value === r.group_slug)
+      category: CATS.some((c) => c.value === r.group_slug)
         ? (r.group_slug as SignCategory)
-        : "information"),
+        : "information",
       isCustom: true,
     }));
     const merged = [...baseRows, ...customRows];
@@ -177,15 +177,16 @@ function AdminRoadSignsPage() {
   return (
     <AdminShell eyebrow="Content" title="Road signs library">
       <p className="max-w-3xl text-sm text-muted-foreground">
-        Manage every road sign that appears in the Highway Code learning
-        section. Upload your own image to replace the artwork, edit the name or
-        meaning, hide signs you don't want learners to see, reorder them, or add
-        entirely new custom signs.
+        Manage every road sign that appears in the Highway Code learning section. Upload your own
+        image to replace the artwork, edit the name or meaning, hide signs you don't want learners
+        to see, reorder them, or add entirely new custom signs.
       </p>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
-          <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Category</Label>
+          <Label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+            Category
+          </Label>
           <Select value={filter} onValueChange={(v) => setFilter(v as SignCategory | "all")}>
             <SelectTrigger className="h-9 w-[180px] rounded-none">
               <SelectValue />
@@ -193,7 +194,9 @@ function AdminRoadSignsPage() {
             <SelectContent>
               <SelectItem value="all">All ({rows.length})</SelectItem>
               {CATS.map((c) => (
-                <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                <SelectItem key={c.value} value={c.value}>
+                  {c.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -324,18 +327,38 @@ function SignRow({
   const currentCat = (ov?.group_slug as SignCategory | undefined) ?? row.category;
 
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState({ name: currentName, meaning: currentMeaning, category: currentCat });
+  const [draft, setDraft] = useState({
+    name: currentName,
+    meaning: currentMeaning,
+    category: currentCat,
+  });
 
   const overrideImg = ov?.image_url ?? null;
-  const hasCustomisation = Boolean(ov && (ov.name || ov.description || ov.group_slug || ov.image_path));
+  const hasCustomisation = Boolean(
+    ov && (ov.name || ov.description || ov.group_slug || ov.image_path),
+  );
 
   return (
-    <div className={`grid grid-cols-[auto_120px_1fr_auto] items-start gap-4 border p-4 ${enabled ? "border-border bg-card" : "border-dashed border-border bg-muted/40 opacity-70"}`}>
+    <div
+      className={`grid grid-cols-[auto_120px_1fr_auto] items-start gap-4 border p-4 ${enabled ? "border-border bg-card" : "border-dashed border-border bg-muted/40 opacity-70"}`}
+    >
       <div className="flex flex-col items-center gap-1">
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onMoveUp} aria-label="Move up">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          onClick={onMoveUp}
+          aria-label="Move up"
+        >
           <ArrowUp className="h-3.5 w-3.5" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onMoveDown} aria-label="Move down">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          onClick={onMoveDown}
+          aria-label="Move down"
+        >
           <ArrowDown className="h-3.5 w-3.5" />
         </Button>
       </div>
@@ -343,9 +366,15 @@ function SignRow({
         {row.baseSign ? (
           <OfficialSignImage sign={row.baseSign} variant="card" overrideSrc={overrideImg} />
         ) : overrideImg ? (
-          <img src={overrideImg} alt={currentName} className="max-h-full max-w-full object-contain" />
+          <img
+            src={overrideImg}
+            alt={currentName}
+            className="max-h-full max-w-full object-contain"
+          />
         ) : (
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">No image</div>
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+            No image
+          </div>
         )}
       </div>
       <div className="min-w-0">
@@ -371,7 +400,9 @@ function SignRow({
               </SelectTrigger>
               <SelectContent>
                 {CATS.map((c) => (
-                  <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                  <SelectItem key={c.value} value={c.value}>
+                    {c.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -386,7 +417,12 @@ function SignRow({
               >
                 <Save className="mr-2 h-3.5 w-3.5" /> Save
               </Button>
-              <Button size="sm" variant="outline" className="rounded-none" onClick={() => setEditing(false)}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-none"
+                onClick={() => setEditing(false)}
+              >
                 <X className="mr-2 h-3.5 w-3.5" /> Cancel
               </Button>
             </div>
@@ -398,15 +434,24 @@ function SignRow({
               {row.isCustom && <Badge variant="outline">Custom</Badge>}
               {!enabled && <Badge variant="outline">Hidden</Badge>}
               {hasCustomisation && !row.isCustom && <Badge variant="secondary">Customised</Badge>}
-              <Badge variant="outline">{CATS.find((c) => c.value === currentCat)?.label ?? currentCat}</Badge>
+              <Badge variant="outline">
+                {CATS.find((c) => c.value === currentCat)?.label ?? currentCat}
+              </Badge>
             </div>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{currentMeaning}</p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{row.id}</p>
+            <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              {row.id}
+            </p>
           </>
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <Button variant="outline" size="sm" className="rounded-none" onClick={() => setEditing((v) => !v)}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="rounded-none"
+          onClick={() => setEditing((v) => !v)}
+        >
           Edit
         </Button>
         <label className="inline-flex">
@@ -425,10 +470,23 @@ function SignRow({
           </span>
         </label>
         <Button variant="outline" size="sm" className="rounded-none" onClick={onToggle}>
-          {enabled ? <><EyeOff className="mr-1.5 h-3 w-3" /> Hide</> : <><Eye className="mr-1.5 h-3 w-3" /> Show</>}
+          {enabled ? (
+            <>
+              <EyeOff className="mr-1.5 h-3 w-3" /> Hide
+            </>
+          ) : (
+            <>
+              <Eye className="mr-1.5 h-3 w-3" /> Show
+            </>
+          )}
         </Button>
         {row.isCustom ? (
-          <Button variant="outline" size="sm" className="rounded-none text-destructive" onClick={onDeleteCustom}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-none text-destructive"
+            onClick={onDeleteCustom}
+          >
             <Trash2 className="mr-1.5 h-3 w-3" /> Delete
           </Button>
         ) : hasCustomisation ? (

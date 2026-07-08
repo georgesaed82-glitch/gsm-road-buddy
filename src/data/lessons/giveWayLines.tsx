@@ -24,16 +24,37 @@ function easeInOut(t: number) {
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
-function CarTop({ cx, cy, color, rotate = 0, braking }: { cx: number; cy: number; color: string; rotate?: number; braking?: boolean }) {
+function CarTop({
+  cx,
+  cy,
+  color,
+  rotate = 0,
+  braking,
+}: {
+  cx: number;
+  cy: number;
+  color: string;
+  rotate?: number;
+  braking?: boolean;
+}) {
   return (
     <g transform={`translate(${cx} ${cy}) rotate(${rotate})`}>
-      <rect x={-14} y={-8} width={28} height={16} rx={3} fill={color} stroke="#0a0a0a" strokeWidth={0.6} />
+      <rect
+        x={-14}
+        y={-8}
+        width={28}
+        height={16}
+        rx={3}
+        fill={color}
+        stroke="#0a0a0a"
+        strokeWidth={0.6}
+      />
       <rect x={-8} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.7} />
-      <rect x={3}  y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.5} />
+      <rect x={3} y={-6} width={5} height={12} rx={1} fill="#111" opacity={0.5} />
       <rect x={14} y={-7} width={1.6} height={3} fill="#fff8c0" />
-      <rect x={14} y={4}  width={1.6} height={3} fill="#fff8c0" />
+      <rect x={14} y={4} width={1.6} height={3} fill="#fff8c0" />
       <rect x={-15.6} y={-7} width={1.6} height={3} fill={braking ? "#ff2a2a" : "#5a1010"} />
-      <rect x={-15.6} y={4}  width={1.6} height={3} fill={braking ? "#ff2a2a" : "#5a1010"} />
+      <rect x={-15.6} y={4} width={1.6} height={3} fill={braking ? "#ff2a2a" : "#5a1010"} />
     </g>
   );
 }
@@ -58,7 +79,16 @@ function TJunction({ ox, oy, closed }: { ox: number; oy: number; closed: boolean
           <rect key={i} x={132 + i * 6.4} y={112} width={4} height={4} fill={PAINT} />
         ))}
       </g>
-      <text x={150} y={132} textAnchor="middle" fontSize={7} fontWeight={700} fill={PAINT} fontFamily="sans-serif" opacity={0.85}>
+      <text
+        x={150}
+        y={132}
+        textAnchor="middle"
+        fontSize={7}
+        fontWeight={700}
+        fill={PAINT}
+        fontFamily="sans-serif"
+        opacity={0.85}
+      >
         GIVE WAY
       </text>
       {/* Obstructions on closed side (parked cars + hedge) */}
@@ -66,8 +96,26 @@ function TJunction({ ox, oy, closed }: { ox: number; oy: number; closed: boolean
         <>
           <rect x={30} y={20} width={70} height={20} fill="#3d5a2f" opacity={0.9} rx={4} />
           <rect x={200} y={20} width={70} height={20} fill="#3d5a2f" opacity={0.9} rx={4} />
-          <rect x={40} y={112} width={80} height={26} fill="#7a8896" rx={3} stroke="#000" strokeWidth={0.5} />
-          <rect x={180} y={112} width={80} height={26} fill="#8a8f95" rx={3} stroke="#000" strokeWidth={0.5} />
+          <rect
+            x={40}
+            y={112}
+            width={80}
+            height={26}
+            fill="#7a8896"
+            rx={3}
+            stroke="#000"
+            strokeWidth={0.5}
+          />
+          <rect
+            x={180}
+            y={112}
+            width={80}
+            height={26}
+            fill="#8a8f95"
+            rx={3}
+            stroke="#000"
+            strokeWidth={0.5}
+          />
         </>
       )}
     </g>
@@ -86,7 +134,8 @@ function EmergingScene(t: number) {
   const openBraking = false;
 
   // Closed junction — car reaches the line, stops, creeps, then goes
-  let closedY: number; let closedBrake = false;
+  let closedY: number;
+  let closedBrake = false;
   if (localA < 0.35) {
     closedY = 210 - easeInOut(localA / 0.35) * 60; // approach to line at y≈150
     closedBrake = true;
@@ -127,7 +176,15 @@ function EmergingScene(t: number) {
             <CarTop cx={openCarX + 10} cy={40 + 20 + 35} color="#e05a3a" rotate={90} />
             <g transform="translate(20 0)">
               <rect width={140} height={22} rx={4} fill="#000" opacity={0.7} />
-              <text x={70} y={15} textAnchor="middle" fontSize={11} fontWeight={700} fill={GOOD} fontFamily="sans-serif">
+              <text
+                x={70}
+                y={15}
+                textAnchor="middle"
+                fontSize={11}
+                fontWeight={700}
+                fill={GOOD}
+                fontFamily="sans-serif"
+              >
                 OPEN — good visibility
               </text>
             </g>
@@ -136,11 +193,25 @@ function EmergingScene(t: number) {
           {/* RIGHT — Closed junction */}
           <g transform="translate(330 60)">
             <TJunction ox={10} oy={20} closed={true} />
-            <CarTop cx={160 + 10} cy={closedY + 20} color="#2f6bf0" rotate={0} braking={closedBrake} />
+            <CarTop
+              cx={160 + 10}
+              cy={closedY + 20}
+              color="#2f6bf0"
+              rotate={0}
+              braking={closedBrake}
+            />
             <CarTop cx={closedCarX + 10} cy={40 + 20 + 35} color="#e05a3a" rotate={90} />
             <g transform="translate(20 0)">
               <rect width={140} height={22} rx={4} fill="#000" opacity={0.7} />
-              <text x={70} y={15} textAnchor="middle" fontSize={11} fontWeight={700} fill={BAD} fontFamily="sans-serif">
+              <text
+                x={70}
+                y={15}
+                textAnchor="middle"
+                fontSize={11}
+                fontWeight={700}
+                fill={BAD}
+                fontFamily="sans-serif"
+              >
                 CLOSED — obstructed
               </text>
             </g>
@@ -149,7 +220,15 @@ function EmergingScene(t: number) {
           {/* Banner */}
           <g transform="translate(20 12)">
             <rect width={604} height={36} rx={6} fill="#000" opacity={0.6} />
-            <text x={14} y={14} fontSize={9} fill={ACCENT} fontWeight={700} letterSpacing="1.5" fontFamily="sans-serif">
+            <text
+              x={14}
+              y={14}
+              fontSize={9}
+              fill={ACCENT}
+              fontWeight={700}
+              letterSpacing="1.5"
+              fontFamily="sans-serif"
+            >
               GSM · GIVE WAY — TWO KINDS OF JUNCTION
             </text>
             <text x={14} y={30} fontSize={11} fill="#fff" fontFamily="sans-serif" fontWeight={600}>
@@ -163,14 +242,30 @@ function EmergingScene(t: number) {
         <>
           {/* Phase B — turning right reference points */}
           <g transform="translate(0 40)">
-            <TurningRightPanel narrow={false} progress={localB} label="WIDE ROAD · Seatbelt reference" />
+            <TurningRightPanel
+              narrow={false}
+              progress={localB}
+              label="WIDE ROAD · Seatbelt reference"
+            />
           </g>
           <g transform="translate(330 40)">
-            <TurningRightPanel narrow={true}  progress={localB} label="NARROW ROAD · Feet reference" />
+            <TurningRightPanel
+              narrow={true}
+              progress={localB}
+              label="NARROW ROAD · Feet reference"
+            />
           </g>
           <g transform="translate(20 12)">
             <rect width={604} height={24} rx={6} fill="#000" opacity={0.6} />
-            <text x={14} y={16} fontSize={11} fontWeight={700} fill={ACCENT} letterSpacing="1.5" fontFamily="sans-serif">
+            <text
+              x={14}
+              y={16}
+              fontSize={11}
+              fontWeight={700}
+              fill={ACCENT}
+              letterSpacing="1.5"
+              fontFamily="sans-serif"
+            >
               TURNING RIGHT — WHERE TO BEGIN STEERING
             </text>
           </g>
@@ -180,7 +275,15 @@ function EmergingScene(t: number) {
   );
 }
 
-function TurningRightPanel({ narrow, progress, label }: { narrow: boolean; progress: number; label: string }) {
+function TurningRightPanel({
+  narrow,
+  progress,
+  label,
+}: {
+  narrow: boolean;
+  progress: number;
+  label: string;
+}) {
   const laneWidth = narrow ? 46 : 78;
   const cx = 150; // main road centre x within the 300px panel
   const cy = 200;
@@ -188,7 +291,7 @@ function TurningRightPanel({ narrow, progress, label }: { narrow: boolean; progr
   // The car uses a smooth arc; the reference point is drawn at the
   // driver's chosen trigger.
   const start = { x: cx - laneWidth * 0.6, y: 320 };
-  const end   = { x: cx + 120, y: cy };
+  const end = { x: cx + 120, y: cy };
   // steering trigger — where the car should BEGIN turning
   const trigger = narrow
     ? { x: cx - laneWidth * 0.35, y: cy + 60 } // feet reach centre earlier (narrow)
@@ -212,19 +315,55 @@ function TurningRightPanel({ narrow, progress, label }: { narrow: boolean; progr
       <line x1={20} y1={cy - 30} x2={300} y2={cy - 30} stroke={PAINT} strokeWidth={1.4} />
       <line x1={20} y1={cy + 30} x2={300} y2={cy + 30} stroke={PAINT} strokeWidth={1.4} />
       {Array.from({ length: 9 }).map((_, i) => (
-        <rect key={i} x={30 + i * 30} y={cy - 2} width={14} height={3} fill={PAINT} opacity={0.55} />
+        <rect
+          key={i}
+          x={30 + i * 30}
+          y={cy - 2}
+          width={14}
+          height={3}
+          fill={PAINT}
+          opacity={0.55}
+        />
       ))}
       {/* side road (car coming from below) */}
       <rect x={cx - laneWidth / 2} y={cy + 30} width={laneWidth} height={130} fill={ROAD} />
-      <line x1={cx - laneWidth / 2} y1={cy + 30} x2={cx - laneWidth / 2} y2={cy + 160} stroke={PAINT} strokeWidth={1.4} />
-      <line x1={cx + laneWidth / 2} y1={cy + 30} x2={cx + laneWidth / 2} y2={cy + 160} stroke={PAINT} strokeWidth={1.4} />
+      <line
+        x1={cx - laneWidth / 2}
+        y1={cy + 30}
+        x2={cx - laneWidth / 2}
+        y2={cy + 160}
+        stroke={PAINT}
+        strokeWidth={1.4}
+      />
+      <line
+        x1={cx + laneWidth / 2}
+        y1={cy + 30}
+        x2={cx + laneWidth / 2}
+        y2={cy + 160}
+        stroke={PAINT}
+        strokeWidth={1.4}
+      />
 
       {/* driving path */}
-      <path d={p} stroke={ACCENT} strokeWidth={2} strokeDasharray="4 3" fill="none" opacity={0.85} />
+      <path
+        d={p}
+        stroke={ACCENT}
+        strokeWidth={2}
+        strokeDasharray="4 3"
+        fill="none"
+        opacity={0.85}
+      />
 
       {/* trigger point marker */}
       <circle cx={trigger.x} cy={trigger.y} r={5} fill={ACCENT} />
-      <text x={trigger.x + 8} y={trigger.y + 3} fontSize={9} fontWeight={700} fill={ACCENT} fontFamily="sans-serif">
+      <text
+        x={trigger.x + 8}
+        y={trigger.y + 3}
+        fontSize={9}
+        fontWeight={700}
+        fill={ACCENT}
+        fontFamily="sans-serif"
+      >
         {narrow ? "FEET at centre" : "SEATBELT at centre"}
       </text>
 
@@ -234,7 +373,15 @@ function TurningRightPanel({ narrow, progress, label }: { narrow: boolean; progr
       {/* label */}
       <g transform="translate(20 8)">
         <rect width={280} height={20} rx={4} fill="#000" opacity={0.65} />
-        <text x={140} y={14} textAnchor="middle" fontSize={10} fontWeight={700} fill="#fff" fontFamily="sans-serif">
+        <text
+          x={140}
+          y={14}
+          textAnchor="middle"
+          fontSize={10}
+          fontWeight={700}
+          fill="#fff"
+          fontFamily="sans-serif"
+        >
           {label}
         </text>
       </g>
@@ -242,7 +389,12 @@ function TurningRightPanel({ narrow, progress, label }: { narrow: boolean; progr
   );
 }
 
-function sampleAlong(a: { x: number; y: number }, b: { x: number; y: number }, c: { x: number; y: number }, u: number) {
+function sampleAlong(
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+  c: { x: number; y: number },
+  u: number,
+) {
   // Blend straight A→B then curve B→C. Split u 0.55/0.45.
   if (u < 0.55) {
     const k = u / 0.55;
@@ -287,11 +439,18 @@ export const giveWayLines: Lesson = {
   ],
   why: (
     <>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Open vs closed — visibility is the difference</p>
-      <p>
-        The key difference between an open and a closed junction is not shape, it's <strong>visibility</strong>. An open junction lets you see well into the new road on approach; a closed junction is blocked by parked cars, hedges, trees, buildings or walls. That single fact decides how you approach.
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Open vs closed — visibility is the difference
       </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Correct stopping position at the Give Way line</p>
+      <p>
+        The key difference between an open and a closed junction is not shape, it's{" "}
+        <strong>visibility</strong>. An open junction lets you see well into the new road on
+        approach; a closed junction is blocked by parked cars, hedges, trees, buildings or walls.
+        That single fact decides how you approach.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Correct stopping position at the Give Way line
+      </p>
       <div className="my-3 overflow-hidden rounded-lg border border-border">
         <img
           src={giveWayPhoto.url}
@@ -302,34 +461,69 @@ export const giveWayLines: Lesson = {
           className="w-full"
         />
         <div className="border-t border-border bg-secondary/40 px-3 py-2 text-xs text-muted-foreground">
-          <span className="font-semibold text-accent">Correct stopping position at the Give Way line</span> — bonnet just behind the line, no part of the car crossing it. This is the exact visual reference we teach GSM learners.
+          <span className="font-semibold text-accent">
+            Correct stopping position at the Give Way line
+          </span>{" "}
+          — bonnet just behind the line, no part of the car crossing it. This is the exact visual
+          reference we teach GSM learners.
         </div>
       </div>
       <p>
-        Stop with the front of the bonnet just behind the Give Way line. No part of the vehicle should cross it. Using the bonnet as a consistent reference stops you guessing where the front of the car is. If your view is still restricted, use the <strong>Creep and Peep</strong> technique — move forward slowly, stopping again if necessary, until you have a genuine view before emerging.
+        Stop with the front of the bonnet just behind the Give Way line. No part of the vehicle
+        should cross it. Using the bonnet as a consistent reference stops you guessing where the
+        front of the car is. If your view is still restricted, use the{" "}
+        <strong>Creep and Peep</strong> technique — move forward slowly, stopping again if
+        necessary, until you have a genuine view before emerging.
       </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">"Plan to Stop, Look to Go" — where it applies</p>
-      <p>
-        This is an <strong>open-visibility</strong> technique. Use it at open Give Way junctions, open crossroads and roundabouts where the view is genuinely clear. Because you can see approaching traffic early, you can decide from the approach whether the road already has a gap — so you may continue safely without stopping. Good visibility allows early decision making while maintaining smooth traffic flow.
-      </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Closed T-junctions — do NOT use "Look to Go"</p>
-      <p>
-        At a closed T-junction you cannot assess the main road until you have gained visibility. Approach under full control, prepare to stop, stop behind the Give Way line if necessary, complete your full observations and — if the view is still restricted — Creep and Peep. Only emerge once you have a full and safe view. Teaching "Look to Go" here would encourage learners to look for gaps before they can actually see the road, which is exactly how junction collisions happen.
-      </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Observation never stops</p>
-      <p>
-        Right, left, right again — and keep observing while emerging until the vehicle has completely joined the new road. Traffic, cyclists and pedestrians change while you are moving; your eyes must not stop until the manoeuvre is finished.
-      </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Judging distance — the two-car-lengths guide</p>
-      <p>
-        Each traffic lane is approximately two car lengths wide. That's an easy visual reference when you're deciding whether a gap in the main road is genuinely large enough to emerge into.
-      </p>
-      <p className="font-semibold uppercase tracking-wider text-accent text-xs">Turning right — where you begin steering matters</p>
-      <p>
-        On a <strong>normal or wide road</strong>, begin steering when the centre of your body (roughly the seatbelt) reaches the centre of the new road. This produces a smooth, correctly-positioned arc without cutting the corner or steering too late.
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        "Plan to Stop, Look to Go" — where it applies
       </p>
       <p>
-        On a <strong>very narrow road</strong>, begin steering earlier — when your <em>feet</em> (roughly the pedals) reach the centre of the new road. A narrow road needs an earlier steering point so the car enters naturally instead of swinging wide and clipping the kerb.
+        This is an <strong>open-visibility</strong> technique. Use it at open Give Way junctions,
+        open crossroads and roundabouts where the view is genuinely clear. Because you can see
+        approaching traffic early, you can decide from the approach whether the road already has a
+        gap — so you may continue safely without stopping. Good visibility allows early decision
+        making while maintaining smooth traffic flow.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Closed T-junctions — do NOT use "Look to Go"
+      </p>
+      <p>
+        At a closed T-junction you cannot assess the main road until you have gained visibility.
+        Approach under full control, prepare to stop, stop behind the Give Way line if necessary,
+        complete your full observations and — if the view is still restricted — Creep and Peep. Only
+        emerge once you have a full and safe view. Teaching "Look to Go" here would encourage
+        learners to look for gaps before they can actually see the road, which is exactly how
+        junction collisions happen.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Observation never stops
+      </p>
+      <p>
+        Right, left, right again — and keep observing while emerging until the vehicle has
+        completely joined the new road. Traffic, cyclists and pedestrians change while you are
+        moving; your eyes must not stop until the manoeuvre is finished.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Judging distance — the two-car-lengths guide
+      </p>
+      <p>
+        Each traffic lane is approximately two car lengths wide. That's an easy visual reference
+        when you're deciding whether a gap in the main road is genuinely large enough to emerge
+        into.
+      </p>
+      <p className="font-semibold uppercase tracking-wider text-accent text-xs">
+        Turning right — where you begin steering matters
+      </p>
+      <p>
+        On a <strong>normal or wide road</strong>, begin steering when the centre of your body
+        (roughly the seatbelt) reaches the centre of the new road. This produces a smooth,
+        correctly-positioned arc without cutting the corner or steering too late.
+      </p>
+      <p>
+        On a <strong>very narrow road</strong>, begin steering earlier — when your <em>feet</em>{" "}
+        (roughly the pedals) reach the centre of the new road. A narrow road needs an earlier
+        steering point so the car enters naturally instead of swinging wide and clipping the kerb.
       </p>
     </>
   ),
@@ -356,29 +550,74 @@ export const giveWayLines: Lesson = {
     "Open junctions let you look to go. Closed junctions demand STOP, Creep and Peep, then go. Bonnet behind the line, observations that never stop — and the right steering reference for the road you're turning into.",
   durationMs: 26000,
   captions: [
-    { at: 0.0,  label: "OPEN vs CLOSED", detail: "Visibility decides. Open = flow. Closed = stop and look properly." },
-    { at: 0.22, label: "STOP at the Give Way line", detail: "Bonnet just behind — no part of the car crosses the line." },
-    { at: 0.4,  label: "CREEP AND PEEP", detail: "If the view is still blocked, ease forward, ready to stop again." },
-    { at: 0.55, label: "TURNING RIGHT REFERENCE POINTS", detail: "Wide road: seatbelt to the centre. Narrow: feet to the centre." },
-    { at: 0.9,  label: "OBSERVE UNTIL COMPLETE", detail: "Keep looking until the car has fully joined the new road." },
+    {
+      at: 0.0,
+      label: "OPEN vs CLOSED",
+      detail: "Visibility decides. Open = flow. Closed = stop and look properly.",
+    },
+    {
+      at: 0.22,
+      label: "STOP at the Give Way line",
+      detail: "Bonnet just behind — no part of the car crosses the line.",
+    },
+    {
+      at: 0.4,
+      label: "CREEP AND PEEP",
+      detail: "If the view is still blocked, ease forward, ready to stop again.",
+    },
+    {
+      at: 0.55,
+      label: "TURNING RIGHT REFERENCE POINTS",
+      detail: "Wide road: seatbelt to the centre. Narrow: feet to the centre.",
+    },
+    {
+      at: 0.9,
+      label: "OBSERVE UNTIL COMPLETE",
+      detail: "Keep looking until the car has fully joined the new road.",
+    },
   ],
   questions: [
     {
       at: 0.28,
-      prompt: "You're approaching a closed T-junction — the view is blocked by parked cars. Which routine applies?",
+      prompt:
+        "You're approaching a closed T-junction — the view is blocked by parked cars. Which routine applies?",
       options: [
-        { label: "Plan to Stop, Look to Go — decide from the approach", explain: "No — that's an open-visibility technique. At a closed junction you cannot assess traffic until you've gained a view." },
-        { label: "Stop at the Give Way line, then Creep and Peep until you can see", correct: true, explain: "Correct. Closed view = stop, gain visibility with Creep and Peep, then emerge only when it's genuinely safe." },
-        { label: "Roll straight out at low speed", explain: "No — that's how junction collisions happen. You must have a proper view first." },
+        {
+          label: "Plan to Stop, Look to Go — decide from the approach",
+          explain:
+            "No — that's an open-visibility technique. At a closed junction you cannot assess traffic until you've gained a view.",
+        },
+        {
+          label: "Stop at the Give Way line, then Creep and Peep until you can see",
+          correct: true,
+          explain:
+            "Correct. Closed view = stop, gain visibility with Creep and Peep, then emerge only when it's genuinely safe.",
+        },
+        {
+          label: "Roll straight out at low speed",
+          explain: "No — that's how junction collisions happen. You must have a proper view first.",
+        },
       ],
     },
     {
       at: 0.72,
       prompt: "You're turning right into a very narrow side road. Where should you begin steering?",
       options: [
-        { label: "When your seatbelt lines up with the centre of the new road", explain: "That's the WIDE-road reference — on a narrow road it's too late and you'll clip the kerb." },
-        { label: "When your FEET (pedal position) line up with the centre of the new road", correct: true, explain: "Correct. A narrow road needs an earlier steering point so the car enters naturally without swinging wide." },
-        { label: "Only after your bonnet has passed the centre", explain: "Far too late — you'll overshoot and end up on the wrong side of the new road." },
+        {
+          label: "When your seatbelt lines up with the centre of the new road",
+          explain:
+            "That's the WIDE-road reference — on a narrow road it's too late and you'll clip the kerb.",
+        },
+        {
+          label: "When your FEET (pedal position) line up with the centre of the new road",
+          correct: true,
+          explain:
+            "Correct. A narrow road needs an earlier steering point so the car enters naturally without swinging wide.",
+        },
+        {
+          label: "Only after your bonnet has passed the centre",
+          explain: "Far too late — you'll overshoot and end up on the wrong side of the new road.",
+        },
       ],
     },
   ],

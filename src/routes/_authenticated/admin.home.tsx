@@ -32,7 +32,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   listHomeSectionsAdmin,
   createHomeSection,
@@ -134,7 +140,7 @@ function fromRow(r: HomeSectionRow): Draft {
 
 function AdminHomeCms() {
   const qc = useQueryClient();
-const list = useServerFn(listHomeSectionsAdmin);
+  const list = useServerFn(listHomeSectionsAdmin);
   const create = useServerFn(createHomeSection);
   const update = useServerFn(updateHomeSection);
   const remove = useServerFn(deleteHomeSection);
@@ -241,7 +247,11 @@ const list = useServerFn(listHomeSectionsAdmin);
       for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
       const base64 = btoa(bin);
       const { url } = await upload({
-        data: { filename: file.name, content_type: file.type || "application/octet-stream", base64 },
+        data: {
+          filename: file.name,
+          content_type: file.type || "application/octet-stream",
+          base64,
+        },
       });
       setEditing({ ...editing, image_url: url });
       toast.success("Uploaded");
@@ -331,14 +341,19 @@ const list = useServerFn(listHomeSectionsAdmin);
                     </div>
                   </td>
                   <td className="px-3 py-2">
-                    <div className="font-medium">{r.title || <span className="text-muted-foreground">(untitled)</span>}</div>
+                    <div className="font-medium">
+                      {r.title || <span className="text-muted-foreground">(untitled)</span>}
+                    </div>
                     <div className="font-mono text-xs text-muted-foreground">{r.section_key}</div>
                   </td>
                   <td className="px-3 py-2">
                     <Badge variant="outline">{r.section_type}</Badge>
                   </td>
                   <td className="px-3 py-2">
-                    <Select value={r.status} onValueChange={(v) => onToggle(r, { status: v as HomeSectionStatus })}>
+                    <Select
+                      value={r.status}
+                      onValueChange={(v) => onToggle(r, { status: v as HomeSectionStatus })}
+                    >
                       <SelectTrigger className="h-8 w-32">
                         <SelectValue />
                       </SelectTrigger>
@@ -355,8 +370,16 @@ const list = useServerFn(listHomeSectionsAdmin);
                       className="inline-flex items-center gap-1 text-xs"
                       title={r.show_web ? "Visible on website" : "Hidden on website"}
                     >
-                      <Globe className={r.show_web ? "h-4 w-4 text-primary" : "h-4 w-4 text-muted-foreground"} />
-                      {r.show_web ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3 text-muted-foreground" />}
+                      <Globe
+                        className={
+                          r.show_web ? "h-4 w-4 text-primary" : "h-4 w-4 text-muted-foreground"
+                        }
+                      />
+                      {r.show_web ? (
+                        <Eye className="h-3 w-3" />
+                      ) : (
+                        <EyeOff className="h-3 w-3 text-muted-foreground" />
+                      )}
                     </button>
                   </td>
                   <td className="px-3 py-2 text-center">
@@ -365,8 +388,16 @@ const list = useServerFn(listHomeSectionsAdmin);
                       className="inline-flex items-center gap-1 text-xs"
                       title={r.show_app ? "Visible in app" : "Hidden in app"}
                     >
-                      <Smartphone className={r.show_app ? "h-4 w-4 text-primary" : "h-4 w-4 text-muted-foreground"} />
-                      {r.show_app ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3 text-muted-foreground" />}
+                      <Smartphone
+                        className={
+                          r.show_app ? "h-4 w-4 text-primary" : "h-4 w-4 text-muted-foreground"
+                        }
+                      />
+                      {r.show_app ? (
+                        <Eye className="h-3 w-3" />
+                      ) : (
+                        <EyeOff className="h-3 w-3 text-muted-foreground" />
+                      )}
                     </button>
                   </td>
                   <td className="px-3 py-2">
@@ -374,10 +405,22 @@ const list = useServerFn(listHomeSectionsAdmin);
                       <Button size="sm" variant="outline" onClick={() => setEditing(fromRow(r))}>
                         Edit
                       </Button>
-                      <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onDuplicate(r)} title="Duplicate">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8"
+                        onClick={() => onDuplicate(r)}
+                        title="Duplicate"
+                      >
                         <CopyIcon className="h-4 w-4" />
                       </Button>
-                      <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onDelete(r)} title="Delete">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8"
+                        onClick={() => onDelete(r)}
+                        title="Delete"
+                      >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
@@ -405,14 +448,25 @@ const list = useServerFn(listHomeSectionsAdmin);
                     placeholder="e.g. hero, promo-banner"
                     disabled={!!editing.id}
                   />
-                  <p className="mt-1 text-xs text-muted-foreground">Unique identifier used by the site to render this section.</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Unique identifier used by the site to render this section.
+                  </p>
                 </div>
                 <div>
                   <Label>Section type</Label>
-                  <Select value={editing.section_type} onValueChange={(v) => setEditing({ ...editing, section_type: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={editing.section_type}
+                    onValueChange={(v) => setEditing({ ...editing, section_type: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
-                      {SECTION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                      {SECTION_TYPES.map((t) => (
+                        <SelectItem key={t} value={t}>
+                          {t}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -420,28 +474,49 @@ const list = useServerFn(listHomeSectionsAdmin);
 
               <div>
                 <Label>Eyebrow (small text above title)</Label>
-                <Input value={editing.eyebrow} onChange={(e) => setEditing({ ...editing, eyebrow: e.target.value })} />
+                <Input
+                  value={editing.eyebrow}
+                  onChange={(e) => setEditing({ ...editing, eyebrow: e.target.value })}
+                />
               </div>
               <div>
                 <Label>Title</Label>
-                <Input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} />
+                <Input
+                  value={editing.title}
+                  onChange={(e) => setEditing({ ...editing, title: e.target.value })}
+                />
               </div>
               <div>
                 <Label>Subtitle</Label>
-                <Input value={editing.subtitle} onChange={(e) => setEditing({ ...editing, subtitle: e.target.value })} />
+                <Input
+                  value={editing.subtitle}
+                  onChange={(e) => setEditing({ ...editing, subtitle: e.target.value })}
+                />
               </div>
               <div>
                 <Label>Body</Label>
-                <Textarea rows={4} value={editing.body} onChange={(e) => setEditing({ ...editing, body: e.target.value })} />
+                <Textarea
+                  rows={4}
+                  value={editing.body}
+                  onChange={(e) => setEditing({ ...editing, body: e.target.value })}
+                />
               </div>
 
               <div>
                 <Label>Image</Label>
                 {editing.image_url && (
-                  <img src={editing.image_url} alt="" className="mt-2 max-h-40 border border-border object-cover" />
+                  <img
+                    src={editing.image_url}
+                    alt=""
+                    className="mt-2 max-h-40 border border-border object-cover"
+                  />
                 )}
                 <div className="mt-2 flex items-center gap-2">
-                  <Input value={editing.image_url} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} placeholder="https://…" />
+                  <Input
+                    value={editing.image_url}
+                    onChange={(e) => setEditing({ ...editing, image_url: e.target.value })}
+                    placeholder="https://…"
+                  />
                   <input
                     ref={fileRef}
                     type="file"
@@ -453,7 +528,13 @@ const list = useServerFn(listHomeSectionsAdmin);
                       if (fileRef.current) fileRef.current.value = "";
                     }}
                   />
-                  <Button type="button" variant="outline" onClick={() => fileRef.current?.click()} disabled={busy} className="gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileRef.current?.click()}
+                    disabled={busy}
+                    className="gap-2"
+                  >
                     <ImagePlus className="h-4 w-4" /> Upload
                   </Button>
                 </div>
@@ -462,36 +543,67 @@ const list = useServerFn(listHomeSectionsAdmin);
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <Label>Primary button label</Label>
-                  <Input value={editing.cta_primary_label} onChange={(e) => setEditing({ ...editing, cta_primary_label: e.target.value })} />
+                  <Input
+                    value={editing.cta_primary_label}
+                    onChange={(e) => setEditing({ ...editing, cta_primary_label: e.target.value })}
+                  />
                 </div>
                 <div>
                   <Label>Primary button link</Label>
-                  <Input value={editing.cta_primary_href} onChange={(e) => setEditing({ ...editing, cta_primary_href: e.target.value })} placeholder="/contact" />
+                  <Input
+                    value={editing.cta_primary_href}
+                    onChange={(e) => setEditing({ ...editing, cta_primary_href: e.target.value })}
+                    placeholder="/contact"
+                  />
                 </div>
                 <div>
                   <Label>Secondary button label</Label>
-                  <Input value={editing.cta_secondary_label} onChange={(e) => setEditing({ ...editing, cta_secondary_label: e.target.value })} />
+                  <Input
+                    value={editing.cta_secondary_label}
+                    onChange={(e) =>
+                      setEditing({ ...editing, cta_secondary_label: e.target.value })
+                    }
+                  />
                 </div>
                 <div>
                   <Label>Secondary button link</Label>
-                  <Input value={editing.cta_secondary_href} onChange={(e) => setEditing({ ...editing, cta_secondary_href: e.target.value })} />
+                  <Input
+                    value={editing.cta_secondary_href}
+                    onChange={(e) => setEditing({ ...editing, cta_secondary_href: e.target.value })}
+                  />
                 </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <Label>Background</Label>
-                  <Select value={editing.background} onValueChange={(v) => setEditing({ ...editing, background: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={editing.background}
+                    onValueChange={(v) => setEditing({ ...editing, background: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
-                      {BACKGROUNDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                      {BACKGROUNDS.map((b) => (
+                        <SelectItem key={b} value={b}>
+                          {b}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>Status</Label>
-                  <Select value={editing.status} onValueChange={(v) => setEditing({ ...editing, status: v as HomeSectionStatus })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={editing.status}
+                    onValueChange={(v) =>
+                      setEditing({ ...editing, status: v as HomeSectionStatus })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="draft">Draft</SelectItem>
                       <SelectItem value="published">Published</SelectItem>
@@ -504,26 +616,38 @@ const list = useServerFn(listHomeSectionsAdmin);
                   <Input
                     type="number"
                     value={editing.sort_order}
-                    onChange={(e) => setEditing({ ...editing, sort_order: Number(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setEditing({ ...editing, sort_order: Number(e.target.value) || 0 })
+                    }
                   />
                 </div>
               </div>
 
               <div className="flex items-center gap-6">
                 <label className="flex items-center gap-2 text-sm">
-                  <Switch checked={editing.show_web} onCheckedChange={(v) => setEditing({ ...editing, show_web: v })} />
+                  <Switch
+                    checked={editing.show_web}
+                    onCheckedChange={(v) => setEditing({ ...editing, show_web: v })}
+                  />
                   <Globe className="h-4 w-4" /> Show on website
                 </label>
                 <label className="flex items-center gap-2 text-sm">
-                  <Switch checked={editing.show_app} onCheckedChange={(v) => setEditing({ ...editing, show_app: v })} />
+                  <Switch
+                    checked={editing.show_app}
+                    onCheckedChange={(v) => setEditing({ ...editing, show_app: v })}
+                  />
                   <Smartphone className="h-4 w-4" /> Show in app
                 </label>
               </div>
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditing(null)} className="gap-2"><X className="h-4 w-4" /> Cancel</Button>
-            <Button onClick={onSave} disabled={busy} className="gap-2"><Save className="h-4 w-4" /> Save</Button>
+            <Button variant="outline" onClick={() => setEditing(null)} className="gap-2">
+              <X className="h-4 w-4" /> Cancel
+            </Button>
+            <Button onClick={onSave} disabled={busy} className="gap-2">
+              <Save className="h-4 w-4" /> Save
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

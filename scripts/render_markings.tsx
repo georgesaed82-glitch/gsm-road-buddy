@@ -14,7 +14,13 @@ for (const m of roadMarkings) {
     .replace(/^<svg /, '<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="2048" ')
     .replace(/class="[^"]*"/, "");
   const safe = m.id.replace(/[^a-z0-9-]/gi, "_");
-  const file = path.join(OUT, `${safe}__${m.name.replace(/[^a-z0-9]+/gi, "-").toLowerCase().replace(/^-|-$/g,"")}.svg`);
+  const file = path.join(
+    OUT,
+    `${safe}__${m.name
+      .replace(/[^a-z0-9]+/gi, "-")
+      .toLowerCase()
+      .replace(/^-|-$/g, "")}.svg`,
+  );
   fs.writeFileSync(file, `<?xml version="1.0" encoding="UTF-8"?>\n${svg}\n`);
   files.push(file);
 }

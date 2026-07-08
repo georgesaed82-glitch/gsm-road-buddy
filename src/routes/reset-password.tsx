@@ -73,14 +73,16 @@ function ResetPasswordPage() {
         <CardHeader>
           <CardTitle className="font-display text-2xl">Set a new password</CardTitle>
           <CardDescription>
-            <Badge variant="secondary" className="mt-2">Password reset</Badge>
+            <Badge variant="secondary" className="mt-2">
+              Password reset
+            </Badge>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {!ready ? (
             <p className="text-sm text-muted-foreground">
-              Waiting for the reset link to be verified… If nothing happens within a few
-              seconds, request a fresh reset email from the admin sign-in page.
+              Waiting for the reset link to be verified… If nothing happens within a few seconds,
+              request a fresh reset email from the admin sign-in page.
             </p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-3 text-left">

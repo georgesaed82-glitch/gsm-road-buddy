@@ -29,7 +29,10 @@ function LegalAdmin() {
   const listFn = useServerFn(listLegalPages);
   const saveFn = useServerFn(upsertLegalPage);
   const delFn = useServerFn(deleteLegalPage);
-  const { data: rows = [] } = useQuery({ queryKey: ["legal-pages-admin"], queryFn: () => listFn() });
+  const { data: rows = [] } = useQuery({
+    queryKey: ["legal-pages-admin"],
+    queryFn: () => listFn(),
+  });
   const [drafts, setDrafts] = useState<Draft[]>([]);
 
   useEffect(() => setDrafts(rows), [rows]);
@@ -42,7 +45,7 @@ function LegalAdmin() {
     setDrafts((cur) => cur.map((r, i) => (i === idx ? { ...r, ...p } : r)));
 
   const save = async (d: Draft) => {
-try {
+    try {
       await saveFn({
         data: {
           item: {
@@ -68,7 +71,7 @@ try {
       setDrafts((cur) => cur.filter((_, i) => i !== idx));
       return;
     }
-if (!confirm(`Delete /legal/${d.slug}?`)) return;
+    if (!confirm(`Delete /legal/${d.slug}?`)) return;
     try {
       await delFn({ data: { slug: d.slug } });
       toast.success("Deleted");

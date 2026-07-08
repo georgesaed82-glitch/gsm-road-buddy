@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useState, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type ReactNode,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -83,7 +89,8 @@ export function Zoomable({
         {children}
       </div>
 
-      {mounted && open &&
+      {mounted &&
+        open &&
         createPortal(
           <div
             role="dialog"

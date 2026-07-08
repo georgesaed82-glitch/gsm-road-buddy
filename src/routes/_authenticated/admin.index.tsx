@@ -37,14 +37,7 @@ import {
   Download,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip as RTooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis } from "recharts";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminOverviewPage,
@@ -60,7 +53,10 @@ const RANGE_OPTIONS: { value: RangeDays; label: string }[] = [
 const topicTitle = (slug: string) => {
   const t = theoryCategories.find((c) => c.slug === slug);
   if (t) return t.title;
-  return slug.split("-").map((w) => w[0]?.toUpperCase() + w.slice(1)).join(" ");
+  return slug
+    .split("-")
+    .map((w) => w[0]?.toUpperCase() + w.slice(1))
+    .join(" ");
 };
 
 function AdminOverviewPage() {
@@ -104,7 +100,7 @@ function AdminOverviewPage() {
 
   const { data: subs } = useQuery({
     queryKey: ["admin-alert-subscribers"],
-    queryFn: () => fetchSubs({ data: { } }),
+    queryFn: () => fetchSubs({ data: {} }),
     retry: false,
   });
 
@@ -230,8 +226,16 @@ function AdminOverviewPage() {
             ))}
           </ul>
         )}
-        {subMut.isSuccess && <p className="mt-2 text-xs text-emerald-600">Subscribed — you'll be emailed when alerts fire.</p>}
-        {subMut.isError && <p className="mt-2 text-xs text-destructive">Could not subscribe. Check the email and try again.</p>}
+        {subMut.isSuccess && (
+          <p className="mt-2 text-xs text-emerald-600">
+            Subscribed — you'll be emailed when alerts fire.
+          </p>
+        )}
+        {subMut.isError && (
+          <p className="mt-2 text-xs text-destructive">
+            Could not subscribe. Check the email and try again.
+          </p>
+        )}
       </div>
 
       <div className="mb-8 flex flex-wrap items-center gap-2">
@@ -301,10 +305,30 @@ function AdminOverviewPage() {
 
       {/* Revenue + Traffic strip */}
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <MiniStat icon={PoundSterling} label={`Revenue (${rangeLabel.toLowerCase()})`} value={data ? `£${data.paidPoundsCurrent.toFixed(2)}` : "—"} loading={isLoading} />
-        <MiniStat icon={PoundSterling} label="Revenue (all time)" value={data ? `£${data.paidPounds.toFixed(2)}` : "—"} loading={isLoading} />
-        <MiniStat icon={BarChart3} label="Page views" value={fmt(data?.pageViewsCurrent)} loading={isLoading} />
-        <MiniStat icon={CalIcon} label="Upcoming lessons" value={fmt(data?.bookingsUpcoming)} loading={isLoading} />
+        <MiniStat
+          icon={PoundSterling}
+          label={`Revenue (${rangeLabel.toLowerCase()})`}
+          value={data ? `£${data.paidPoundsCurrent.toFixed(2)}` : "—"}
+          loading={isLoading}
+        />
+        <MiniStat
+          icon={PoundSterling}
+          label="Revenue (all time)"
+          value={data ? `£${data.paidPounds.toFixed(2)}` : "—"}
+          loading={isLoading}
+        />
+        <MiniStat
+          icon={BarChart3}
+          label="Page views"
+          value={fmt(data?.pageViewsCurrent)}
+          loading={isLoading}
+        />
+        <MiniStat
+          icon={CalIcon}
+          label="Upcoming lessons"
+          value={fmt(data?.bookingsUpcoming)}
+          loading={isLoading}
+        />
       </div>
 
       {/* Trend charts */}
@@ -340,9 +364,13 @@ function AdminOverviewPage() {
                 disabled={exporting === "recent-activity"}
                 className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground disabled:opacity-40"
               >
-                <Download className="h-3.5 w-3.5" /> {exporting === "recent-activity" ? "Exporting…" : "CSV"}
+                <Download className="h-3.5 w-3.5" />{" "}
+                {exporting === "recent-activity" ? "Exporting…" : "CSV"}
               </button>
-              <Link to="/admin/contact-clicks" className="text-sm font-medium text-primary hover:underline">
+              <Link
+                to="/admin/contact-clicks"
+                className="text-sm font-medium text-primary hover:underline"
+              >
                 View all
               </Link>
             </div>
@@ -386,7 +414,8 @@ function AdminOverviewPage() {
         <div className="border-b border-border px-5 py-4">
           <h3 className="font-display text-lg">Mock Test Performance</h3>
           <p className="text-xs text-muted-foreground">
-            Average correct answers by topic — lowest first, so you can spot where learners struggle.
+            Average correct answers by topic — lowest first, so you can spot where learners
+            struggle.
           </p>
         </div>
         <div className="space-y-4 px-5 py-5">
@@ -396,7 +425,11 @@ function AdminOverviewPage() {
                 <span className="font-medium text-foreground">{topicTitle(t.slug)}</span>
                 <span
                   className={`font-display text-base ${
-                    t.accuracy < 60 ? "text-destructive" : t.accuracy < 80 ? "text-amber-600" : "text-emerald-600"
+                    t.accuracy < 60
+                      ? "text-destructive"
+                      : t.accuracy < 80
+                        ? "text-amber-600"
+                        : "text-emerald-600"
                   }`}
                 >
                   {t.accuracy}%
@@ -405,12 +438,18 @@ function AdminOverviewPage() {
               <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
                 <div
                   className={`h-full rounded-full ${
-                    t.accuracy < 60 ? "bg-destructive" : t.accuracy < 80 ? "bg-amber-500" : "bg-emerald-500"
+                    t.accuracy < 60
+                      ? "bg-destructive"
+                      : t.accuracy < 80
+                        ? "bg-amber-500"
+                        : "bg-emerald-500"
                   }`}
                   style={{ width: `${Math.max(2, Math.min(100, t.accuracy))}%` }}
                 />
               </div>
-              <div className="mt-1 text-xs text-muted-foreground">{t.answers.toLocaleString()} answers</div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {t.answers.toLocaleString()} answers
+              </div>
             </div>
           ))}
           {!isLoading && (data?.topicPerformance ?? []).length === 0 && (
@@ -441,9 +480,13 @@ function AdminOverviewPage() {
 
 /* ---------------- helpers ---------------- */
 
-function delta(current?: number, previous?: number): { pct: number; direction: "up" | "down" | "flat" } | undefined {
+function delta(
+  current?: number,
+  previous?: number,
+): { pct: number; direction: "up" | "down" | "flat" } | undefined {
   if (current === undefined || previous === undefined) return undefined;
-  if (previous === 0) return current === 0 ? { pct: 0, direction: "flat" } : { pct: 100, direction: "up" };
+  if (previous === 0)
+    return current === 0 ? { pct: 0, direction: "flat" } : { pct: 100, direction: "up" };
   const pct = Math.round(((current - previous) / previous) * 100);
   return { pct: Math.abs(pct), direction: pct > 0 ? "up" : pct < 0 ? "down" : "flat" };
 }
@@ -489,7 +532,8 @@ function computeAlerts(data: any, hasError: boolean): AdminAlert[] {
         id: "no-traffic",
         severity: "critical",
         title: "No page views in this range",
-        detail: "Tracking may be broken or the site is offline. Verify gsmdrivingschool.com is loading.",
+        detail:
+          "Tracking may be broken or the site is offline. Verify gsmdrivingschool.com is loading.",
       });
     }
     if ((data.bookingsUpcoming ?? 0) === 0 && (data.bookingsTotal ?? 0) > 0) {
@@ -536,8 +580,8 @@ function BigStat({
             delta.direction === "up"
               ? "text-emerald-600"
               : delta.direction === "down"
-              ? "text-destructive"
-              : "text-muted-foreground"
+                ? "text-destructive"
+                : "text-muted-foreground"
           }`}
         >
           {delta.direction === "up" && <TrendingUp className="h-3 w-3" />}
@@ -550,7 +594,17 @@ function BigStat({
   );
 }
 
-function MiniStat({ icon: Icon, label, value, loading }: { icon: LucideIcon; label: string; value: string; loading?: boolean }) {
+function MiniStat({
+  icon: Icon,
+  label,
+  value,
+  loading,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+  loading?: boolean;
+}) {
   return (
     <div className="border border-border bg-card p-4">
       <div className="flex items-center gap-3">
@@ -601,8 +655,8 @@ function ChartCard({
                   delta.direction === "up"
                     ? "text-emerald-600"
                     : delta.direction === "down"
-                    ? "text-destructive"
-                    : "text-muted-foreground"
+                      ? "text-destructive"
+                      : "text-muted-foreground"
                 }`}
               >
                 {delta.direction === "up" && <TrendingUp className="h-3 w-3" />}
@@ -648,7 +702,13 @@ function ChartCard({
               labelFormatter={(v: string) => fmtDate(v)}
               formatter={(value: number) => [value, "Count"]}
             />
-            <Area type="monotone" dataKey="count" stroke="hsl(var(--primary))" strokeWidth={2} fill={`url(#grad-${title})`} />
+            <Area
+              type="monotone"
+              dataKey="count"
+              stroke="hsl(var(--primary))"
+              strokeWidth={2}
+              fill={`url(#grad-${title})`}
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>

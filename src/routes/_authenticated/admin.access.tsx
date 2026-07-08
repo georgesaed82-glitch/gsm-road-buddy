@@ -20,7 +20,17 @@ import {
   type AccessCodeRow,
 } from "@/lib/portal-access.functions";
 import { sendOutlookMail } from "@/lib/outlook-mail.functions";
-import { Copy, Trash2, Ban, Mail, History, ChevronDown, ChevronRight, Download, Send } from "lucide-react";
+import {
+  Copy,
+  Trash2,
+  Ban,
+  Mail,
+  History,
+  ChevronDown,
+  ChevronRight,
+  Download,
+  Send,
+} from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/access")({
   component: AdminAccessPage,
@@ -36,7 +46,10 @@ function formatRelative(diffMs: number): string {
   const hours = Math.round(minutes / 60);
   if (hours < 24) return future ? `in ${hours} h` : `${hours} h ago`;
   const days = Math.round(hours / 24);
-  if (days < 30) return future ? `in ${days} day${days === 1 ? "" : "s"}` : `${days} day${days === 1 ? "" : "s"} ago`;
+  if (days < 30)
+    return future
+      ? `in ${days} day${days === 1 ? "" : "s"}`
+      : `${days} day${days === 1 ? "" : "s"} ago`;
   const months = Math.round(days / 30);
   return future ? `in ${months} mo` : `${months} mo ago`;
 }
@@ -67,7 +80,12 @@ function computeExpiry(row: AccessCodeRow): ExpiryInfo {
     year: "numeric",
   });
   if (diff <= 0) {
-    return { label: dateStr, sublabel: `Expired ${formatRelative(diff)}`, tone: "danger", progress: 0 };
+    return {
+      label: dateStr,
+      sublabel: `Expired ${formatRelative(diff)}`,
+      tone: "danger",
+      progress: 0,
+    };
   }
   const days = diff / DAY_MS;
   const tone: ExpiryInfo["tone"] = days <= 3 ? "warning" : "active";
@@ -76,17 +94,20 @@ function computeExpiry(row: AccessCodeRow): ExpiryInfo {
 
 const TONE_STYLES: Record<ExpiryInfo["tone"], { badge: string; bar: string; text: string }> = {
   active: {
-    badge: "bg-emerald-100 text-emerald-900 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:border-emerald-500/30",
+    badge:
+      "bg-emerald-100 text-emerald-900 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:border-emerald-500/30",
     bar: "bg-emerald-500",
     text: "text-emerald-700 dark:text-emerald-300",
   },
   warning: {
-    badge: "bg-amber-100 text-amber-900 border-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:border-amber-500/30",
+    badge:
+      "bg-amber-100 text-amber-900 border-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:border-amber-500/30",
     bar: "bg-amber-500",
     text: "text-amber-700 dark:text-amber-300",
   },
   danger: {
-    badge: "bg-rose-100 text-rose-900 border-rose-200 dark:bg-rose-500/15 dark:text-rose-200 dark:border-rose-500/30",
+    badge:
+      "bg-rose-100 text-rose-900 border-rose-200 dark:bg-rose-500/15 dark:text-rose-200 dark:border-rose-500/30",
     bar: "bg-rose-500",
     text: "text-rose-700 dark:text-rose-300",
   },
@@ -104,16 +125,15 @@ const TONE_STYLES: Record<ExpiryInfo["tone"], { badge: string; bar: string; text
 
 function StatusPill({ row }: { row: AccessCodeRow }) {
   const info = computeExpiry(row);
-  const label =
-    row.revoked
-      ? "Revoked"
-      : info.tone === "danger"
-        ? "Expired"
-        : info.tone === "warning"
-          ? "Expiring soon"
-          : row.expires_at
-            ? "Active"
-            : "Active · no expiry";
+  const label = row.revoked
+    ? "Revoked"
+    : info.tone === "danger"
+      ? "Expired"
+      : info.tone === "warning"
+        ? "Expiring soon"
+        : row.expires_at
+          ? "Active"
+          : "Active · no expiry";
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium ${TONE_STYLES[info.tone].badge}`}
@@ -144,7 +164,7 @@ function ExpiryCell({ row }: { row: AccessCodeRow }) {
 }
 
 function AdminAccessPage() {
-const qc = useQueryClient();
+  const qc = useQueryClient();
   const fetchList = useServerFn(listAccessCodes);
   const fetchUses = useServerFn(listAccessUses);
   const exportUses = useServerFn(exportAccessUsesCsv);
@@ -166,8 +186,7 @@ const qc = useQueryClient();
       setMaster({ data: { ...vars } }),
     onSuccess: (res, vars) => {
       toast.success(`${vars.kind === "admin" ? "Admin" : "Learner"} password updated.`);
-      if (vars.kind === "admin" && res?.newCode) 
-      invalidate();
+      if (vars.kind === "admin" && res?.newCode) invalidate();
     },
     onError: (e: any) => toast.error(e?.message || "Could not update password."),
   });
@@ -225,8 +244,8 @@ const qc = useQueryClient();
           <CardHeader>
             <CardTitle>Issue a subscription code</CardTitle>
             <CardDescription>
-              Generate a time-limited code (e.g. 30 days) tied to a learner's email. They use it on the
-              learner portal login page. After it expires, access automatically stops.
+              Generate a time-limited code (e.g. 30 days) tied to a learner's email. They use it on
+              the learner portal login page. After it expires, access automatically stops.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -238,9 +257,9 @@ const qc = useQueryClient();
           <CardHeader>
             <CardTitle>Subscription codes</CardTitle>
             <CardDescription>
-              {subs.length} total · {subs.filter((r) => computeExpiry(r).tone === "active").length} active ·{" "}
-              {subs.filter((r) => computeExpiry(r).tone === "warning").length} expiring soon ·{" "}
-              {subs.filter((r) => computeExpiry(r).tone === "danger").length} expired ·{" "}
+              {subs.length} total · {subs.filter((r) => computeExpiry(r).tone === "active").length}{" "}
+              active · {subs.filter((r) => computeExpiry(r).tone === "warning").length} expiring
+              soon · {subs.filter((r) => computeExpiry(r).tone === "danger").length} expired ·{" "}
               {subs.reduce((n, r) => n + (r.use_count || 0), 0)} total logins
             </CardDescription>
           </CardHeader>
@@ -305,7 +324,11 @@ function MasterCard({
         <div className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">Current:</span>
           <code className="rounded bg-muted px-2 py-1 font-mono">
-            {current ? (show ? current : "•".repeat(Math.max(4, current.length))) : "(default 7777 — not yet set)"}
+            {current
+              ? show
+                ? current
+                : "•".repeat(Math.max(4, current.length))
+              : "(default 7777 — not yet set)"}
           </code>
           {current && (
             <>
@@ -419,7 +442,11 @@ function IssueForm({
       </div>
       <div>
         <Label>Label (optional)</Label>
-        <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="Bronze package" />
+        <Input
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          placeholder="Bronze package"
+        />
       </div>
       <div>
         <Label>Custom code (optional)</Label>
@@ -668,12 +695,7 @@ function CodeRow({
               <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
                 <History className="h-3.5 w-3.5" /> Login history
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExport}
-                disabled={exporting}
-              >
+              <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting}>
                 <Download className="mr-1.5 h-3.5 w-3.5" />
                 {exporting ? "Exporting…" : "Export CSV"}
               </Button>
@@ -687,7 +709,9 @@ function CodeRow({
                     <span className="font-mono tabular-nums">
                       {new Date(u.used_at).toLocaleString()}
                     </span>
-                    <Badge variant="outline" className="capitalize">{u.mode}</Badge>
+                    <Badge variant="outline" className="capitalize">
+                      {u.mode}
+                    </Badge>
                     {u.user_agent && (
                       <span className="text-xs text-muted-foreground truncate max-w-[420px]">
                         {u.user_agent}

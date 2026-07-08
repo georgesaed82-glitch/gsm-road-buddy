@@ -82,7 +82,12 @@ export const listPublicLessons = createServerFn({ method: "GET" })
   });
 
 const lessonInput = z.object({
-  slug: z.string().trim().min(1).max(160).regex(/^[a-z0-9-]+$/i, "Slug must be url-safe (letters, digits, hyphens)"),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(160)
+    .regex(/^[a-z0-9-]+$/i, "Slug must be url-safe (letters, digits, hyphens)"),
   title: z.string().trim().min(1).max(200),
   subtitle: z.string().trim().max(400).optional(),
   description: z.string().trim().max(20000).optional(),
@@ -139,9 +144,7 @@ export const createLesson = createServerFn({ method: "POST" })
   });
 
 export const updateLesson = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
-    z.object({ id: z.string().uuid() }).merge(lessonInput.partial()).parse(d),
-  )
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).merge(lessonInput.partial()).parse(d))
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -152,9 +155,7 @@ export const updateLesson = createServerFn({ method: "POST" })
   });
 
 export const deleteLessons = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
-    z.object({ ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d),
-  )
+  .inputValidator((d) => z.object({ ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d))
   .handler(async ({ data }) => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -271,28 +272,39 @@ export const uploadLessonMedia = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data }): Promise<{ url: string; column: "image_url" | "video_url" | "pdf_url" }> => {
-    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const b64 = data.base64.includes(",") ? data.base64.split(",", 2)[1] : data.base64;
-    const buf = Buffer.from(b64, "base64");
-    const limits: Record<typeof data.kind, number> = { image: 8 * 1024 * 1024, video: 100 * 1024 * 1024, pdf: 20 * 1024 * 1024 };
-    if (buf.length > limits[data.kind]) throw new Error(`File too large (max ${Math.round(limits[data.kind] / 1024 / 1024)} MB).`);
-    const safe = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-100);
-    const path = `lessons/${data.lesson_id}/${data.kind}/${Date.now()}-${safe}`;
-    const { error: upErr } = await supabaseAdmin.storage
-      .from("content-images")
-      .upload(path, buf, { contentType: data.content_type, upsert: true });
-    if (upErr) throw new Error(upErr.message);
-    const { data: signed, error: signErr } = await supabaseAdmin.storage
-      .from("content-images")
-      .createSignedUrl(path, SIGNED_URL_TTL);
-    if (signErr) throw new Error(signErr.message);
-    const url = signed?.signedUrl ?? "";
-    const column: "image_url" | "video_url" | "pdf_url" =
-      data.kind === "image" ? "image_url" : data.kind === "video" ? "video_url" : "pdf_url";
-    const patch =
-      column === "image_url" ? { image_url: url } : column === "video_url" ? { video_url: url } : { pdf_url: url };
-    await supabaseAdmin.from("lessons").update(patch).eq("id", data.lesson_id);
-    return { url, column };
-  });
+  .handler(
+    async ({ data }): Promise<{ url: string; column: "image_url" | "video_url" | "pdf_url" }> => {
+      if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const b64 = data.base64.includes(",") ? data.base64.split(",", 2)[1] : data.base64;
+      const buf = Buffer.from(b64, "base64");
+      const limits: Record<typeof data.kind, number> = {
+        image: 8 * 1024 * 1024,
+        video: 100 * 1024 * 1024,
+        pdf: 20 * 1024 * 1024,
+      };
+      if (buf.length > limits[data.kind])
+        throw new Error(`File too large (max ${Math.round(limits[data.kind] / 1024 / 1024)} MB).`);
+      const safe = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-100);
+      const path = `lessons/${data.lesson_id}/${data.kind}/${Date.now()}-${safe}`;
+      const { error: upErr } = await supabaseAdmin.storage
+        .from("content-images")
+        .upload(path, buf, { contentType: data.content_type, upsert: true });
+      if (upErr) throw new Error(upErr.message);
+      const { data: signed, error: signErr } = await supabaseAdmin.storage
+        .from("content-images")
+        .createSignedUrl(path, SIGNED_URL_TTL);
+      if (signErr) throw new Error(signErr.message);
+      const url = signed?.signedUrl ?? "";
+      const column: "image_url" | "video_url" | "pdf_url" =
+        data.kind === "image" ? "image_url" : data.kind === "video" ? "video_url" : "pdf_url";
+      const patch =
+        column === "image_url"
+          ? { image_url: url }
+          : column === "video_url"
+            ? { video_url: url }
+            : { pdf_url: url };
+      await supabaseAdmin.from("lessons").update(patch).eq("id", data.lesson_id);
+      return { url, column };
+    },
+  );
