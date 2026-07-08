@@ -216,18 +216,13 @@ export function Zoomable({
     setScale((s) => clampScale(s * factor));
   };
 
+  // Content clicks never close directly — closing is done via the X button,
+  // the backdrop, Escape, or swipe-down on mobile. This keeps double-tap zoom
+  // and pinch/pan gestures reliable. `closeOnContentClick` is retained on the
+  // prop surface for backwards compatibility but is intentionally unused.
+  void closeOnContentClick;
   const handleContentClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Only close on a genuine tap (no zoom, no pan)
-    if (closeOnContentClick && scale === 1) {
-      const now = Date.now();
-      // Give the double-tap detector a beat to win
-      if (now - lastTapRef.current > 0 && now - lastTapRef.current < 300) return;
-      // Delay closing so a double-tap can register
-      setTimeout(() => {
-        if (Date.now() - lastTapRef.current >= 290) close();
-      }, 300);
-    }
   };
 
   return (
