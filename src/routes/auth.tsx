@@ -22,10 +22,10 @@ export const Route = createFileRoute("/auth")({
   },
   head: () => ({
     meta: [
-      { title: "Learner portal coming soon | GSM Driving School" },
+      { title: "GSM Plus coming soon | GSM Driving School" },
       {
         name: "description",
-        content: "The GSM Driving School learner portal is coming soon. Manage lessons, payments, and progress online.",
+        content: "GSM Plus, the premium learner platform from GSM Driving School, is coming soon. Manage lessons, payments, and progress online.",
       },
     ],
   }),
@@ -190,7 +190,7 @@ function AuthPage() {
           ? `Signed in as ${res.subscription.email}. Progress will save to your account.`
           : res.subscription?.expires_at
           ? `Access granted until ${new Date(res.subscription.expires_at).toLocaleDateString()}.`
-          : "Access granted. Welcome to the learner portal.";
+          : "Access granted. Welcome to GSM Plus.";
       setAuthMessage({ type: "success", text: successMessage });
       toast.success(successMessage);
       navigate({ to: "/dashboard" });
@@ -207,7 +207,7 @@ function AuthPage() {
       <Card className="w-full max-w-md border-border bg-card text-center">
         <CardHeader>
           <CardTitle className="font-display text-2xl">
-            {isAdmin ? "Admin login" : "Learner portal"}
+            {isAdmin ? "Admin login" : (<><span className="font-bold">GSM</span> <span className="font-semibold text-accent">PLUS+</span></>)}
           </CardTitle>
           <CardDescription>
             <Badge variant="secondary" className="mt-2">
@@ -300,7 +300,7 @@ function AuthPage() {
               >
                 gsmdrivingschool@outlook.com
               </a>{" "}
-              to request a PIN for the learner portal.
+              to request a PIN for GSM Plus.
             </p>
           </div>
           ) : null}

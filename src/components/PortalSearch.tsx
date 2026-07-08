@@ -120,7 +120,7 @@ export function PortalSearch() {
         type="button"
         onClick={() => setOpen(true)}
         className="flex w-full items-center gap-2 border border-border bg-background px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:text-foreground"
-        aria-label="Search the learner portal"
+        aria-label="Search GSM Plus"
       >
         <Search className="h-4 w-4" />
         <span className="flex-1">Search Highway Code, signs…</span>

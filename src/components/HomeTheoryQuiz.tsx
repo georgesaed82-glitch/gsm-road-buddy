@@ -56,7 +56,7 @@ export function HomeTheoryQuiz() {
             ? "That's DVSA pass level — nicely done."
             : pct >= 60
               ? "Nearly there — one more sweep of the Highway Code and you're test-ready."
-              : "Don't worry — this is exactly what the learner portal is for. Every question there is explained the same way."}
+              : "Don't worry — this is exactly what GSM Plus is for. Every question there is explained the same way."}
         </p>
         <Button onClick={restart} className="mt-6 h-11 rounded-none">
           <RotateCcw className="mr-2 h-4 w-4" /> Play again

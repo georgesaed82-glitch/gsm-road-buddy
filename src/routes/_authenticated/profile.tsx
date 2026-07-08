@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_authenticated/profile")({
-  head: () => ({ meta: [{ title: "Profile · GSM Learner Portal" }] }),
+  head: () => ({ meta: [{ title: "Profile · GSM Plus" }] }),
   component: ProfilePage,
 });
 

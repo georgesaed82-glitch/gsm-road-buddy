@@ -165,7 +165,7 @@ export function AdminShell({ children, title, eyebrow }: { children: ReactNode; 
         to="/dashboard"
         className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-accent/5 hover:text-primary"
       >
-        ← Learner portal
+        ← GSM Plus
       </Link>
       <button
         onClick={onSignOut}

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalSearch } from "@/components/PortalSearch";
 import { PortalFooter } from "@/components/PortalFooter";
+import { GsmPlus } from "@/components/GsmPlus";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 type Item = { to: string; label: string; icon: typeof LayoutDashboard };
@@ -94,7 +95,7 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
   const sidebarInner = (
     <div className="overflow-hidden rounded-2xl border border-border/70 bg-card p-2 shadow-sm">
       <div className="border-b border-border/70 px-3 py-3">
-        <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Learner portal</div>
+        <GsmPlus variant="pill" />
         <div className="mt-1 font-display text-lg text-foreground">Your dashboard</div>
       </div>
       <div className="border-b border-border/70 p-2">
@@ -176,13 +177,13 @@ export function PortalShell({ children, title, eyebrow, showCopyright = false }:
               <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                 <SheetTrigger
                   className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:text-primary"
-                  aria-label="Open learner portal menu"
+                  aria-label="Open GSM Plus menu"
                 >
                   <Menu className="h-4 w-4 text-accent" />
                   Menu
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px] overflow-y-auto p-3 sm:w-[320px]">
-                  <SheetTitle className="sr-only">Learner portal navigation</SheetTitle>
+                  <SheetTitle className="sr-only">GSM Plus navigation</SheetTitle>
                   <SheetDescription className="sr-only">Choose a topic to open.</SheetDescription>
                   {sidebarInner}
                 </SheetContent>

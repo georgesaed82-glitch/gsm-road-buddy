@@ -157,7 +157,7 @@ function HeroSection({ s }: SectionProps) {
             <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-            {or(s.body, "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and a full learner portal, from instructors who know these roads.")}
+            {or(s.body, "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.")}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button
@@ -347,7 +347,7 @@ function QuizzesSection({ s }: SectionProps) {
           {s.title && s.title.trim().length > 0 ? s.title : (<>Test yourself — <span className="italic text-accent">right here.</span></>)}
         </h2>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          {or(s.body, `This is a taster of the GSM Learner Portal. Every question in the full portal is explained the same way — answer, then a plain-English "why" — so you actually understand the road, not just memorise it. That's how our students pass quicker.`)}
+          {or(s.body, `This is a taster of GSM Plus. Every question in the full platform is explained the same way — answer, then a plain-English "why" — so you actually understand the road, not just memorise it. That's how our students pass quicker.`)}
         </p>
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           <div>
@@ -382,7 +382,7 @@ function QuizzesSection({ s }: SectionProps) {
         </div>
         <div className="mt-8 text-sm text-muted-foreground">
           Just a taster. The full{" "}
-          <Link to="/dashboard" className="font-medium text-primary underline underline-offset-4">GSM Learner Portal</Link>{" "}
+          <Link to="/dashboard" className="font-medium text-primary underline underline-offset-4">GSM Plus</Link>{" "}
           gives you all 14 theory categories, every UK road sign, road markings, police signals, hazard perception clips and full 50-question mock tests — each with the same "why" explanation so you learn faster and pass sooner.
         </div>
       </div>
@@ -398,7 +398,7 @@ function PortalSection({ s }: SectionProps) {
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/60">
               <span className="h-px w-8 bg-accent" />
-              {or(s.eyebrow, "The learner portal")}
+              {or(s.eyebrow, "GSM Plus")}
             </div>
             <h2 className="mt-4 font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
               {s.title && s.title.trim().length > 0 ? s.title : (<>Everything you need <span className="italic text-accent">in one place.</span></>)}
