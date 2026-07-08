@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
+import { GsmPlus } from "@/components/GsmPlus";
 
 const DEFAULT_NAV_LINKS = [
   { to: "/about", label: "About", icon: Info },
@@ -142,7 +143,7 @@ export function Header() {
 
           <Link
             to="/auth"
-            aria-label="Learner portal login"
+            aria-label="GSM Plus login"
             className={cn(
               "group relative ml-1 inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/[0.03] px-3.5 py-2 text-sm font-medium transition-all duration-200",
               isPortalActive
@@ -151,7 +152,7 @@ export function Header() {
             )}
           >
             <Lock className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-            <span>Learner portal</span>
+            <GsmPlus />
           </Link>
         </nav>
 
@@ -243,7 +244,7 @@ export function Header() {
                   })}
                 </nav>
 
-                {/* Learner portal login */}
+                {/* GSM Plus login */}
                 <div className="mt-4">
                   <Link
                     to="/auth"
@@ -256,7 +257,7 @@ export function Header() {
                     )}
                   >
                     <Lock className="h-4 w-4 text-accent" />
-                    <span>Learner portal login</span>
+                    <span className="inline-flex items-center gap-1"><GsmPlus /> <span>login</span></span>
                   </Link>
                 </div>
 
