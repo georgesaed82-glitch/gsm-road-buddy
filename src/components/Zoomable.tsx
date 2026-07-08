@@ -7,6 +7,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type WheelEvent as ReactWheelEvent,
+  type MouseEvent as ReactMouseEvent,
 } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
@@ -221,7 +222,7 @@ export function Zoomable({
   // and pinch/pan gestures reliable. `closeOnContentClick` is retained on the
   // prop surface for backwards compatibility but is intentionally unused.
   void closeOnContentClick;
-  const handleContentClick = (e: React.MouseEvent) => {
+  const handleContentClick = (e: ReactMouseEvent) => {
     e.stopPropagation();
   };
 
