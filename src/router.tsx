@@ -15,7 +15,9 @@ function handleAdminUnauthorized(err: unknown) {
   try {
     window.localStorage.removeItem("admin_unlocked");
     window.localStorage.removeItem("admin_password");
-  } catch {}
+  } catch {
+    // localStorage may be unavailable (private mode); ignore.
+  }
   const target = "/auth?admin=1";
   if (window.location.pathname + window.location.search !== target) {
     window.location.replace(target);

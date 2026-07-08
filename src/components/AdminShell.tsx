@@ -143,8 +143,7 @@ export function AdminShell({
   const onSignOut = async () => {
     await queryClient.cancelQueries();
     queryClient.clear();
-    if (typeof window !== "undefined") {
-    }
+    // (Any browser-only sign-out cleanup would go here.)
     navigate({ to: "/", replace: true });
   };
 
