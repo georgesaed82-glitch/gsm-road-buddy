@@ -436,7 +436,7 @@ export function LessonShell({
                 <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                   Previous
                 </div>
-                <div className="mt-1 truncate font-display text-base leading-snug">
+                <div className="mt-1 font-display text-base leading-snug break-words">
                   {prev.title}
                 </div>
               </div>
@@ -452,7 +452,7 @@ export function LessonShell({
             >
               <div className="min-w-0 sm:order-2">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Next</div>
-                <div className="mt-1 truncate font-display text-base leading-snug">
+                <div className="mt-1 font-display text-base leading-snug break-words">
                   {next.title}
                 </div>
               </div>
