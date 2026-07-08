@@ -161,8 +161,17 @@ export function LessonShell({
         <div className="flex items-center justify-between gap-3 border-b border-border p-4">
           <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Animated diagram</div>
           <div className="flex shrink-0 gap-1">
-            <ControlButton onClick={() => setPlaying((v) => !v)} label={playing ? "Pause" : "Play"}>
-              {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            <ControlButton
+              onClick={() => {
+                if (!playing && t >= 1) {
+                  reset();
+                } else {
+                  setPlaying((v) => !v);
+                }
+              }}
+              label={playing ? "Pause" : t >= 1 ? "Replay" : "Play"}
+            >
+              {playing ? <Pause className="h-4 w-4" /> : t >= 1 ? <RotateCcw className="h-4 w-4" /> : <Play className="h-4 w-4" />}
             </ControlButton>
             <ControlButton onClick={reset} label="Restart">
               <RotateCcw className="h-4 w-4" />
