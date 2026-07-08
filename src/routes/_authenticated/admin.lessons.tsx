@@ -426,7 +426,6 @@ function AdminLessonsCms() {
                 <td className="px-3 py-2">
                   <div className="flex items-center gap-3">
                     {r.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
                       <img src={r.image_url} alt="" className="h-10 w-10 rounded object-cover" />
                     ) : (
                       <div className="h-10 w-10 rounded border border-dashed border-border" />

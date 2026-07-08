@@ -826,7 +826,9 @@ export const getSectionBreakdown = createServerFn({ method: "POST" })
         let host = r.referrer;
         try {
           host = new URL(r.referrer).hostname.toLowerCase() || r.referrer;
-        } catch {}
+        } catch {
+          // Referrer wasn't a valid URL; fall back to raw string.
+        }
         const rRow = referrerCounts.get(host) ?? { source: src, views: 0 };
         rRow.views += 1;
         referrerCounts.set(host, rRow);
@@ -967,7 +969,9 @@ export const getTrafficStats = createServerFn({ method: "POST" })
         let host = r.referrer;
         try {
           host = new URL(r.referrer).hostname.toLowerCase() || r.referrer;
-        } catch {}
+        } catch {
+          // Referrer wasn't a valid URL; fall back to raw string.
+        }
         const rRow = referrerCounts.get(host) ?? { source: src, views: 0 };
         rRow.views += 1;
         referrerCounts.set(host, rRow);

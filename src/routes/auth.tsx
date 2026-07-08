@@ -71,7 +71,9 @@ function AuthPage() {
           if (saved.pin) setPassword(saved.pin);
           setRemember(true);
         }
-      } catch {}
+      } catch {
+        // Ignore corrupted saved credentials.
+      }
     }
   }, [runCaptchaConfig, isAdmin]);
 
@@ -119,7 +121,9 @@ function AuthPage() {
         try {
           window.localStorage.removeItem("admin_unlocked");
           window.localStorage.removeItem("admin_password");
-        } catch {}
+        } catch {
+          // Best-effort cleanup of legacy keys.
+        }
         const msg = "Signed in. Opening admin portal...";
         setAuthMessage({ type: "success", text: msg });
         toast.success(msg);
@@ -181,7 +185,9 @@ function AuthPage() {
         } else {
           window.localStorage.removeItem("gsm_remember_learner");
         }
-      } catch {}
+      } catch {
+        // localStorage may be unavailable (private mode); ignore.
+      }
       // Subscription codes carry a student email — link the code login to
       // that Supabase account so progress persists across devices.
       let linked = false;

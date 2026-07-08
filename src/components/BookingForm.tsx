@@ -41,7 +41,7 @@ export function BookingForm() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255)
       next.email = "Enter a valid email address";
     const phone = form.phone.trim();
-    if (!/^[\d\s+()\-]{7,20}$/.test(phone)) next.phone = "Enter a valid phone number";
+    if (!/^[\d\s+()-]{7,20}$/.test(phone)) next.phone = "Enter a valid phone number";
     const postcode = form.postcode.trim();
     if (!postcode || postcode.length > 20)
       next.postcode = "Enter your postcode (max 20 characters)";
