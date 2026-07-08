@@ -3,14 +3,17 @@ import type { Lesson } from "@/components/driving-clips/LessonShell";
 // ─────────────────────────────────────────────────────────────
 // Meeting in Small Spaces
 // A narrow residential street with parked cars on both sides.
-// The animation cycles through:
-//   Phase A (0.00–0.25) — Scan ahead, spot the narrowing.
-//   Phase B (0.25–0.50) — Choose a gap OR the half-in/half-out
-//     waiting position (half in the parking space, half in the road).
-//   Phase C (0.50–0.75) — Meet the oncoming red car safely.
-//   Phase D (0.75–1.00) — Continue with the correct 1m clearance.
-// A live speed panel changes with the gap size:
-//   Plenty of room 30mph · Medium 15mph · Small 7mph · Very tight 4mph.
+// The animation plays end-to-end so the learner sees the ENTIRE
+// manoeuvre — approach, decision, half-in/half-out, meeting,
+// mirror check, move back out, continue. A single decision-point
+// question fires BEFORE the driver commits to the waiting position:
+//
+//   Phase A (0.00–0.20) — Approach and SCAN. Spot narrowing + oncoming.
+//   ▶ Q1 at 0.20 — "Where should you wait?" (decision point)
+//   Phase B (0.20–0.42) — Slow, indicate, ease half-in / half-out.
+//   Phase C (0.42–0.66) — Hold position. Red car passes through.
+//   Phase D (0.66–0.82) — Mirror + shoulder check, ease back into lane.
+//   Phase E (0.82–1.00) — Continue with 1 m clearance from parked doors.
 // ─────────────────────────────────────────────────────────────
 
 const PAINT = "#f5f5f0";
@@ -90,55 +93,75 @@ function Oncoming({ cx, cy }: { cx: number; cy: number }) {
 }
 
 function MeetingScene(t: number) {
-  // Phase progression
-  const phaseA = t < 0.25;        // scan ahead
-  const phaseB = t >= 0.25 && t < 0.5; // choose gap / wait
-  const phaseC = t >= 0.5  && t < 0.78; // meet
-  const phaseD = t >= 0.78;       // continue
+  // Phase progression (single play-through, no loop)
+  const phaseA = t < 0.20;                     // approach + scan
+  const phaseB = t >= 0.20 && t < 0.42;        // ease into half-in/half-out
+  const phaseC = t >= 0.42 && t < 0.66;        // hold; oncoming passes
+  const phaseD = t >= 0.66 && t < 0.82;        // mirror check + move out
+  const phaseE = t >= 0.82;                    // continue with 1 m clearance
 
-  // Ego position (x). Approaches, drifts to the waiting bay,
-  // waits, then continues past the red car.
-  let egoX = 0;
+  // Ego position — carries the learner through the whole manoeuvre.
+  let egoX = 40;
   let egoY = 218;
   if (phaseA) {
-    egoX = 40 + easeInOut(t / 0.25) * 180; // 40 → 220
+    // Approach the narrowing at a steady speed
+    egoX = 40 + easeInOut(t / 0.20) * 190; // 40 → 230
+    egoY = 218;
   } else if (phaseB) {
-    // pull into the half-in/half-out waiting position at x≈290
-    const k = easeInOut((t - 0.25) / 0.25);
-    egoX = 220 + k * 70;
-    egoY = 218 - k * 22; // shift up into the parking gap (half in)
+    // Slow down and steer HALF IN / HALF OUT of the parking gap
+    const k = easeInOut((t - 0.20) / 0.22);
+    egoX = 230 + k * 60;                    // 230 → 290
+    egoY = 218 - k * 22;                    // 218 → 196 (half in)
   } else if (phaseC) {
-    // hold the waiting position while red car passes
-    egoX = 290; egoY = 196;
+    // Hold position — oncoming vehicle threads through
+    egoX = 290;
+    egoY = 196;
+  } else if (phaseD) {
+    // Mirror + shoulder check, ease back into the lane
+    const k = easeInOut((t - 0.66) / 0.16);
+    egoX = 290 + k * 60;                    // 290 → 350
+    egoY = 196 + k * 22;                    // 196 → 218
   } else {
-    // resume, slight offset from parked cars (1m from doors)
-    const k = easeInOut((t - 0.78) / 0.22);
-    egoX = 290 + k * 300;
-    egoY = 196 + k * 22; // back to lane
+    // Continue with 1 m clearance from parked doors
+    const k = easeInOut((t - 0.82) / 0.18);
+    egoX = 350 + k * 260;                   // 350 → 610
+    egoY = 218;
   }
 
-  // Oncoming red car moves right → left through the scene
-  const redX = phaseB ? 640 - easeInOut((t - 0.25) / 0.25) * 260 // 640 → 380
-    : phaseC ? 380 - easeInOut((t - 0.5) / 0.28) * 260 // 380 → 120
-    : phaseA ? 640 : 120;
+  // Oncoming red car — visible from the start so the learner sees the
+  // hazard, then threads through the narrow point during phase C, then
+  // clears the scene.
+  let redX = 640;
+  if (phaseA) {
+    redX = 640 - easeInOut(t / 0.20) * 140;    // 640 → 500 (still ahead)
+  } else if (phaseB) {
+    redX = 500 - easeInOut((t - 0.20) / 0.22) * 120; // 500 → 380
+  } else if (phaseC) {
+    redX = 380 - easeInOut((t - 0.42) / 0.24) * 260; // 380 → 120 (passes)
+  } else {
+    redX = -60; // gone
+  }
 
-  // Speed based on effective gap
+  // Speed based on effective gap / phase
   const speed =
-    phaseA ? 30 :
-    phaseB ? 15 :
-    phaseC ? 7  :
-    4;
+    phaseA ? 20 :
+    phaseB ? 10 :
+    phaseC ? 0  :
+    phaseD ? 5  :
+    15;
   const speedColor = speed >= 25 ? GOOD : speed >= 12 ? WARN : BAD;
   const speedLabel =
+    phaseC ? "Waiting" :
     speed >= 25 ? "Plenty of room" :
     speed >= 12 ? "Medium gap" :
     speed >= 6  ? "Small gap" : "Very tight";
 
   const banner =
-    phaseA ? "1 · SCAN — spot the narrowing early" :
-    phaseB ? "2 · HALF IN / HALF OUT — waiting position" :
-    phaseC ? "3 · MEETING — let the oncoming vehicle through" :
-             "4 · CONTINUE — keep 1 m from parked doors";
+    phaseA ? "1 · SCAN — narrowing + oncoming vehicle ahead" :
+    phaseB ? "2 · HALF IN / HALF OUT — ease into position" :
+    phaseC ? "3 · MEETING — hold. Let the oncoming car through" :
+    phaseD ? "4 · MIRROR + SHOULDER — ease back into the lane" :
+             "5 · CONTINUE — 1 m clearance from parked doors";
 
   return (
     <svg viewBox="0 0 640 360" className="h-full w-full">
@@ -165,7 +188,7 @@ function MeetingScene(t: number) {
       {PARKED.map((p, i) => <ParkedCar key={i} {...p} />)}
 
       {/* Waiting bay highlight during phases B/C */}
-      {(phaseB || phaseC) && (
+      {(phaseB || phaseC || phaseD) && (
         <g>
           <rect x={260} y={162} width={70} height={30} fill={ACCENT} opacity={0.25} stroke={ACCENT} strokeWidth={1.2} strokeDasharray="4 3" />
           <text x={295} y={144} textAnchor="middle" fontSize={9} fontWeight={700} fill={ACCENT} fontFamily="sans-serif">
@@ -174,8 +197,19 @@ function MeetingScene(t: number) {
         </g>
       )}
 
-      {/* 1m clearance markers (phase D) */}
+      {/* Mirror check pulse (phase D) */}
       {phaseD && (
+        <g>
+          <circle cx={egoX - 22} cy={egoY - 12} r={3.5} fill="none" stroke={WARN} strokeWidth={1.4}>
+            <animate attributeName="r" values="2;6;2" dur="0.7s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="1;0.2;1" dur="0.7s" repeatCount="indefinite" />
+          </circle>
+          <text x={egoX - 46} y={egoY - 20} fontSize={8} fontWeight={700} fill={WARN} fontFamily="sans-serif">MIRROR</text>
+        </g>
+      )}
+
+      {/* 1m clearance markers (phase E) */}
+      {phaseE && (
         <g opacity={0.85}>
           <line x1={egoX - 30} y1={egoY - 18} x2={egoX - 30} y2={egoY + 18} stroke={GOOD} strokeWidth={1.4} strokeDasharray="3 2" />
           <line x1={egoX + 30} y1={egoY - 18} x2={egoX + 30} y2={egoY + 18} stroke={GOOD} strokeWidth={1.4} strokeDasharray="3 2" />
@@ -287,30 +321,25 @@ export const meetingInSmallSpaces: Lesson = {
   ],
   keyTakeaway:
     "Meeting in small spaces is about planning, position and space — scan ahead, pick a gap or wait half in / half out, and match your speed to the room you've actually got.",
-  durationMs: 22000,
+  durationMs: 28000,
   captions: [
-    { at: 0.0,  label: "SCAN — spot the narrowing", detail: "Parked cars both sides — oncoming vehicle ahead." },
-    { at: 0.28, label: "HALF IN / HALF OUT", detail: "Pull halfway into the bay — clear signal that you're waiting." },
-    { at: 0.55, label: "MEETING — hold your position", detail: "Let the oncoming car through the narrowest point." },
-    { at: 0.82, label: "CONTINUE with 1 m clearance", detail: "Ease back into the lane, one metre from the parked doors." },
+    { at: 0.0,  label: "SCAN — spot the narrowing", detail: "Parked cars both sides. Oncoming vehicle in the distance." },
+    { at: 0.22, label: "HALF IN / HALF OUT — ease in", detail: "Slow, indicate, steer halfway into the parking gap." },
+    { at: 0.44, label: "MEETING — hold your position", detail: "Wait patiently. Let the oncoming car through the narrow point." },
+    { at: 0.68, label: "MIRROR + shoulder check", detail: "Check it's safe, then ease back into the lane." },
+    { at: 0.84, label: "CONTINUE with 1 m clearance", detail: "Keep about a metre from the parked doors as you drive on." },
   ],
   questions: [
     {
-      at: 0.32,
-      prompt: "You need to wait for an oncoming car on a narrow street. Where should you position your vehicle?",
+      // Decision point BEFORE the driver commits. Fires just as they
+      // recognise the meeting — then the animation resumes and shows
+      // the correct technique carried out from start to finish.
+      at: 0.18,
+      prompt: "You've spotted an oncoming car and a narrowing ahead. Where should you position your vehicle to wait?",
       options: [
-        { label: "Fully into an empty parking bay so you're out of the way", explain: "No — other drivers will assume you've parked and will not thank you for waiting." },
-        { label: "Half in the parking bay, half in the road", correct: true, explain: "Correct. Half in / half out clearly says 'I'm waiting for you' without any ambiguity." },
-        { label: "Fully in the road so the oncoming car definitely sees you", explain: "No — that needlessly narrows the road and blocks the exchange." },
-      ],
-    },
-    {
-      at: 0.7,
-      prompt: "You're passing a long line of parked cars. What clearance should you aim for?",
-      options: [
-        { label: "Whatever fits — inches will do", explain: "No — inches gives you no time for doors, cyclists or children stepping out." },
-        { label: "About 1 metre from the parked doors whenever possible", correct: true, explain: "Correct. One metre is roughly a door's width and gives you valuable reaction time." },
-        { label: "Only leave space if it's raining", explain: "No — the clearance is for the hazards, not the weather. Always aim for a metre where you can." },
+        { label: "Fully into an empty parking bay so you're out of the way", explain: "No — other drivers assume you've parked and will not thank you for waiting. Watch what happens next: the correct position is halfway in." },
+        { label: "Half in the parking bay, half in the road", correct: true, explain: "Correct. Half in / half out clearly says 'I'm waiting for you' without any ambiguity. Watch how the car eases into position, holds while the oncoming vehicle passes, then moves back out with 1 m clearance from the parked doors." },
+        { label: "Fully in the road so the oncoming car definitely sees you", explain: "No — that needlessly narrows the road and blocks the exchange. The right answer is halfway in — watch it demonstrated now." },
       ],
     },
   ],
