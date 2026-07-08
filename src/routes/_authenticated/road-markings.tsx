@@ -98,13 +98,15 @@ function RoadMarkingsPage() {
                   return (
                     <article key={m.id} className="border border-border bg-card p-4">
                       <div className="mx-auto w-40 max-w-full">
-                        <div className="aspect-square overflow-hidden border border-border">
-                          {img ? (
-                            <img src={img} alt={m.name} className="h-full w-full object-cover" />
-                          ) : (
-                            <Visual />
-                          )}
-                        </div>
+                        <Zoomable label={m.name} aspectRatio="1 / 1" className="block">
+                          <div className="aspect-square overflow-hidden border border-border">
+                            {img ? (
+                              <img src={img} alt={m.name} className="h-full w-full object-cover" />
+                            ) : (
+                              <Visual />
+                            )}
+                          </div>
+                        </Zoomable>
                       </div>
                       <h3 className="mt-4 font-display text-lg leading-tight">{m.name}</h3>
                       <p className="mt-2 text-sm text-muted-foreground">{m.meaning}</p>
