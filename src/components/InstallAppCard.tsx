@@ -74,7 +74,7 @@ export function InstallAppCard() {
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                 Install the GSM Driving School app for one-tap access to lessons, theory practice,
-                hazard perception and your learner portal — straight from your home screen, online or
+                hazard perception and GSM Plus — straight from your home screen, online or
                 offline.
               </p>
               <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">

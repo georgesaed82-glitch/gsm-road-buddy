@@ -431,7 +431,7 @@ function AdminOverviewPage() {
           <QuickAction icon={BarChart3} label="Contact clicks" to="/admin/contact-clicks" />
           <QuickAction icon={MessageSquare} label="Email settings" to="/admin/email" />
           <QuickAction icon={Users} label="Admin accounts" to="/admin/admins" />
-          <QuickAction icon={ClipboardList} label="Learner portal" to="/dashboard" />
+          <QuickAction icon={ClipboardList} label="GSM Plus" to="/dashboard" />
           <QuickAction icon={Star} label="Reviews page" to="/reviews" />
         </div>
       </section>
