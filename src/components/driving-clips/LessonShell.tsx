@@ -3,6 +3,7 @@ import { Play, Pause, RotateCcw, CheckCircle2, XCircle, AlertTriangle, Sparkles,
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { useLessonProgress } from "@/lib/lessonProgress";
+import { Zoomable } from "@/components/Zoomable";
 
 // ─────────────────────────────────────────────────────────────
 // GSM standard lesson engine.
@@ -178,6 +179,12 @@ export function LessonShell({
             </ControlButton>
           </div>
         </div>
+        <Zoomable
+          label={`${lesson.title} — animated diagram`}
+          aspectRatio="16/9"
+          closeOnContentClick={false}
+          className="block w-full"
+        >
         <div className="relative w-full overflow-hidden bg-[#1a1a1c]" style={{ aspectRatio: "16/9" }}>
           {lesson.render(t)}
           {/* Consistent GSM brand + UK convention overlay across every clip */}
@@ -250,6 +257,7 @@ export function LessonShell({
             </div>
           )}
         </div>
+        </Zoomable>
         {/* Scrub bar */}
         <div className="relative h-1.5 w-full bg-secondary">
           <div className="absolute left-0 top-0 h-full bg-accent" style={{ width: `${t * 100}%` }} />
