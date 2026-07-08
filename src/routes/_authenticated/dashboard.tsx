@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Overview · GSM Learner Portal" }] }),
+  head: () => ({ meta: [{ title: "Overview · GSM Plus" }] }),
   component: DashboardPage,
 });
 
@@ -113,7 +113,7 @@ function DashboardPage() {
 
   return (
     <PortalShell
-      eyebrow="Learner portal"
+      eyebrow="GSM Plus"
       title={title}
       showCopyright
     >

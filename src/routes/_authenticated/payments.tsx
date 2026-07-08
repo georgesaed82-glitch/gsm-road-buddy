@@ -10,7 +10,7 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 
 export const Route = createFileRoute("/_authenticated/payments")({
-  head: () => ({ meta: [{ title: "Payments & Packages · GSM Learner Portal" }] }),
+  head: () => ({ meta: [{ title: "Payments & Packages · GSM Plus" }] }),
   component: PaymentsPage,
 });
 

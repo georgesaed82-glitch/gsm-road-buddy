@@ -14,7 +14,7 @@ import { useContentOverrides } from "@/hooks/useContentOverrides";
 export const Route = createFileRoute("/_authenticated/road-markings")({
   head: () => ({
     meta: [
-      { title: "Road markings — GSM Learner Portal" },
+      { title: "Road markings — GSM Plus" },
       { name: "description", content: "Every UK road marking explained — centre lines, hazard lines, double whites, zig-zags, yellow lines and red routes." },
     ],
   }),

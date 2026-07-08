@@ -9,7 +9,7 @@ import { useContentOverrides } from "@/hooks/useContentOverrides";
 export const Route = createFileRoute("/_authenticated/police-signals")({
   head: () => ({
     meta: [
-      { title: "Arm signals — police, HATOs & drivers | GSM Learner Portal" },
+      { title: "Arm signals — police, HATOs & drivers | GSM Plus" },
       { name: "description", content: "Realistic Highway Code illustrations of every hand signal you need — police officers and authorised persons directing traffic, plus the three driver arm signals from rule 103." },
     ],
   }),

@@ -119,7 +119,7 @@ function MyAttemptsPage() {
   }
 
   return (
-    <PortalShell eyebrow="Learner portal" title="My attempts">
+    <PortalShell eyebrow="GSM Plus" title="My attempts">
       <p className="max-w-2xl text-sm text-muted-foreground">
         Every quiz you finish on this device is saved here — mock tests, road
         signs, road markings and theory practice. Open one to see the exact
