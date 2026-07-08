@@ -68,14 +68,15 @@ export function OfficialSignImage({
     width: resolvedSize,
     maxWidth: "100%",
     aspectRatio: "1 / 1",
+    verticalAlign: "top",
   };
 
   const content = !src || errored ? (
-    <div style={wrapperStyle} className="inline-flex items-center justify-center">
+    <div style={wrapperStyle} className="flex items-center justify-center">
       <SignVisual variant={sign.variant} size={resolvedSize} />
     </div>
   ) : (
-    <div style={wrapperStyle} className="inline-block">
+    <div style={wrapperStyle} className="block">
       <img
         src={src}
         alt={sign.name}
@@ -89,6 +90,7 @@ export function OfficialSignImage({
           height: "100%",
           objectFit: "contain",
           imageRendering: "auto",
+          verticalAlign: "top",
         }}
       />
     </div>
