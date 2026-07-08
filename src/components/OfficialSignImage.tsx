@@ -89,6 +89,7 @@ export function OfficialSignImage({
           height: "100%",
           objectFit: "contain",
           imageRendering: "auto",
+          verticalAlign: "top",
         }}
       />
     </div>
