@@ -179,16 +179,17 @@ export function LessonShell({
             </ControlButton>
           </div>
         </div>
-        <Zoomable
-          label={`${lesson.title} — animated diagram`}
-          aspectRatio="16/9"
-          closeOnContentClick={false}
-          className="block w-full"
-        >
         <div className="relative w-full overflow-hidden bg-[#1a1a1c]" style={{ aspectRatio: "16/9" }}>
-          {lesson.render(t)}
-          {/* Consistent GSM brand + UK convention overlay across every clip */}
-          <div className="pointer-events-none absolute inset-0">
+          <Zoomable
+            label={`${lesson.title} — animated diagram`}
+            aspectRatio="16/9"
+            closeOnContentClick={false}
+            className="absolute inset-0"
+          >
+            <div className="relative h-full w-full">
+              {lesson.render(t)}
+              {/* Consistent GSM brand + UK convention overlay across every clip */}
+              <div className="pointer-events-none absolute inset-0">
             <div className="absolute left-3 top-3 rounded-md bg-black/55 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/85">
               UK · Left-hand traffic
             </div>
@@ -201,7 +202,9 @@ export function LessonShell({
                 GSM Driving School
               </span>
             </div>
-          </div>
+              </div>
+            </div>
+          </Zoomable>
           {q && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
               <div className="w-full max-w-md rounded-xl border border-border bg-card p-5 text-left shadow-lg">
@@ -257,7 +260,6 @@ export function LessonShell({
             </div>
           )}
         </div>
-        </Zoomable>
         {/* Scrub bar */}
         <div className="relative h-1.5 w-full bg-secondary">
           <div className="absolute left-0 top-0 h-full bg-accent" style={{ width: `${t * 100}%` }} />
