@@ -25,6 +25,58 @@ import { getSiteRating, type SiteRatingValue } from "../lib/cms.functions";
 import { Toaster } from "../components/ui/sonner";
 import { useIsPortal } from "../hooks/useIsPortal";
 import { BackToTop } from "../components/BackToTop";
+import { useIsAdmin } from "../hooks/useIsAdmin";
+import { useRouterState } from "@tanstack/react-router";
+
+/**
+ * Temporary site-wide access gate. While `MAINTENANCE_MODE` is true, only
+ * signed-in admins can view the app. Everyone else sees a maintenance
+ * screen with a link to the admin sign-in. Flip the flag to `false` to
+ * re-open the site.
+ */
+const MAINTENANCE_MODE = true;
+const MAINTENANCE_ALLOWED_PATHS = ["/auth", "/reset-password"];
+
+function MaintenanceGate({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { isAdmin, isLoading } = useIsAdmin();
+  const isAllowedPath = MAINTENANCE_ALLOWED_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(p + "/"),
+  );
+  if (!MAINTENANCE_MODE || isAllowedPath || isAdmin) return <>{children}</>;
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
+        Loading…
+      </div>
+    );
+  }
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-6">
+      <div className="max-w-md text-center">
+        <p className="font-display text-xs uppercase tracking-[0.24em] text-accent">
+          GSM Driving School
+        </p>
+        <h1 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground">
+          We'll be back shortly
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          The site is temporarily offline for maintenance and final testing.
+          Please check back soon — we appreciate your patience.
+        </p>
+        <div className="mt-6">
+          <Link
+            to="/auth"
+            search={{ admin: 1 }}
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Staff sign in
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function NotFoundComponent() {
   return (
@@ -317,17 +369,19 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col" suppressHydrationWarning>
         <ThemeProvider />
-        <Header />
-        <main className="flex-1" suppressHydrationWarning>
-          <Outlet />
-        </main>
-        {!isPortal && <Footer />}
-        {!isPortal && <AIChatWidget />}
-        {isPortal && <BackToTop />}
-        <Toaster />
-        <PageViewTracker />
-        <PWAInstallTracker />
-        <PageSeoOverride />
+        <MaintenanceGate>
+          <Header />
+          <main className="flex-1" suppressHydrationWarning>
+            <Outlet />
+          </main>
+          {!isPortal && <Footer />}
+          {!isPortal && <AIChatWidget />}
+          {isPortal && <BackToTop />}
+          <Toaster />
+          <PageViewTracker />
+          <PWAInstallTracker />
+          <PageSeoOverride />
+        </MaintenanceGate>
       </div>
     </QueryClientProvider>
   );
