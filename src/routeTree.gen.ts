@@ -30,6 +30,7 @@ import { Route as DevSignVariantsRouteImport } from './routes/dev.sign-variants'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AreasAreaRouteImport } from './routes/areas.$area'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedVehicleReferencePointsRouteImport } from './routes/_authenticated/vehicle-reference-points'
 import { Route as AuthenticatedSignsRouteImport } from './routes/_authenticated/signs'
 import { Route as AuthenticatedRoadSignsRouteImport } from './routes/_authenticated/road-signs'
 import { Route as AuthenticatedRoadMarkingsRouteImport } from './routes/_authenticated/road-markings'
@@ -185,6 +186,12 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedVehicleReferencePointsRoute =
+  AuthenticatedVehicleReferencePointsRouteImport.update({
+    id: '/vehicle-reference-points',
+    path: '/vehicle-reference-points',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSignsRoute = AuthenticatedSignsRouteImport.update({
   id: '/signs',
   path: '/signs',
@@ -496,6 +503,7 @@ export interface FileRoutesByFullPath {
   '/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
+  '/vehicle-reference-points': typeof AuthenticatedVehicleReferencePointsRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -567,6 +575,7 @@ export interface FileRoutesByTo {
   '/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/road-signs': typeof AuthenticatedRoadSignsRoute
   '/signs': typeof AuthenticatedSignsRoute
+  '/vehicle-reference-points': typeof AuthenticatedVehicleReferencePointsRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -641,6 +650,7 @@ export interface FileRoutesById {
   '/_authenticated/road-markings': typeof AuthenticatedRoadMarkingsRoute
   '/_authenticated/road-signs': typeof AuthenticatedRoadSignsRoute
   '/_authenticated/signs': typeof AuthenticatedSignsRoute
+  '/_authenticated/vehicle-reference-points': typeof AuthenticatedVehicleReferencePointsRoute
   '/api/chat': typeof ApiChatRoute
   '/areas/$area': typeof AreasAreaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -715,6 +725,7 @@ export interface FileRouteTypes {
     | '/road-markings'
     | '/road-signs'
     | '/signs'
+    | '/vehicle-reference-points'
     | '/api/chat'
     | '/areas/$area'
     | '/blog/$slug'
@@ -786,6 +797,7 @@ export interface FileRouteTypes {
     | '/road-markings'
     | '/road-signs'
     | '/signs'
+    | '/vehicle-reference-points'
     | '/api/chat'
     | '/areas/$area'
     | '/blog/$slug'
@@ -859,6 +871,7 @@ export interface FileRouteTypes {
     | '/_authenticated/road-markings'
     | '/_authenticated/road-signs'
     | '/_authenticated/signs'
+    | '/_authenticated/vehicle-reference-points'
     | '/api/chat'
     | '/areas/$area'
     | '/blog/$slug'
@@ -1074,6 +1087,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/vehicle-reference-points': {
+      id: '/_authenticated/vehicle-reference-points'
+      path: '/vehicle-reference-points'
+      fullPath: '/vehicle-reference-points'
+      preLoaderRoute: typeof AuthenticatedVehicleReferencePointsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/signs': {
       id: '/_authenticated/signs'
@@ -1531,6 +1551,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRoadMarkingsRoute: typeof AuthenticatedRoadMarkingsRoute
   AuthenticatedRoadSignsRoute: typeof AuthenticatedRoadSignsRoute
   AuthenticatedSignsRoute: typeof AuthenticatedSignsRoute
+  AuthenticatedVehicleReferencePointsRoute: typeof AuthenticatedVehicleReferencePointsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1551,6 +1572,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRoadMarkingsRoute: AuthenticatedRoadMarkingsRoute,
   AuthenticatedRoadSignsRoute: AuthenticatedRoadSignsRoute,
   AuthenticatedSignsRoute: AuthenticatedSignsRoute,
+  AuthenticatedVehicleReferencePointsRoute:
+    AuthenticatedVehicleReferencePointsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
