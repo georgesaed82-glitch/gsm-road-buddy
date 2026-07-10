@@ -16,6 +16,11 @@ import { PortalShell } from "@/components/PortalShell";
 import { Zoomable } from "@/components/Zoomable";
 import { useLessonProgress } from "@/lib/lessonProgress";
 import { cn } from "@/lib/utils";
+import {
+  DriverView as PntvDriverView,
+  TopView as PntvTopView,
+  CombinedView as PntvCombinedView,
+} from "@/components/vehicle-ref/ParkingNextToVehicles";
 
 // ─────────────────────────────────────────────────────────────
 // Vehicle Reference Points — dashboard-style interactive lesson.
@@ -948,13 +953,14 @@ function usePulse(active: boolean) {
 
 function TopicDetail({ topic }: { topic: Topic }) {
   const [stageIdx, setStageIdx] = useState(0);
-  const [view, setView] = useState<"driver" | "top">("driver");
+  const [view, setView] = useState<"driver" | "top" | "combined">("driver");
   const [showRef, setShowRef] = useState(false);
   const stage = topic.stages[stageIdx];
   const pulseT = usePulse(showRef);
   const { isDone, toggle } = useLessonProgress();
   const slug = `vrp-${topic.id}`;
   const done = isDone(slug);
+  const isUpgraded = topic.id === "parked-position";
 
   return (
     <div className="rounded-2xl border border-border bg-card shadow-sm">
@@ -988,6 +994,20 @@ function TopicDetail({ topic }: { topic: Topic }) {
             >
               <MapIcon className="h-3.5 w-3.5" /> Top view
             </button>
+            {isUpgraded && (
+              <button
+                type="button"
+                onClick={() => setView("combined")}
+                className={cn(
+                  "flex items-center gap-1 rounded-md px-3 py-1.5 font-medium",
+                  view === "combined"
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
+                <Target className="h-3.5 w-3.5" /> Combined
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -1014,17 +1034,26 @@ function TopicDetail({ topic }: { topic: Topic }) {
 
       <div className="p-4">
         <div
-          className={cn("relative w-full overflow-hidden rounded-xl border border-border", view === "driver" ? "bg-[#0a0f16]" : "bg-cream")}
-          style={{ aspectRatio: "16/9" }}
+          className={cn(
+            "relative w-full overflow-hidden rounded-xl border border-border",
+            view === "driver" ? "bg-[#0a0f16]" : "bg-cream",
+          )}
+          style={{ aspectRatio: view === "combined" ? "8/9" : "16/9" }}
         >
           <Zoomable
             label={`${topic.title} — ${view === "driver" ? "driver view" : "top view"}`}
-            aspectRatio="16/9"
+            aspectRatio={view === "combined" ? "8/9" : "16/9"}
             closeOnContentClick={false}
             className="absolute inset-0"
           >
             <div className="relative h-full w-full">
-              {view === "driver" ? (
+              {isUpgraded && view === "driver" ? (
+                <PntvDriverView showRef={showRef} />
+              ) : isUpgraded && view === "top" ? (
+                <PntvTopView showRef={showRef} />
+              ) : isUpgraded && view === "combined" ? (
+                <PntvCombinedView />
+              ) : view === "driver" ? (
                 <Cockpit
                   scene={stage.scene}
                   refPoint={stage.refPoint}
