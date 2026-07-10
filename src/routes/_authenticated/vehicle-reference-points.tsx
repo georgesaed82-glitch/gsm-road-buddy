@@ -16,6 +16,11 @@ import { PortalShell } from "@/components/PortalShell";
 import { Zoomable } from "@/components/Zoomable";
 import { useLessonProgress } from "@/lib/lessonProgress";
 import { cn } from "@/lib/utils";
+import {
+  DriverView as PntvDriverView,
+  TopView as PntvTopView,
+  CombinedView as PntvCombinedView,
+} from "@/components/vehicle-ref/ParkingNextToVehicles";
 
 // ─────────────────────────────────────────────────────────────
 // Vehicle Reference Points — dashboard-style interactive lesson.
@@ -670,8 +675,8 @@ const topics: Topic[] = [
   {
     id: "parked-position",
     num: 1,
-    title: "Parked Position",
-    tagline: "Confirm you are straight and parallel to the left kerb.",
+    title: "Parking Next to Vehicles",
+    tagline: "Sit parallel to the kerb, ~50 cm off, between the cars in front and behind.",
     stages: [
       {
         label: "Kerb meets the dashboard",
@@ -683,20 +688,22 @@ const topics: Topic[] = [
         refPath: "M 116 260 L 116 200",
       },
     ],
-    what: "When parked correctly, the left kerb appears to meet the lower edge of the dashboard on the driver's view. Cross-check the kerb position in the left door mirror.",
-    why: "This confirms the car is straight, parallel to the kerb and at a safe distance from it — not so close that a wheel scrapes, and not so far that the car is out in the traffic lane.",
-    when: "After stopping to park, every time — before switching off, and again briefly before moving off.",
+    what: "When you're parked next to other vehicles, the left kerb should appear to meet the dashboard edge from the driver's seat, the car in front sits about half a car-length ahead of your bonnet, and the car behind sits the same distance behind you. The left mirror shows the kerb crossing the lower third.",
+    why: "This confirms three things at once: you're parallel to the kerb, 30–50 cm off it (safe distance without scraping), and centred in the space so both neighbours can leave without needing to shunt.",
+    when: "Every time you finish parking between vehicles — before switching off, and again briefly before moving away.",
     how: [
-      "Stop parallel to the kerb.",
-      "Sight where the kerb line appears along the dashboard.",
-      "Glance in the left door mirror and check the kerb crosses through the lower third.",
-      "Adjust with small steering inputs while creeping if needed.",
+      "Stop parallel to the kerb, roughly 30–50 cm off.",
+      "Sight where the kerb line appears along the dashboard — it should touch the dash edge.",
+      "Left mirror: check the kerb crosses the lower third of the glass.",
+      "Look forward: about half a car-length of clear space to the car ahead, and the same to the car behind.",
+      "Adjust with small creeps and steering inputs if any of the four checks are off.",
     ],
     mistakes: [
-      "Parking too far from the kerb.",
-      "Parking too close to the kerb.",
-      "Relying on only one reference point.",
-      "Forgetting to check that the car is parallel, not angled.",
+      "Parking too far from the kerb — car sticking into traffic.",
+      "Parking too close — wheel or tyre wall scraping the kerb.",
+      "Parking too near the car in front or behind — blocking them in.",
+      "Sitting straight but not parallel — front tucked in, rear out (or vice versa).",
+      "Trusting only one reference — always cross-check dash, mirror and gaps.",
     ],
     safety: "Reference points depend on your seat position and vehicle. Calibrate them with your instructor in your usual car.",
   },
@@ -948,13 +955,14 @@ function usePulse(active: boolean) {
 
 function TopicDetail({ topic }: { topic: Topic }) {
   const [stageIdx, setStageIdx] = useState(0);
-  const [view, setView] = useState<"driver" | "top">("driver");
+  const [view, setView] = useState<"driver" | "top" | "combined">("driver");
   const [showRef, setShowRef] = useState(false);
   const stage = topic.stages[stageIdx];
   const pulseT = usePulse(showRef);
   const { isDone, toggle } = useLessonProgress();
   const slug = `vrp-${topic.id}`;
   const done = isDone(slug);
+  const isUpgraded = topic.id === "parked-position";
 
   return (
     <div className="rounded-2xl border border-border bg-card shadow-sm">
@@ -988,6 +996,20 @@ function TopicDetail({ topic }: { topic: Topic }) {
             >
               <MapIcon className="h-3.5 w-3.5" /> Top view
             </button>
+            {isUpgraded && (
+              <button
+                type="button"
+                onClick={() => setView("combined")}
+                className={cn(
+                  "flex items-center gap-1 rounded-md px-3 py-1.5 font-medium",
+                  view === "combined"
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
+                <Target className="h-3.5 w-3.5" /> Combined
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -1014,17 +1036,26 @@ function TopicDetail({ topic }: { topic: Topic }) {
 
       <div className="p-4">
         <div
-          className={cn("relative w-full overflow-hidden rounded-xl border border-border", view === "driver" ? "bg-[#0a0f16]" : "bg-cream")}
-          style={{ aspectRatio: "16/9" }}
+          className={cn(
+            "relative w-full overflow-hidden rounded-xl border border-border",
+            view === "driver" ? "bg-[#0a0f16]" : "bg-cream",
+          )}
+          style={{ aspectRatio: view === "combined" ? "8/9" : "16/9" }}
         >
           <Zoomable
             label={`${topic.title} — ${view === "driver" ? "driver view" : "top view"}`}
-            aspectRatio="16/9"
+            aspectRatio={view === "combined" ? "8/9" : "16/9"}
             closeOnContentClick={false}
             className="absolute inset-0"
           >
             <div className="relative h-full w-full">
-              {view === "driver" ? (
+              {isUpgraded && view === "driver" ? (
+                <PntvDriverView showRef={showRef} />
+              ) : isUpgraded && view === "top" ? (
+                <PntvTopView showRef={showRef} />
+              ) : isUpgraded && view === "combined" ? (
+                <PntvCombinedView />
+              ) : view === "driver" ? (
                 <Cockpit
                   scene={stage.scene}
                   refPoint={stage.refPoint}
