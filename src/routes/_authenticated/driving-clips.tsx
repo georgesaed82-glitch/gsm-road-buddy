@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { CheckCircle2, ChevronDown, Clock, Search, X } from "lucide-react";
+import { CheckCircle2, ChevronDown, Clock, Search, Target, X } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import {
   lessonGroups,
@@ -78,6 +78,29 @@ function DrivingClipsPage() {
         <Stat label="Full syllabus" value={`${plannedCount}`} />
         <Stat label="You've completed" value={`${completedInSyllabus} / ${readyCount}`} accent />
       </div>
+
+      {/* Vehicle Reference Points entry */}
+      <Link
+        to="/vehicle-reference-points"
+        className="mt-6 flex items-center gap-4 rounded-2xl border border-accent bg-accent/10 p-4 text-left shadow-sm transition-colors hover:bg-accent/15"
+      >
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+          <Target className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-accent">
+            Driving skills
+          </div>
+          <div className="mt-0.5 font-display text-lg leading-tight">Vehicle Reference Points</div>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            Seven interactive diagrams — driver's view + top view — for parking, position,
+            clearance and every turn.
+          </p>
+        </div>
+        <span className="hidden shrink-0 rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground sm:inline-flex">
+          Open dashboard →
+        </span>
+      </Link>
 
       {/* Search + rule filter */}
       <div className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
