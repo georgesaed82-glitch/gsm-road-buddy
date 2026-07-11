@@ -1544,6 +1544,8 @@ const meetingTraffic: Lesson = {
     "Waiting? Stop HALF IN, HALF OUT — never tucked in like a parked car",
     "Leave ~2 m in front (2.5 m for larger vehicles)",
     "Before moving off, check RIGHT MIRROR + RIGHT SHOULDER",
+    "Hold your road position — don't squeeze towards parked cars",
+    "Sometimes holding position encourages the oncoming vehicle to give way",
   ],
   why: (
     <>
