@@ -174,7 +174,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { name: "apple-mobile-web-app-title", content: "GSM" },
+      { name: "apple-mobile-web-app-title", content: "GSM Plus" },
     ],
     links: [
       {
@@ -185,19 +185,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "apple-touch-icon",
         sizes: "180x180",
-        href: "/__l5e/assets-v1/894d4e75-3524-4881-922b-98445d0f5119/apple-touch-icon.png",
+        href: "/__l5e/assets-v1/74871538-0622-4568-b65d-05cd8ff69a9d/apple-touch-icon.png",
       },
       {
         rel: "icon",
         type: "image/png",
         sizes: "192x192",
-        href: "/__l5e/assets-v1/77777731-ccc0-492e-a907-aa63024328b5/icon-192.png",
+        href: "/__l5e/assets-v1/dd35f49c-ac6e-45fc-b3d3-abd60672683b/icon-192.png",
       },
       {
         rel: "icon",
         type: "image/png",
         sizes: "512x512",
-        href: "/__l5e/assets-v1/c17592c7-8f19-482d-af80-8cb97e485da7/icon-512.png",
+        href: "/__l5e/assets-v1/cb95d171-ae59-4235-b99b-be9623a1c5ef/icon-512.png",
       },
     ],
     scripts: [
