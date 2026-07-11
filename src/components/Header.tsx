@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { GsmPlus } from "@/components/GsmPlus";
 
