@@ -184,6 +184,56 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
   );
 }
 
+function GoldenRulesCard() {
+  const rules = [
+    "Road markings override general rules",
+    "Paint follows paint · lane follows lane",
+    "Stay in your lane pocket",
+    "Stretch your vision — 15% up, 70% ahead, 15% down",
+    "Plan to stop, look to go",
+    "Can I walk across? Then I can drive across.",
+    "Mirror · Signal · Mirror · Move",
+  ];
+  return (
+    <details
+      open
+      className="group mt-6 rounded-2xl border border-accent/60 bg-gradient-to-br from-accent/10 via-card to-card p-5 shadow-sm"
+    >
+      <summary className="flex cursor-pointer list-none items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+          <Sparkles className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-accent">
+            GSM golden rules
+          </div>
+          <div className="font-display text-lg leading-tight">
+            The instructor phrases every learner should know by heart
+          </div>
+        </div>
+        <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+      </summary>
+      <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+        {rules.map((r) => (
+          <li
+            key={r}
+            className="flex items-start gap-2 rounded-lg border border-border/60 bg-background/40 px-3 py-2 text-sm"
+          >
+            <span
+              aria-hidden
+              className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+            />
+            <span className="leading-snug">{r}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-xs text-muted-foreground">
+        These phrases run through every GSM lesson — say them out loud on approach.
+      </p>
+    </details>
+  );
+}
+
 function GroupAccordion({
   group,
   defaultOpen,
