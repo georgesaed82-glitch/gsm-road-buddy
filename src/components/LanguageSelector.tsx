@@ -11,19 +11,69 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-export type LangCode = "en" | "ar" | "fr" | "es" | "pt" | "it" | "zh-CN" | "ja";
+export type LangCode =
+  | "en"
+  | "ar"
+  | "es"
+  | "fr"
+  | "de"
+  | "it"
+  | "pt"
+  | "nl"
+  | "pl"
+  | "ro"
+  | "tr"
+  | "el"
+  | "ru"
+  | "uk"
+  | "zh-CN"
+  | "zh-TW"
+  | "ja"
+  | "ko"
+  | "hi"
+  | "ur"
+  | "pa"
+  | "bn"
+  | "fa"
+  | "iw"
+  | "vi"
+  | "th"
+  | "id"
+  | "ms"
+  | "fil";
 
 type Lang = { code: LangCode; label: string; native: string; rtl?: boolean };
 
 const LANGUAGES: Lang[] = [
   { code: "en", label: "English", native: "English" },
   { code: "ar", label: "Arabic", native: "العربية", rtl: true },
-  { code: "fr", label: "French", native: "Français" },
   { code: "es", label: "Spanish", native: "Español" },
-  { code: "pt", label: "Portuguese", native: "Português" },
+  { code: "fr", label: "French", native: "Français" },
+  { code: "de", label: "German", native: "Deutsch" },
   { code: "it", label: "Italian", native: "Italiano" },
-  { code: "zh-CN", label: "Chinese (Mandarin)", native: "中文（简体）" },
+  { code: "pt", label: "Portuguese", native: "Português" },
+  { code: "nl", label: "Dutch", native: "Nederlands" },
+  { code: "pl", label: "Polish", native: "Polski" },
+  { code: "ro", label: "Romanian", native: "Română" },
+  { code: "tr", label: "Turkish", native: "Türkçe" },
+  { code: "el", label: "Greek", native: "Ελληνικά" },
+  { code: "ru", label: "Russian", native: "Русский" },
+  { code: "uk", label: "Ukrainian", native: "Українська" },
+  { code: "zh-CN", label: "Chinese (Simplified)", native: "中文（简体）" },
+  { code: "zh-TW", label: "Chinese (Traditional)", native: "中文（繁體）" },
   { code: "ja", label: "Japanese", native: "日本語" },
+  { code: "ko", label: "Korean", native: "한국어" },
+  { code: "hi", label: "Hindi", native: "हिन्दी" },
+  { code: "ur", label: "Urdu", native: "اردو", rtl: true },
+  { code: "pa", label: "Punjabi", native: "ਪੰਜਾਬੀ" },
+  { code: "bn", label: "Bengali", native: "বাংলা" },
+  { code: "fa", label: "Persian (Farsi)", native: "فارسی", rtl: true },
+  { code: "iw", label: "Hebrew", native: "עברית", rtl: true },
+  { code: "vi", label: "Vietnamese", native: "Tiếng Việt" },
+  { code: "th", label: "Thai", native: "ไทย" },
+  { code: "id", label: "Indonesian", native: "Bahasa Indonesia" },
+  { code: "ms", label: "Malay", native: "Bahasa Melayu" },
+  { code: "fil", label: "Filipino", native: "Filipino" },
 ];
 
 const STORAGE_KEY = "gsm_lang";
