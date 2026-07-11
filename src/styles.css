@@ -145,6 +145,34 @@
   }
 }
 
+/* Keep the third-party translation widget invisible while allowing it to
+   translate the rendered page content. */
+.skiptranslate,
+.goog-te-banner-frame,
+.goog-te-menu-frame,
+iframe.goog-te-banner-frame {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
+html[dir="rtl"] body {
+  direction: rtl;
+}
+
+html[dir="ltr"] body {
+  direction: ltr;
+}
+
+html[dir="rtl"] .notranslate,
+html[dir="rtl"] svg,
+html[dir="rtl"] canvas,
+html[dir="rtl"] video {
+  direction: ltr;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
