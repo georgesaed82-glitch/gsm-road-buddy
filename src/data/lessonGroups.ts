@@ -59,6 +59,7 @@ export const lessonGroups: LessonGroup[] = [
       existing("pull-up-on-left"),
       existing("pom-routine"),
       existing("give-way-lines"),
+      existing("bgo-system"),
     ]),
   },
   {
@@ -80,7 +81,8 @@ export const lessonGroups: LessonGroup[] = [
     title: "Meeting situations",
     blurb: "Sharing tight roads with oncoming traffic and obstructions.",
     lessons: compact([
-      planned("passing-parked-vehicles", "Passing parked vehicles", "Rules 163, 167"),
+      existing("passing-parked-vehicles") ??
+        planned("passing-parked-vehicles", "Passing parked vehicles", "Rules 163, 167"),
       planned("narrow-roads", "Narrow roads", "Rules 155, 163"),
       planned("priority-meeting", "Priority — who goes first?", "Rule 155"),
       existing("meeting-traffic"),
@@ -96,6 +98,7 @@ export const lessonGroups: LessonGroup[] = [
       existing("open-junction"),
       existing("closed-junction"),
       existing("keeping-junctions-clear"),
+      existing("yellow-box-junctions"),
       planned("emerging-left", "Emerging left", "Rules 170–172"),
       planned("emerging-right", "Emerging right", "Rules 170–172"),
       planned("turning-left", "Turning left", "Rules 182–183"),
@@ -110,6 +113,7 @@ export const lessonGroups: LessonGroup[] = [
     blurb: "Approach, lane choice, signalling and exiting — every roundabout style.",
     lessons: compact([
       existing("roundabouts"),
+      existing("unorthodox-roundabouts"),
       planned("mini-roundabouts", "Mini roundabouts", "Rule 188"),
       planned("normal-roundabouts", "Normal roundabouts", "Rules 184–187"),
       planned("roundabout-lane-discipline", "Roundabout lane discipline", "Rule 186"),
@@ -164,6 +168,7 @@ export const lessonGroups: LessonGroup[] = [
     blurb: "Reading vulnerable road users and conditions before they become a problem.",
     lessons: compact([
       existing("zebra-crossing"),
+      existing("bus-awareness"),
       planned("pedestrians", "Pedestrians", "Rules 204–210"),
       planned("school-areas", "School areas", "Rules 205, 208, 209"),
       planned("cyclists-awareness", "Cyclists", "Rules 211–213"),
