@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { CheckCircle2, ChevronDown, Clock, Search, Target, X } from "lucide-react";
+import { CheckCircle2, ChevronDown, Clock, Search, Sparkles, Target, X } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import {
   lessonGroups,
@@ -101,6 +101,9 @@ function DrivingClipsPage() {
           Open dashboard →
         </span>
       </Link>
+
+      {/* Pinned Golden Rules card */}
+      <GoldenRulesCard />
 
       {/* Search + rule filter */}
       <div className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
