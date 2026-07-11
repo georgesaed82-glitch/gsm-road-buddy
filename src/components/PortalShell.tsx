@@ -234,6 +234,9 @@ export function PortalShell({
                   {sidebarInner}
                 </SheetContent>
               </Sheet>
+              <div className="ml-auto">
+                <LanguageSelector />
+              </div>
             </div>
             {eyebrow && (
               <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
