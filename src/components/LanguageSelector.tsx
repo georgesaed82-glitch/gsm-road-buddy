@@ -27,6 +27,7 @@ const LANGUAGES: Lang[] = [
 ];
 
 const STORAGE_KEY = "gsm_lang";
+const CHANGE_EVENT = "gsm-language-changed";
 const INCLUDED_LANGS = LANGUAGES.map((l) => l.code).join(",");
 const ELEMENT_ID = "google_translate_element";
 const SCRIPT_ID = "google-translate-script";
@@ -260,11 +261,30 @@ export function LanguageSelector({
   }, []);
 
   useEffect(() => {
+    const handleLanguageChange = (event: Event) => {
+      const next = (event as CustomEvent<LangCode>).detail;
+      if (next && LANGUAGES.some((l) => l.code === next)) setActive(next);
+    };
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY) return;
+      const next = event.newValue as LangCode | null;
+      if (next && LANGUAGES.some((l) => l.code === next)) setActive(next);
+    };
+    window.addEventListener(CHANGE_EVENT, handleLanguageChange);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener(CHANGE_EVENT, handleLanguageChange);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
+  useEffect(() => {
     if (active !== "en") queueApplyLanguage(active, 450);
   }, [active, pathname]);
 
   const choose = (code: LangCode) => {
     setActive(code);
+    window.dispatchEvent(new CustomEvent(CHANGE_EVENT, { detail: code }));
     void applyLanguage(code, code === "en");
   };
 
