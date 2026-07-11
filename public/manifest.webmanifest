@@ -10,8 +10,8 @@
   "theme_color": "#1f3a2e",
   "categories": ["education", "lifestyle"],
   "icons": [
-    { "src": "/__l5e/assets-v1/dd35f49c-ac6e-45fc-b3d3-abd60672683b/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/__l5e/assets-v1/cb95d171-ae59-4235-b99b-be9623a1c5ef/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/__l5e/assets-v1/888ca067-4605-4fda-83c1-6f5aca228e3d/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/__l5e/assets-v1/5db92e81-b523-4022-a421-a8de1ed9bc76/icon-192-v2.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/__l5e/assets-v1/60df6c50-a56f-4b12-8bc2-6d1f4c55ed4c/icon-512-v2.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/__l5e/assets-v1/1f10f0a6-3ca5-44bf-8a2d-baa7f27129cf/icon-maskable-512-v2.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
