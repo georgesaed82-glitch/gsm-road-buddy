@@ -282,7 +282,7 @@ export function LanguageSelector({
         <span className="uppercase tracking-wider">{current.code.toUpperCase()}</span>
         {variant === "full" && <span className="hidden sm:inline">{current.native}</span>}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="notranslate max-h-[70vh] w-56 overflow-y-auto">
+      <DropdownMenuContent align="end" className="max-h-[70vh] w-56 overflow-y-auto">
         <DropdownMenuLabel className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
           Language
         </DropdownMenuLabel>
