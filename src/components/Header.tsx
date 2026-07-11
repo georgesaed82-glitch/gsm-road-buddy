@@ -171,6 +171,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <LanguageSelector />
           <div className="hidden flex-col items-end md:flex">
             <a
               href={whatsappHref}
