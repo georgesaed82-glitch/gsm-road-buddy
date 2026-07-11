@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { GsmPlus } from "@/components/GsmPlus";
 
@@ -170,6 +171,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <LanguageSelector />
           <div className="hidden flex-col items-end md:flex">
             <a
               href={whatsappHref}

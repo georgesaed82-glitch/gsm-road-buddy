@@ -41,6 +41,8 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [remember, setRemember] = useState(false);
+  const [keyboardMode, setKeyboardMode] = useState<"numeric" | "text">(isAdmin ? "text" : "numeric");
+  const [showPassword, setShowPassword] = useState(false);
   const [authMessage, setAuthMessage] = useState<{
     type: "error" | "success";
     text: string;
@@ -261,17 +263,59 @@ function AuthPage() {
             <label className="text-sm font-medium flex items-center gap-2">
               <Lock className="h-4 w-4" /> {isAdmin ? "Admin PIN/password" : "PIN"}
             </label>
+            <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+              <span>Keyboard:</span>
+              <div className="inline-flex overflow-hidden rounded-full border border-border">
+                <button
+                  type="button"
+                  onClick={() => setKeyboardMode("numeric")}
+                  className={
+                    "px-3 py-1 text-[11px] font-medium transition " +
+                    (keyboardMode === "numeric"
+                      ? "bg-accent text-accent-foreground"
+                      : "bg-transparent text-muted-foreground hover:text-primary")
+                  }
+                  aria-pressed={keyboardMode === "numeric"}
+                >
+                  123 Numbers
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setKeyboardMode("text")}
+                  className={
+                    "px-3 py-1 text-[11px] font-medium transition " +
+                    (keyboardMode === "text"
+                      ? "bg-accent text-accent-foreground"
+                      : "bg-transparent text-muted-foreground hover:text-primary")
+                  }
+                  aria-pressed={keyboardMode === "text"}
+                >
+                  ABC Full
+                </button>
+              </div>
+            </div>
             <div className="flex gap-2">
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
-                inputMode={isAdmin ? "text" : "numeric"}
+                inputMode={keyboardMode}
+                pattern={keyboardMode === "numeric" ? "[0-9]*" : undefined}
                 autoComplete="off"
                 placeholder={isAdmin ? "Enter admin PIN/password" : "Enter your PIN"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={submitting}
               />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide" : "Show"}
+                className="px-2"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </Button>
               <Button type="submit" disabled={submitting}>
                 {submitting ? "..." : isAdmin ? "Sign in" : "Enter"}
               </Button>

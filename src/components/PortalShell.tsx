@@ -26,6 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalSearch } from "@/components/PortalSearch";
 import { PortalFooter } from "@/components/PortalFooter";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { GsmPlus } from "@/components/GsmPlus";
 import {
   Sheet,
@@ -233,6 +234,9 @@ export function PortalShell({
                   {sidebarInner}
                 </SheetContent>
               </Sheet>
+              <div className="ml-auto">
+                <LanguageSelector />
+              </div>
             </div>
             {eyebrow && (
               <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
