@@ -62,6 +62,7 @@ import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_aut
 import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated/admin.pricing'
 import { Route as AuthenticatedAdminPoliceSignalsRouteImport } from './routes/_authenticated/admin.police-signals'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
+import { Route as AuthenticatedAdminLoginEventsRouteImport } from './routes/_authenticated/admin.login-events'
 import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin.lessons'
 import { Route as AuthenticatedAdminLegalRouteImport } from './routes/_authenticated/admin.legal'
 import { Route as AuthenticatedAdminInstructorsRouteImport } from './routes/_authenticated/admin.instructors'
@@ -77,6 +78,7 @@ import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminContactClicksRouteImport } from './routes/_authenticated/admin.contact-clicks'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
 import { Route as AuthenticatedAdminBlocksRouteImport } from './routes/_authenticated/admin.blocks'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
 import { Route as AuthenticatedAdminAreasRouteImport } from './routes/_authenticated/admin.areas'
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
 import { Route as AuthenticatedAdminAccessRouteImport } from './routes/_authenticated/admin.access'
@@ -363,6 +365,12 @@ const AuthenticatedAdminNavigationRoute =
     path: '/navigation',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminLoginEventsRoute =
+  AuthenticatedAdminLoginEventsRouteImport.update({
+    id: '/login-events',
+    path: '/login-events',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminLessonsRoute =
   AuthenticatedAdminLessonsRouteImport.update({
     id: '/lessons',
@@ -448,6 +456,11 @@ const AuthenticatedAdminBlocksRoute =
     path: '/blocks',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminAreasRoute = AuthenticatedAdminAreasRouteImport.update({
   id: '/areas',
   path: '/areas',
@@ -514,6 +527,7 @@ export interface FileRoutesByFullPath {
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/areas': typeof AuthenticatedAdminAreasRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
@@ -529,6 +543,7 @@ export interface FileRoutesByFullPath {
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
+  '/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -586,6 +601,7 @@ export interface FileRoutesByTo {
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/areas': typeof AuthenticatedAdminAreasRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
@@ -601,6 +617,7 @@ export interface FileRoutesByTo {
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
+  '/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -661,6 +678,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/access': typeof AuthenticatedAdminAccessRoute
   '/_authenticated/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/_authenticated/admin/areas': typeof AuthenticatedAdminAreasRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/_authenticated/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
@@ -676,6 +694,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/_authenticated/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
+  '/_authenticated/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -736,6 +755,7 @@ export interface FileRouteTypes {
     | '/admin/access'
     | '/admin/admins'
     | '/admin/areas'
+    | '/admin/audit'
     | '/admin/blocks'
     | '/admin/blog'
     | '/admin/contact-clicks'
@@ -751,6 +771,7 @@ export interface FileRouteTypes {
     | '/admin/instructors'
     | '/admin/legal'
     | '/admin/lessons'
+    | '/admin/login-events'
     | '/admin/navigation'
     | '/admin/police-signals'
     | '/admin/pricing'
@@ -808,6 +829,7 @@ export interface FileRouteTypes {
     | '/admin/access'
     | '/admin/admins'
     | '/admin/areas'
+    | '/admin/audit'
     | '/admin/blocks'
     | '/admin/blog'
     | '/admin/contact-clicks'
@@ -823,6 +845,7 @@ export interface FileRouteTypes {
     | '/admin/instructors'
     | '/admin/legal'
     | '/admin/lessons'
+    | '/admin/login-events'
     | '/admin/navigation'
     | '/admin/police-signals'
     | '/admin/pricing'
@@ -882,6 +905,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/access'
     | '/_authenticated/admin/admins'
     | '/_authenticated/admin/areas'
+    | '/_authenticated/admin/audit'
     | '/_authenticated/admin/blocks'
     | '/_authenticated/admin/blog'
     | '/_authenticated/admin/contact-clicks'
@@ -897,6 +921,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/instructors'
     | '/_authenticated/admin/legal'
     | '/_authenticated/admin/lessons'
+    | '/_authenticated/admin/login-events'
     | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/police-signals'
     | '/_authenticated/admin/pricing'
@@ -1312,6 +1337,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminNavigationRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/login-events': {
+      id: '/_authenticated/admin/login-events'
+      path: '/login-events'
+      fullPath: '/admin/login-events'
+      preLoaderRoute: typeof AuthenticatedAdminLoginEventsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/lessons': {
       id: '/_authenticated/admin/lessons'
       path: '/lessons'
@@ -1417,6 +1449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBlocksRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/areas': {
       id: '/_authenticated/admin/areas'
       path: '/areas'
@@ -1452,6 +1491,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAccessRoute: typeof AuthenticatedAdminAccessRoute
   AuthenticatedAdminAdminsRoute: typeof AuthenticatedAdminAdminsRoute
   AuthenticatedAdminAreasRoute: typeof AuthenticatedAdminAreasRoute
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminBlocksRoute: typeof AuthenticatedAdminBlocksRoute
   AuthenticatedAdminBlogRoute: typeof AuthenticatedAdminBlogRoute
   AuthenticatedAdminContactClicksRoute: typeof AuthenticatedAdminContactClicksRoute
@@ -1467,6 +1507,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminInstructorsRoute: typeof AuthenticatedAdminInstructorsRoute
   AuthenticatedAdminLegalRoute: typeof AuthenticatedAdminLegalRoute
   AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
+  AuthenticatedAdminLoginEventsRoute: typeof AuthenticatedAdminLoginEventsRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPoliceSignalsRoute: typeof AuthenticatedAdminPoliceSignalsRoute
   AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
@@ -1486,6 +1527,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAccessRoute: AuthenticatedAdminAccessRoute,
   AuthenticatedAdminAdminsRoute: AuthenticatedAdminAdminsRoute,
   AuthenticatedAdminAreasRoute: AuthenticatedAdminAreasRoute,
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminBlocksRoute: AuthenticatedAdminBlocksRoute,
   AuthenticatedAdminBlogRoute: AuthenticatedAdminBlogRoute,
   AuthenticatedAdminContactClicksRoute: AuthenticatedAdminContactClicksRoute,
@@ -1501,6 +1543,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminInstructorsRoute: AuthenticatedAdminInstructorsRoute,
   AuthenticatedAdminLegalRoute: AuthenticatedAdminLegalRoute,
   AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
+  AuthenticatedAdminLoginEventsRoute: AuthenticatedAdminLoginEventsRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPoliceSignalsRoute: AuthenticatedAdminPoliceSignalsRoute,
   AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
