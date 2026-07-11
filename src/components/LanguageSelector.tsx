@@ -120,13 +120,17 @@ function loadTranslateScript() {
       initTranslateElement(resolve);
       return;
     }
-    if (document.getElementById(SCRIPT_ID)) return;
-  const s = document.createElement("script");
+    const existingScript = document.getElementById(SCRIPT_ID);
+    if (existingScript) {
+      window.setTimeout(resolve, 1500);
+      return;
+    }
+    const s = document.createElement("script");
     s.id = SCRIPT_ID;
     s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-  s.async = true;
+    s.async = true;
     s.onerror = () => resolve();
-  document.head.appendChild(s);
+    document.head.appendChild(s);
     window.setTimeout(resolve, 8000);
   });
   return scriptPromise;
