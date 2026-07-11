@@ -39,6 +39,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalFooter } from "@/components/PortalFooter";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import {
   Sheet,
   SheetContent,
@@ -263,6 +264,9 @@ export function AdminShell({
                   {sidebarInner}
                 </SheetContent>
               </Sheet>
+              <div className="ml-auto">
+                <LanguageSelector />
+              </div>
             </div>
             {eyebrow && (
               <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
