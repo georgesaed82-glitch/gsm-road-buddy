@@ -10,6 +10,7 @@ import { unorthodoxRoundabouts } from "@/data/lessons/unorthodoxRoundabouts";
 import { bgoSystem } from "@/data/lessons/bgoSystem";
 import { yellowBoxJunctions } from "@/data/lessons/yellowBoxJunctions";
 import { busAwareness } from "@/data/lessons/busAwareness";
+import { passingParkedVehicles } from "@/data/lessons/passingParkedVehicles";
 
 // ─────────────────────────────────────────────────────────────
 // GSM lesson library. Each lesson uses the standard LessonShell
@@ -4982,6 +4983,7 @@ export const drivingLessons: Lesson[] = [
   bgoSystem,
   yellowBoxJunctions,
   busAwareness,
+  passingParkedVehicles,
 ];
 
 export function getLesson(slug: string): Lesson | undefined {
