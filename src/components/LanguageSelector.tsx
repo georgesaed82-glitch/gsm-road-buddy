@@ -199,6 +199,15 @@ function queueApplyLanguage(lang: LangCode, delay = 120) {
   }, delay);
 }
 
+function triggerTranslateCombo(combo: HTMLSelectElement, lang: LangCode) {
+  combo.value = "";
+  combo.dispatchEvent(new Event("change", { bubbles: true }));
+  window.setTimeout(() => {
+    combo.value = lang;
+    combo.dispatchEvent(new Event("change", { bubbles: true }));
+  }, 80);
+}
+
 function startMutationTranslation(lang: LangCode) {
   stopMutationTranslation();
   if (lang === "en") return;
@@ -228,13 +237,14 @@ async function applyLanguage(lang: LangCode, reloadForEnglish: boolean) {
   await loadTranslateScript();
   try {
     const combo = await waitForTranslateCombo();
-    suppressMutationUntil = Date.now() + 1800;
-    combo.value = lang;
-    combo.dispatchEvent(new Event("change", { bubbles: true }));
+    suppressMutationUntil = Date.now() + 2600;
+    triggerTranslateCombo(combo, lang);
     window.setTimeout(() => {
-      combo.value = lang;
-      combo.dispatchEvent(new Event("change", { bubbles: true }));
-    }, 800);
+      triggerTranslateCombo(combo, lang);
+    }, 900);
+    window.setTimeout(() => {
+      triggerTranslateCombo(combo, lang);
+    }, 1800);
   } catch {
     // The cookie remains in place so a refresh still lets Google Translate apply.
     comboPromise = null;
