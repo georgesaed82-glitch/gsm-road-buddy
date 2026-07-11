@@ -1,93 +1,86 @@
-# GSM Learner Portal — Illustration & Diagram Overhaul
 
-This is a big job and doing it in one turn would produce a shallow, inconsistent pass — exactly what we're trying to move away from. I'd like to break it into phases so every diagram is properly designed, technically correct, and consistent, rather than rushed.
+# GSM Plus Admin RBAC — Revised Plan
 
-## Phase 0 — Define the GSM illustration system (this turn, after you approve)
-
-Before touching individual diagrams, lock the shared visual language so everything from here on uses it:
-
-- **Palette:** road `#2b2b2e`, paint `#f5f5f0`, kerb `#8b8f95`, grass `#3d6a2f`, hatch red `#c94a3a`, ego vehicle GSM forest-green, other vehicles neutral greys, hazard warnings terracotta accent, safe/clear emerald, warning amber.
-- **Line thickness:** 1.4 for kerbs/road edges, 0.9 for vehicle outlines, 1.2 dashed for advisory guides.
-- **Vehicles:** one reusable `<Car>` component (ego / oncoming / traffic variants) with consistent 44×22 proportions, matching windows, lights and brake indicators.
-- **Arrows / paths:** one reusable arrow head + dashed-path style, always terracotta for the learner's intended path and grey for other traffic.
-- **Typography inside diagrams:** matches site display font, uniform label sizes (9pt caption, 11pt banner).
-- **Shadows / depth:** single subtle drop-shadow token; no per-diagram experimentation.
-
-Delivered as `src/components/diagram/*` (Car, Arrow, Road, Kerb, Hatch, Label, SpeedPanel, MirrorPulse) that every existing and future lesson diagram uses.
-
-## Phase 1 — Rebuild the Joining a Dual Carriageway lesson
-
-Full redesign with a proper top-down UK layout:
-
-```text
-        ══════════════════════════════════════════════   (central reservation)
-    →   ────────────  running lane 2 (overtaking)  ────
-    →   ────────────  running lane 1 (normal)      ────
-        ─────  ▲▲▲ hatched taper (NOT drivable) ▲▲▲ ────
-                  ╲___ acceleration lane ___
-                       ↑ ego car joins here
-```
-
-Animation sequence (single play-through, ends at completion):
-1. Ego enters the acceleration lane at slip-road speed.
-2. Builds speed to match traffic on the main carriageway.
-3. Mirror check pulse → right-shoulder blind-spot check pulse.
-4. Gap identification (highlighted safe gap in lane 1).
-5. Indicator on, smooth merge from acceleration lane into lane 1.
-6. Continues in lane 1 at matched speed — the diagram explicitly shows the hatched taper is skirted, never crossed.
-
-Copy blocks: objective, THINK questions, rule, why (with a callout on hatched areas + Rule 130), George explains, common mistakes, GSM tips, key takeaway. One decision-point question at the mirror/blind-spot moment.
-
-## Phase 2 — Rebuild the crossings & signals library
-
-New `src/components/crossings/` module with pixel-precise TSRGD-correct SVGs, all sharing the Phase 0 style:
-
-- Zebra crossing (belisha beacons, black/white stripes, zig-zags)
-- Pelican, Puffin, Toucan, Pegasus crossings — each with correct signals, ground layout and user (pedestrian / pedestrian+cyclist / horse)
-- Red man / Green man / Green man+bike / Green horse+rider signal heads
-- Traffic light head (3-aspect) and filter arrow
-- Warning sign: children / pedestrians / horses / cycles (triangles with correct pictograms)
-- Regulatory circles (no entry, give way triangle, stop octagon)
-
-Every crossing gets a matching diagram variant for use inside lesson animations (top-down road with the crossing embedded), so the Highway Code page and the driving lessons pull from the same components.
-
-## Phase 3 — Audit and rebuild remaining Driving Strategy diagrams
-
-Working through every lesson in `src/data/lessons/` and `src/data/drivingLessons.tsx`, converting each to the Phase 0 primitives:
-
-- Plan to Stop, Look to Go
-- Give Way Lines
-- Meeting in Small Spaces (already redesigned last turn — align to new primitives)
-- POM routine
-- Pull up on the left
-- Parallel parking
-- Roundabouts, junctions, lane discipline, etc.
-
-Each diagram must clearly show: lane position, vehicle path, steering, direction arrows, road markings, priority, hazards and safe distances — as you specified.
-
-## Phase 4 — Portal-wide QA pass
-
-Automated + manual sweep:
-- Playwright walk of every learner-portal route at desktop + mobile, capturing screenshots.
-- Check for stretched images (aspect-ratio drift), low-res raster placeholders, misaligned SVGs, incorrect Highway Code copy.
-- Fix findings in a single follow-up turn with a short report.
+Locking in your latest requirements. Two-role core (**Master Owner** + **Admin**) with the extra roles from your first message layered on top as extensions of "Admin".
 
 ---
 
-## Technical notes (for your reference)
+## 1. Master Owner protection (three layers, no way around it)
 
-- All new diagrams are **inline SVG** components in `src/components/diagram/` and `src/components/crossings/`. No raster clip-art anywhere.
-- Existing `src/components/SignVisual.tsx`, `OfficialSignImage.tsx`, `RoadMarkingVisual.tsx`, `PoliceSignalVisual.tsx` will migrate to the new primitives; call sites keep working.
-- Data files in `src/data/signImages.ts`, `src/data/roadMarkings.ts`, `src/data/policeSignals.ts` will point at the new components rather than external image URLs.
-- Lesson `render(t)` functions keep the same signature — animation shell (already improved last turn to play once end-to-end and pause for questions) stays as is.
-- Type-checked with `bunx tsgo` and visual-diffed at the end of each phase.
+- **Database trigger**: `prevent_master_owner_changes()` fires `BEFORE UPDATE OR DELETE` on `profiles`.
+  - Blocks any change to `is_master_owner`, `admin_role`, `disabled_at`, or deletion of the master owner row.
+  - Only the master owner themselves can update their own `full_name`, `username`, or trigger their own password reset. Everyone else is rejected with `permission denied: master owner is protected`.
+- **`enforce_single_master_owner()`** trigger — only one row in `profiles` can ever have `is_master_owner = true`.
+- **Server-function guard** `requireMasterOwner(context)` — every lifecycle server fn (create admin, disable, delete, change role, reset password) first asserts the caller is master owner. Non-master callers get a hard 403 before any SQL runs.
+- **UI lock**: master owner row on `/admin/admins` renders with a shield badge, no destructive buttons, no role dropdown.
+- Your Supabase Auth password is never displayed and never used for any other admin — every new admin has their own `auth.users` row created by `supabaseAdmin.auth.admin.createUser`.
 
 ---
 
-## What I need from you
+## 2. Roles
 
-1. **Approve the plan** so I can start Phase 0 + Phase 1 immediately (this is the highest-impact starting point: locks the system and fixes the Dual Carriageway lesson you called out).
-2. Confirm you're happy for me to work through Phases 2–4 in follow-up turns rather than one giant turn — that's the only way to hit the quality bar you've asked for.
-3. Flag any lessons or pages that you specifically want prioritised in Phase 3.
+Seeded in `admin_roles` (editable descriptions, immutable slugs):
 
-Once you say go, I'll ship Phase 0 + Phase 1 in the next turn.
+| Slug | Purpose |
+|---|---|
+| `master_owner` | You. Full control. Cannot be deleted, downgraded, or disabled. |
+| `full_admin` | Manage learners + content. **Cannot touch the Master Owner row.** |
+| `developer` | Site/code access, no learner data. Instantly revocable. |
+| `content_manager` | Website + Highway Code + Blog. |
+| `instructor_manager` | Instructors + lessons + bookings. |
+| `support` | Read learners, reply to email, log contact clicks. |
+| `read_only` | View-only across the portal. |
+
+Permission matrix (14 keys × view/edit) is stored in `admin_role_permissions` and editable only by the Master Owner from `/admin/admins/roles`. Master Owner column is always fully checked and read-only.
+
+---
+
+## 3. Admin accounts
+
+- **Each admin has their own** email, username (unique), password. Never share the Master Owner login.
+- New admin created from `/admin/admins → Create admin`:
+  - You pick role, email, username.
+  - System sets temp password `GSM2026` (via `DEV_TEMP_ADMIN_PASSWORD` env var so it's rotatable) and flips `must_change_password = true`.
+- **Force password change on first login**: a `ForcePasswordChange` gate wraps `_authenticated/admin/*`. If `must_change_password` is true the admin can only see the change-password form. On successful change the flag is cleared and a `password_changed` audit entry is written.
+- **Instant deactivation**: `disabled_at` timestamp on the profile + Supabase Auth ban via `supabaseAdmin.auth.admin.updateUserById(id, { ban_duration: '87600h' })`. All active sessions killed with `supabaseAdmin.auth.admin.signOut(id, 'global')`. The admin cannot sign in or use existing tokens the moment you click Disable.
+- **Delete admin**: hard delete via `supabaseAdmin.auth.admin.deleteUser(id)`, cascades from `auth.users` → `profiles`. Master owner row is blocked by the DB trigger.
+- **Reset password**: sets password to `GSM2026` again + `must_change_password = true`.
+- Row actions: Create, Reset password, Disable/Enable, Delete, Change role, View last login.
+
+---
+
+## 4. Audit + login logging (everything, forever)
+
+- `admin_login_events` — every sign-in AND sign-out attempt: admin id, email, ip, user agent, success bool, mfa used, created_at.
+- `admin_audit_log` — every change: actor id, actor email, action (`create_admin`, `disable_admin`, `role_change`, `permission_change`, `password_reset`, `content_edit`, etc.), entity table, entity id, `before`/`after` JSONB diffs, ip, ua, created_at.
+- Triggers on `profiles`, `admin_role_permissions`, and the main content tables (`blog_posts`, `lessons`, `theory_questions`, `home_sections`, etc.) auto-write audit rows on UPDATE/DELETE.
+- Server-fn writes (create/disable/delete admin) call an `writeAudit()` helper.
+- New UI pages:
+  - `/admin/admins/audit` — searchable log (actor, action, date range, entity).
+  - `/admin/admins/logins` — login history with IP + device.
+- Audit rows are append-only: RLS grants `SELECT` to Master Owner + `security:view` roles, **no** `UPDATE`/`DELETE` for anyone. Retention via a Postgres cron you control (I'll leave it disabled by default).
+
+---
+
+## 5. Security baseline
+
+- Passwords: stored only in `auth.users` (Supabase Argon2/bcrypt). We never hash ourselves, never see plaintext after creation.
+- Failed-login lockout: 5 fails in 15 min → `locked_until = now() + 15 min`. Already partially in place via `auth_attempts`; extended to admin-specific counters.
+- Inactivity logout: client hook `useIdleLogout(minutes)` reads `session_timeout_minutes` from the profile (default 30) and signs the admin out.
+- 2FA (TOTP) available to every admin; soft-required for Master Owner + Full Admin (banner until enrolled).
+- Every privileged server fn: `requireSupabaseAuth` → `requirePermission(key, mode)` → optional `requireMasterOwner` → `supabaseAdmin` loaded inside the handler.
+
+---
+
+## Rollout order
+
+1. **Phase 1** (this turn if approved): Migration for schema + triggers + seed roles + promote you to `master_owner`. **Nothing user-visible changes.**
+2. **Phase 2**: `rbac.functions.ts` server layer + audit helper + login logging.
+3. **Phase 3**: Admin portal UI (list, create/disable/delete, roles matrix, audit page, force-password-change gate, own security page).
+4. **Phase 4**: 2FA rollout + idle-logout + final security scan + publish.
+
+I'll stop for your OK between phases 1 → 2 and 3 → 4 so you can review.
+
+---
+
+**Reply "go" to run Phase 1 (the migration). I'll bind `is_master_owner = true` to your existing account `gsmdrivingschool@outlook.com` (user id `b886613f-…`) — confirm that's correct or paste a different id.**

@@ -40,6 +40,7 @@ import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalFooter } from "@/components/PortalFooter";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { ForcePasswordChangeGate } from "@/components/ForcePasswordChangeGate";
 import {
   Sheet,
   SheetContent,
@@ -233,6 +234,7 @@ export function AdminShell({
 
   return (
     <div className="flex min-h-full flex-col">
+      <ForcePasswordChangeGate />
       <div
         className={cn(
           "mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 transition-[grid-template-columns] duration-300 ease-out sm:px-6 lg:px-8",

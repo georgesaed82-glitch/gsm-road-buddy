@@ -12,6 +12,7 @@ import { trackContactClick } from "@/lib/trackContactClick";
 import { useServerFn } from "@tanstack/react-start";
 import { verifyPortalAccess } from "@/lib/portal-access.functions";
 import { getCaptchaConfig } from "@/lib/auth-guard.functions";
+import { recordAdminLogin } from "@/lib/rbac.functions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -50,6 +51,7 @@ function AuthPage() {
   const tracked = useRef(false);
   const verify = useServerFn(verifyPortalAccess);
   const runCaptchaConfig = useServerFn(getCaptchaConfig);
+  const recordLogin = useServerFn(recordAdminLogin);
 
   // Captcha state
   const [siteKey, setSiteKey] = useState<string | null>(null);
@@ -91,6 +93,45 @@ function AuthPage() {
         setAuthMessage({ type: "error", text: msg });
         toast.error(msg);
         setSubmitting(false);
+        return;
+      }
+      // Per-admin email + password sign-in (RBAC accounts). If an email is
+      // supplied, try email/password auth first; fall back to the shared
+      // admin master code path only when no email is provided.
+      if (emailValue) {
+        const { data: sess, error: signErr } = await supabase.auth.signInWithPassword({
+          email: emailValue,
+          password: pw,
+        });
+        if (signErr || !sess?.session) {
+          const msg = "Email or password is incorrect.";
+          setAuthMessage({ type: "error", text: msg });
+          toast.error(msg);
+          setSubmitting(false);
+          return;
+        }
+        try {
+          const r = await recordLogin({ data: {} as never });
+          if (!r?.ok) {
+            await supabase.auth.signOut();
+            const msg = "This account is not an administrator.";
+            setAuthMessage({ type: "error", text: msg });
+            toast.error(msg);
+            setSubmitting(false);
+            return;
+          }
+        } catch (err) {
+          await supabase.auth.signOut();
+          const msg = err instanceof Error ? err.message : "Sign-in failed.";
+          setAuthMessage({ type: "error", text: msg });
+          toast.error(msg);
+          setSubmitting(false);
+          return;
+        }
+        const msg = "Signed in. Opening admin portal...";
+        setAuthMessage({ type: "success", text: msg });
+        toast.success(msg);
+        navigate({ to: "/admin" });
         return;
       }
       try {
@@ -254,6 +295,24 @@ function AuthPage() {
                   required
                   autoComplete="email"
                   placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={submitting}
+                />
+              </div>
+            )}
+            {isAdmin && (
+              <div className="space-y-1">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <User className="h-4 w-4" /> Email address
+                  <span className="text-[10px] font-normal text-muted-foreground">
+                    (leave blank to use the shared admin PIN)
+                  </span>
+                </label>
+                <Input
+                  type="email"
+                  autoComplete="email"
+                  placeholder="admin@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={submitting}

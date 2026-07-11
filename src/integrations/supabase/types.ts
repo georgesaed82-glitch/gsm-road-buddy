@@ -38,6 +38,171 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          after_data: Json | null
+          before_data: Json | null
+          created_at: string
+          entity_id: string | null
+          entity_table: string | null
+          id: string
+          ip: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          after_data?: Json | null
+          before_data?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_table?: string | null
+          id?: string
+          ip?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          after_data?: Json | null
+          before_data?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_table?: string | null
+          id?: string
+          ip?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      admin_login_events: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          email: string | null
+          event: string
+          id: string
+          ip: string | null
+          mfa_used: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          email?: string | null
+          event: string
+          id?: string
+          ip?: string | null
+          mfa_used?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          email?: string | null
+          event?: string
+          id?: string
+          ip?: string | null
+          mfa_used?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      admin_permissions: {
+        Row: {
+          description: string
+          key: string
+          label: string
+          sort_order: number
+        }
+        Insert: {
+          description?: string
+          key: string
+          label: string
+          sort_order?: number
+        }
+        Update: {
+          description?: string
+          key?: string
+          label?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      admin_role_permissions: {
+        Row: {
+          can_edit: boolean
+          can_view: boolean
+          permission_key: string
+          role_slug: string
+          updated_at: string
+        }
+        Insert: {
+          can_edit?: boolean
+          can_view?: boolean
+          permission_key: string
+          role_slug: string
+          updated_at?: string
+        }
+        Update: {
+          can_edit?: boolean
+          can_view?: boolean
+          permission_key?: string
+          role_slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_role_permissions_permission_key_fkey"
+            columns: ["permission_key"]
+            isOneToOne: false
+            referencedRelation: "admin_permissions"
+            referencedColumns: ["key"]
+          },
+          {
+            foreignKeyName: "admin_role_permissions_role_slug_fkey"
+            columns: ["role_slug"]
+            isOneToOne: false
+            referencedRelation: "admin_roles"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      admin_roles: {
+        Row: {
+          created_at: string
+          description: string
+          is_system: boolean
+          label: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          is_system?: boolean
+          label: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          is_system?: boolean
+          label?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       areas: {
         Row: {
           area: string
@@ -1220,39 +1385,86 @@ export type Database = {
       }
       profiles: {
         Row: {
+          admin_role_slug: string | null
           created_at: string
+          disabled_at: string | null
+          failed_login_count: number
           full_name: string | null
           id: string
+          is_master_owner: boolean
+          last_login_at: string | null
+          last_login_ip: string | null
+          last_login_ua: string | null
           license_number: string | null
+          locked_until: string | null
+          must_change_password: boolean
           phone: string | null
           postcode: string | null
+          session_timeout_minutes: number
           target_test_date: string | null
+          totp_enabled: boolean
+          totp_secret_encrypted: string | null
           transmission: string
           updated_at: string
+          username: string | null
         }
         Insert: {
+          admin_role_slug?: string | null
           created_at?: string
+          disabled_at?: string | null
+          failed_login_count?: number
           full_name?: string | null
           id: string
+          is_master_owner?: boolean
+          last_login_at?: string | null
+          last_login_ip?: string | null
+          last_login_ua?: string | null
           license_number?: string | null
+          locked_until?: string | null
+          must_change_password?: boolean
           phone?: string | null
           postcode?: string | null
+          session_timeout_minutes?: number
           target_test_date?: string | null
+          totp_enabled?: boolean
+          totp_secret_encrypted?: string | null
           transmission?: string
           updated_at?: string
+          username?: string | null
         }
         Update: {
+          admin_role_slug?: string | null
           created_at?: string
+          disabled_at?: string | null
+          failed_login_count?: number
           full_name?: string | null
           id?: string
+          is_master_owner?: boolean
+          last_login_at?: string | null
+          last_login_ip?: string | null
+          last_login_ua?: string | null
           license_number?: string | null
+          locked_until?: string | null
+          must_change_password?: boolean
           phone?: string | null
           postcode?: string | null
+          session_timeout_minutes?: number
           target_test_date?: string | null
+          totp_enabled?: boolean
+          totp_secret_encrypted?: string | null
           transmission?: string
           updated_at?: string
+          username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_admin_role_slug_fkey"
+            columns: ["admin_role_slug"]
+            isOneToOne: false
+            referencedRelation: "admin_roles"
+            referencedColumns: ["slug"]
+          },
+        ]
       }
       pwa_events: {
         Row: {
@@ -1624,6 +1836,10 @@ export type Database = {
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
         Returns: number
+      }
+      has_permission: {
+        Args: { _mode?: string; _perm_key: string; _user_id: string }
+        Returns: boolean
       }
       has_role: {
         Args: {
