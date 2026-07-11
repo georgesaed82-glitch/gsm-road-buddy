@@ -6,6 +6,11 @@ import { meetingInSmallSpaces } from "@/data/lessons/meetingInSmallSpaces";
 import { giveWayLines } from "@/data/lessons/giveWayLines";
 import { joiningDualCarriageway } from "@/data/lessons/joiningDualCarriageway";
 import { dsssmCockpitDrill } from "@/data/lessons/dsssmCockpitDrill";
+import { unorthodoxRoundabouts } from "@/data/lessons/unorthodoxRoundabouts";
+import { bgoSystem } from "@/data/lessons/bgoSystem";
+import { yellowBoxJunctions } from "@/data/lessons/yellowBoxJunctions";
+import { busAwareness } from "@/data/lessons/busAwareness";
+import { passingParkedVehicles } from "@/data/lessons/passingParkedVehicles";
 
 // ─────────────────────────────────────────────────────────────
 // GSM lesson library. Each lesson uses the standard LessonShell
@@ -1540,6 +1545,8 @@ const meetingTraffic: Lesson = {
     "Waiting? Stop HALF IN, HALF OUT — never tucked in like a parked car",
     "Leave ~2 m in front (2.5 m for larger vehicles)",
     "Before moving off, check RIGHT MIRROR + RIGHT SHOULDER",
+    "Hold your road position — don't squeeze towards parked cars",
+    "Sometimes holding position encourages the oncoming vehicle to give way",
   ],
   why: (
     <>
@@ -4972,6 +4979,11 @@ export const drivingLessons: Lesson[] = [
   giveWayLines,
   joiningDualCarriageway,
   dsssmCockpitDrill,
+  unorthodoxRoundabouts,
+  bgoSystem,
+  yellowBoxJunctions,
+  busAwareness,
+  passingParkedVehicles,
 ];
 
 export function getLesson(slug: string): Lesson | undefined {
