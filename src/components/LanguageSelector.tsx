@@ -44,7 +44,6 @@ declare global {
   }
 }
 
-
 let scriptPromise: Promise<void> | null = null;
 let comboPromise: Promise<HTMLSelectElement> | null = null;
 let translateTimer: number | undefined;
