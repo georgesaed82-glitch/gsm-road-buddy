@@ -93,8 +93,8 @@ export type AuditRow = {
   action: string;
   entity_table: string | null;
   entity_id: string | null;
-  before_data: unknown;
-  after_data: unknown;
+  before_data: Record<string, unknown> | null;
+  after_data: Record<string, unknown> | null;
   ip: string | null;
   user_agent: string | null;
   created_at: string;
@@ -426,11 +426,14 @@ export const createRbacAdmin = createServerFn({ method: "POST" })
     if (updErr) throw new Error(updErr.message);
 
     // Add legacy role marker so existing has_role('admin') gates pass
-    await supabase
-      .from("user_roles")
-      .insert({ user_id: target, role: "admin" })
-      .then((r) => (r.error && !r.error.message.includes("duplicate") ? Promise.reject(r.error) : r))
-      .catch(() => {});
+    {
+      const { error: roleErr } = await supabase
+        .from("user_roles")
+        .insert({ user_id: target, role: "admin" });
+      if (roleErr && !roleErr.message.includes("duplicate")) {
+        console.warn("[rbac] user_roles insert failed:", roleErr.message);
+      }
+    }
 
     await writeAudit(context.userId, "create_admin", "profiles", target, null, {
       email: data.email,
