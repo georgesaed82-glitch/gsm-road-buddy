@@ -86,6 +86,8 @@ export type LoginEvent = {
   created_at: string;
 };
 
+export type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]: JsonValue };
+
 export type AuditRow = {
   id: string;
   actor_id: string | null;
@@ -93,8 +95,8 @@ export type AuditRow = {
   action: string;
   entity_table: string | null;
   entity_id: string | null;
-  before_data: Record<string, unknown> | null;
-  after_data: Record<string, unknown> | null;
+  before_data: JsonValue | null;
+  after_data: JsonValue | null;
   ip: string | null;
   user_agent: string | null;
   created_at: string;
@@ -230,8 +232,8 @@ async function writeAudit(
   action: string,
   entity_table: string | null,
   entity_id: string | null,
-  before: unknown,
-  after: unknown,
+  before: JsonValue | null,
+  after: JsonValue | null,
 ): Promise<void> {
   try {
     const supabase = await loadAdmin();
