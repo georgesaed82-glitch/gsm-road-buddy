@@ -236,6 +236,7 @@ async function applyLanguage(lang: LangCode, reloadForEnglish: boolean) {
     }, 800);
   } catch {
     // The cookie remains in place so a refresh still lets Google Translate apply.
+    comboPromise = null;
   }
   startMutationTranslation(lang);
 }
