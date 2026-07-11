@@ -26,6 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { PortalSearch } from "@/components/PortalSearch";
 import { PortalFooter } from "@/components/PortalFooter";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { GsmPlus } from "@/components/GsmPlus";
 import {
   Sheet,
