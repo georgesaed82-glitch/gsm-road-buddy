@@ -34,7 +34,7 @@ import { useRouterState } from "@tanstack/react-router";
  * screen with a link to the admin sign-in. Flip the flag to `false` to
  * re-open the site.
  */
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 const MAINTENANCE_ALLOWED_PATHS = ["/auth", "/reset-password"];
 
 function MaintenanceGate({ children }: { children: ReactNode }) {
