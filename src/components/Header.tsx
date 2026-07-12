@@ -6,6 +6,7 @@ import {
   MapPin,
   Phone,
   ChevronDown,
+  ChevronRight,
   UserCog,
   LogOut,
   Info,
@@ -16,6 +17,7 @@ import {
   BookOpen,
   Newspaper,
   GraduationCap,
+  Globe,
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
@@ -355,7 +357,7 @@ export function Header() {
                   </span>
                 </Link>
 
-                <nav className="mt-4 grid grid-cols-2 gap-2.5">
+                <nav className="mt-4 flex flex-col gap-2.5">
                   {NAV_LINKS.map((link) => {
                     const Icon = link.icon;
                     const active = pathname === link.to;
@@ -365,16 +367,18 @@ export function Header() {
                         to={link.to}
                         onClick={() => setSheetOpen(false)}
                         className={cn(
-                          "flex aspect-square flex-col items-center justify-center gap-2 rounded-2xl border p-2 text-center text-[13px] font-semibold shadow-sm transition-all active:scale-[0.97]",
+                          "group flex items-center gap-3 rounded-2xl border bg-card px-3 py-3 text-[15px] font-semibold shadow-[0_2px_10px_-4px_rgba(29,42,34,0.18)] transition-all active:scale-[0.98]",
                           active
-                            ? "border-accent/60 bg-accent/15 text-primary"
-                            : "border-border/60 bg-card text-foreground hover:border-accent/40 hover:bg-accent/5",
+                            ? "border-accent/60 bg-accent/10 text-primary"
+                            : "border-border/60 text-foreground hover:-translate-y-0.5 hover:border-accent/40",
                         )}
                       >
-                        <span className="grid h-10 w-10 place-items-center rounded-full bg-accent/10 text-accent">
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/50 bg-primary text-accent shadow-sm">
                           <Icon className="h-5 w-5" />
                         </span>
-                        <span className="leading-tight">{link.label}</span>
+                        <span className="h-8 w-px shrink-0 bg-border/70" aria-hidden="true" />
+                        <span className="min-w-0 flex-1 truncate">{link.label}</span>
+                        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
                       </Link>
                     );
                   })}
@@ -384,33 +388,50 @@ export function Header() {
                     onClick={() => setContactMobileOpen((v) => !v)}
                     aria-expanded={contactMobileOpen}
                     className={cn(
-                      "col-span-2 flex items-center justify-between rounded-2xl border px-4 py-3 text-[15px] font-semibold shadow-sm transition-colors",
+                      "group flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-3 text-left text-[15px] font-semibold shadow-[0_2px_10px_-4px_rgba(29,42,34,0.18)] transition-all active:scale-[0.98]",
                       contactMobileOpen
-                        ? "border-accent/60 bg-accent/15 text-primary"
-                        : "border-accent/40 bg-accent/5 text-accent hover:bg-accent/10",
+                        ? "border-accent/60 bg-accent/10 text-primary"
+                        : "text-foreground hover:-translate-y-0.5 hover:border-accent/40",
                     )}
                   >
-                    <span className="flex items-center gap-3">
-                      <span className="grid h-8 w-8 place-items-center rounded-full bg-accent text-primary-foreground">
-                        <MessageSquare className="h-4 w-4" />
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/50 bg-primary text-accent shadow-sm">
+                      <Phone className="h-5 w-5" />
+                    </span>
+                    <span className="h-8 w-px shrink-0 bg-border/70" aria-hidden="true" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate">Contact Us</span>
+                      <span className="block truncate text-[11px] font-medium text-muted-foreground">
+                        Call, Email &amp; Location
                       </span>
-                      Contact Us
                     </span>
                     <ChevronDown
                       className={cn(
-                        "h-4 w-4 transition-transform",
+                        "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
                         contactMobileOpen && "rotate-180",
                       )}
                     />
                   </button>
                   {contactMobileOpen && (
-                    <div className="col-span-2 rounded-2xl border border-accent/20 bg-card p-1.5">
+                    <div className="rounded-2xl border border-accent/20 bg-card p-1.5 shadow-inner">
                       <ContactPanel
                         business={business}
                         onItemClick={() => setSheetOpen(false)}
                       />
                     </div>
                   )}
+
+                  <div
+                    className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-3 text-[15px] font-semibold text-foreground shadow-[0_2px_10px_-4px_rgba(29,42,34,0.18)]"
+                  >
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/50 bg-primary text-accent shadow-sm">
+                      <Globe className="h-5 w-5" />
+                    </span>
+                    <span className="h-8 w-px shrink-0 bg-border/70" aria-hidden="true" />
+                    <span className="min-w-0 flex-1">Languages</span>
+                    <div className="shrink-0">
+                      <LanguageSelector />
+                    </div>
+                  </div>
                 </nav>
 
                 {isAuthed ? (
@@ -420,10 +441,6 @@ export function Header() {
                     </Button>
                   </div>
                 ) : null}
-
-                <div className="mt-4">
-                  <LanguageSelector />
-                </div>
               </div>
 
               <div className="shrink-0 border-t border-border/60 bg-background px-5 py-3">
