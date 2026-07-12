@@ -71,6 +71,7 @@ import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminHazardClipsRouteImport } from './routes/_authenticated/admin.hazard-clips'
 import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authenticated/admin.faqs'
 import { Route as AuthenticatedAdminErrorsRouteImport } from './routes/_authenticated/admin.errors'
+import { Route as AuthenticatedAdminEmailLogsRouteImport } from './routes/_authenticated/admin.email-logs'
 import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
 import { Route as AuthenticatedAdminDownloadsRouteImport } from './routes/_authenticated/admin.downloads'
 import { Route as AuthenticatedAdminDiagnosticsRouteImport } from './routes/_authenticated/admin.diagnostics'
@@ -416,6 +417,12 @@ const AuthenticatedAdminErrorsRoute =
     path: '/errors',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminEmailLogsRoute =
+  AuthenticatedAdminEmailLogsRouteImport.update({
+    id: '/email-logs',
+    path: '/email-logs',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminEmailRoute = AuthenticatedAdminEmailRouteImport.update({
   id: '/email',
   path: '/email',
@@ -535,6 +542,7 @@ export interface FileRoutesByFullPath {
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRoute
   '/admin/email': typeof AuthenticatedAdminEmailRoute
+  '/admin/email-logs': typeof AuthenticatedAdminEmailLogsRoute
   '/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/admin/faqs': typeof AuthenticatedAdminFaqsRoute
   '/admin/hazard-clips': typeof AuthenticatedAdminHazardClipsRoute
@@ -609,6 +617,7 @@ export interface FileRoutesByTo {
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRoute
   '/admin/email': typeof AuthenticatedAdminEmailRoute
+  '/admin/email-logs': typeof AuthenticatedAdminEmailLogsRoute
   '/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/admin/faqs': typeof AuthenticatedAdminFaqsRoute
   '/admin/hazard-clips': typeof AuthenticatedAdminHazardClipsRoute
@@ -686,6 +695,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/_authenticated/admin/downloads': typeof AuthenticatedAdminDownloadsRoute
   '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
+  '/_authenticated/admin/email-logs': typeof AuthenticatedAdminEmailLogsRoute
   '/_authenticated/admin/errors': typeof AuthenticatedAdminErrorsRoute
   '/_authenticated/admin/faqs': typeof AuthenticatedAdminFaqsRoute
   '/_authenticated/admin/hazard-clips': typeof AuthenticatedAdminHazardClipsRoute
@@ -763,6 +773,7 @@ export interface FileRouteTypes {
     | '/admin/diagnostics'
     | '/admin/downloads'
     | '/admin/email'
+    | '/admin/email-logs'
     | '/admin/errors'
     | '/admin/faqs'
     | '/admin/hazard-clips'
@@ -837,6 +848,7 @@ export interface FileRouteTypes {
     | '/admin/diagnostics'
     | '/admin/downloads'
     | '/admin/email'
+    | '/admin/email-logs'
     | '/admin/errors'
     | '/admin/faqs'
     | '/admin/hazard-clips'
@@ -913,6 +925,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/diagnostics'
     | '/_authenticated/admin/downloads'
     | '/_authenticated/admin/email'
+    | '/_authenticated/admin/email-logs'
     | '/_authenticated/admin/errors'
     | '/_authenticated/admin/faqs'
     | '/_authenticated/admin/hazard-clips'
@@ -1400,6 +1413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminErrorsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/email-logs': {
+      id: '/_authenticated/admin/email-logs'
+      path: '/email-logs'
+      fullPath: '/admin/email-logs'
+      preLoaderRoute: typeof AuthenticatedAdminEmailLogsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/email': {
       id: '/_authenticated/admin/email'
       path: '/email'
@@ -1499,6 +1519,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminDiagnosticsRoute: typeof AuthenticatedAdminDiagnosticsRoute
   AuthenticatedAdminDownloadsRoute: typeof AuthenticatedAdminDownloadsRoute
   AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
+  AuthenticatedAdminEmailLogsRoute: typeof AuthenticatedAdminEmailLogsRoute
   AuthenticatedAdminErrorsRoute: typeof AuthenticatedAdminErrorsRoute
   AuthenticatedAdminFaqsRoute: typeof AuthenticatedAdminFaqsRoute
   AuthenticatedAdminHazardClipsRoute: typeof AuthenticatedAdminHazardClipsRoute
@@ -1535,6 +1556,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminDiagnosticsRoute: AuthenticatedAdminDiagnosticsRoute,
   AuthenticatedAdminDownloadsRoute: AuthenticatedAdminDownloadsRoute,
   AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
+  AuthenticatedAdminEmailLogsRoute: AuthenticatedAdminEmailLogsRoute,
   AuthenticatedAdminErrorsRoute: AuthenticatedAdminErrorsRoute,
   AuthenticatedAdminFaqsRoute: AuthenticatedAdminFaqsRoute,
   AuthenticatedAdminHazardClipsRoute: AuthenticatedAdminHazardClipsRoute,
