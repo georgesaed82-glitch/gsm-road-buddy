@@ -413,24 +413,13 @@ export function Header() {
                   )}
                 </nav>
 
-                <div className="mt-5 border-t border-border/60 pt-4">
-                  {isAuthed ? (
+                {isAuthed ? (
+                  <div className="mt-5 border-t border-border/60 pt-4">
                     <Button className="w-full rounded-full" variant="outline" onClick={handleSignOut}>
                       <LogOut className="mr-2 h-4 w-4" /> Sign out
                     </Button>
-                  ) : (
-                    <Button asChild className="w-full rounded-full" variant="outline">
-                      <Link
-                        to="/auth"
-                        search={{ admin: 1 }}
-                        onClick={() => setSheetOpen(false)}
-                        aria-label="Admin login"
-                      >
-                        <UserCog className="mr-2 h-4 w-4" /> Admin Login
-                      </Link>
-                    </Button>
-                  )}
-                </div>
+                  </div>
+                ) : null}
 
                 <div className="mt-4">
                   <LanguageSelector />
