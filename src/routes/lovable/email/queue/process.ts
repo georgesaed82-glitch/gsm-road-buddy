@@ -104,6 +104,36 @@ async function moveToDlq(
   }
 }
 
+function extractErrorDetails(error: unknown): {
+  message: string;
+  http_status: number | null;
+  retry_after: number | null;
+  name: string | null;
+  raw: Record<string, unknown>;
+} {
+  if (error instanceof Error) {
+    const e = error as Error & {
+      status?: number;
+      retryAfterSeconds?: number | null;
+    };
+    return {
+      message: e.message,
+      http_status: typeof e.status === "number" ? e.status : null,
+      retry_after: typeof e.retryAfterSeconds === "number" ? e.retryAfterSeconds : null,
+      name: e.name ?? null,
+      raw: {
+        name: e.name,
+        message: e.message,
+        status: e.status ?? null,
+        retryAfterSeconds: e.retryAfterSeconds ?? null,
+        stack: e.stack?.split("\n").slice(0, 6).join("\n") ?? null,
+      },
+    };
+  }
+  const msg = String(error);
+  return { message: msg, http_status: null, retry_after: null, name: null, raw: { message: msg } };
+}
+
 export const Route = createFileRoute("/lovable/email/queue/process")({
   server: {
     handlers: {
