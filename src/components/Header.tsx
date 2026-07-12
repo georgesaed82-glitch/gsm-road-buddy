@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
@@ -39,6 +39,7 @@ export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [languagesMobileOpen, setLanguagesMobileOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
@@ -54,6 +55,41 @@ export function Header() {
     setSheetOpen(false);
   }, [pathname]);
 
+  // Smart auto-hide on scroll down, reveal on scroll up or when idle.
+  const lastYRef = useRef(0);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    lastYRef.current = window.scrollY;
+    const REVEAL_ON_IDLE_MS = 180;
+    const DELTA = 6;
+    const TOP_THRESHOLD = 40;
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      const dy = y - lastYRef.current;
+      // Never hide the header while the mobile menu sheet is open.
+      if (sheetOpen) {
+        setHidden(false);
+      } else if (y <= TOP_THRESHOLD) {
+        setHidden(false);
+      } else if (dy > DELTA) {
+        setHidden(true);
+      } else if (dy < -DELTA) {
+        setHidden(false);
+      }
+      lastYRef.current = y;
+
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = setTimeout(() => setHidden(false), REVEAL_ON_IDLE_MS);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+  }, [sheetOpen]);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setSheetOpen(false);
@@ -64,7 +100,12 @@ export function Header() {
     "inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:h-10 sm:w-10 lg:h-11 lg:w-11";
 
   return (
-    <header className="sticky top-0 z-[120] w-full border-b-2 border-accent bg-card/95 shadow-[0_4px_14px_-8px_rgba(29,42,34,0.25)] backdrop-blur supports-[backdrop-filter]:bg-card/85">
+    <header
+      className={cn(
+        "sticky top-0 z-[120] w-full border-b-2 border-accent bg-card/95 shadow-[0_4px_14px_-8px_rgba(29,42,34,0.25)] backdrop-blur transition-transform duration-300 ease-out will-change-transform supports-[backdrop-filter]:bg-card/85",
+        hidden ? "-translate-y-full" : "translate-y-0",
+      )}
+    >
       <div className="mx-auto flex min-h-[56px] w-full max-w-7xl items-center gap-2 px-3 py-1.5 sm:min-h-[60px] sm:gap-3 sm:px-5 sm:py-2 lg:grid lg:min-h-[64px] lg:grid-cols-[1fr_auto_1fr] lg:gap-4 lg:px-8">
         {/* Left spacer (desktop only) — balances the actions on the right so the brand sits centred */}
         <div className="hidden lg:block" aria-hidden="true" />
