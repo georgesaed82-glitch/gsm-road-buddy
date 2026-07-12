@@ -882,3 +882,88 @@ export const recordAdminLogout = createServerFn({ method: "POST" })
     await logLoginEvent(context.userId, user?.user?.email ?? null, "logout");
     return { ok: true };
   });
+
+// ---------------------------------------------------------------------------
+// Admin invitation send log
+// ---------------------------------------------------------------------------
+
+export type AdminInviteLogRow = {
+  message_id: string;
+  recipient_email: string;
+  template_name: string; // "admin-invite" | "admin-reset"
+  status: string; // sent | pending | failed | dlq | suppressed
+  error_message: string | null;
+  created_at: string;
+};
+
+export const listAdminInvites = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<AdminInviteLogRow[]> => {
+    await requireMasterOwner(context.userId);
+    const supabase = await loadAdmin();
+
+    // Pull the last 200 admin invite/reset rows, then dedupe by message_id keeping
+    // the newest row so we see the final delivery status per email.
+    const { data, error } = await supabase
+      .from("email_send_log")
+      .select("message_id, recipient_email, template_name, status, error_message, created_at")
+      .in("template_name", ["admin-invite", "admin-reset"])
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw new Error(error.message);
+
+    const seen = new Set<string>();
+    const out: AdminInviteLogRow[] = [];
+    for (const row of data ?? []) {
+      const mid = (row as any).message_id as string | null;
+      if (!mid || seen.has(mid)) continue;
+      seen.add(mid);
+      out.push(row as AdminInviteLogRow);
+    }
+    return out.slice(0, 50);
+  });
+
+export const resendAdminInvite = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ user_id: z.string().uuid() }).parse(d))
+  .handler(async ({ context, data }) => {
+    await requireMasterOwner(context.userId);
+    const supabase = await loadAdmin();
+
+    // Look up target email and profile
+    const { data: targetUser } = await supabase.auth.admin.getUserById(data.user_id);
+    const targetEmail = targetUser?.user?.email ?? null;
+    if (!targetEmail) throw new Error("Could not find email for that admin.");
+
+    const { data: targetProfile } = await supabase
+      .from("profiles")
+      .select("username, full_name, is_master_owner")
+      .eq("id", data.user_id)
+      .maybeSingle();
+    if (targetProfile?.is_master_owner) {
+      throw new Error("Cannot resend invitation to the Master Owner account.");
+    }
+
+    // Reset password to a fresh temp and force change on next login
+    const tp = tempPassword();
+    await supabase.auth.admin.updateUserById(data.user_id, { password: tp });
+    await supabase
+      .from("profiles")
+      .update({ must_change_password: true, failed_login_count: 0, locked_until: null })
+      .eq("id", data.user_id);
+    await supabase.auth.admin.signOut(data.user_id, "global").catch(() => {});
+
+    await sendAdminInviteEmail({
+      to: targetEmail,
+      full_name: targetProfile?.full_name ?? null,
+      username: targetProfile?.username ?? targetEmail,
+      tempPassword: tp,
+      kind: "invite",
+    });
+
+    await writeAudit(context.userId, "resend_invite", "profiles", data.user_id, null, {
+      email: targetEmail,
+    });
+
+    return { ok: true, tempPassword: tp, to: targetEmail };
+  });
