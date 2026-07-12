@@ -145,7 +145,7 @@ function AuthPage() {
       const msg = "Signed in. Opening admin portal...";
       setAuthMessage({ type: "success", text: msg });
       toast.success(msg);
-      navigate({ to: "/admin" });
+      window.location.assign("/admin/");
       return;
     }
     if (!emailValue) {
