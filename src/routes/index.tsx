@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
-import { Star, ArrowRight, Phone, Download } from "lucide-react";
+import { Star, ArrowRight, Phone, Download, GraduationCap } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
+import { GsmPlus } from "@/components/GsmPlus";
 import { HomeSignsQuiz } from "@/components/HomeSignsQuiz";
 import { HomeHazardQuiz } from "@/components/HomeHazardQuiz";
 import { HomeTheoryQuiz } from "@/components/HomeTheoryQuiz";
@@ -267,6 +268,21 @@ function HeroSection({ s }: SectionProps) {
                 {or(s.cta_secondary_label, "Download the App")}
                 <ArrowRight className="h-4 w-4" />
               </a>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              className="h-14 rounded-xl border-2 border-accent bg-card px-7 text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/10 hover:shadow-lg active:translate-y-0"
+            >
+              <Link
+                to="/auth"
+                className="inline-flex items-center gap-2 font-medium"
+                aria-label="Open GSM Plus learner portal"
+              >
+                <GraduationCap className="h-5 w-5 text-accent" />
+                <GsmPlus plusClassName="text-accent" />
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </div>
