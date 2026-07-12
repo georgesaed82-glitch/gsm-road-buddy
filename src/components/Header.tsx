@@ -13,7 +13,6 @@ import {
   Car,
   CreditCard,
   Star,
-  MessageSquare,
   BookOpen,
   Newspaper,
   GraduationCap,
@@ -130,9 +129,6 @@ export function Header() {
     navigate({ to: "/", replace: true });
   };
 
-  // Shared classes for the circular pill buttons in the desktop header.
-  const pillBtn =
-    "inline-flex h-11 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-semibold text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
   const circleIconBtn =
     "inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
 
