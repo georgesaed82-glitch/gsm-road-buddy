@@ -41,130 +41,170 @@ const DAY_LABELS: Record<string, string> = {
 };
 
 function ContactPage() {
-  const { business, opening_hours } = useSiteSettings();
+  const { business, opening_hours, footer } = useSiteSettings();
   const hours = (["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const)
     .filter((k) => opening_hours[k])
     .map((k) => ({ day: DAY_LABELS[k], time: opening_hours[k] }));
   const waHref = `https://wa.me/${business.phone_intl}`;
   const telHref = `tel:+${business.phone_intl}`;
   const mailHref = `mailto:${business.email}`;
+  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.address)}`;
+
+  type ContactCard = {
+    icon: React.ReactNode;
+    label: string;
+    lines: React.ReactNode[];
+    href?: string;
+    external?: boolean;
+    onClick?: () => void;
+  };
+
+  const cards: ContactCard[] = [
+    {
+      icon: <Phone className="h-6 w-6" />,
+      label: "Telephone",
+      lines: [business.phone, "Mon – Sun · 7:00 AM – 9:00 PM"],
+      href: telHref,
+      onClick: () => trackContactClick("phone", "Contact page – card"),
+    },
+    {
+      icon: <Mail className="h-6 w-6" />,
+      label: "Email",
+      lines: [business.email, "We aim to reply within 24 hours"],
+      href: mailHref,
+      onClick: () => trackContactClick("email", "Contact page – card"),
+    },
+    {
+      icon: <MapPin className="h-6 w-6" />,
+      label: "Location",
+      lines: [
+        <span key="area" className="font-semibold text-foreground">West London</span>,
+        footer.areas_covered || business.address,
+      ],
+      href: mapHref,
+      external: true,
+    },
+    {
+      icon: <Clock className="h-6 w-6" />,
+      label: "Opening hours",
+      lines: ["Mon – Sun · 7:00 AM – 9:00 PM", "7 days a week"],
+    },
+    {
+      icon: <WhatsAppIcon className="h-6 w-6" />,
+      label: "WhatsApp",
+      lines: [business.phone, "Chat with us instantly"],
+      href: waHref,
+      external: true,
+      onClick: () => trackContactClick("whatsapp", "Contact page – card"),
+    },
+  ];
+
   return (
-    <div className="flex flex-col">
-      <section className="bg-secondary/40 py-16">
+    <div className="flex flex-col bg-background">
+      <section className="bg-secondary/40 py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Contact us
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Have a question? We're here to help you get on the road.
+            We're here to help. Get in touch with us any way you prefer.
           </p>
         </div>
       </section>
 
-      <section className="py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Quick actions */}
-            <Card className="border-border bg-card lg:col-span-2">
-              <CardHeader className="pb-4 text-center">
-                <CardTitle className="font-display text-2xl">Talk to us instantly</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-3 sm:grid-cols-3">
-                <WhatsAppButton phoneIntl={business.phone_intl} />
-                <CallButton phoneIntl={business.phone_intl} />
-                <DownloadAppButton />
-              </CardContent>
-            </Card>
-
-            {/* Booking form */}
-            <div className="lg:col-span-2">
-              <BookingForm />
-            </div>
-
-            {/* Office hours */}
-            <Card className="border-border bg-card lg:col-span-2">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-center gap-2 sm:justify-start">
-                  <Clock className="h-5 w-5 text-primary" />
-                  <CardTitle className="font-display text-xl">Office hours</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {hours.map(({ day, time }) => (
-                    <div
-                      key={day}
-                      className="flex items-center justify-between rounded-md border border-border bg-secondary/40 px-4 py-3"
-                    >
-                      <span className="font-medium text-foreground">{day}</span>
-                      <span className="text-sm text-muted-foreground">{time}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Visit us */}
-            <Card className="border-border bg-card lg:col-span-2">
-              <CardHeader className="pb-4 text-center sm:text-left">
-                <CardTitle className="font-display text-xl">Visit us</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">Address</p>
-                    <p className="text-sm text-muted-foreground">{business.address}</p>
+      <section className="py-12 sm:py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {cards.map((c) => {
+              const inner = (
+                <>
+                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-accent/40 bg-primary text-accent shadow-sm">
+                    {c.icon}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                      {c.label}
+                    </p>
+                    {c.lines.map((line, i) => (
+                      <p
+                        key={i}
+                        className={
+                          i === 0
+                            ? "mt-1 truncate font-display text-lg font-semibold text-foreground"
+                            : "text-sm text-muted-foreground"
+                        }
+                      >
+                        {line}
+                      </p>
+                    ))}
                   </div>
+                </>
+              );
+              const className =
+                "group flex items-start gap-4 rounded-2xl border border-border/70 bg-card p-5 shadow-[0_2px_14px_-6px_rgba(29,42,34,0.18)] transition-all hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_10px_28px_-14px_rgba(29,42,34,0.35)]";
+              if (c.href) {
+                return (
+                  <a
+                    key={c.label}
+                    href={c.href}
+                    target={c.external ? "_blank" : undefined}
+                    rel={c.external ? "noopener noreferrer" : undefined}
+                    onClick={c.onClick}
+                    className={className}
+                  >
+                    {inner}
+                  </a>
+                );
+              }
+              return (
+                <div key={c.label} className={className}>
+                  {inner}
                 </div>
-                <AreasCovered />
-                <div className="flex items-start gap-3">
-                  <Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">Email</p>
-                    <a
-                      href={mailHref}
-                      onClick={() => trackContactClick("email", "Contact page – details")}
-                      className="text-sm text-muted-foreground hover:text-foreground"
-                    >
-                      {business.email}
-                    </a>
+              );
+            })}
+          </div>
+
+          {/* Detailed hours */}
+          <Card className="mt-8 border-border bg-card">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-2">
+                <Clock className="h-5 w-5 text-primary" />
+                <CardTitle className="font-display text-xl">Full opening hours</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {hours.map(({ day, time }) => (
+                  <div
+                    key={day}
+                    className="flex items-center justify-between rounded-xl border border-border/70 bg-secondary/40 px-4 py-3"
+                  >
+                    <span className="font-medium text-foreground">{day}</span>
+                    <span className="text-sm text-muted-foreground">{time}</span>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <WhatsAppIcon className="mt-0.5 h-5 w-5 shrink-0 text-[#25D366]" />
-                  <div>
-                    <p className="font-medium text-foreground">WhatsApp</p>
-                    <a
-                      href={waHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackContactClick("whatsapp", "Contact page – details")}
-                      className="text-sm text-muted-foreground hover:text-foreground"
-                    >
-                      {business.phone}
-                    </a>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Instant CTAs */}
+          <Card className="mt-6 border-border bg-card">
+            <CardHeader className="pb-4 text-center">
+              <CardTitle className="font-display text-2xl">Talk to us instantly</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-3 sm:grid-cols-3">
+              <WhatsAppButton phoneIntl={business.phone_intl} />
+              <CallButton phoneIntl={business.phone_intl} />
+              <DownloadAppButton />
+            </CardContent>
+          </Card>
+
+          {/* Booking form */}
+          <div className="mt-6">
+            <BookingForm />
           </div>
         </div>
       </section>
-    </div>
-  );
-}
-
-function AreasCovered() {
-  const { footer } = useSiteSettings();
-  if (!footer.areas_covered) return null;
-  return (
-    <div className="flex items-start gap-3">
-      <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-      <div>
-        <p className="font-medium text-foreground">Areas covered</p>
-        <p className="text-sm text-muted-foreground">{footer.areas_covered}</p>
-      </div>
     </div>
   );
 }
