@@ -47,22 +47,31 @@ async function ensureUnsubscribeToken(
   const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
   if (!normalizedEmail) return undefined;
 
+  const { data: existing, error: readError } = await supabase
+    .from("email_unsubscribe_tokens")
+    .select("token")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
+
+  if (existing?.token) return existing.token;
+  if (readError) {
+    console.error("Failed to read unsubscribe token", { email: normalizedEmail, error: readError });
+  }
+
   const token = crypto.randomUUID();
   const { data, error } = await supabase
     .from("email_unsubscribe_tokens")
-    .upsert(
-      {
-        email: normalizedEmail,
-        token,
-        used_at: null,
-        created_at: new Date().toISOString(),
-      },
-      { onConflict: "email" },
-    )
+    .insert({ email: normalizedEmail, token })
     .select("token")
     .single();
 
   if (error) {
+    const { data: raced } = await supabase
+      .from("email_unsubscribe_tokens")
+      .select("token")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
+    if (raced?.token) return raced.token;
     console.error("Failed to create unsubscribe token", { email: normalizedEmail, error });
     return undefined;
   }
