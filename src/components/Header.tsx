@@ -14,7 +14,6 @@ import {
   Star,
   MessageSquare,
   BookOpen,
-  X,
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
@@ -421,5 +420,3 @@ export function Header() {
   );
 }
 
-// Preserve unused-import guard for icons that might be tree-shaken in older TS.
-void X;
