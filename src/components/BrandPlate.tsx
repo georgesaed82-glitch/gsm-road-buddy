@@ -132,18 +132,18 @@ export function BrandPlate({
 
 const SIZES = {
   xs: {
-    padding: "p-1.5 pr-3",
-    logoWrap: "h-9 w-9",
-    title: "text-[13px]",
-    subtitle: "text-[9.5px]",
-    badge: "text-[8px]",
+    padding: "p-1 pr-2.5",
+    logoWrap: "h-8 w-8",
+    title: "text-[12px]",
+    subtitle: "text-[9px]",
+    badge: "text-[7.5px]",
   },
   sm: {
-    padding: "p-2 pr-3",
-    logoWrap: "h-11 w-11",
-    title: "text-[15px]",
-    subtitle: "text-[10px]",
-    badge: "text-[8.5px]",
+    padding: "p-1.5 pr-3",
+    logoWrap: "h-10 w-10",
+    title: "text-[14px]",
+    subtitle: "text-[9.5px]",
+    badge: "text-[8px]",
   },
   md: {
     padding: "p-2.5 pr-4 sm:p-3 sm:pr-5",
