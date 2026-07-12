@@ -7,7 +7,21 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Trash2, ShieldPlus, Lock, Unlock, KeyRound, Crown, ScrollText, History } from "lucide-react";
+import {
+  Trash2,
+  ShieldPlus,
+  Lock,
+  Unlock,
+  KeyRound,
+  Crown,
+  ScrollText,
+  History,
+  Send,
+  RefreshCw,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+} from "lucide-react";
 import {
   listRbacAdmins,
   createRbacAdmin,
@@ -15,6 +29,8 @@ import {
   changeRbacAdminRole,
   setRbacAdminDisabled,
   resetRbacAdminPassword,
+  listAdminInvites,
+  resendAdminInvite,
   type AdminRoleSlug,
 } from "@/lib/rbac.functions";
 import { useMyProfile } from "@/hooks/useMyProfile";
@@ -41,6 +57,8 @@ function AdminsPage() {
   const changeRole = useServerFn(changeRbacAdminRole);
   const setDisabled = useServerFn(setRbacAdminDisabled);
   const resetPw = useServerFn(resetRbacAdminPassword);
+  const listInvites = useServerFn(listAdminInvites);
+  const resend = useServerFn(resendAdminInvite);
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -53,6 +71,13 @@ function AdminsPage() {
   });
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["rbac-admins"] });
+  const invalidateInvites = () => qc.invalidateQueries({ queryKey: ["admin-invites"] });
+
+  const { data: invites, isLoading: invitesLoading } = useQuery({
+    queryKey: ["admin-invites"],
+    queryFn: () => listInvites({ data: {} as never }),
+    refetchInterval: 15_000,
+  });
 
   const createMut = useMutation({
     mutationFn: () =>
@@ -112,6 +137,17 @@ function AdminsPage() {
         `Password reset. Email sent with temporary password: ${r.tempPassword}`,
       );
       invalidate();
+      invalidateInvites();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const resendMut = useMutation({
+    mutationFn: (user_id: string) => resend({ data: { user_id } }),
+    onSuccess: (r) => {
+      toast.success(`Invitation resent to ${r.to}. Temporary password: ${r.tempPassword}`);
+      invalidate();
+      invalidateInvites();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -300,6 +336,23 @@ function AdminsPage() {
                       <Button
                         variant="ghost"
                         size="sm"
+                        disabled={!isMaster || protectedRow || resendMut.isPending}
+                        onClick={() => {
+                          if (
+                            confirm(
+                              `Resend invitation email to ${a.email}? This issues a new temporary password.`,
+                            )
+                          ) {
+                            resendMut.mutate(a.user_id);
+                          }
+                        }}
+                        title="Resend invitation email"
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         disabled={!isMaster || protectedRow || isMe || removeMut.isPending}
                         onClick={() => {
                           if (confirm(`Permanently delete ${a.email}? This cannot be undone.`)) {
@@ -318,6 +371,134 @@ function AdminsPage() {
           )}
         </CardContent>
       </Card>
+
+      {isMaster && (
+        <Card className="mt-8">
+          <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <div>
+              <h2 className="font-display text-lg">Invitation send log</h2>
+              <p className="text-xs text-muted-foreground">
+                Delivery status for admin invitation and password-reset emails. Updates automatically.
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => invalidateInvites()}
+              title="Refresh"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {invitesLoading ? (
+              <p className="text-sm text-muted-foreground">Loading…</p>
+            ) : !invites || invites.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No invitation emails have been sent yet.
+              </p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {invites.map((row) => (
+                  <li
+                    key={row.message_id}
+                    className="flex flex-wrap items-center gap-3 py-3 text-sm"
+                  >
+                    <StatusBadge status={row.status} />
+                    <div className="min-w-[220px] flex-1">
+                      <div className="truncate font-medium">{row.recipient_email}</div>
+                      <div className="mt-0.5 text-xs text-muted-foreground">
+                        {row.template_name === "admin-reset"
+                          ? "Password reset"
+                          : "New admin invitation"}
+                        {" · "}
+                        {new Date(row.created_at).toLocaleString("en-GB")}
+                      </div>
+                      {row.error_message && (
+                        <div className="mt-1 text-xs text-destructive">{row.error_message}</div>
+                      )}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={resendMut.isPending}
+                      onClick={() => {
+                        const match = admins?.find(
+                          (a) => a.email.toLowerCase() === row.recipient_email.toLowerCase(),
+                        );
+                        if (!match) {
+                          toast.error(
+                            "That recipient no longer has an admin account. Create it again.",
+                          );
+                          return;
+                        }
+                        if (
+                          confirm(
+                            `Resend invitation to ${row.recipient_email}? This issues a new temporary password.`,
+                          )
+                        ) {
+                          resendMut.mutate(match.user_id);
+                        }
+                      }}
+                    >
+                      <Send className="mr-1.5 h-3.5 w-3.5" /> Resend
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </AdminShell>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, { label: string; className: string; Icon: typeof CheckCircle2 }> = {
+    sent: {
+      label: "Delivered",
+      className: "bg-emerald-100 text-emerald-800",
+      Icon: CheckCircle2,
+    },
+    pending: { label: "Pending", className: "bg-amber-100 text-amber-800", Icon: Clock },
+    failed: {
+      label: "Failed",
+      className: "bg-destructive/15 text-destructive",
+      Icon: AlertCircle,
+    },
+    dlq: {
+      label: "Undelivered",
+      className: "bg-destructive/15 text-destructive",
+      Icon: AlertCircle,
+    },
+    suppressed: {
+      label: "Suppressed",
+      className: "bg-orange-100 text-orange-800",
+      Icon: AlertCircle,
+    },
+    bounced: {
+      label: "Bounced",
+      className: "bg-destructive/15 text-destructive",
+      Icon: AlertCircle,
+    },
+    complained: {
+      label: "Complained",
+      className: "bg-orange-100 text-orange-800",
+      Icon: AlertCircle,
+    },
+  };
+  const info = map[status] ?? {
+    label: status,
+    className: "bg-secondary text-foreground",
+    Icon: Clock,
+  };
+  const Icon = info.Icon;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${info.className}`}
+    >
+      <Icon className="h-3 w-3" /> {info.label}
+    </span>
   );
 }
