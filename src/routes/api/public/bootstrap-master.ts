@@ -65,9 +65,14 @@ export const Route = createFileRoute("/api/public/bootstrap-master")({
         // Use a plain SQL RPC-style call by invoking postgrest raw isn't possible;
         // fall back to the pg-meta style via a helper function created in a
         // migration. For simplicity here, run the statements individually.
-        const admin = supabaseAdmin;
         void sql;
-        const { error: e1 } = await admin.rpc("bootstrap_promote_master_owner", { _user_id: userId });
+        const { error: e1 } = await (supabaseAdmin.rpc as unknown as (
+          fn: string,
+          args: Record<string, unknown>,
+        ) => Promise<{ error: { message: string } | null }>)(
+          "bootstrap_promote_master_owner",
+          { _user_id: userId },
+        );
         if (e1) return Response.json({ error: e1.message }, { status: 500 });
 
         return Response.json({ ok: true, user_id: userId });
