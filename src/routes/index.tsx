@@ -273,16 +273,18 @@ function HeroSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 rounded-xl border-2 border-accent bg-card px-7 text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/10 hover:shadow-lg active:translate-y-0"
+              className="group h-14 rounded-xl border border-border bg-card px-6 text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:bg-accent/10 hover:shadow-lg active:translate-y-0"
             >
               <Link
                 to="/auth"
-                className="inline-flex items-center gap-2 font-medium"
+                className="inline-flex items-center gap-3 font-medium"
                 aria-label="Open GSM Plus learner portal"
               >
-                <GraduationCap className="h-5 w-5 text-accent" />
-                <GsmPlus plusClassName="text-accent" />
-                <ArrowRight className="h-4 w-4" />
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-accent text-primary-foreground shadow-sm">
+                  <GraduationCap className="h-4 w-4" />
+                </span>
+                <GsmPlus gsmClassName="text-primary" plusClassName="text-accent" />
+                <ArrowRight className="h-4 w-4 text-accent transition-transform duration-200 group-hover:translate-x-0.5" />
               </Link>
             </Button>
           </div>
