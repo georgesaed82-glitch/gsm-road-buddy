@@ -65,7 +65,9 @@ function AdminsPage() {
         },
       }),
     onSuccess: (r) => {
-      toast.success(`Admin created. Temporary password: ${r.tempPassword}`);
+      toast.success(
+        `Admin created. Invitation email sent with temporary password: ${r.tempPassword}`,
+      );
       setEmail("");
       setUsername("");
       setFullName("");
@@ -106,7 +108,9 @@ function AdminsPage() {
   const resetMut = useMutation({
     mutationFn: (user_id: string) => resetPw({ data: { user_id } }),
     onSuccess: (r) => {
-      toast.success(`Password reset. Temporary password: ${r.tempPassword}`);
+      toast.success(
+        `Password reset. Email sent with temporary password: ${r.tempPassword}`,
+      );
       invalidate();
     },
     onError: (e: Error) => toast.error(e.message),

@@ -358,6 +358,89 @@ function tempPassword(): string {
   return (process.env.DEV_TEMP_ADMIN_PASSWORD || "GSM2026").trim();
 }
 
+// Send an invitation / password-reset email through the shared email queue.
+// Uses the service-role admin client so it works even when the recipient
+// doesn't exist yet as a signed-in user.
+async function sendAdminInviteEmail(params: {
+  to: string;
+  full_name?: string | null;
+  username: string;
+  tempPassword: string;
+  kind: "invite" | "reset";
+}): Promise<void> {
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const displayName = (params.full_name || params.username || "there").trim();
+    const isInvite = params.kind === "invite";
+    const loginUrl = "https://www.gsmdrivingschool.com/auth?admin=1";
+    const subject = isInvite
+      ? "Your GSM Plus admin account – temporary password inside"
+      : "Your GSM Plus admin password has been reset";
+    const heading = isInvite ? "Welcome to GSM Plus" : "Your admin password was reset";
+    const intro = isInvite
+      ? `You've been invited to the GSM Plus admin portal. Use the temporary credentials below to sign in for the first time. You'll be asked to set a new password immediately after signing in.`
+      : `An administrator has reset your GSM Plus admin password. Use the temporary password below to sign in. You'll be asked to set a new password immediately after signing in.`;
+    const html = `<!doctype html>
+<html><body style="margin:0;padding:0;background:#F7F3E8;font-family:Arial,Helvetica,sans-serif;color:#1D2A22">
+  <div style="max-width:560px;margin:0 auto;padding:32px 24px">
+    <div style="background:#ffffff;border:1px solid #E7E1CF;border-radius:12px;padding:28px">
+      <h1 style="margin:0 0 8px;color:#234B36;font-size:22px">${heading}</h1>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.55">Hi ${escapeHtml(displayName)},</p>
+      <p style="margin:0 0 20px;font-size:15px;line-height:1.55">${intro}</p>
+      <div style="background:#F7F3E8;border:1px solid #E7E1CF;border-radius:8px;padding:16px 18px;margin:0 0 20px">
+        <p style="margin:0 0 6px;font-size:13px;color:#6A746D">Sign-in email</p>
+        <p style="margin:0 0 14px;font-size:15px;font-weight:600">${escapeHtml(params.to)}</p>
+        <p style="margin:0 0 6px;font-size:13px;color:#6A746D">Username</p>
+        <p style="margin:0 0 14px;font-size:15px;font-weight:600">${escapeHtml(params.username)}</p>
+        <p style="margin:0 0 6px;font-size:13px;color:#6A746D">Temporary password</p>
+        <p style="margin:0;font-size:18px;font-weight:700;letter-spacing:0.5px;color:#C97845;font-family:ui-monospace,Menlo,Consolas,monospace">${escapeHtml(params.tempPassword)}</p>
+      </div>
+      <p style="margin:0 0 20px;font-size:15px;line-height:1.55">
+        <a href="${loginUrl}" style="display:inline-block;background:#234B36;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600">Sign in to GSM Plus</a>
+      </p>
+      <p style="margin:0;font-size:13px;color:#6A746D;line-height:1.55">
+        For security, this temporary password must be changed on first sign-in. If you weren't expecting this email, please ignore it or contact GSM Driving School.
+      </p>
+    </div>
+    <p style="text-align:center;color:#6A746D;font-size:12px;margin:16px 0 0">GSM Driving School · gsmdrivingschool.com</p>
+  </div>
+</body></html>`;
+    const text = `${heading}\n\nHi ${displayName},\n\n${intro}\n\nSign-in email: ${params.to}\nUsername: ${params.username}\nTemporary password: ${params.tempPassword}\n\nSign in: ${loginUrl}\n\nYou'll be asked to set a new password on first sign-in.\n\n— GSM Driving School`;
+    const idempotencyKey = `admin-${params.kind}-${params.to}-${Date.now()}`;
+    const payload = {
+      message_id: idempotencyKey,
+      idempotency_key: idempotencyKey,
+      to: params.to,
+      from: "GSM Driving School <notify@notify.gsmdrivingschool.com>",
+      sender_domain: "notify.gsmdrivingschool.com",
+      subject,
+      html,
+      text,
+      purpose: "transactional",
+      label: `admin-${params.kind}`,
+      queued_at: new Date().toISOString(),
+    };
+    const { error } = await supabaseAdmin.rpc("enqueue_email", {
+      queue_name: "transactional_emails",
+      payload,
+    });
+    if (error) {
+      console.error("[rbac] enqueue_email failed:", error.message);
+    }
+  } catch (e) {
+    console.error("[rbac] sendAdminInviteEmail failed:", e);
+  }
+}
+
+function escapeHtml(s: string): string {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export const createRbacAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
@@ -443,7 +526,16 @@ export const createRbacAdmin = createServerFn({ method: "POST" })
       role_slug: data.role_slug,
     });
 
-    return { ok: true, user_id: target, tempPassword: tempPassword() };
+    const tp = tempPassword();
+    await sendAdminInviteEmail({
+      to: data.email,
+      full_name: data.full_name || null,
+      username: data.username,
+      tempPassword: tp,
+      kind: "invite",
+    });
+
+    return { ok: true, user_id: target, tempPassword: tp, emailSent: true };
   });
 
 export const changeRbacAdminRole = createServerFn({ method: "POST" })
@@ -564,7 +656,27 @@ export const resetRbacAdminPassword = createServerFn({ method: "POST" })
     await writeAudit(context.userId, "password_reset", "profiles", data.user_id, null, {
       temp: true,
     });
-    return { ok: true, tempPassword: tempPassword() };
+    const tp = tempPassword();
+
+    // Look up the target's email + username so we can email them the new temp password.
+    const { data: targetUser } = await supabase.auth.admin.getUserById(data.user_id);
+    const { data: targetProfile } = await supabase
+      .from("profiles")
+      .select("username, full_name")
+      .eq("id", data.user_id)
+      .maybeSingle();
+    const targetEmail = targetUser?.user?.email ?? null;
+    if (targetEmail) {
+      await sendAdminInviteEmail({
+        to: targetEmail,
+        full_name: targetProfile?.full_name ?? null,
+        username: targetProfile?.username ?? targetEmail,
+        tempPassword: tp,
+        kind: "reset",
+      });
+    }
+
+    return { ok: true, tempPassword: tp, emailSent: Boolean(targetEmail) };
   });
 
 // Self password change — clears must_change_password
