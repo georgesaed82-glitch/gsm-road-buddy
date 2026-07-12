@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
-  Mail,
-  MapPin,
   Phone,
   ChevronDown,
   ChevronRight,
@@ -18,8 +16,6 @@ import {
   GraduationCap,
   Globe,
 } from "lucide-react";
-import { WhatsAppIcon } from "@/components/WhatsAppIcon";
-import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 
@@ -104,7 +100,6 @@ function ContactPanel({
 
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [contactMobileOpen, setContactMobileOpen] = useState(false);
   const [languagesMobileOpen, setLanguagesMobileOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
