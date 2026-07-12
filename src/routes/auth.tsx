@@ -44,6 +44,8 @@ function AuthPage() {
   const [remember, setRemember] = useState(false);
   const [keyboardMode, setKeyboardMode] = useState<"numeric" | "text">(isAdmin ? "text" : "numeric");
   const [showPassword, setShowPassword] = useState(false);
+  // Admins are always full-keyboard; only learners get the numeric PIN pad.
+  const effectiveKeyboardMode: "numeric" | "text" = isAdmin ? "text" : keyboardMode;
   const [authMessage, setAuthMessage] = useState<{
     type: "error" | "success";
     text: string;
@@ -88,95 +90,61 @@ function AuthPage() {
     const pw = password.trim();
     const emailValue = email.trim();
     if (isAdmin) {
-      if (!pw) {
-        const msg = "Enter the admin PIN/password.";
+      if (!emailValue) {
+        const msg = "Enter your administrator email address.";
         setAuthMessage({ type: "error", text: msg });
         toast.error(msg);
         setSubmitting(false);
         return;
       }
-      // Per-admin email + password sign-in (RBAC accounts). If an email is
-      // supplied, try email/password auth first; fall back to the shared
-      // admin master code path only when no email is provided.
-      if (emailValue) {
-        const { data: sess, error: signErr } = await supabase.auth.signInWithPassword({
-          email: emailValue,
-          password: pw,
-        });
-        if (signErr || !sess?.session) {
-          const msg = "Email or password is incorrect.";
-          setAuthMessage({ type: "error", text: msg });
-          toast.error(msg);
-          setSubmitting(false);
-          return;
-        }
-        try {
-          const r = await recordLogin({ data: {} as never });
-          if (!r?.ok) {
-            await supabase.auth.signOut();
-            const msg = "This account is not an administrator.";
-            setAuthMessage({ type: "error", text: msg });
-            toast.error(msg);
-            setSubmitting(false);
-            return;
-          }
-        } catch (err) {
-          await supabase.auth.signOut();
-          const msg = err instanceof Error ? err.message : "Sign-in failed.";
-          setAuthMessage({ type: "error", text: msg });
-          toast.error(msg);
-          setSubmitting(false);
-          return;
-        }
-        const msg = "Signed in. Opening admin portal...";
-        setAuthMessage({ type: "success", text: msg });
-        toast.success(msg);
-        navigate({ to: "/admin" });
+      if (!pw) {
+        const msg = "Enter your password.";
+        setAuthMessage({ type: "error", text: msg });
+        toast.error(msg);
+        setSubmitting(false);
+        return;
+      }
+      // Per-admin email + password sign-in only. Shared PINs are no longer
+      // accepted — every administrator must have their own account.
+      const { data: sess, error: signErr } = await supabase.auth.signInWithPassword({
+        email: emailValue,
+        password: pw,
+      });
+      if (signErr || !sess?.session) {
+        const msg = "Email or password is incorrect.";
+        setAuthMessage({ type: "error", text: msg });
+        toast.error(msg);
+        setSubmitting(false);
         return;
       }
       try {
-        const res = await verify({
-          data: {
-            password: pw,
-            mode: "admin",
-            captchaToken: codeCaptchaToken,
-          },
-        });
-        if (!res.ok || !res.session?.access_token || !res.session?.refresh_token) {
-          const msg = "The admin PIN/password is incorrect.";
-          setAuthMessage({ type: "error", text: msg });
-          toast.error(msg);
-          setCodeCaptchaToken(null);
-          setSubmitting(false);
-          return;
-        }
-        const { error: setErr } = await supabase.auth.setSession({
-          access_token: res.session.access_token,
-          refresh_token: res.session.refresh_token,
-        });
-        if (setErr) {
-          const msg = "Sign-in failed. Please try again.";
+        const r = await recordLogin({ data: {} as never });
+        if (!r?.ok) {
+          await supabase.auth.signOut();
+          const msg = "This account is not an administrator.";
           setAuthMessage({ type: "error", text: msg });
           toast.error(msg);
           setSubmitting(false);
           return;
         }
-        try {
-          window.localStorage.removeItem("admin_unlocked");
-          window.localStorage.removeItem("admin_password");
-        } catch {
-          // Best-effort cleanup of legacy keys.
-        }
-        const msg = "Signed in. Opening admin portal...";
-        setAuthMessage({ type: "success", text: msg });
-        toast.success(msg);
-        navigate({ to: "/admin" });
-      } catch {
-        const msg = "Sign-in failed. Please try again.";
+      } catch (err) {
+        await supabase.auth.signOut();
+        const msg = err instanceof Error ? err.message : "Sign-in failed.";
         setAuthMessage({ type: "error", text: msg });
         toast.error(msg);
         setSubmitting(false);
+        return;
       }
+      try {
+        window.localStorage.removeItem("admin_unlocked");
+        window.localStorage.removeItem("admin_password");
+      } catch {
+        // Best-effort cleanup of legacy keys.
+      }
+      const msg = "Signed in. Opening admin portal...";
+      setAuthMessage({ type: "success", text: msg });
+      toast.success(msg);
+      navigate({ to: "/admin" });
       return;
     }
     if (!emailValue) {
