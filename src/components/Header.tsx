@@ -215,7 +215,7 @@ export function Header() {
               <div
                 role="menu"
                 aria-label="Main navigation"
-                className="absolute right-0 top-[calc(100%+0.625rem)] z-[140] w-80 origin-top-right animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 overflow-hidden rounded-2xl border border-accent/45 bg-card p-0 text-foreground shadow-[0_24px_70px_-22px_rgba(29,42,34,0.55)] ring-1 ring-primary/10 duration-200"
+                className="absolute right-0 top-[calc(100%+0.625rem)] z-[140] w-80 origin-top-right overflow-hidden rounded-2xl border border-accent/45 bg-card p-0 text-foreground opacity-100 shadow-[0_24px_70px_-22px_rgba(29,42,34,0.55)] ring-1 ring-primary/10"
               >
               <div className="bg-gradient-to-r from-primary to-primary/85 px-4 py-3">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
