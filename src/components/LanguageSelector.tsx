@@ -307,7 +307,7 @@ export function LanguageSelector({
   variant = "compact",
 }: {
   className?: string;
-  variant?: "compact" | "full";
+  variant?: "compact" | "full" | "inline";
 }) {
   const [active, setActive] = useState<LangCode>("en");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -349,6 +349,45 @@ export function LanguageSelector({
   };
 
   const current = LANGUAGES.find((l) => l.code === active) ?? LANGUAGES[0];
+
+  if (variant === "inline") {
+    return (
+      <div className={cn("notranslate grid gap-1", className)} role="listbox" aria-label="Select language">
+        {LANGUAGES.map((l) => {
+          const isActive = l.code === active;
+          return (
+            <button
+              key={l.code}
+              type="button"
+              role="option"
+              aria-selected={isActive}
+              onClick={() => choose(l.code)}
+              lang={l.code}
+              dir={l.rtl ? "rtl" : "ltr"}
+              className={cn(
+                "flex w-full items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-left text-sm transition-colors active:scale-[0.99]",
+                isActive
+                  ? "border-accent/60 bg-accent/10 text-primary"
+                  : "border-transparent bg-background/60 text-foreground hover:border-accent/40 hover:bg-accent/5",
+              )}
+            >
+              <span className="flex min-w-0 flex-col leading-tight">
+                <span className="truncate font-semibold">{l.native}</span>
+                <span className="truncate text-[11px] text-muted-foreground">{l.label}</span>
+              </span>
+              {isActive ? (
+                <Check className="h-4 w-4 shrink-0 text-accent" />
+              ) : (
+                <span className="shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {l.code}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <DropdownMenu>
