@@ -38,6 +38,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { GsmPlus } from "@/components/GsmPlus";
+import { BrandPlate } from "@/components/BrandPlate";
 
 const NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/about", label: "About", icon: Info },
@@ -193,8 +194,7 @@ export function Header() {
           className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4"
           aria-label="GSM Driving School — home"
         >
-          <Logo size="lg" />
-          <BrandLockup />
+          <BrandPlate size="md" className="max-w-full" />
         </Link>
 
         {/* Desktop actions */}
@@ -330,9 +330,8 @@ export function Header() {
             >
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
 
-              <div className="flex items-center gap-3 border-b border-accent/30 px-5 py-4">
-                <Logo />
-                <BrandLockup compact />
+              <div className="flex items-center justify-center border-b border-accent/30 px-4 py-4">
+                <BrandPlate size="sm" className="w-full" />
               </div>
 
               <div className="flex-1 overflow-y-auto px-4 py-4">
