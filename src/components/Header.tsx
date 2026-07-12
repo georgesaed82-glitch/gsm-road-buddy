@@ -106,18 +106,15 @@ export function Header() {
         hidden ? "-translate-y-full" : "translate-y-0",
       )}
     >
-      <div className="mx-auto flex min-h-[56px] w-full max-w-7xl items-center gap-2 px-3 py-1.5 sm:min-h-[60px] sm:gap-3 sm:px-5 sm:py-2 lg:grid lg:min-h-[64px] lg:grid-cols-[1fr_auto_1fr] lg:gap-4 lg:px-8">
-        {/* Left spacer (desktop only) — balances the actions on the right so the brand sits centred */}
-        <div className="hidden lg:block" aria-hidden="true" />
-
-        {/* Brand */}
+      <div className="mx-auto flex min-h-[56px] w-full max-w-7xl items-center gap-2 px-3 py-1.5 sm:min-h-[60px] sm:gap-3 sm:px-5 sm:py-2 lg:min-h-[64px] lg:gap-4 lg:px-8">
+        {/* Brand — stretches to fill the space up to the actions on the right */}
         <Link
           to="/"
-          className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 lg:flex-none lg:justify-self-center"
+          className="flex min-w-0 flex-1 items-center"
           aria-label="GSM Driving School — home"
         >
-          <BrandPlate size="xs" className="max-w-full sm:hidden" />
-          <BrandPlate size="sm" className="hidden max-w-full sm:inline-flex" />
+          <BrandPlate size="xs" className="w-full sm:hidden" />
+          <BrandPlate size="sm" className="hidden w-full sm:inline-flex" />
         </Link>
 
         {/* Actions (same premium sheet menu on mobile and desktop) */}
