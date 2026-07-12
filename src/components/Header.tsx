@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
@@ -23,7 +23,6 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -105,12 +104,10 @@ function ContactPanel({
 }
 
 export function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [contactMobileOpen, setContactMobileOpen] = useState(false);
   const [languagesMobileOpen, setLanguagesMobileOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { business } = useSiteSettings();
@@ -124,26 +121,7 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    if (!menuOpen) return;
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (menuRef.current?.contains(event.target as Node)) return;
-      setMenuOpen(false);
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [menuOpen]);
-
-  useEffect(() => {
-    setMenuOpen(false);
+    setSheetOpen(false);
   }, [pathname]);
 
   const handleSignOut = async () => {
