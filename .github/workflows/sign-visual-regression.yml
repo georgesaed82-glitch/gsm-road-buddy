@@ -13,12 +13,12 @@ jobs:
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
       - name: Cache bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v4.2.0
         with:
           path: |
             ~/.bun/install/cache
@@ -27,7 +27,7 @@ jobs:
           restore-keys: |
             bun-${{ runner.os }}-
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v4.2.0
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('bun.lock', 'package.json') }}
@@ -61,7 +61,7 @@ jobs:
           touch tests/visual/signvariants/diff/.artifact-placeholder
       - name: Upload diffs on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.4.3
         with:
           name: sign-variants-diff-${{ matrix.browser }}
           path: |
