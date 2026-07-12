@@ -239,42 +239,23 @@ export function Header() {
                     );
                   })}
 
-                  <button
-                    type="button"
-                    onClick={() => setContactMobileOpen((v) => !v)}
-                    aria-expanded={contactMobileOpen}
+                  <Link
+                    to="/contact"
+                    onClick={() => setSheetOpen(false)}
                     className={cn(
-                      "group flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-3 text-left text-[15px] font-semibold shadow-[0_2px_10px_-4px_rgba(29,42,34,0.18)] transition-all active:scale-[0.98]",
-                      contactMobileOpen
+                      "group flex items-center gap-3 rounded-2xl border bg-card px-3 py-3 text-[15px] font-semibold shadow-[0_2px_10px_-4px_rgba(29,42,34,0.18)] transition-all active:scale-[0.98]",
+                      pathname === "/contact"
                         ? "border-accent/60 bg-accent/10 text-primary"
-                        : "text-foreground hover:-translate-y-0.5 hover:border-accent/40",
+                        : "border-border/60 text-foreground hover:-translate-y-0.5 hover:border-accent/40",
                     )}
                   >
                     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/50 bg-primary text-accent shadow-sm">
                       <Phone className="h-5 w-5" />
                     </span>
                     <span className="h-8 w-px shrink-0 bg-border/70" aria-hidden="true" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate">Contact Us</span>
-                      <span className="block truncate text-[11px] font-medium text-muted-foreground">
-                        Call, Email &amp; Location
-                      </span>
-                    </span>
-                    <ChevronDown
-                      className={cn(
-                        "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
-                        contactMobileOpen && "rotate-180",
-                      )}
-                    />
-                  </button>
-                  {contactMobileOpen && (
-                    <div className="rounded-2xl border border-accent/20 bg-card p-1.5 shadow-inner">
-                      <ContactPanel
-                        business={business}
-                        onItemClick={() => setSheetOpen(false)}
-                      />
-                    </div>
-                  )}
+                    <span className="min-w-0 flex-1 truncate">Contact Us</span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  </Link>
 
                   <button
                     type="button"
