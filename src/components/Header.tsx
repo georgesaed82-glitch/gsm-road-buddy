@@ -253,8 +253,8 @@ export function Header() {
                     />
                   </button>
                   {languagesMobileOpen && (
-                    <div className="rounded-2xl border border-accent/20 bg-card p-3 shadow-inner">
-                      <LanguageSelector />
+                    <div className="max-h-[55vh] overflow-y-auto rounded-2xl border border-accent/20 bg-card p-2 shadow-inner">
+                      <LanguageSelector variant="inline" />
                     </div>
                   )}
                 </nav>
