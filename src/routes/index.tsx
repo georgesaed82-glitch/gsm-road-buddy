@@ -27,8 +27,20 @@ import g7 from "@/assets/gallery/gsm-gallery-7.jpg.asset.json";
 import g8 from "@/assets/gallery/gsm-gallery-8.jpg.asset.json";
 import g9 from "@/assets/gallery/gsm-gallery-9.jpg.asset.json";
 import g10 from "@/assets/gallery/gsm-gallery-10.jpg.asset.json";
+import g11 from "@/assets/gallery/gsm-gallery-11.jpg.asset.json";
+import g12 from "@/assets/gallery/gsm-gallery-12.jpg.asset.json";
+import g13 from "@/assets/gallery/gsm-gallery-13.jpg.asset.json";
+import g14 from "@/assets/gallery/gsm-gallery-14.jpg.asset.json";
+import g15 from "@/assets/gallery/gsm-gallery-15.jpg.asset.json";
+import g16 from "@/assets/gallery/gsm-gallery-16.jpg.asset.json";
+import g17 from "@/assets/gallery/gsm-gallery-17.jpg.asset.json";
+import g18 from "@/assets/gallery/gsm-gallery-18.jpg.asset.json";
+import g19 from "@/assets/gallery/gsm-gallery-19.jpg.asset.json";
 
-const GALLERY_URLS = [g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10].map((img) => img.url);
+const GALLERY_URLS = [
+  g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10,
+  g11, g12, g13, g14, g15, g16, g17, g18, g19,
+].map((img) => img.url);
 const DEFAULT_GALLERY_CAPTIONS = [
   "The GSM Driving School T-Cross — Notting Hill",
   "Student pass — Greenford Test Centre",
@@ -41,6 +53,15 @@ const DEFAULT_GALLERY_CAPTIONS = [
   "Another GSM pass",
   "20+ years teaching West London",
   "Street view — GSM service area",
+  "First-time pass — Greenford Test Centre",
+  "Pass certificate smile",
+  "Another confident driver — West London",
+  "DVSA pass — proud moment",
+  "First-time pass with GSM",
+  "Pass day outside Greenford Test Centre",
+  "Pass certificate — West London",
+  "First-time pass — Notting Hill area",
+  "Pass day with the GSM car",
 ];
 
 export const Route = createFileRoute("/")({
