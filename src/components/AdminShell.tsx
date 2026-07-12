@@ -111,6 +111,7 @@ const groups: Group[] = [
       { to: "/admin/admins", label: "Admin accounts", icon: ShieldCheck },
       { to: "/admin/access", label: "Access codes", icon: KeyRound },
       { to: "/admin/email", label: "Email settings", icon: Mail },
+      { to: "/admin/email-logs", label: "Email logs", icon: Mail },
       { to: "/admin/diagnostics", label: "Diagnostics", icon: Activity },
       { to: "/admin/errors", label: "Errors", icon: AlertTriangle },
     ],

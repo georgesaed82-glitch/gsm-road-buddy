@@ -104,6 +104,36 @@ async function moveToDlq(
   }
 }
 
+function extractErrorDetails(error: unknown): {
+  message: string;
+  http_status: number | null;
+  retry_after: number | null;
+  name: string | null;
+  raw: Record<string, unknown>;
+} {
+  if (error instanceof Error) {
+    const e = error as Error & {
+      status?: number;
+      retryAfterSeconds?: number | null;
+    };
+    return {
+      message: e.message,
+      http_status: typeof e.status === "number" ? e.status : null,
+      retry_after: typeof e.retryAfterSeconds === "number" ? e.retryAfterSeconds : null,
+      name: e.name ?? null,
+      raw: {
+        name: e.name,
+        message: e.message,
+        status: e.status ?? null,
+        retryAfterSeconds: e.retryAfterSeconds ?? null,
+        stack: e.stack?.split("\n").slice(0, 6).join("\n") ?? null,
+      },
+    };
+  }
+  const msg = String(error);
+  return { message: msg, http_status: null, retry_after: null, name: null, raw: { message: msg } };
+}
+
 export const Route = createFileRoute("/lovable/email/queue/process")({
   server: {
     handlers: {
@@ -285,7 +315,8 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                 payload.unsubscribe_token,
               );
 
-              await sendLovableEmail(
+              const sendStartedAt = Date.now();
+              const providerResponse = await sendLovableEmail(
                 {
                   run_id: payload.run_id,
                   to: payload.to,
@@ -303,12 +334,24 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                 { apiKey, sendUrl: process.env.LOVABLE_SEND_URL },
               );
 
-              // Log success
+              // Log success with full provider response for auditing
               await supabase.from("email_send_log").insert({
                 message_id: payload.message_id,
                 template_name: payload.label || queue,
                 recipient_email: payload.to,
                 status: "sent",
+                provider_message_id: providerResponse?.message_id ?? null,
+                provider_workflow_id: providerResponse?.workflow_id ?? null,
+                provider_status: providerResponse?.status ?? "accepted",
+                provider_http_status: 200,
+                provider_response: {
+                  ...(providerResponse as unknown as Record<string, unknown>),
+                  duration_ms: Date.now() - sendStartedAt,
+                  idempotency_key: payload.idempotency_key ?? null,
+                  sender_domain: payload.sender_domain ?? null,
+                  from: payload.from ?? null,
+                  subject: payload.subject ?? null,
+                },
               });
 
               // Delete from queue
@@ -325,7 +368,8 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
               }
               totalProcessed++;
             } catch (error) {
-              const errorMsg = error instanceof Error ? error.message : String(error);
+              const details = extractErrorDetails(error);
+              const errorMsg = details.message;
               console.error("Email send failed", {
                 queue,
                 msg_id: msg.msg_id,
@@ -341,6 +385,9 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                   recipient_email: payload.to,
                   status: "failed",
                   error_message: errorMsg.slice(0, 1000),
+                  provider_http_status: details.http_status,
+                  provider_status: "rate_limited",
+                  provider_response: details.raw,
                 });
 
                 const retryAfterSecs = getRetryAfterSeconds(error);
@@ -370,6 +417,9 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                 recipient_email: payload.to,
                 status: "failed",
                 error_message: errorMsg.slice(0, 1000),
+                provider_http_status: details.http_status,
+                provider_status: details.name ?? "error",
+                provider_response: details.raw,
               });
               if (payload?.message_id && typeof payload.message_id === "string") {
                 failedAttemptsByMessageId.set(payload.message_id, failedAttempts + 1);
