@@ -49,6 +49,7 @@ import { Route as AuthenticatedDrivingClipsRouteImport } from './routes/_authent
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as ApiPublicBootstrapMasterRouteImport } from './routes/api/public/bootstrap-master'
 import { Route as AuthenticatedDrivingClipsSlugRouteImport } from './routes/_authenticated/driving-clips.$slug'
 import { Route as AuthenticatedAdminTrafficRouteImport } from './routes/_authenticated/admin.traffic'
 import { Route as AuthenticatedAdminTheoryRouteImport } from './routes/_authenticated/admin.theory'
@@ -291,6 +292,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const ApiPublicBootstrapMasterRoute =
+  ApiPublicBootstrapMasterRouteImport.update({
+    id: '/api/public/bootstrap-master',
+    path: '/api/public/bootstrap-master',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedDrivingClipsSlugRoute =
   AuthenticatedDrivingClipsSlugRouteImport.update({
     id: '/$slug',
@@ -573,6 +580,7 @@ export interface FileRoutesByFullPath {
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
+  '/api/public/bootstrap-master': typeof ApiPublicBootstrapMasterRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -649,6 +657,7 @@ export interface FileRoutesByTo {
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
+  '/api/public/bootstrap-master': typeof ApiPublicBootstrapMasterRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -728,6 +737,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/_authenticated/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
+  '/api/public/bootstrap-master': typeof ApiPublicBootstrapMasterRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
@@ -807,6 +817,7 @@ export interface FileRouteTypes {
     | '/admin/theory'
     | '/admin/traffic'
     | '/driving-clips/$slug'
+    | '/api/public/bootstrap-master'
     | '/admin/'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
@@ -883,6 +894,7 @@ export interface FileRouteTypes {
     | '/admin/theory'
     | '/admin/traffic'
     | '/driving-clips/$slug'
+    | '/api/public/bootstrap-master'
     | '/admin'
     | '/lovable/email/queue/process'
   id:
@@ -961,6 +973,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/theory'
     | '/_authenticated/admin/traffic'
     | '/_authenticated/driving-clips/$slug'
+    | '/api/public/bootstrap-master'
     | '/_authenticated/admin/'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
@@ -987,6 +1000,7 @@ export interface RootRouteChildren {
   LegalSlugRoute: typeof LegalSlugRoute
   AreasIndexRoute: typeof AreasIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  ApiPublicBootstrapMasterRoute: typeof ApiPublicBootstrapMasterRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
@@ -1271,6 +1285,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/api/public/bootstrap-master': {
+      id: '/api/public/bootstrap-master'
+      path: '/api/public/bootstrap-master'
+      fullPath: '/api/public/bootstrap-master'
+      preLoaderRoute: typeof ApiPublicBootstrapMasterRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/driving-clips/$slug': {
       id: '/_authenticated/driving-clips/$slug'
@@ -1688,6 +1709,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalSlugRoute: LegalSlugRoute,
   AreasIndexRoute: AreasIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
+  ApiPublicBootstrapMasterRoute: ApiPublicBootstrapMasterRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
