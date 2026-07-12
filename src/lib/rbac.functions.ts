@@ -526,7 +526,16 @@ export const createRbacAdmin = createServerFn({ method: "POST" })
       role_slug: data.role_slug,
     });
 
-    return { ok: true, user_id: target, tempPassword: tempPassword() };
+    const tp = tempPassword();
+    await sendAdminInviteEmail({
+      to: data.email,
+      full_name: data.full_name || null,
+      username: data.username,
+      tempPassword: tp,
+      kind: "invite",
+    });
+
+    return { ok: true, user_id: target, tempPassword: tp, emailSent: true };
   });
 
 export const changeRbacAdminRole = createServerFn({ method: "POST" })
@@ -647,7 +656,27 @@ export const resetRbacAdminPassword = createServerFn({ method: "POST" })
     await writeAudit(context.userId, "password_reset", "profiles", data.user_id, null, {
       temp: true,
     });
-    return { ok: true, tempPassword: tempPassword() };
+    const tp = tempPassword();
+
+    // Look up the target's email + username so we can email them the new temp password.
+    const { data: targetUser } = await supabase.auth.admin.getUserById(data.user_id);
+    const { data: targetProfile } = await supabase
+      .from("profiles")
+      .select("username, full_name")
+      .eq("id", data.user_id)
+      .maybeSingle();
+    const targetEmail = targetUser?.user?.email ?? null;
+    if (targetEmail) {
+      await sendAdminInviteEmail({
+        to: targetEmail,
+        full_name: targetProfile?.full_name ?? null,
+        username: targetProfile?.username ?? targetEmail,
+        tempPassword: tp,
+        kind: "reset",
+      });
+    }
+
+    return { ok: true, tempPassword: tp, emailSent: Boolean(targetEmail) };
   });
 
 // Self password change — clears must_change_password
