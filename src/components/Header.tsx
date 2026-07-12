@@ -185,35 +185,59 @@ export function Header() {
             <DropdownMenuContent
               align="end"
               sideOffset={10}
-              className="w-60 rounded-2xl border-border/70 p-2 shadow-xl"
+              className="w-72 overflow-hidden rounded-2xl border border-accent/40 bg-card p-0 text-foreground shadow-[0_20px_60px_-20px_rgba(29,42,34,0.45)]"
             >
-              {NAV_LINKS.map((link) => {
-                const Icon = link.icon;
-                const active = pathname === link.to;
-                return (
-                  <DropdownMenuItem key={link.to} asChild>
-                    <Link
-                      to={link.to}
-                      className={cn(
-                        "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium",
-                        active ? "bg-accent/10 text-primary" : "text-foreground",
-                      )}
-                    >
-                      <Icon className="h-4 w-4 text-accent" />
-                      <span>{link.label}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                );
-              })}
-              <DropdownMenuItem asChild>
-                <Link
-                  to="/contact"
-                  className="flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-accent"
-                >
-                  <MessageSquare className="h-4 w-4" />
-                  <span>Contact Us</span>
-                </Link>
-              </DropdownMenuItem>
+              <div className="bg-gradient-to-r from-primary to-primary/85 px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
+                  Explore GSM
+                </p>
+                <p className="mt-0.5 text-sm font-semibold text-primary-foreground">
+                  George School of Motoring
+                </p>
+              </div>
+              <div className="flex flex-col gap-1 p-2">
+                {NAV_LINKS.map((link) => {
+                  const Icon = link.icon;
+                  const active = pathname === link.to;
+                  return (
+                    <DropdownMenuItem key={link.to} asChild>
+                      <Link
+                        to={link.to}
+                        className={cn(
+                          "group flex cursor-pointer items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-semibold outline-none transition-colors",
+                          active
+                            ? "bg-accent/15 text-primary"
+                            : "text-foreground hover:bg-accent/10 focus:bg-accent/10",
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "grid h-8 w-8 shrink-0 place-items-center rounded-full border border-accent/40 bg-primary text-accent shadow-sm transition-transform group-hover:scale-105",
+                            active && "bg-accent text-primary-foreground border-accent",
+                          )}
+                        >
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        <span className="flex-1 truncate">{link.label}</span>
+                        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-accent" />
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+                <div className="my-1 h-px bg-accent/20" />
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/contact"
+                    className="group flex cursor-pointer items-center gap-3 rounded-xl bg-accent/10 px-2.5 py-2 text-sm font-semibold text-primary outline-none transition-colors hover:bg-accent/20 focus:bg-accent/20"
+                  >
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-primary-foreground shadow-sm">
+                      <MessageSquare className="h-4 w-4" />
+                    </span>
+                    <span className="flex-1 truncate">Contact Us</span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-accent transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </DropdownMenuItem>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -238,9 +262,19 @@ export function Header() {
             <PopoverContent
               align="end"
               sideOffset={10}
-              className="w-72 rounded-2xl border-border/70 p-2 shadow-xl"
+              className="w-80 overflow-hidden rounded-2xl border border-accent/40 bg-card p-0 shadow-[0_20px_60px_-20px_rgba(29,42,34,0.45)]"
             >
-              <ContactPanel business={business} />
+              <div className="bg-gradient-to-r from-primary to-primary/85 px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
+                  Get in touch
+                </p>
+                <p className="mt-0.5 text-sm font-semibold text-primary-foreground">
+                  Call, message or find us
+                </p>
+              </div>
+              <div className="p-2">
+                <ContactPanel business={business} />
+              </div>
             </PopoverContent>
           </Popover>
 
