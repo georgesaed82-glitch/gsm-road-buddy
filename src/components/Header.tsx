@@ -61,31 +61,31 @@ export function Header() {
   };
 
   const circleIconBtn =
-    "inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
+    "inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:h-10 sm:w-10 lg:h-11 lg:w-11";
 
   return (
     <header className="sticky top-0 z-[120] w-full border-b-2 border-accent bg-card/95 shadow-[0_4px_14px_-8px_rgba(29,42,34,0.25)] backdrop-blur supports-[backdrop-filter]:bg-card/85">
-      <div className="mx-auto flex min-h-[76px] w-full max-w-7xl items-center gap-3 px-4 py-2.5 sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4 lg:px-8">
+      <div className="mx-auto flex min-h-[56px] w-full max-w-7xl items-center gap-2 px-3 py-1.5 sm:min-h-[60px] sm:gap-3 sm:px-5 sm:py-2 lg:grid lg:min-h-[64px] lg:grid-cols-[1fr_auto_1fr] lg:gap-4 lg:px-8">
         {/* Left spacer (desktop only) — balances the actions on the right so the brand sits centred */}
         <div className="hidden lg:block" aria-hidden="true" />
 
         {/* Brand */}
         <Link
           to="/"
-          className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4 lg:flex-none lg:justify-self-center"
+          className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 lg:flex-none lg:justify-self-center"
           aria-label="GSM Driving School — home"
         >
-          <BrandPlate size="sm" className="max-w-full lg:hidden" />
-          <BrandPlate size="md" className="hidden max-w-full lg:inline-flex" />
+          <BrandPlate size="xs" className="max-w-full sm:hidden" />
+          <BrandPlate size="sm" className="hidden max-w-full sm:inline-flex" />
         </Link>
 
         {/* Actions (same premium sheet menu on mobile and desktop) */}
-        <div className="flex shrink-0 items-center gap-2 lg:justify-self-end">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:justify-self-end">
           {/* Desktop-only GSM PLUS+ pill (mobile has it inside the sheet) */}
           <Link
             to="/auth"
             aria-label="Open GSM Plus learner portal"
-            className="hidden lg:inline-flex h-11 items-center gap-2 rounded-full border border-accent/60 bg-gradient-to-r from-primary to-primary/90 px-4 text-sm font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="hidden lg:inline-flex h-10 items-center gap-2 rounded-full border border-accent/60 bg-gradient-to-r from-primary to-primary/90 px-3.5 text-sm font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             <span className="grid h-6 w-6 place-items-center rounded-full bg-accent text-primary-foreground">
               <GraduationCap className="h-3.5 w-3.5" />
