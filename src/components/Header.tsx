@@ -134,19 +134,22 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-[120] w-full border-b-2 border-accent bg-card/95 shadow-[0_4px_14px_-8px_rgba(29,42,34,0.25)] backdrop-blur supports-[backdrop-filter]:bg-card/85">
-      <div className="mx-auto flex min-h-[76px] w-full max-w-7xl items-center gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-[76px] w-full max-w-7xl items-center gap-3 px-4 py-2.5 sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4 lg:px-8">
+        {/* Left spacer (desktop only) — balances the actions on the right so the brand sits centred */}
+        <div className="hidden lg:block" aria-hidden="true" />
+
         {/* Brand */}
         <Link
           to="/"
-          className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4"
+          className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4 lg:flex-none lg:justify-self-center"
           aria-label="GSM Driving School — home"
         >
           <BrandPlate size="sm" className="max-w-full lg:hidden" />
-          <BrandPlate size="xl" className="hidden max-w-full lg:inline-flex" />
+          <BrandPlate size="md" className="hidden max-w-full lg:inline-flex" />
         </Link>
 
         {/* Actions (same premium sheet menu on mobile and desktop) */}
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 lg:justify-self-end">
           {/* Desktop-only GSM PLUS+ pill (mobile has it inside the sheet) */}
           <Link
             to="/auth"
