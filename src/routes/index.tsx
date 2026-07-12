@@ -15,6 +15,7 @@ import { trackContactClick } from "@/lib/trackContactClick";
 import { listPublicHomeSections, type HomeSectionRow } from "@/lib/home-cms.functions";
 import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
 import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
+import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
@@ -448,10 +449,24 @@ function RecentPassSection({ s }: SectionProps) {
 
 function GallerySection({ s }: SectionProps) {
   const captions = usePageBlockStrings("home-gallery-captions", DEFAULT_GALLERY_CAPTIONS);
-  const galleryPhotos = GALLERY_URLS.map((url, i) => ({
-    url,
-    caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "",
-  }));
+  const listFn = useServerFn(listStudentPassPhotosPublic);
+  const { data: dbPhotos } = useQuery({
+    queryKey: ["student-passes-public"],
+    queryFn: () => listFn(),
+    staleTime: 60_000,
+  });
+  // Prefer database-managed photos when available. They're already ordered
+  // newest-first (lowest order_index, then most recent). Fall back to the
+  // baked-in gallery so the section never renders empty.
+  const galleryPhotos =
+    dbPhotos && dbPhotos.length > 0
+      ? dbPhotos
+          .filter((p) => !!p.image_url)
+          .map((p) => ({ url: p.image_url as string, caption: p.caption }))
+      : GALLERY_URLS.map((url, i) => ({
+          url,
+          caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "",
+        }));
   return (
     <section className="bg-muted py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

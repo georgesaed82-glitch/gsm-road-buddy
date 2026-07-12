@@ -1622,6 +1622,39 @@ export type Database = {
         }
         Relationships: []
       }
+      student_pass_photos: {
+        Row: {
+          caption: string
+          created_at: string
+          enabled: boolean
+          id: string
+          image_path: string | null
+          image_url: string | null
+          order_index: number
+          updated_at: string
+        }
+        Insert: {
+          caption?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          image_path?: string | null
+          image_url?: string | null
+          order_index?: number
+          updated_at?: string
+        }
+        Update: {
+          caption?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          image_path?: string | null
+          image_url?: string | null
+          order_index?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string

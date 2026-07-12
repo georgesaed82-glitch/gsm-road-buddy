@@ -28,6 +28,7 @@ import {
   Star,
   Video,
   Image as ImageIcon,
+  Camera,
   Route as RouteIcon,
   Hand,
   Palette,
@@ -93,6 +94,7 @@ const groups: Group[] = [
       { to: "/admin/blog", label: "Blog & articles", icon: Newspaper },
       { to: "/admin/areas", label: "Areas covered", icon: MapPin },
       { to: "/admin/reviews", label: "Reviews", icon: Star },
+      { to: "/admin/student-passes", label: "Student passes", icon: Camera },
     ],
   },
   {
