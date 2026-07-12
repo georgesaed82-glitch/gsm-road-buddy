@@ -215,13 +215,13 @@ function HeroSection({ s }: SectionProps) {
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-8 lg:pb-24 lg:pt-20">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 pb-10 pt-8 sm:px-6 sm:gap-10 sm:pb-14 sm:pt-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:px-8 lg:pb-16 lg:pt-14">
         <div className="flex flex-col justify-center">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
-          <h1 className="mt-6 text-balance font-display text-[44px] font-medium leading-[1.05] text-foreground sm:text-6xl lg:text-[72px]">
+          <h1 className="mt-4 text-balance font-display text-[36px] font-medium leading-[1.05] text-foreground sm:mt-6 sm:text-5xl lg:text-[56px] xl:text-[64px]">
             {renderHeroTitle(heroTitle)}
           </h1>
           <a
@@ -294,7 +294,7 @@ function HeroSection({ s }: SectionProps) {
             <img
               src={or(s.image_url, heroImage.url)}
               alt="A happy GSM Driving School student showing their DVSA practical driving test pass certificate next to the GSM car in Notting Hill, West London."
-              className="aspect-[4/5] w-full object-cover"
+              className="aspect-[4/5] w-full object-cover sm:aspect-[4/5] lg:aspect-[4/4] lg:max-h-[70vh]"
               width={1600}
               height={1200}
             />
@@ -318,7 +318,7 @@ function HeroSection({ s }: SectionProps) {
 function WhySection({ s }: SectionProps) {
   const reasons = usePageBlocks("home-reasons", DEFAULT_REASONS);
   return (
-    <section className="py-20 sm:py-28">
+    <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
@@ -396,7 +396,7 @@ function AreasSection({ s }: SectionProps) {
 function RecentPassSection({ s }: SectionProps) {
   const rating = useSiteRating();
   return (
-    <section className="bg-muted py-20 sm:py-28">
+    <section className="bg-muted py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:items-center">
           <div className="overflow-hidden border border-border bg-background shadow-xl">
@@ -470,7 +470,7 @@ function GallerySection({ s }: SectionProps) {
           caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "",
         }));
   return (
-    <section className="bg-muted py-20 sm:py-28">
+    <section className="bg-muted py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
@@ -496,7 +496,7 @@ function GallerySection({ s }: SectionProps) {
 
 function QuizzesSection({ s }: SectionProps) {
   return (
-    <section className="border-t border-border bg-background py-20 sm:py-28">
+    <section className="border-t border-border bg-background py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
@@ -715,7 +715,7 @@ function CustomSection({ s }: SectionProps) {
             ? "bg-card"
             : "bg-background";
   return (
-    <section className={`${bg} border-t border-border py-20 sm:py-28`}>
+    <section className={`${bg} border-t border-border py-12 sm:py-16`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {s.eyebrow && (
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">

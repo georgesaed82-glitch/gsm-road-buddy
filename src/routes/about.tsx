@@ -112,7 +112,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 sm:py-20">
+      <section className="py-10 sm:py-14">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <p className="text-lg leading-relaxed text-muted-foreground">
             GSM Driving School was founded with a simple mission: help every learner pass their test
@@ -128,7 +128,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-secondary/30 py-16 sm:py-20">
+      <section className="bg-secondary/30 py-10 sm:py-14">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Why choose us
@@ -160,7 +160,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-card py-16 sm:py-20">
+      <section className="bg-card py-10 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Our values
@@ -184,7 +184,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 sm:py-20">
+      <section className="py-10 sm:py-14">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Frequently asked questions
