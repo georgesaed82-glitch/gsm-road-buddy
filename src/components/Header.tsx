@@ -158,6 +158,7 @@ function ContactPanel({
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [contactMobileOpen, setContactMobileOpen] = useState(false);
+  const [languagesMobileOpen, setLanguagesMobileOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
@@ -420,18 +421,34 @@ export function Header() {
                     </div>
                   )}
 
-                  <div
-                    className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-3 text-[15px] font-semibold text-foreground shadow-[0_2px_10px_-4px_rgba(29,42,34,0.18)]"
+                  <button
+                    type="button"
+                    onClick={() => setLanguagesMobileOpen((v) => !v)}
+                    aria-expanded={languagesMobileOpen}
+                    className={cn(
+                      "group flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-3 text-left text-[15px] font-semibold shadow-[0_2px_10px_-4px_rgba(29,42,34,0.18)] transition-all active:scale-[0.98]",
+                      languagesMobileOpen
+                        ? "border-accent/60 bg-accent/10 text-primary"
+                        : "text-foreground hover:-translate-y-0.5 hover:border-accent/40",
+                    )}
                   >
                     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/50 bg-primary text-accent shadow-sm">
                       <Globe className="h-5 w-5" />
                     </span>
                     <span className="h-8 w-px shrink-0 bg-border/70" aria-hidden="true" />
-                    <span className="min-w-0 flex-1">Languages</span>
-                    <div className="shrink-0">
+                    <span className="min-w-0 flex-1 truncate">Languages</span>
+                    <ChevronDown
+                      className={cn(
+                        "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+                        languagesMobileOpen && "rotate-180",
+                      )}
+                    />
+                  </button>
+                  {languagesMobileOpen && (
+                    <div className="rounded-2xl border border-accent/20 bg-card p-3 shadow-inner">
                       <LanguageSelector />
                     </div>
-                  </div>
+                  )}
                 </nav>
 
                 {isAuthed ? (
