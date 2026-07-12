@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
@@ -23,12 +23,6 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -111,10 +105,12 @@ function ContactPanel({
 }
 
 export function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [contactMobileOpen, setContactMobileOpen] = useState(false);
   const [languagesMobileOpen, setLanguagesMobileOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { business } = useSiteSettings();
@@ -126,6 +122,29 @@ export function Header() {
     });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (menuRef.current?.contains(event.target as Node)) return;
+      setMenuOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -140,7 +159,7 @@ export function Header() {
     "inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b-2 border-accent bg-card/95 shadow-[0_4px_14px_-8px_rgba(29,42,34,0.25)] backdrop-blur supports-[backdrop-filter]:bg-card/85">
+    <header className="sticky top-0 z-[120] w-full border-b-2 border-accent bg-card/95 shadow-[0_4px_14px_-8px_rgba(29,42,34,0.25)] backdrop-blur supports-[backdrop-filter]:bg-card/85">
       <div className="mx-auto flex min-h-[76px] w-full max-w-7xl items-center gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
         {/* Brand */}
         <Link
@@ -174,18 +193,33 @@ export function Header() {
           </Link>
 
           {/* Menu dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button type="button" className={pillBtn} aria-label="Open menu">
+          <div ref={menuRef} className="relative">
+            <button
+              type="button"
+              className={pillBtn}
+              aria-label="Open menu"
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
                 <MenuIcon className="h-4 w-4 text-accent" />
                 <span>Menu</span>
-                <ChevronDown className="h-4 w-4 opacity-70" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              sideOffset={10}
-              className="w-72 overflow-hidden rounded-2xl border border-accent/40 bg-card p-0 text-foreground shadow-[0_20px_60px_-20px_rgba(29,42,34,0.45)]"
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 opacity-70 transition-transform duration-200",
+                    menuOpen && "rotate-180",
+                  )}
+                />
+            </button>
+            <div
+              role="menu"
+              aria-label="Main navigation"
+              className={cn(
+                "absolute right-0 top-[calc(100%+0.625rem)] z-[140] w-80 origin-top-right overflow-hidden rounded-2xl border border-accent/45 bg-card p-0 text-foreground shadow-[0_24px_70px_-22px_rgba(29,42,34,0.55)] ring-1 ring-primary/10 transition-all duration-200",
+                menuOpen
+                  ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+                  : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0",
+              )}
             >
               <div className="bg-gradient-to-r from-primary to-primary/85 px-4 py-3">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
@@ -200,46 +234,47 @@ export function Header() {
                   const Icon = link.icon;
                   const active = pathname === link.to;
                   return (
-                    <DropdownMenuItem key={link.to} asChild>
-                      <Link
-                        to={link.to}
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      role="menuitem"
+                      onClick={() => setMenuOpen(false)}
+                      className={cn(
+                        "group flex cursor-pointer items-center gap-3 rounded-xl px-2.5 py-2.5 text-sm font-semibold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent/40",
+                        active
+                          ? "bg-accent/15 text-primary"
+                          : "text-foreground hover:bg-accent/10 focus:bg-accent/10",
+                      )}
+                    >
+                      <span
                         className={cn(
-                          "group flex cursor-pointer items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-semibold outline-none transition-colors",
-                          active
-                            ? "bg-accent/15 text-primary"
-                            : "text-foreground hover:bg-accent/10 focus:bg-accent/10",
+                          "grid h-9 w-9 shrink-0 place-items-center rounded-full border border-accent/40 bg-primary text-accent shadow-sm transition-transform group-hover:scale-105",
+                          active && "border-accent bg-accent text-primary-foreground",
                         )}
                       >
-                        <span
-                          className={cn(
-                            "grid h-8 w-8 shrink-0 place-items-center rounded-full border border-accent/40 bg-primary text-accent shadow-sm transition-transform group-hover:scale-105",
-                            active && "bg-accent text-primary-foreground border-accent",
-                          )}
-                        >
-                          <Icon className="h-4 w-4" />
-                        </span>
-                        <span className="flex-1 truncate">{link.label}</span>
-                        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-accent" />
-                      </Link>
-                    </DropdownMenuItem>
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <span className="flex-1 truncate">{link.label}</span>
+                      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-accent" />
+                    </Link>
                   );
                 })}
                 <div className="my-1 h-px bg-accent/20" />
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/contact"
-                    className="group flex cursor-pointer items-center gap-3 rounded-xl bg-accent/10 px-2.5 py-2 text-sm font-semibold text-primary outline-none transition-colors hover:bg-accent/20 focus:bg-accent/20"
-                  >
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-primary-foreground shadow-sm">
-                      <MessageSquare className="h-4 w-4" />
-                    </span>
-                    <span className="flex-1 truncate">Contact Us</span>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-accent transition-transform group-hover:translate-x-0.5" />
-                  </Link>
-                </DropdownMenuItem>
+                <Link
+                  to="/contact"
+                  role="menuitem"
+                  onClick={() => setMenuOpen(false)}
+                  className="group flex cursor-pointer items-center gap-3 rounded-xl bg-accent/10 px-2.5 py-2.5 text-sm font-semibold text-primary outline-none transition-colors hover:bg-accent/20 focus:bg-accent/20 focus-visible:ring-2 focus-visible:ring-accent/40"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent text-primary-foreground shadow-sm">
+                    <MessageSquare className="h-4 w-4" />
+                  </span>
+                  <span className="flex-1 truncate">Contact Us</span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-accent transition-transform group-hover:translate-x-0.5" />
+                </Link>
               </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </div>
+          </div>
 
           {/* Contact Us popover */}
           <Popover>
