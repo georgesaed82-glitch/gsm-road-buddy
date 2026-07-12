@@ -28,6 +28,7 @@ import {
   Star,
   Video,
   Image as ImageIcon,
+  Camera,
   Route as RouteIcon,
   Hand,
   Palette,
