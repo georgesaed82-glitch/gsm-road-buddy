@@ -44,6 +44,8 @@ function AuthPage() {
   const [remember, setRemember] = useState(false);
   const [keyboardMode, setKeyboardMode] = useState<"numeric" | "text">(isAdmin ? "text" : "numeric");
   const [showPassword, setShowPassword] = useState(false);
+  // Admins are always full-keyboard; only learners get the numeric PIN pad.
+  const effectiveKeyboardMode: "numeric" | "text" = isAdmin ? "text" : keyboardMode;
   const [authMessage, setAuthMessage] = useState<{
     type: "error" | "success";
     text: string;
@@ -88,95 +90,61 @@ function AuthPage() {
     const pw = password.trim();
     const emailValue = email.trim();
     if (isAdmin) {
-      if (!pw) {
-        const msg = "Enter the admin PIN/password.";
+      if (!emailValue) {
+        const msg = "Enter your administrator email address.";
         setAuthMessage({ type: "error", text: msg });
         toast.error(msg);
         setSubmitting(false);
         return;
       }
-      // Per-admin email + password sign-in (RBAC accounts). If an email is
-      // supplied, try email/password auth first; fall back to the shared
-      // admin master code path only when no email is provided.
-      if (emailValue) {
-        const { data: sess, error: signErr } = await supabase.auth.signInWithPassword({
-          email: emailValue,
-          password: pw,
-        });
-        if (signErr || !sess?.session) {
-          const msg = "Email or password is incorrect.";
-          setAuthMessage({ type: "error", text: msg });
-          toast.error(msg);
-          setSubmitting(false);
-          return;
-        }
-        try {
-          const r = await recordLogin({ data: {} as never });
-          if (!r?.ok) {
-            await supabase.auth.signOut();
-            const msg = "This account is not an administrator.";
-            setAuthMessage({ type: "error", text: msg });
-            toast.error(msg);
-            setSubmitting(false);
-            return;
-          }
-        } catch (err) {
-          await supabase.auth.signOut();
-          const msg = err instanceof Error ? err.message : "Sign-in failed.";
-          setAuthMessage({ type: "error", text: msg });
-          toast.error(msg);
-          setSubmitting(false);
-          return;
-        }
-        const msg = "Signed in. Opening admin portal...";
-        setAuthMessage({ type: "success", text: msg });
-        toast.success(msg);
-        navigate({ to: "/admin" });
+      if (!pw) {
+        const msg = "Enter your password.";
+        setAuthMessage({ type: "error", text: msg });
+        toast.error(msg);
+        setSubmitting(false);
+        return;
+      }
+      // Per-admin email + password sign-in only. Shared PINs are no longer
+      // accepted — every administrator must have their own account.
+      const { data: sess, error: signErr } = await supabase.auth.signInWithPassword({
+        email: emailValue,
+        password: pw,
+      });
+      if (signErr || !sess?.session) {
+        const msg = "Email or password is incorrect.";
+        setAuthMessage({ type: "error", text: msg });
+        toast.error(msg);
+        setSubmitting(false);
         return;
       }
       try {
-        const res = await verify({
-          data: {
-            password: pw,
-            mode: "admin",
-            captchaToken: codeCaptchaToken,
-          },
-        });
-        if (!res.ok || !res.session?.access_token || !res.session?.refresh_token) {
-          const msg = "The admin PIN/password is incorrect.";
-          setAuthMessage({ type: "error", text: msg });
-          toast.error(msg);
-          setCodeCaptchaToken(null);
-          setSubmitting(false);
-          return;
-        }
-        const { error: setErr } = await supabase.auth.setSession({
-          access_token: res.session.access_token,
-          refresh_token: res.session.refresh_token,
-        });
-        if (setErr) {
-          const msg = "Sign-in failed. Please try again.";
+        const r = await recordLogin({ data: {} as never });
+        if (!r?.ok) {
+          await supabase.auth.signOut();
+          const msg = "This account is not an administrator.";
           setAuthMessage({ type: "error", text: msg });
           toast.error(msg);
           setSubmitting(false);
           return;
         }
-        try {
-          window.localStorage.removeItem("admin_unlocked");
-          window.localStorage.removeItem("admin_password");
-        } catch {
-          // Best-effort cleanup of legacy keys.
-        }
-        const msg = "Signed in. Opening admin portal...";
-        setAuthMessage({ type: "success", text: msg });
-        toast.success(msg);
-        navigate({ to: "/admin" });
-      } catch {
-        const msg = "Sign-in failed. Please try again.";
+      } catch (err) {
+        await supabase.auth.signOut();
+        const msg = err instanceof Error ? err.message : "Sign-in failed.";
         setAuthMessage({ type: "error", text: msg });
         toast.error(msg);
         setSubmitting(false);
+        return;
       }
+      try {
+        window.localStorage.removeItem("admin_unlocked");
+        window.localStorage.removeItem("admin_password");
+      } catch {
+        // Best-effort cleanup of legacy keys.
+      }
+      const msg = "Signed in. Opening admin portal...";
+      setAuthMessage({ type: "success", text: msg });
+      toast.success(msg);
+      navigate({ to: "/admin" });
       return;
     }
     if (!emailValue) {
@@ -264,7 +232,7 @@ function AuthPage() {
         <CardHeader>
           <CardTitle className="font-display text-2xl">
             {isAdmin ? (
-              "Admin login"
+              "Secure Administrator Login"
             ) : (
               <>
                 <span className="font-bold">GSM</span>{" "}
@@ -274,14 +242,14 @@ function AuthPage() {
           </CardTitle>
           <CardDescription>
             <Badge variant="secondary" className="mt-2">
-              {isAdmin ? "PIN/password login" : "Email + PIN login"}
+              {isAdmin ? "Email + password login" : "Email + PIN login"}
             </Badge>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             {isAdmin
-              ? "Enter the admin PIN/password to open the admin portal."
+              ? "Sign in using your registered administrator email address and password to access the GSM Driving School Administration Portal."
               : "Enter your email address and the PIN George sent you. Your progress saves automatically to your account."}
           </p>
           <form onSubmit={handleSubmit} className="space-y-3 text-left">
@@ -305,14 +273,12 @@ function AuthPage() {
               <div className="space-y-1">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <User className="h-4 w-4" /> Email address
-                  <span className="text-[10px] font-normal text-muted-foreground">
-                    (leave blank to use the shared admin PIN)
-                  </span>
                 </label>
                 <Input
                   type="email"
+                  required
                   autoComplete="email"
-                  placeholder="admin@example.com"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={submitting}
@@ -320,47 +286,49 @@ function AuthPage() {
               </div>
             )}
             <label className="text-sm font-medium flex items-center gap-2">
-              <Lock className="h-4 w-4" /> {isAdmin ? "Admin PIN/password" : "PIN"}
+              <Lock className="h-4 w-4" /> {isAdmin ? "Password" : "PIN"}
             </label>
-            <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
-              <span>Keyboard:</span>
-              <div className="inline-flex overflow-hidden rounded-full border border-border">
-                <button
-                  type="button"
-                  onClick={() => setKeyboardMode("numeric")}
-                  className={
-                    "px-3 py-1 text-[11px] font-medium transition " +
-                    (keyboardMode === "numeric"
-                      ? "bg-accent text-accent-foreground"
-                      : "bg-transparent text-muted-foreground hover:text-primary")
-                  }
-                  aria-pressed={keyboardMode === "numeric"}
-                >
-                  123 Numbers
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setKeyboardMode("text")}
-                  className={
-                    "px-3 py-1 text-[11px] font-medium transition " +
-                    (keyboardMode === "text"
-                      ? "bg-accent text-accent-foreground"
-                      : "bg-transparent text-muted-foreground hover:text-primary")
-                  }
-                  aria-pressed={keyboardMode === "text"}
-                >
-                  ABC Full
-                </button>
+            {!isAdmin && (
+              <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                <span>Keyboard:</span>
+                <div className="inline-flex overflow-hidden rounded-full border border-border">
+                  <button
+                    type="button"
+                    onClick={() => setKeyboardMode("numeric")}
+                    className={
+                      "px-3 py-1 text-[11px] font-medium transition " +
+                      (keyboardMode === "numeric"
+                        ? "bg-accent text-accent-foreground"
+                        : "bg-transparent text-muted-foreground hover:text-primary")
+                    }
+                    aria-pressed={keyboardMode === "numeric"}
+                  >
+                    123 Numbers
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setKeyboardMode("text")}
+                    className={
+                      "px-3 py-1 text-[11px] font-medium transition " +
+                      (keyboardMode === "text"
+                        ? "bg-accent text-accent-foreground"
+                        : "bg-transparent text-muted-foreground hover:text-primary")
+                    }
+                    aria-pressed={keyboardMode === "text"}
+                  >
+                    ABC Full
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
             <div className="flex gap-2">
               <Input
                 type={showPassword ? "text" : "password"}
                 required
-                inputMode={keyboardMode}
-                pattern={keyboardMode === "numeric" ? "[0-9]*" : undefined}
+                inputMode={effectiveKeyboardMode}
+                pattern={effectiveKeyboardMode === "numeric" ? "[0-9]*" : undefined}
                 autoComplete="off"
-                placeholder={isAdmin ? "Enter admin PIN/password" : "Enter your PIN"}
+                placeholder={isAdmin ? "Enter your password" : "Enter your PIN"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={submitting}
