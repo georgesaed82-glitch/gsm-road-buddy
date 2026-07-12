@@ -35,6 +35,41 @@ function getRetryAfterSeconds(error: unknown): number {
   return 60;
 }
 
+async function ensureUnsubscribeToken(
+  supabase: SupabaseClient<any, any>,
+  email: string | null | undefined,
+  existingToken: unknown,
+): Promise<string | undefined> {
+  if (typeof existingToken === "string" && existingToken.trim()) {
+    return existingToken.trim();
+  }
+
+  const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+  if (!normalizedEmail) return undefined;
+
+  const token = crypto.randomUUID();
+  const { data, error } = await supabase
+    .from("email_unsubscribe_tokens")
+    .upsert(
+      {
+        email: normalizedEmail,
+        token,
+        used_at: null,
+        created_at: new Date().toISOString(),
+      },
+      { onConflict: "email" },
+    )
+    .select("token")
+    .single();
+
+  if (error) {
+    console.error("Failed to create unsubscribe token", { email: normalizedEmail, error });
+    return undefined;
+  }
+
+  return data?.token ?? token;
+}
+
 async function moveToDlq(
   supabase: SupabaseClient<any, any>,
   queue: string,
@@ -235,6 +270,12 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
             }
 
             try {
+              const unsubscribeToken = await ensureUnsubscribeToken(
+                supabase,
+                payload.to,
+                payload.unsubscribe_token,
+              );
+
               await sendLovableEmail(
                 {
                   run_id: payload.run_id,
@@ -247,7 +288,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                   purpose: payload.purpose,
                   label: payload.label,
                   idempotency_key: payload.idempotency_key,
-                  unsubscribe_token: payload.unsubscribe_token,
+                  unsubscribe_token: unsubscribeToken,
                   message_id: payload.message_id,
                 },
                 { apiKey, sendUrl: process.env.LOVABLE_SEND_URL },
