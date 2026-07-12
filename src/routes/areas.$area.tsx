@@ -135,7 +135,7 @@ function AreaPage() {
 
   return (
     <div className="flex flex-col">
-      <section className="bg-secondary/40 py-16 sm:py-20">
+      <section className="bg-secondary/40 py-10 sm:py-14">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {a.postcode} · West London

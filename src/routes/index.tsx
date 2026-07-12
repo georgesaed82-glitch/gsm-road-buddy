@@ -318,7 +318,7 @@ function HeroSection({ s }: SectionProps) {
 function WhySection({ s }: SectionProps) {
   const reasons = usePageBlocks("home-reasons", DEFAULT_REASONS);
   return (
-    <section className="py-20 sm:py-28">
+    <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
@@ -396,7 +396,7 @@ function AreasSection({ s }: SectionProps) {
 function RecentPassSection({ s }: SectionProps) {
   const rating = useSiteRating();
   return (
-    <section className="bg-muted py-20 sm:py-28">
+    <section className="bg-muted py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:items-center">
           <div className="overflow-hidden border border-border bg-background shadow-xl">
@@ -470,7 +470,7 @@ function GallerySection({ s }: SectionProps) {
           caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "",
         }));
   return (
-    <section className="bg-muted py-20 sm:py-28">
+    <section className="bg-muted py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
@@ -496,7 +496,7 @@ function GallerySection({ s }: SectionProps) {
 
 function QuizzesSection({ s }: SectionProps) {
   return (
-    <section className="border-t border-border bg-background py-20 sm:py-28">
+    <section className="border-t border-border bg-background py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
@@ -715,7 +715,7 @@ function CustomSection({ s }: SectionProps) {
             ? "bg-card"
             : "bg-background";
   return (
-    <section className={`${bg} border-t border-border py-20 sm:py-28`}>
+    <section className={`${bg} border-t border-border py-12 sm:py-16`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {s.eyebrow && (
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">

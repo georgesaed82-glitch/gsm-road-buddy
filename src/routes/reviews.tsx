@@ -165,7 +165,7 @@ function ReviewsPage() {
         </div>
       </section>
 
-      <section className="py-16 sm:py-20">
+      <section className="py-10 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {filtered.length === 0 ? (
             <p className="py-20 text-center text-muted-foreground">No reviews match "{query}".</p>
