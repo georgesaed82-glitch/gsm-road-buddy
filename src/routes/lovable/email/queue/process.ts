@@ -345,7 +345,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                 provider_status: providerResponse?.status ?? "accepted",
                 provider_http_status: 200,
                 provider_response: {
-                  ...(providerResponse as Record<string, unknown>),
+                  ...(providerResponse as unknown as Record<string, unknown>),
                   duration_ms: Date.now() - sendStartedAt,
                   idempotency_key: payload.idempotency_key ?? null,
                   sender_domain: payload.sender_domain ?? null,
