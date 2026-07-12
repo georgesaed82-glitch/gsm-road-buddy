@@ -1,90 +1,161 @@
 import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
-  Menu,
+  Menu as MenuIcon,
   Mail,
-  Lock,
+  MapPin,
+  Phone,
+  ChevronDown,
+  UserCog,
   LogOut,
-  BookOpen,
-  Eye,
-  GraduationCap,
-  LayoutDashboard,
-  Download,
   Info,
   Car,
   CreditCard,
   Star,
   MessageSquare,
-  Newspaper,
-  HelpCircle,
-  ArrowRight,
+  BookOpen,
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
-import { useSiteSettings, useNavItems } from "@/hooks/useSiteSettings";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
-import { GsmPlus } from "@/components/GsmPlus";
 
-const DEFAULT_NAV_LINKS = [
+const NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/about", label: "About", icon: Info },
-  { to: "/services", label: "Practical", icon: Car },
-  { to: "/pricing", label: "Pricing", icon: CreditCard },
+  { to: "/services", label: "Practical Lessons", icon: Car },
+  { to: "/pricing", label: "Prices & Packages", icon: CreditCard },
+  { to: "/theory", label: "Theory Training", icon: BookOpen },
   { to: "/reviews", label: "Reviews", icon: Star },
-  { to: "/contact", label: "Contact", icon: MessageSquare },
 ];
 
-const MOBILE_ICON_MAP: Record<string, typeof BookOpen> = {
-  about: Info,
-  services: Car,
-  practical: Car,
-  pricing: CreditCard,
-  reviews: Star,
-  contact: MessageSquare,
-  blog: Newspaper,
-  faq: HelpCircle,
-  dashboard: LayoutDashboard,
-  theory: BookOpen,
-  "hazard-perception": Eye,
-  lessons: GraduationCap,
-  "download-app": Download,
-};
-
-function getMobileIcon(href: string, label?: string) {
-  const segment = href.replace(/^\//, "").split("/")[0].toLowerCase();
-  if (segment && MOBILE_ICON_MAP[segment]) return MOBILE_ICON_MAP[segment];
-  const labelKey = (label ?? "").toLowerCase().replace(/\s+/g, "-");
-  if (labelKey && MOBILE_ICON_MAP[labelKey]) return MOBILE_ICON_MAP[labelKey];
-  return ArrowRight;
-}
-
-function Monogram() {
+function Logo({ size = "md" }: { size?: "md" | "lg" }) {
+  const dim = size === "lg" ? "h-16 w-16 sm:h-[70px] sm:w-[70px]" : "h-14 w-14";
   return (
     <img
       src={gsmLogo.url}
       alt="GSM Driving School logo"
-      className="h-12 w-12 rounded-full object-cover shadow-sm ring-1 ring-primary/20 sm:h-11 sm:w-11"
+      className={cn(
+        "shrink-0 rounded-full object-cover shadow-md ring-2 ring-accent/40",
+        dim,
+      )}
     />
   );
 }
 
+function BrandLockup({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className="min-w-0 leading-tight">
+      <div
+        className={cn(
+          "font-display font-extrabold tracking-tight text-primary",
+          compact ? "text-[17px] sm:text-[19px]" : "text-[19px] sm:text-2xl md:text-[26px]",
+        )}
+      >
+        GSM DRIVING SCHOOL
+      </div>
+      <div
+        className={cn(
+          "font-medium text-foreground/80",
+          compact ? "text-[11px] sm:text-[12px]" : "text-[12px] sm:text-sm",
+        )}
+      >
+        George's School of Motoring
+      </div>
+      <div
+        className={cn(
+          "font-semibold text-accent",
+          compact ? "text-[10px] sm:text-[11px]" : "text-[11px] sm:text-[12px]",
+        )}
+      >
+        Established 2005
+      </div>
+    </div>
+  );
+}
+
+function ContactPanel({
+  business,
+  onItemClick,
+}: {
+  business: ReturnType<typeof useSiteSettings>["business"];
+  onItemClick?: () => void;
+}) {
+  const whatsappHref = `https://wa.me/${business.phone_intl}`;
+  const emailHref = `mailto:${business.email}`;
+  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    business.address,
+  )}`;
+  const row =
+    "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/10";
+  const iconWrap =
+    "grid h-9 w-9 shrink-0 place-items-center rounded-full text-primary-foreground shadow-sm";
+  return (
+    <div className="flex flex-col gap-1">
+      <a
+        href={whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => {
+          trackContactClick("whatsapp", "Header contact panel");
+          onItemClick?.();
+        }}
+        className={row}
+      >
+        <span className={cn(iconWrap, "bg-[#25D366]")}>
+          <WhatsAppIcon className="h-4 w-4 text-white" />
+        </span>
+        <span className="min-w-0 truncate">{business.phone}</span>
+      </a>
+      <a
+        href={emailHref}
+        onClick={() => {
+          trackContactClick("email", "Header contact panel");
+          onItemClick?.();
+        }}
+        className={row}
+      >
+        <span className={cn(iconWrap, "bg-accent")}>
+          <Mail className="h-4 w-4" />
+        </span>
+        <span className="min-w-0 truncate">{business.email}</span>
+      </a>
+      <a
+        href={mapHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onItemClick}
+        className={row}
+      >
+        <span className={cn(iconWrap, "bg-primary")}>
+          <MapPin className="h-4 w-4" />
+        </span>
+        <span className="min-w-0">GSM Driving School</span>
+      </a>
+    </div>
+  );
+}
+
 export function Header() {
-  const [open, setOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [contactMobileOpen, setContactMobileOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const { business, footer } = useSiteSettings();
-  const { items: dbNav } = useNavItems("header");
-  const navLinks =
-    dbNav.length > 0 ? dbNav.map((n) => ({ to: n.href, label: n.label })) : DEFAULT_NAV_LINKS;
-  const whatsappHref = `https://wa.me/${business.phone_intl}`;
-  const emailHref = `mailto:${business.email}`;
+  const { business } = useSiteSettings();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
@@ -96,237 +167,256 @@ export function Header() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    setOpen(false);
+    setSheetOpen(false);
     navigate({ to: "/", replace: true });
   };
 
-  const isPortalActive =
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/theory") ||
-    pathname.startsWith("/hazard-perception") ||
-    pathname.startsWith("/lessons") ||
-    pathname.startsWith("/payments") ||
-    pathname.startsWith("/profile");
+  // Shared classes for the circular pill buttons in the desktop header.
+  const pillBtn =
+    "inline-flex h-11 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-semibold text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
+  const circleIconBtn =
+    "inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-auto min-h-[68px] items-center justify-between gap-3 px-4 py-2.5 sm:gap-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex min-w-0 items-center gap-3 text-primary sm:gap-3.5">
-          <Monogram />
-          <div className="min-w-0 leading-tight">
-            <div className="truncate font-display text-[17px] font-semibold tracking-tight sm:text-[18px]">
-              {business.name}
-            </div>
-            <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              {business.tagline}
-            </div>
-          </div>
+    <header className="sticky top-0 z-50 w-full border-b-2 border-accent bg-card/95 shadow-[0_4px_14px_-8px_rgba(29,42,34,0.25)] backdrop-blur supports-[backdrop-filter]:bg-card/85">
+      <div className="mx-auto flex min-h-[76px] w-full max-w-7xl items-center gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
+        {/* Brand */}
+        <Link
+          to="/"
+          className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4"
+          aria-label="GSM Driving School — home"
+        >
+          <Logo size="lg" />
+          <BrandLockup />
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
-          {navLinks.map((link) => {
-            const active = pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
-            const Icon = (link as { icon?: typeof Download }).icon;
-            return (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={cn(
-                  "group relative inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-all duration-200",
-                  active
-                    ? "bg-accent/10 text-primary"
-                    : "text-muted-foreground hover:-translate-y-0.5 hover:bg-accent/5 hover:text-primary",
-                )}
-              >
-                {Icon && (
-                  <Icon
-                    className={cn(
-                      "h-3.5 w-3.5 transition-colors",
-                      active ? "text-accent" : "text-muted-foreground group-hover:text-accent",
-                    )}
-                    aria-hidden="true"
-                  />
-                )}
-                {link.label}
-                {active && (
-                  <span className="absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-accent" />
-                )}
-              </Link>
-            );
-          })}
-
-          <Link
-            to="/auth"
-            aria-label="GSM Plus login"
-            className={cn(
-              "group relative ml-1 inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/[0.03] px-3.5 py-2 text-sm font-medium transition-all duration-200",
-              isPortalActive
-                ? "border-accent/40 bg-accent/10 text-primary shadow-sm"
-                : "text-primary hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/10 hover:shadow-sm",
-            )}
-          >
-            <Lock className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-            <GsmPlus />
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-3">
+        {/* Desktop actions */}
+        <div className="hidden shrink-0 items-center gap-2 lg:flex">
           <LanguageSelector />
-          <div className="hidden flex-col items-end md:flex">
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`WhatsApp ${business.phone}`}
-              onClick={() => trackContactClick("whatsapp", "Header (desktop)")}
-              className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-[#25D366]"
-            >
-              <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
-              <span>{business.phone}</span>
-            </a>
-            <a
-              href={emailHref}
-              aria-label={`Email ${business.email}`}
-              onClick={() => trackContactClick("email", "Header (desktop)")}
-              className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary"
-            >
-              <Mail className="h-3.5 w-3.5 text-accent" />
-              <span>{business.email}</span>
-            </a>
-          </div>
-          {isAuthed ? (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={handleSignOut}
-              className="hidden md:inline-flex"
-            >
-              <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
-            </Button>
-          ) : (
-            <Button size="sm" variant="ghost" asChild className="hidden md:inline-flex">
-              <Link to="/auth" search={{ admin: 1 }} aria-label="Admin login">
-                <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
-              </Link>
-            </Button>
-          )}
 
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Open menu"
-                className="h-11 w-11 rounded-full border border-border/70 bg-card text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/10"
+          {/* Menu dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button type="button" className={pillBtn} aria-label="Open menu">
+                <MenuIcon className="h-4 w-4 text-accent" />
+                <span>Menu</span>
+                <ChevronDown className="h-4 w-4 opacity-70" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              sideOffset={10}
+              className="w-60 rounded-2xl border-border/70 p-2 shadow-xl"
+            >
+              {NAV_LINKS.map((link) => {
+                const Icon = link.icon;
+                const active = pathname === link.to;
+                return (
+                  <DropdownMenuItem key={link.to} asChild>
+                    <Link
+                      to={link.to}
+                      className={cn(
+                        "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium",
+                        active ? "bg-accent/10 text-primary" : "text-foreground",
+                      )}
+                    >
+                      <Icon className="h-4 w-4 text-accent" />
+                      <span>{link.label}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                );
+              })}
+              <DropdownMenuItem asChild>
+                <Link
+                  to="/contact"
+                  className="flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-accent"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span>Contact Us</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Contact Us popover */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className={cn(
+                  pillBtn,
+                  "border-accent/40 bg-accent/10 text-primary hover:bg-accent/20",
+                )}
+                aria-label="Contact us"
               >
-                <Menu className="h-5 w-5 text-accent" />
-              </Button>
+                <span className="grid h-6 w-6 place-items-center rounded-full bg-accent text-primary-foreground">
+                  <Phone className="h-3.5 w-3.5" />
+                </span>
+                <span>Contact Us</span>
+                <ChevronDown className="h-4 w-4 opacity-70" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              sideOffset={10}
+              className="w-72 rounded-2xl border-border/70 p-2 shadow-xl"
+            >
+              <ContactPanel business={business} />
+            </PopoverContent>
+          </Popover>
+
+          {/* Admin login circular */}
+          {isAuthed ? (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              aria-label="Sign out"
+              className={circleIconBtn}
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              search={{ admin: 1 }}
+              aria-label="Admin login"
+              className={circleIconBtn}
+            >
+              <UserCog className="h-5 w-5" />
+            </Link>
+          )}
+        </div>
+
+        {/* Mobile actions */}
+        <div className="flex shrink-0 items-center gap-2 lg:hidden">
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+            <SheetTrigger asChild>
+              <button
+                type="button"
+                aria-label="Open menu"
+                className={circleIconBtn}
+              >
+                <MenuIcon className="h-5 w-5 text-accent" />
+              </button>
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="flex w-[300px] flex-col overflow-hidden overscroll-contain bg-background p-0"
+              className="flex w-[320px] flex-col overflow-hidden overscroll-contain bg-background p-0"
             >
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
 
-              {/* Header: branding stays fixed at the top of the sheet */}
-              <div className="shrink-0 px-5 py-4">
-                <Link
-                  to="/"
-                  className="flex items-center gap-3 text-primary"
-                  onClick={() => setOpen(false)}
-                >
-                  <Monogram />
-                  <div className="leading-tight">
-                    <span className="font-display text-lg font-semibold">{business.name}</span>
-                    <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      {business.tagline}
-                    </div>
-                  </div>
-                </Link>
+              <div className="flex items-center gap-3 border-b border-accent/30 px-5 py-4">
+                <Logo />
+                <BrandLockup compact />
               </div>
 
-              {/* Scrollable menu body */}
-              <div className="flex-1 overflow-y-auto px-5">
-                {/* Public pages grid */}
-                <nav className="grid grid-cols-2 gap-1.5">
-                  {navLinks.map((link, index) => {
-                    const Icon =
-                      (link as { icon?: typeof Download }).icon ??
-                      getMobileIcon(link.to, link.label);
-                    const active =
-                      pathname === link.to || (link.to.startsWith("/#") && pathname === "/");
-                    const isLastOdd = index === navLinks.length - 1 && navLinks.length % 2 === 1;
+              <div className="flex-1 overflow-y-auto px-4 py-4">
+                <nav className="flex flex-col gap-1">
+                  {NAV_LINKS.map((link) => {
+                    const Icon = link.icon;
+                    const active = pathname === link.to;
                     return (
                       <Link
                         key={link.to}
                         to={link.to}
-                        onClick={() => setOpen(false)}
+                        onClick={() => setSheetOpen(false)}
                         className={cn(
-                          "flex flex-col items-center justify-center gap-1.5 rounded-xl border border-border/70 bg-card p-3 text-center font-display text-sm leading-tight transition-all duration-200 active:scale-[0.98]",
-                          isLastOdd && "col-span-2",
+                          "flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 text-[15px] font-semibold transition-colors",
                           active
-                            ? "border-accent/50 bg-accent/10 text-primary shadow-sm"
-                            : "text-foreground hover:border-accent/40 hover:bg-accent/5 hover:text-primary",
+                            ? "border-accent/40 bg-accent/10 text-primary"
+                            : "text-foreground hover:bg-accent/5",
                         )}
                       >
-                        <Icon
-                          className={cn("h-4 w-4", active ? "text-accent" : "text-accent/70")}
-                        />
+                        <Icon className="h-4 w-4 text-accent" />
                         <span>{link.label}</span>
                       </Link>
                     );
                   })}
-                </nav>
 
-                {/* GSM Plus login */}
-                <div className="mt-4">
-                  <Link
-                    to="/auth"
-                    onClick={() => setOpen(false)}
+                  <button
+                    type="button"
+                    onClick={() => setContactMobileOpen((v) => !v)}
+                    aria-expanded={contactMobileOpen}
                     className={cn(
-                      "flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/[0.04] p-3 text-center font-display text-sm leading-tight text-primary transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 active:scale-[0.99]",
-                      isPortalActive ? "border-accent/50 bg-accent/10 shadow-sm" : "",
+                      "flex items-center justify-between rounded-xl border px-4 py-3 text-[15px] font-semibold transition-colors",
+                      contactMobileOpen
+                        ? "border-accent/50 bg-accent/10 text-primary"
+                        : "border-transparent text-accent hover:bg-accent/5",
                     )}
                   >
-                    <Lock className="h-4 w-4 text-accent" />
-                    <span className="inline-flex items-center gap-1">
-                      <GsmPlus /> <span>login</span>
+                    <span className="flex items-center gap-3">
+                      <MessageSquare className="h-4 w-4" />
+                      Contact Us
                     </span>
-                  </Link>
-                </div>
+                    <ChevronDown
+                      className={cn(
+                        "h-4 w-4 transition-transform",
+                        contactMobileOpen && "rotate-180",
+                      )}
+                    />
+                  </button>
+                  {contactMobileOpen && (
+                    <div className="rounded-xl border border-accent/20 bg-card p-1.5">
+                      <ContactPanel
+                        business={business}
+                        onItemClick={() => setSheetOpen(false)}
+                      />
+                    </div>
+                  )}
+                </nav>
 
-                {/* Admin / Sign out */}
-                <div className="mt-2 pb-1">
+                <div className="mt-5 border-t border-border/60 pt-4">
                   {isAuthed ? (
-                    <Button className="w-full" variant="ghost" onClick={handleSignOut}>
-                      <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
+                    <Button className="w-full rounded-full" variant="outline" onClick={handleSignOut}>
+                      <LogOut className="mr-2 h-4 w-4" /> Sign out
                     </Button>
                   ) : (
-                    <Button asChild className="w-full" variant="ghost">
+                    <Button asChild className="w-full rounded-full" variant="outline">
                       <Link
                         to="/auth"
                         search={{ admin: 1 }}
-                        onClick={() => setOpen(false)}
+                        onClick={() => setSheetOpen(false)}
                         aria-label="Admin login"
                       >
-                        <Lock className="mr-1.5 h-3.5 w-3.5" /> Admin login
+                        <UserCog className="mr-2 h-4 w-4" /> Admin Login
                       </Link>
                     </Button>
                   )}
                 </div>
+
+                <div className="mt-4">
+                  <LanguageSelector />
+                </div>
               </div>
 
-              {/* Footer: disclaimer and legal info pinned at the bottom */}
               <div className="shrink-0 border-t border-border/60 bg-background px-5 py-3">
                 <DVSADisclaimer variant="compact" />
-                {footer.copy && (
-                  <p className="mt-1.5 text-[10px] text-muted-foreground">{footer.copy}</p>
-                )}
               </div>
             </SheetContent>
           </Sheet>
+
+          {isAuthed ? (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              aria-label="Sign out"
+              className={circleIconBtn}
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          ) : (
+            <Link
+              to="/auth"
+              search={{ admin: 1 }}
+              aria-label="Admin login"
+              className={circleIconBtn}
+            >
+              <UserCog className="h-5 w-5" />
+            </Link>
+          )}
         </div>
       </div>
     </header>
   );
 }
+
