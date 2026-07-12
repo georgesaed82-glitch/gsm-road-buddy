@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
-import { Star, ArrowRight, Phone, Download, GraduationCap } from "lucide-react";
+import { Star, ArrowRight, Phone, Download, GraduationCap, UserRound, MapPin, Trophy, LifeBuoy } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
@@ -17,6 +17,7 @@ import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
 import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
 import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
+import heroCarImage from "@/assets/gsm-hero-car.jpg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
@@ -215,7 +216,7 @@ function HeroSection({ s }: SectionProps) {
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 pb-10 pt-8 sm:px-6 sm:gap-10 sm:pb-14 sm:pt-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:px-8 lg:pb-16 lg:pt-14">
+      <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 pb-8 pt-6 sm:px-6 sm:gap-10 sm:pb-12 sm:pt-10 lg:grid-cols-[1.05fr_1.15fr] lg:gap-14 lg:px-8 lg:pb-14 lg:pt-12">
         <div className="flex flex-col justify-center">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             <span className="h-px w-8 bg-accent" />
@@ -243,11 +244,11 @@ function HeroSection({ s }: SectionProps) {
               "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.",
             )}
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button
               asChild
               size="lg"
-              className="h-14 rounded-xl bg-primary px-7 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
+              className="h-14 w-full rounded-2xl bg-primary px-7 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 sm:w-auto"
             >
               <a
                 href={or(s.cta_primary_href, "/contact")}
@@ -260,7 +261,7 @@ function HeroSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 rounded-xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
+              className="h-14 w-full rounded-2xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0 sm:w-auto"
             >
               <a
                 href={or(s.cta_secondary_href, "/#download-app")}
@@ -273,7 +274,7 @@ function HeroSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="group h-14 rounded-xl border border-border bg-card px-6 text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:bg-accent/10 hover:shadow-lg active:translate-y-0"
+              className="group h-14 w-full rounded-2xl border border-border bg-card px-6 text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:bg-accent/10 hover:shadow-lg active:translate-y-0 sm:w-auto"
             >
               <Link
                 to="/auth"
@@ -289,29 +290,54 @@ function HeroSection({ s }: SectionProps) {
             </Button>
           </div>
         </div>
-        <div className="relative">
-          <div className="overflow-hidden bg-muted shadow-2xl">
+        <div className="relative order-last lg:order-none">
+          <div className="overflow-hidden rounded-2xl bg-muted shadow-2xl ring-1 ring-border/40">
             <img
-              src={or(s.image_url, heroImage.url)}
-              alt="A happy GSM Driving School student showing their DVSA practical driving test pass certificate next to the GSM car in Notting Hill, West London."
-              className="aspect-[4/5] w-full object-cover sm:aspect-[4/5] lg:aspect-[4/4] lg:max-h-[70vh]"
+              src={or(s.image_url, heroCarImage.url)}
+              alt="The white GSM Driving School car with GSM 2005 number plate parked on a leafy street in Notting Hill, West London."
+              className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[5/4] lg:max-h-[68vh]"
               width={1600}
-              height={1200}
+              height={1408}
             />
-          </div>
-          <div className="absolute -bottom-6 left-0 max-w-[300px] bg-sage p-8 text-primary shadow-xl sm:-bottom-8 lg:-left-8">
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              <span className="h-px w-8 bg-accent" />
-              About GSM
-            </div>
-            <p className="mt-4 text-sm leading-relaxed">
-              George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also
-              DVSA-approved, joined the team bringing the same patient, structured teaching style.
-            </p>
           </div>
         </div>
       </div>
+      <FeatureStrip />
     </section>
+  );
+}
+
+const FEATURES: { icon: typeof UserRound; title: string; body: string }[] = [
+  { icon: UserRound, title: "Experienced", body: "DVSA qualified instructors" },
+  { icon: MapPin, title: "Local Expertise", body: "West London specialists" },
+  { icon: Trophy, title: "High Pass Rate", body: "Proven results since 2005" },
+  { icon: LifeBuoy, title: "Full Support", body: "Lessons, theory & learner portal" },
+];
+
+function FeatureStrip() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-12 lg:px-8">
+      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border/60 bg-card px-4 py-5 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:grid-cols-4 sm:gap-6 sm:px-6 sm:py-6">
+        {FEATURES.map(({ icon: Icon, title, body }) => (
+          <div
+            key={title}
+            className="flex items-start gap-3 sm:gap-4"
+          >
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent sm:h-11 sm:w-11">
+              <Icon className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary sm:text-xs">
+                {title}
+              </div>
+              <div className="mt-1 text-[12px] leading-snug text-muted-foreground sm:text-[13px]">
+                {body}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
