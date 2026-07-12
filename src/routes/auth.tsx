@@ -158,7 +158,6 @@ function AuthPage() {
     try {
       const res = await verify({
         data: {
-          password: pw,
           password: learnerPin,
           mode: "learner",
           captchaToken: codeCaptchaToken,
