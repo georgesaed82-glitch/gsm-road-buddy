@@ -35,6 +35,50 @@ function getRetryAfterSeconds(error: unknown): number {
   return 60;
 }
 
+async function ensureUnsubscribeToken(
+  supabase: SupabaseClient<any, any>,
+  email: string | null | undefined,
+  existingToken: unknown,
+): Promise<string | undefined> {
+  if (typeof existingToken === "string" && existingToken.trim()) {
+    return existingToken.trim();
+  }
+
+  const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+  if (!normalizedEmail) return undefined;
+
+  const { data: existing, error: readError } = await supabase
+    .from("email_unsubscribe_tokens")
+    .select("token")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
+
+  if (existing?.token) return existing.token;
+  if (readError) {
+    console.error("Failed to read unsubscribe token", { email: normalizedEmail, error: readError });
+  }
+
+  const token = crypto.randomUUID();
+  const { data, error } = await supabase
+    .from("email_unsubscribe_tokens")
+    .insert({ email: normalizedEmail, token })
+    .select("token")
+    .single();
+
+  if (error) {
+    const { data: raced } = await supabase
+      .from("email_unsubscribe_tokens")
+      .select("token")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
+    if (raced?.token) return raced.token;
+    console.error("Failed to create unsubscribe token", { email: normalizedEmail, error });
+    return undefined;
+  }
+
+  return data?.token ?? token;
+}
+
 async function moveToDlq(
   supabase: SupabaseClient<any, any>,
   queue: string,
@@ -235,6 +279,12 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
             }
 
             try {
+              const unsubscribeToken = await ensureUnsubscribeToken(
+                supabase,
+                payload.to,
+                payload.unsubscribe_token,
+              );
+
               await sendLovableEmail(
                 {
                   run_id: payload.run_id,
@@ -247,7 +297,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                   purpose: payload.purpose,
                   label: payload.label,
                   idempotency_key: payload.idempotency_key,
-                  unsubscribe_token: payload.unsubscribe_token,
+                  unsubscribe_token: unsubscribeToken,
                   message_id: payload.message_id,
                 },
                 { apiKey, sendUrl: process.env.LOVABLE_SEND_URL },
