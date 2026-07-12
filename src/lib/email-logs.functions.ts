@@ -82,12 +82,15 @@ export const listEmailLogs = createServerFn({ method: "POST" })
     if (recipients.length > 0) {
       const { data: suppressed } = await supabaseAdmin
         .from("suppressed_emails")
-        .select("email, reason, provider_event, created_at")
+        .select("email, reason, metadata, created_at")
         .in("email", recipients);
       for (const s of suppressed ?? []) {
         suppressionMap.set(s.email, {
           reason: s.reason ?? null,
-          provider_event: s.provider_event ?? null,
+          provider_event:
+            s.metadata && typeof s.metadata === "object" && "event" in s.metadata
+              ? String((s.metadata as { event: unknown }).event)
+              : null,
           created_at: s.created_at,
         });
       }
