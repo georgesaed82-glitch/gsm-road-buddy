@@ -31,10 +31,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
-import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { cn } from "@/lib/utils";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { GsmPlus } from "@/components/GsmPlus";
@@ -48,51 +47,6 @@ const NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/reviews", label: "Reviews", icon: Star },
   { to: "/blog", label: "Blog", icon: Newspaper },
 ];
-
-function Logo({ size = "md" }: { size?: "md" | "lg" }) {
-  const dim = size === "lg" ? "h-16 w-16 sm:h-[70px] sm:w-[70px]" : "h-14 w-14";
-  return (
-    <img
-      src={gsmLogo.url}
-      alt="GSM Driving School logo"
-      className={cn(
-        "shrink-0 rounded-full object-cover shadow-md ring-2 ring-accent/40",
-        dim,
-      )}
-    />
-  );
-}
-
-function BrandLockup({ compact = false }: { compact?: boolean }) {
-  return (
-    <div className="min-w-0 leading-tight">
-      <div
-        className={cn(
-          "font-display font-extrabold tracking-tight text-primary",
-          compact ? "text-[17px] sm:text-[19px]" : "text-[19px] sm:text-2xl md:text-[26px]",
-        )}
-      >
-        GSM DRIVING SCHOOL
-      </div>
-      <div
-        className={cn(
-          "font-medium text-foreground/80",
-          compact ? "text-[11px] sm:text-[12px]" : "text-[12px] sm:text-sm",
-        )}
-      >
-        George's School of Motoring
-      </div>
-      <div
-        className={cn(
-          "font-semibold text-accent",
-          compact ? "text-[10px] sm:text-[11px]" : "text-[11px] sm:text-[12px]",
-        )}
-      >
-        Established 2005
-      </div>
-    </div>
-  );
-}
 
 function ContactPanel({
   business,
