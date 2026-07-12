@@ -36,68 +36,6 @@ const NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/blog", label: "Blog", icon: Newspaper },
 ];
 
-function ContactPanel({
-  business,
-  onItemClick,
-}: {
-  business: ReturnType<typeof useSiteSettings>["business"];
-  onItemClick?: () => void;
-}) {
-  const whatsappHref = `https://wa.me/${business.phone_intl}`;
-  const emailHref = `mailto:${business.email}`;
-  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    business.address,
-  )}`;
-  const row =
-    "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/10";
-  const iconWrap =
-    "grid h-9 w-9 shrink-0 place-items-center rounded-full text-primary-foreground shadow-sm";
-  return (
-    <div className="flex flex-col gap-1">
-      <a
-        href={whatsappHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => {
-          trackContactClick("whatsapp", "Header contact panel");
-          onItemClick?.();
-        }}
-        className={row}
-      >
-        <span className={cn(iconWrap, "bg-[#25D366]")}>
-          <WhatsAppIcon className="h-4 w-4 text-white" />
-        </span>
-        <span className="min-w-0 truncate">{business.phone}</span>
-      </a>
-      <a
-        href={emailHref}
-        onClick={() => {
-          trackContactClick("email", "Header contact panel");
-          onItemClick?.();
-        }}
-        className={row}
-      >
-        <span className={cn(iconWrap, "bg-accent")}>
-          <Mail className="h-4 w-4" />
-        </span>
-        <span className="min-w-0 truncate">{business.email}</span>
-      </a>
-      <a
-        href={mapHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={onItemClick}
-        className={row}
-      >
-        <span className={cn(iconWrap, "bg-primary")}>
-          <MapPin className="h-4 w-4" />
-        </span>
-        <span className="min-w-0">GSM Driving School</span>
-      </a>
-    </div>
-  );
-}
-
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [languagesMobileOpen, setLanguagesMobileOpen] = useState(false);
