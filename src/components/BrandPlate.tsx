@@ -1,7 +1,7 @@
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { cn } from "@/lib/utils";
 
-type Size = "sm" | "md" | "lg";
+type Size = "xs" | "sm" | "md" | "lg" | "xl";
 
 const COPPER = "#C6873C";
 const COPPER_LIGHT = "#E4A85B";
@@ -131,6 +131,13 @@ export function BrandPlate({
 }
 
 const SIZES = {
+  xs: {
+    padding: "p-1.5 pr-3",
+    logoWrap: "h-9 w-9",
+    title: "text-[13px]",
+    subtitle: "text-[9.5px]",
+    badge: "text-[8px]",
+  },
   sm: {
     padding: "p-2 pr-3",
     logoWrap: "h-11 w-11",
@@ -151,5 +158,12 @@ const SIZES = {
     title: "text-[22px] sm:text-[30px] md:text-[34px]",
     subtitle: "text-[12px] sm:text-sm",
     badge: "text-[10.5px] sm:text-[12px]",
+  },
+  xl: {
+    padding: "p-4 pr-8",
+    logoWrap: "h-[84px] w-[84px]",
+    title: "text-[32px] xl:text-[36px]",
+    subtitle: "text-[13px] xl:text-[14px]",
+    badge: "text-[11px] xl:text-[12.5px]",
   },
 } as const;
