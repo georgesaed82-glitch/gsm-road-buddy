@@ -141,29 +141,50 @@ export function Header() {
           className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4"
           aria-label="GSM Driving School — home"
         >
-          <BrandPlate size="md" className="max-w-full" />
+          <BrandPlate size="sm" className="max-w-full lg:hidden" />
+          <BrandPlate size="xl" className="hidden max-w-full lg:inline-flex" />
         </Link>
 
         {/* Actions (same premium sheet menu on mobile and desktop) */}
         <div className="flex shrink-0 items-center gap-2">
+          {/* Desktop-only GSM PLUS+ pill (mobile has it inside the sheet) */}
+          <Link
+            to="/auth"
+            aria-label="Open GSM Plus learner portal"
+            className="hidden lg:inline-flex h-11 items-center gap-2 rounded-full border border-accent/60 bg-gradient-to-r from-primary to-primary/90 px-4 text-sm font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          >
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-accent text-primary-foreground">
+              <GraduationCap className="h-3.5 w-3.5" />
+            </span>
+            <GsmPlus
+              gsmClassName="text-primary-foreground"
+              plusClassName="text-accent"
+            />
+          </Link>
+
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
               <button
                 type="button"
                 aria-label="Open menu"
-                className={circleIconBtn}
+                className={cn(
+                  circleIconBtn,
+                  "lg:w-auto lg:gap-2 lg:px-4 lg:text-sm lg:font-semibold",
+                )}
               >
                 <MenuIcon className="h-5 w-5 text-accent" />
+                <span className="hidden lg:inline">Menu</span>
+                <ChevronDown className="hidden h-4 w-4 opacity-70 lg:inline" />
               </button>
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="flex w-[320px] flex-col overflow-hidden overscroll-contain bg-background p-0"
+              className="flex w-[320px] flex-col overflow-hidden overscroll-contain bg-background p-0 sm:w-[360px]"
             >
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
 
-              <div className="flex items-center justify-center border-b border-accent/30 px-4 py-4">
-                <BrandPlate size="sm" className="w-full" />
+              <div className="flex items-center justify-center border-b border-accent/30 px-3 py-2.5">
+                <BrandPlate size="xs" className="max-w-full" />
               </div>
 
               <div className="flex-1 overflow-y-auto px-4 py-4">
