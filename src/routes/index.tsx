@@ -15,6 +15,7 @@ import { trackContactClick } from "@/lib/trackContactClick";
 import { listPublicHomeSections, type HomeSectionRow } from "@/lib/home-cms.functions";
 import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
 import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
+import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
