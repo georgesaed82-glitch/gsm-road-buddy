@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { Globe } from "lucide-react";
+import { Globe, ChevronDown, Check } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -354,18 +354,27 @@ export function LanguageSelector({
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          "notranslate inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:text-primary",
+          "notranslate inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-3.5 py-2 text-xs font-semibold text-primary shadow-sm transition-all hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10",
           className,
         )}
-        aria-label="Choose language"
+        aria-label="Select language"
       >
-        <Globe className="h-3.5 w-3.5 text-accent" />
-        <span className="uppercase tracking-wider">{current.code.toUpperCase()}</span>
-        {variant === "full" && <span className="hidden sm:inline">{current.native}</span>}
+        <Globe className="h-4 w-4 text-accent" />
+        <span className="tracking-wide">
+          {variant === "full" ? current.native : "Languages"}
+        </span>
+        <span
+          lang={current.code}
+          dir={current.rtl ? "rtl" : "ltr"}
+          className="hidden rounded-full bg-accent/15 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-accent sm:inline"
+        >
+          {current.code}
+        </span>
+        <ChevronDown className="h-3.5 w-3.5 opacity-70" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="max-h-[70vh] w-56 overflow-y-auto">
+      <DropdownMenuContent align="end" className="max-h-[70vh] w-64 overflow-y-auto rounded-2xl border-border/70 p-1.5 shadow-xl">
         <DropdownMenuLabel className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-          Language
+          Select language
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {LANGUAGES.map((l) => (
@@ -375,14 +384,21 @@ export function LanguageSelector({
             lang={l.code}
             dir={l.rtl ? "rtl" : "ltr"}
             className={cn(
-              "flex items-center justify-between gap-2 text-sm",
+              "flex cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm",
               l.code === active && "bg-accent/10 text-primary",
             )}
           >
-            <span>{l.native}</span>
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {l.code}
+            <span className="flex min-w-0 flex-col leading-tight">
+              <span className="font-semibold">{l.native}</span>
+              <span className="text-[11px] text-muted-foreground">{l.label}</span>
             </span>
+            {l.code === active ? (
+              <Check className="h-4 w-4 text-accent" />
+            ) : (
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {l.code}
+              </span>
+            )}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

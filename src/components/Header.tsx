@@ -14,6 +14,8 @@ import {
   Star,
   MessageSquare,
   BookOpen,
+  Newspaper,
+  GraduationCap,
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
@@ -33,6 +35,7 @@ import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
+import { GsmPlus } from "@/components/GsmPlus";
 
 const NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/about", label: "About", icon: Info },
@@ -40,6 +43,7 @@ const NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/pricing", label: "Prices & Packages", icon: CreditCard },
   { to: "/theory", label: "Theory Training", icon: BookOpen },
   { to: "/reviews", label: "Reviews", icon: Star },
+  { to: "/blog", label: "Blog", icon: Newspaper },
 ];
 
 function Logo({ size = "md" }: { size?: "md" | "lg" }) {
@@ -194,6 +198,24 @@ export function Header() {
         <div className="hidden shrink-0 items-center gap-2 lg:flex">
           <LanguageSelector />
 
+          {/* GSM Plus learner portal */}
+          <Link
+            to="/auth"
+            aria-label="Open GSM Plus learner portal"
+            className={cn(
+              pillBtn,
+              "border-accent/60 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md hover:border-accent hover:from-primary hover:to-primary hover:text-primary-foreground",
+            )}
+          >
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-accent text-primary-foreground">
+              <GraduationCap className="h-3.5 w-3.5" />
+            </span>
+            <GsmPlus
+              gsmClassName="text-primary-foreground"
+              plusClassName="text-accent"
+            />
+          </Link>
+
           {/* Menu dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -311,7 +333,29 @@ export function Header() {
               </div>
 
               <div className="flex-1 overflow-y-auto px-4 py-4">
-                <nav className="flex flex-col gap-1">
+                {/* GSM Plus feature card */}
+                <Link
+                  to="/auth"
+                  onClick={() => setSheetOpen(false)}
+                  className="group relative flex items-center gap-3 overflow-hidden rounded-2xl border border-accent/50 bg-gradient-to-br from-primary to-primary/85 px-4 py-3.5 shadow-md"
+                  aria-label="Open GSM Plus learner portal"
+                >
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-accent text-primary-foreground shadow-inner">
+                    <GraduationCap className="h-5 w-5" />
+                  </span>
+                  <span className="flex min-w-0 flex-col">
+                    <GsmPlus
+                      className="text-[17px]"
+                      gsmClassName="text-primary-foreground"
+                      plusClassName="text-accent"
+                    />
+                    <span className="text-[11px] font-medium text-primary-foreground/80">
+                      Learner portal · sign in
+                    </span>
+                  </span>
+                </Link>
+
+                <nav className="mt-4 grid grid-cols-2 gap-2.5">
                   {NAV_LINKS.map((link) => {
                     const Icon = link.icon;
                     const active = pathname === link.to;
@@ -321,14 +365,16 @@ export function Header() {
                         to={link.to}
                         onClick={() => setSheetOpen(false)}
                         className={cn(
-                          "flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 text-[15px] font-semibold transition-colors",
+                          "flex aspect-square flex-col items-center justify-center gap-2 rounded-2xl border p-2 text-center text-[13px] font-semibold shadow-sm transition-all active:scale-[0.97]",
                           active
-                            ? "border-accent/40 bg-accent/10 text-primary"
-                            : "text-foreground hover:bg-accent/5",
+                            ? "border-accent/60 bg-accent/15 text-primary"
+                            : "border-border/60 bg-card text-foreground hover:border-accent/40 hover:bg-accent/5",
                         )}
                       >
-                        <Icon className="h-4 w-4 text-accent" />
-                        <span>{link.label}</span>
+                        <span className="grid h-10 w-10 place-items-center rounded-full bg-accent/10 text-accent">
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <span className="leading-tight">{link.label}</span>
                       </Link>
                     );
                   })}
@@ -338,14 +384,16 @@ export function Header() {
                     onClick={() => setContactMobileOpen((v) => !v)}
                     aria-expanded={contactMobileOpen}
                     className={cn(
-                      "flex items-center justify-between rounded-xl border px-4 py-3 text-[15px] font-semibold transition-colors",
+                      "col-span-2 flex items-center justify-between rounded-2xl border px-4 py-3 text-[15px] font-semibold shadow-sm transition-colors",
                       contactMobileOpen
-                        ? "border-accent/50 bg-accent/10 text-primary"
-                        : "border-transparent text-accent hover:bg-accent/5",
+                        ? "border-accent/60 bg-accent/15 text-primary"
+                        : "border-accent/40 bg-accent/5 text-accent hover:bg-accent/10",
                     )}
                   >
                     <span className="flex items-center gap-3">
-                      <MessageSquare className="h-4 w-4" />
+                      <span className="grid h-8 w-8 place-items-center rounded-full bg-accent text-primary-foreground">
+                        <MessageSquare className="h-4 w-4" />
+                      </span>
                       Contact Us
                     </span>
                     <ChevronDown
@@ -356,7 +404,7 @@ export function Header() {
                     />
                   </button>
                   {contactMobileOpen && (
-                    <div className="rounded-xl border border-accent/20 bg-card p-1.5">
+                    <div className="col-span-2 rounded-2xl border border-accent/20 bg-card p-1.5">
                       <ContactPanel
                         business={business}
                         onItemClick={() => setSheetOpen(false)}
