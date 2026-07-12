@@ -87,7 +87,8 @@ function AuthPage() {
     e.preventDefault();
     setAuthMessage(null);
     setSubmitting(true);
-    const pw = password.trim();
+    const adminPassword = password;
+    const learnerPin = password.trim();
     const emailValue = email.trim();
     if (isAdmin) {
       if (!emailValue) {
@@ -97,7 +98,7 @@ function AuthPage() {
         setSubmitting(false);
         return;
       }
-      if (!pw) {
+      if (!adminPassword) {
         const msg = "Enter your password.";
         setAuthMessage({ type: "error", text: msg });
         toast.error(msg);
@@ -108,7 +109,7 @@ function AuthPage() {
       // accepted — every administrator must have their own account.
       const { data: sess, error: signErr } = await supabase.auth.signInWithPassword({
         email: emailValue,
-        password: pw,
+        password: adminPassword,
       });
       if (signErr || !sess?.session) {
         const msg = "Email or password is incorrect.";
@@ -157,7 +158,7 @@ function AuthPage() {
     try {
       const res = await verify({
         data: {
-          password: pw,
+          password: learnerPin,
           mode: "learner",
           captchaToken: codeCaptchaToken,
           email: emailValue,
@@ -191,7 +192,7 @@ function AuthPage() {
         if (remember) {
           window.localStorage.setItem(
             "gsm_remember_learner",
-            JSON.stringify({ email: emailValue, pin: pw }),
+            JSON.stringify({ email: emailValue, pin: learnerPin }),
           );
         } else {
           window.localStorage.removeItem("gsm_remember_learner");
