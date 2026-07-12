@@ -211,16 +211,12 @@ export function Header() {
                   )}
                 />
             </button>
-            <div
-              role="menu"
-              aria-label="Main navigation"
-              className={cn(
-                "absolute right-0 top-[calc(100%+0.625rem)] z-[140] w-80 origin-top-right overflow-hidden rounded-2xl border border-accent/45 bg-card p-0 text-foreground shadow-[0_24px_70px_-22px_rgba(29,42,34,0.55)] ring-1 ring-primary/10 transition-all duration-200",
-                menuOpen
-                  ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
-                  : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0",
-              )}
-            >
+            {menuOpen && (
+              <div
+                role="menu"
+                aria-label="Main navigation"
+                className="absolute right-0 top-[calc(100%+0.625rem)] z-[140] w-80 origin-top-right animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 overflow-hidden rounded-2xl border border-accent/45 bg-card p-0 text-foreground shadow-[0_24px_70px_-22px_rgba(29,42,34,0.55)] ring-1 ring-primary/10 duration-200"
+              >
               <div className="bg-gradient-to-r from-primary to-primary/85 px-4 py-3">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
                   Explore GSM
@@ -273,7 +269,8 @@ export function Header() {
                   <ChevronRight className="h-4 w-4 shrink-0 text-accent transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </div>
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Contact Us popover */}
