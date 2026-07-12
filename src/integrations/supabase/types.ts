@@ -548,9 +548,16 @@ export type Database = {
           id: string
           message_id: string | null
           metadata: Json | null
+          provider_http_status: number | null
+          provider_message_id: string | null
+          provider_request_id: string | null
+          provider_response: Json | null
+          provider_status: string | null
+          provider_workflow_id: string | null
           recipient_email: string
           status: string
           template_name: string
+          updated_at: string
         }
         Insert: {
           created_at?: string
@@ -558,9 +565,16 @@ export type Database = {
           id?: string
           message_id?: string | null
           metadata?: Json | null
+          provider_http_status?: number | null
+          provider_message_id?: string | null
+          provider_request_id?: string | null
+          provider_response?: Json | null
+          provider_status?: string | null
+          provider_workflow_id?: string | null
           recipient_email: string
           status: string
           template_name: string
+          updated_at?: string
         }
         Update: {
           created_at?: string
@@ -568,9 +582,16 @@ export type Database = {
           id?: string
           message_id?: string | null
           metadata?: Json | null
+          provider_http_status?: number | null
+          provider_message_id?: string | null
+          provider_request_id?: string | null
+          provider_response?: Json | null
+          provider_status?: string | null
+          provider_workflow_id?: string | null
           recipient_email?: string
           status?: string
           template_name?: string
+          updated_at?: string
         }
         Relationships: []
       }
