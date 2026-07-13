@@ -436,7 +436,7 @@ function GoldenRuleCard({ rule }: { rule: GoldenRule }) {
   const [open, setOpen] = useState(rule.n === 1);
   const Icon = rule.icon;
   return (
-    <li className="border border-border bg-card">
+    <li className="border border-border bg-card transition-shadow duration-300 ease-out data-[open=true]:shadow-sm" data-open={open}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -455,28 +455,37 @@ function GoldenRuleCard({ rule }: { rule: GoldenRule }) {
           <p className="mt-1 text-sm text-muted-foreground">{rule.short}</p>
         </div>
         <div className="ml-2 mt-1 shrink-0 text-muted-foreground">
-          {open ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+          <ChevronDown
+            className={cn("h-5 w-5 transition-transform duration-300 ease-out", open && "rotate-180")}
+          />
         </div>
       </button>
-      {open && (
-        <div className="animate-fade-in border-t border-border bg-background/50 p-4 sm:p-5">
-          <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr]">
-            <div className="text-sm leading-relaxed">
-              {rule.body}
-              <div className="mt-4 border-l-2 border-accent/60 bg-accent/[0.04] px-3 py-2">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent">
-                  Real driving example
+      <div
+        className={cn(
+          "grid transition-[grid-template-rows,opacity] duration-300 ease-out",
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="border-t border-border bg-background/50 p-4 sm:p-5">
+            <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr]">
+              <div className="text-sm leading-relaxed">
+                {rule.body}
+                <div className="mt-4 border-l-2 border-accent/60 bg-accent/[0.04] px-3 py-2">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent">
+                    Real driving example
+                  </div>
+                  <p className="mt-1 text-sm">{rule.example}</p>
                 </div>
-                <p className="mt-1 text-sm">{rule.example}</p>
               </div>
-            </div>
-            <div className="grid gap-3">
-              {rule.animation && <MediaPlaceholder kind="animation" label={rule.animation} />}
-              <MediaPlaceholder kind="diagram" label={rule.visual} />
+              <div className="grid gap-3">
+                {rule.animation && <MediaPlaceholder kind="animation" label={rule.animation} />}
+                <MediaPlaceholder kind="diagram" label={rule.visual} />
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </li>
   );
 }
@@ -701,6 +710,7 @@ function Section({
   title,
   intro,
   children,
+  defaultOpen = true,
 }: {
   id: string;
   eyebrow: string;
@@ -708,13 +718,45 @@ function Section({
   title: string;
   intro?: ReactNode;
   children: ReactNode;
+  defaultOpen?: boolean;
 }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const Icon = icon;
   return (
     <section id={id} className="mt-14 scroll-mt-24">
-      <SectionEyebrow icon={icon}>{eyebrow}</SectionEyebrow>
-      <h2 className="mt-2 font-display text-2xl leading-tight sm:text-3xl">{title}</h2>
-      {intro && <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{intro}</p>}
-      <div className="mt-6">{children}</div>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-controls={`${id}-panel`}
+        className="group flex w-full items-start gap-4 border-b border-border/60 pb-4 text-left transition-colors hover:border-accent/40"
+      >
+        <div className="min-w-0 flex-1">
+          <SectionEyebrow icon={Icon}>{eyebrow}</SectionEyebrow>
+          <h2 className="mt-2 font-display text-2xl leading-tight sm:text-3xl">{title}</h2>
+          {intro && <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{intro}</p>}
+        </div>
+        <div
+          className={cn(
+            "mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent transition-transform duration-300 ease-out",
+            open && "rotate-180",
+          )}
+          aria-hidden
+        >
+          <ChevronDown className="h-4 w-4" />
+        </div>
+      </button>
+      <div
+        id={`${id}-panel`}
+        className={cn(
+          "grid transition-[grid-template-rows,opacity] duration-500 ease-out",
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="pt-6">{children}</div>
+        </div>
+      </div>
     </section>
   );
 }
