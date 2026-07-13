@@ -424,10 +424,27 @@ function AdminHomeCms() {
               <ExternalLink className="h-3.5 w-3.5" /> View homepage
             </a>
           </div>
-          <Button onClick={() => setEditing(emptyDraft())} className="gap-2">
-            <Plus className="h-4 w-4" /> New section
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={showRecycle ? "default" : "outline"}
+              onClick={() => setShowRecycle((v) => !v)}
+              className="gap-2"
+            >
+              <Trash className="h-4 w-4" />
+              {showRecycle ? "Hide recycle bin" : "Recycle bin"}
+            </Button>
+            <Button onClick={() => setEditing(emptyDraft())} className="gap-2">
+              <Plus className="h-4 w-4" /> New section
+            </Button>
+          </div>
         </div>
+
+        {showRecycle && (
+          <p className="text-xs text-muted-foreground">
+            Deleted sections are kept here and hidden from the public site. Restore to bring them
+            back, or permanently delete to remove them and their version history.
+          </p>
+        )}
 
         <div className="overflow-hidden border border-border bg-card">
           <table className="w-full text-sm">
