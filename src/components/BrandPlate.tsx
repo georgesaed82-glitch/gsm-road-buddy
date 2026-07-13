@@ -21,13 +21,13 @@ export function BrandPlate({
   className,
   rightSlot,
   fill = false,
-  brandHref,
+  homeLink = false,
 }: {
   size?: Size;
   className?: string;
   rightSlot?: ReactNode;
   fill?: boolean;
-  brandHref?: string;
+  homeLink?: boolean;
 }) {
   const s = SIZES[size];
   const BrandInner = (
@@ -137,9 +137,9 @@ export function BrandPlate({
         }}
       />
 
-      {brandHref ? (
+      {homeLink ? (
         <Link
-          to={brandHref}
+          to="/"
           aria-label="GSM Driving School — home"
           className={cn(
             "relative flex items-center gap-2.5 sm:gap-3.5 rounded-[18px] outline-none focus-visible:ring-2 focus-visible:ring-accent/60",
