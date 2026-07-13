@@ -83,10 +83,10 @@ export const listHomeSectionsAdmin = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let query = supabaseAdmin
       .from("home_sections")
-      .select(SELECT_COLS + ", deleted_at")
+      .select(SELECT_COLS)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
-    if (!data.include_deleted) query = query.is("deleted_at", null);
+    if (!data.include_deleted) query = query.is("deleted_at" as never, null);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
     return (rows ?? []).map((r) => toRow(r as Record<string, unknown>));
