@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +23,7 @@ export function BrandPlate({
 }: {
   size?: Size;
   className?: string;
-  rightSlot?: React.ReactNode;
+  rightSlot?: ReactNode;
   fill?: boolean;
 }) {
   const s = SIZES[size];
