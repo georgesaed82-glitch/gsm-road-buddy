@@ -266,20 +266,12 @@ export function Header() {
       )}
     >
       <div className="mx-auto w-full max-w-7xl px-2 py-2 sm:px-4 sm:py-2.5 lg:px-6">
-        <Link
-          to="/"
-          className="block"
-          aria-label="GSM Driving School — home"
-        >
-          {/* Mobile: compact banner with actions inside */}
-          <div className="sm:hidden">
-            <BrandPlate size="xs" fill rightSlot={actions} />
-          </div>
-          {/* Desktop / tablet: taller banner with actions inside */}
-          <div className="hidden sm:block">
-            <BrandPlate size="sm" fill rightSlot={actions} />
-          </div>
-        </Link>
+        <div className="sm:hidden">
+          <BrandPlate size="xs" fill brandHref="/" rightSlot={actions} />
+        </div>
+        <div className="hidden sm:block">
+          <BrandPlate size="sm" fill brandHref="/" rightSlot={actions} />
+        </div>
       </div>
     </header>
   );
