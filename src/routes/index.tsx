@@ -424,55 +424,39 @@ function AreasSection({ s }: SectionProps) {
 }
 
 function RecentPassSection({ s }: SectionProps) {
-  const rating = useSiteRating();
   return (
-    <section className="bg-muted py-12 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:items-center">
-          <div className="overflow-hidden border border-border bg-background shadow-xl">
-            <img
-              src={or(s.image_url, studentPassImage.url)}
-              alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
-              className="aspect-[4/5] w-full object-cover object-top"
-              width={1200}
-              height={1500}
-            />
+    <section className="bg-background pb-10 pt-2 sm:py-16">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
+        <div className="overflow-hidden rounded-3xl border border-border bg-background shadow-xl">
+          <img
+            src={or(s.image_url, studentPassImage.url)}
+            alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
+            className="aspect-[4/5] w-full object-cover object-top sm:aspect-[4/3]"
+            width={1200}
+            height={1500}
+          />
+        </div>
+        <div className="mt-5 rounded-3xl border border-accent/20 bg-[color-mix(in_oklab,var(--accent)_8%,var(--card))] px-5 py-6 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:mt-8 sm:px-8 sm:py-8">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
+            <span className="h-px w-8 bg-accent" />
+            {or(s.eyebrow, "About GSM")}
           </div>
-          <div>
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-              <span className="h-px w-8 bg-accent" />
-              {or(s.eyebrow, "Recent pass")}
-            </div>
-            <h2 className="mt-4 max-w-md font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
-              {s.title && s.title.trim().length > 0 ? (
-                s.title
-              ) : (
-                <>
-                  Another first-time pass.{" "}
-                  <span className="italic text-accent">Another confident driver.</span>
-                </>
-              )}
-            </h2>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-              {or(
-                s.body,
-                "This is what success looks like at GSM — real students, real test centres, real certificates. We teach the skills, you earn the freedom.",
-              )}
-            </p>
-            <a
-              href="https://maps.google.com/?cid=12315071950298926858"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 flex items-center gap-4 hover:opacity-80"
-            >
-              <div className="flex text-accent">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-accent" />
-                ))}
-              </div>
-              <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
-            </a>
-          </div>
+          <h2 className="mt-3 font-display text-[26px] font-medium leading-[1.15] text-foreground sm:mt-4 sm:text-4xl lg:text-5xl">
+            {s.title && s.title.trim().length > 0 ? (
+              s.title
+            ) : (
+              <>
+                A family school teaching West London to drive
+                <span className="italic text-accent"> since 2005.</span>
+              </>
+            )}
+          </h2>
+          <p className="mt-3 text-[15px] leading-relaxed text-foreground/85 sm:mt-5 sm:text-lg">
+            {or(
+              s.body,
+              "George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.",
+            )}
+          </p>
         </div>
       </div>
     </section>
