@@ -505,6 +505,13 @@ function AdminHomeCms() {
           </p>
         )}
 
+        {dndEnabled && rows.length > 1 && (
+          <p className="text-xs text-muted-foreground">
+            Tip: drag the <GripVertical className="inline h-3 w-3 align-middle" /> handle on any row
+            to reorder sections. Changes save automatically.
+          </p>
+        )}
+
         <div className="overflow-hidden border border-border bg-card">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted text-xs uppercase tracking-wider text-muted-foreground">
