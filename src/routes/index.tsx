@@ -434,17 +434,17 @@ function MemorableMomentsSection() {
     { url: memorable2.url, alt: "A GSM student smiling with their practical driving test pass certificate beside the GSM car" },
   ];
   return (
-    <section className="bg-background pt-6 pb-4 sm:pt-10 sm:pb-8">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
+    <section className="bg-background pt-6 pb-4 sm:pt-10 sm:pb-8 lg:pt-8 lg:pb-6">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl lg:px-8">
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
           <span className="h-px w-8 bg-accent" />
           Memorable Moments
         </div>
-        <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl">
+        <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl lg:text-3xl">
           Memorable Moments
           <span className="italic text-accent"> with GSM.</span>
         </h2>
-        <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-4">
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-4 lg:mt-5 lg:gap-3">
           {photos.map((p) => (
             <div
               key={p.url}
@@ -454,17 +454,17 @@ function MemorableMomentsSection() {
                 src={p.url}
                 alt={p.alt}
                 loading="lazy"
-                className="aspect-[4/5] w-full object-cover"
+                className="aspect-[4/5] w-full object-cover lg:aspect-[4/3]"
               />
             </div>
           ))}
         </div>
-        <div className="mt-5 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:mt-8 sm:px-8 sm:py-8">
+        <div className="mt-5 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:mt-8 sm:px-8 sm:py-8 lg:mt-6 lg:px-6 lg:py-6">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
             <span className="h-px w-8 bg-accent" />
             About GSM
           </div>
-          <p className="mt-4 font-display text-[18px] leading-[1.5] text-primary sm:text-[22px] sm:leading-[1.55]">
+          <p className="mt-4 font-display text-[18px] leading-[1.5] text-primary sm:text-[22px] sm:leading-[1.55] lg:mt-3 lg:text-[18px] lg:leading-[1.5]">
             George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.
           </p>
         </div>
@@ -475,24 +475,24 @@ function MemorableMomentsSection() {
 
 function RecentPassSection({ s }: SectionProps) {
   return (
-    <section className="bg-background pb-10 pt-2 sm:py-16">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
+    <section className="bg-background pb-10 pt-2 sm:py-16 lg:py-10">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl lg:px-8">
         <div className="relative">
           <div className="overflow-hidden rounded-3xl border border-border bg-background shadow-xl">
             <img
               src={or(s.image_url, studentPassImage.url)}
               alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
-              className="aspect-[3/4] w-full object-cover object-top sm:aspect-[4/3]"
+              className="aspect-[3/4] w-full object-cover object-top sm:aspect-[4/3] lg:aspect-[16/9]"
               width={1200}
               height={1500}
             />
           </div>
-          <div className="relative z-10 -mt-16 mx-3 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:-mt-24 sm:mx-8 sm:px-8 sm:py-8">
+          <div className="relative z-10 -mt-16 mx-3 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:-mt-24 sm:mx-8 sm:px-8 sm:py-8 lg:-mt-16 lg:px-7 lg:py-6">
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "About GSM")}
           </div>
-          <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl lg:text-5xl">
+          <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl lg:mt-3 lg:text-3xl">
             {s.title && s.title.trim().length > 0 ? (
               s.title
             ) : (
@@ -502,7 +502,7 @@ function RecentPassSection({ s }: SectionProps) {
               </>
             )}
           </h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-primary/90 sm:mt-5 sm:text-lg">
+          <p className="mt-3 text-[15px] leading-relaxed text-primary/90 sm:mt-5 sm:text-lg lg:mt-3 lg:text-[15px]">
             {or(
               s.body,
               "George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.",
