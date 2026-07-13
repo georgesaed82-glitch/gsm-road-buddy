@@ -50,6 +50,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedDrivingClipsSlugRouteImport } from './routes/_authenticated/driving-clips.$slug'
+import { Route as AuthenticatedAdminWebsiteRouteImport } from './routes/_authenticated/admin.website'
 import { Route as AuthenticatedAdminTrafficRouteImport } from './routes/_authenticated/admin.traffic'
 import { Route as AuthenticatedAdminTheoryRouteImport } from './routes/_authenticated/admin.theory'
 import { Route as AuthenticatedAdminThemeRouteImport } from './routes/_authenticated/admin.theme'
@@ -63,6 +64,7 @@ import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_aut
 import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated/admin.pricing'
 import { Route as AuthenticatedAdminPoliceSignalsRouteImport } from './routes/_authenticated/admin.police-signals'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
+import { Route as AuthenticatedAdminMediaRouteImport } from './routes/_authenticated/admin.media'
 import { Route as AuthenticatedAdminLoginEventsRouteImport } from './routes/_authenticated/admin.login-events'
 import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin.lessons'
 import { Route as AuthenticatedAdminLegalRouteImport } from './routes/_authenticated/admin.legal'
@@ -297,6 +299,12 @@ const AuthenticatedDrivingClipsSlugRoute =
     path: '/$slug',
     getParentRoute: () => AuthenticatedDrivingClipsRoute,
   } as any)
+const AuthenticatedAdminWebsiteRoute =
+  AuthenticatedAdminWebsiteRouteImport.update({
+    id: '/website',
+    path: '/website',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminTrafficRoute =
   AuthenticatedAdminTrafficRouteImport.update({
     id: '/traffic',
@@ -373,6 +381,11 @@ const AuthenticatedAdminNavigationRoute =
     path: '/navigation',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminMediaRoute = AuthenticatedAdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminLoginEventsRoute =
   AuthenticatedAdminLoginEventsRouteImport.update({
     id: '/login-events',
@@ -559,6 +572,7 @@ export interface FileRoutesByFullPath {
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
+  '/admin/media': typeof AuthenticatedAdminMediaRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -572,6 +586,7 @@ export interface FileRoutesByFullPath {
   '/admin/theme': typeof AuthenticatedAdminThemeRoute
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
+  '/admin/website': typeof AuthenticatedAdminWebsiteRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -635,6 +650,7 @@ export interface FileRoutesByTo {
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
+  '/admin/media': typeof AuthenticatedAdminMediaRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -648,6 +664,7 @@ export interface FileRoutesByTo {
   '/admin/theme': typeof AuthenticatedAdminThemeRoute
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
+  '/admin/website': typeof AuthenticatedAdminWebsiteRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -714,6 +731,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/_authenticated/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
+  '/_authenticated/admin/media': typeof AuthenticatedAdminMediaRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -727,6 +745,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/theme': typeof AuthenticatedAdminThemeRoute
   '/_authenticated/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/_authenticated/admin/traffic': typeof AuthenticatedAdminTrafficRoute
+  '/_authenticated/admin/website': typeof AuthenticatedAdminWebsiteRoute
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -793,6 +812,7 @@ export interface FileRouteTypes {
     | '/admin/legal'
     | '/admin/lessons'
     | '/admin/login-events'
+    | '/admin/media'
     | '/admin/navigation'
     | '/admin/police-signals'
     | '/admin/pricing'
@@ -806,6 +826,7 @@ export interface FileRouteTypes {
     | '/admin/theme'
     | '/admin/theory'
     | '/admin/traffic'
+    | '/admin/website'
     | '/driving-clips/$slug'
     | '/admin/'
     | '/lovable/email/queue/process'
@@ -869,6 +890,7 @@ export interface FileRouteTypes {
     | '/admin/legal'
     | '/admin/lessons'
     | '/admin/login-events'
+    | '/admin/media'
     | '/admin/navigation'
     | '/admin/police-signals'
     | '/admin/pricing'
@@ -882,6 +904,7 @@ export interface FileRouteTypes {
     | '/admin/theme'
     | '/admin/theory'
     | '/admin/traffic'
+    | '/admin/website'
     | '/driving-clips/$slug'
     | '/admin'
     | '/lovable/email/queue/process'
@@ -947,6 +970,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/legal'
     | '/_authenticated/admin/lessons'
     | '/_authenticated/admin/login-events'
+    | '/_authenticated/admin/media'
     | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/police-signals'
     | '/_authenticated/admin/pricing'
@@ -960,6 +984,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/theme'
     | '/_authenticated/admin/theory'
     | '/_authenticated/admin/traffic'
+    | '/_authenticated/admin/website'
     | '/_authenticated/driving-clips/$slug'
     | '/_authenticated/admin/'
     | '/lovable/email/queue/process'
@@ -1279,6 +1304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDrivingClipsSlugRouteImport
       parentRoute: typeof AuthenticatedDrivingClipsRoute
     }
+    '/_authenticated/admin/website': {
+      id: '/_authenticated/admin/website'
+      path: '/website'
+      fullPath: '/admin/website'
+      preLoaderRoute: typeof AuthenticatedAdminWebsiteRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/traffic': {
       id: '/_authenticated/admin/traffic'
       path: '/traffic'
@@ -1368,6 +1400,13 @@ declare module '@tanstack/react-router' {
       path: '/navigation'
       fullPath: '/admin/navigation'
       preLoaderRoute: typeof AuthenticatedAdminNavigationRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/media': {
+      id: '/_authenticated/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AuthenticatedAdminMediaRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/login-events': {
@@ -1549,6 +1588,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminLegalRoute: typeof AuthenticatedAdminLegalRoute
   AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
   AuthenticatedAdminLoginEventsRoute: typeof AuthenticatedAdminLoginEventsRoute
+  AuthenticatedAdminMediaRoute: typeof AuthenticatedAdminMediaRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPoliceSignalsRoute: typeof AuthenticatedAdminPoliceSignalsRoute
   AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
@@ -1562,6 +1602,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminThemeRoute: typeof AuthenticatedAdminThemeRoute
   AuthenticatedAdminTheoryRoute: typeof AuthenticatedAdminTheoryRoute
   AuthenticatedAdminTrafficRoute: typeof AuthenticatedAdminTrafficRoute
+  AuthenticatedAdminWebsiteRoute: typeof AuthenticatedAdminWebsiteRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -1587,6 +1628,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminLegalRoute: AuthenticatedAdminLegalRoute,
   AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
   AuthenticatedAdminLoginEventsRoute: AuthenticatedAdminLoginEventsRoute,
+  AuthenticatedAdminMediaRoute: AuthenticatedAdminMediaRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPoliceSignalsRoute: AuthenticatedAdminPoliceSignalsRoute,
   AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
@@ -1600,6 +1642,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminThemeRoute: AuthenticatedAdminThemeRoute,
   AuthenticatedAdminTheoryRoute: AuthenticatedAdminTheoryRoute,
   AuthenticatedAdminTrafficRoute: AuthenticatedAdminTrafficRoute,
+  AuthenticatedAdminWebsiteRoute: AuthenticatedAdminWebsiteRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 

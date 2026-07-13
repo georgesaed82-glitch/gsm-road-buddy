@@ -36,6 +36,8 @@ import {
   Home as HomeIcon,
   ChevronDown,
   Menu,
+  LayoutGrid,
+  ImagePlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -54,6 +56,11 @@ type Item = { to: string; label: string; icon: typeof LayoutDashboard };
 type Group = { id: string; label: string; items: Item[] };
 
 const overview: Item = { to: "/admin", label: "Overview", icon: LayoutDashboard };
+const websiteHub: Item = {
+  to: "/admin/website",
+  label: "Website & content",
+  icon: LayoutGrid,
+};
 
 const groups: Group[] = [
   {
@@ -63,6 +70,7 @@ const groups: Group[] = [
       { to: "/admin/theme", label: "Theme & branding", icon: Palette },
       { to: "/admin/site-settings", label: "Site settings", icon: Settings },
       { to: "/admin/home", label: "Homepage sections", icon: HomeIcon },
+      { to: "/admin/media", label: "Media library", icon: ImagePlus },
       { to: "/admin/navigation", label: "Navigation menus", icon: ListTree },
       { to: "/admin/seo", label: "Page SEO", icon: Search },
       { to: "/admin/legal", label: "Legal pages", icon: Newspaper },
@@ -172,6 +180,12 @@ export function AdminShell({
             className={cn("h-4 w-4", pathname === overview.to ? "" : "text-accent/80")}
           />
           {overview.label}
+        </Link>
+        <Link to={websiteHub.to} className={linkClass(pathname === websiteHub.to)}>
+          <websiteHub.icon
+            className={cn("h-4 w-4", pathname === websiteHub.to ? "" : "text-accent/80")}
+          />
+          {websiteHub.label}
         </Link>
         {groups.map((group) => {
           const open = !!openGroups[group.id];
