@@ -706,7 +706,10 @@ function AdminHomeCms() {
                     ) : (
                       <ul className="divide-y divide-border text-sm">
                         {versions.map((v) => (
-                          <li key={v.id} className="flex items-center justify-between gap-2 px-3 py-2">
+                          <li
+                            key={v.id}
+                            className="flex items-center justify-between gap-2 px-3 py-2"
+                          >
                             <div className="min-w-0">
                               <div className="flex items-center gap-2">
                                 <Badge
@@ -720,7 +723,9 @@ function AdminHomeCms() {
                                 </span>
                               </div>
                               {v.label && (
-                                <div className="truncate text-xs text-muted-foreground">{v.label}</div>
+                                <div className="truncate text-xs text-muted-foreground">
+                                  {v.label}
+                                </div>
                               )}
                             </div>
                             <Button
@@ -887,8 +892,7 @@ function AdminHomeCms() {
               )}
               {autosaveState === "saved" && lastSavedAt && (
                 <span className="inline-flex items-center gap-1 text-primary">
-                  <CheckCircle2 className="h-3 w-3" /> Autosaved{" "}
-                  {lastSavedAt.toLocaleTimeString()}
+                  <CheckCircle2 className="h-3 w-3" /> Autosaved {lastSavedAt.toLocaleTimeString()}
                 </span>
               )}
               {autosaveState === "error" && (
@@ -899,7 +903,12 @@ function AdminHomeCms() {
               <Button variant="outline" onClick={() => setEditing(null)} className="gap-2">
                 <X className="h-4 w-4" /> Close
               </Button>
-              <Button variant="outline" onClick={() => onSave(false)} disabled={busy} className="gap-2">
+              <Button
+                variant="outline"
+                onClick={() => onSave(false)}
+                disabled={busy}
+                className="gap-2"
+              >
                 <Save className="h-4 w-4" /> Save draft
               </Button>
               <Button onClick={() => onSave(true)} disabled={busy} className="gap-2">

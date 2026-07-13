@@ -1,5 +1,16 @@
 import { useRef, useState } from "react";
-import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link2, Quote, Eye, Pencil } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Link2,
+  Quote,
+  Eye,
+  Pencil,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Markdown } from "@/components/Markdown";

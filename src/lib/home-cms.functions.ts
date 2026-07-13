@@ -77,9 +77,7 @@ export const listPublicHomeSections = createServerFn({ method: "GET" })
 
 // Admin: list all
 export const listHomeSectionsAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
-    z.object({ include_deleted: z.boolean().optional() }).parse(d ?? {}),
-  )
+  .inputValidator((d) => z.object({ include_deleted: z.boolean().optional() }).parse(d ?? {}))
   .handler(async ({ data }): Promise<HomeSectionRow[]> => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -286,15 +284,13 @@ async function insertVersion(params: {
   label?: string | null;
 }) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  await supabaseAdmin
-    .from("content_versions" as never)
-    .insert({
-      entity_table: "home_sections",
-      entity_id: params.entityId,
-      kind: params.kind,
-      label: params.label ?? null,
-      snapshot: params.snapshot as never,
-    } as never);
+  await supabaseAdmin.from("content_versions" as never).insert({
+    entity_table: "home_sections",
+    entity_id: params.entityId,
+    kind: params.kind,
+    label: params.label ?? null,
+    snapshot: params.snapshot as never,
+  } as never);
   // Trim: keep newest 30 for this entity (best-effort)
   const { data: keep } = await supabaseAdmin
     .from("content_versions" as never)
@@ -433,10 +429,7 @@ export const purgeHomeSection = createServerFn({ method: "POST" })
       .delete()
       .eq("entity_table", "home_sections")
       .eq("entity_id", data.id);
-    const { error } = await supabaseAdmin
-      .from("home_sections")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await supabaseAdmin.from("home_sections").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true } as const;
   });
