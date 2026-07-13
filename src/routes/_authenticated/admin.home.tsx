@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -17,14 +17,19 @@ import {
   Globe,
   Smartphone,
   ExternalLink,
+  History,
+  RotateCcw,
+  Trash,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import {
   Select,
   SelectContent,
@@ -47,6 +52,13 @@ import {
   duplicateHomeSection,
   reorderHomeSection,
   uploadHomeSectionMedia,
+  saveHomeSectionDraft,
+  listHomeSectionVersions,
+  restoreHomeSectionVersion,
+  softDeleteHomeSection,
+  restoreHomeSection,
+  purgeHomeSection,
+  type ContentVersionRow,
   type HomeSectionRow,
   type HomeSectionStatus,
 } from "@/lib/home-cms.functions";
@@ -147,16 +159,88 @@ function AdminHomeCms() {
   const dupe = useServerFn(duplicateHomeSection);
   const reorder = useServerFn(reorderHomeSection);
   const upload = useServerFn(uploadHomeSectionMedia);
+  const saveDraft = useServerFn(saveHomeSectionDraft);
+  const listVersions = useServerFn(listHomeSectionVersions);
+  const restoreVersion = useServerFn(restoreHomeSectionVersion);
+  const softDelete = useServerFn(softDeleteHomeSection);
+  const restoreRow = useServerFn(restoreHomeSection);
+  const purgeRow = useServerFn(purgeHomeSection);
+
+  const [showRecycle, setShowRecycle] = useState(false);
 
   const q = useQuery({
-    queryKey: ["admin", "home-sections"],
-    queryFn: () => list({ data: {} }),
+    queryKey: ["admin", "home-sections", showRecycle],
+    queryFn: () => list({ data: { include_deleted: showRecycle } }),
   });
 
   const [editing, setEditing] = useState<Draft | null>(null);
   const [filter, setFilter] = useState("");
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [autosaveState, setAutosaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [versions, setVersions] = useState<ContentVersionRow[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const editingSnapshot = useRef<string>("");
+  const isDirty = useRef(false);
+
+  // (rowById map removed; not currently needed)
+
+  const refreshVersions = async (id: string) => {
+    try {
+      const v = await listVersions({ data: { id } });
+      setVersions(v);
+    } catch {
+      // ignore
+    }
+  };
+
+  // Autosave: 1.5s debounce for edits to existing sections
+  useEffect(() => {
+    if (!editing?.id) return;
+    const current = JSON.stringify(editing);
+    if (current === editingSnapshot.current) return; // no real change
+    isDirty.current = true;
+    if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+    autosaveTimer.current = setTimeout(async () => {
+      if (!editing.id) return;
+      setAutosaveState("saving");
+      try {
+        const payload = { ...editing };
+        delete (payload as { id?: string }).id;
+        await saveDraft({
+          data: { id: editing.id, patch: payload, kind: "autosave" },
+        });
+        setAutosaveState("saved");
+        setLastSavedAt(new Date());
+        isDirty.current = false;
+        editingSnapshot.current = current;
+        qc.invalidateQueries({ queryKey: ["admin", "home-sections"] });
+      } catch {
+        setAutosaveState("error");
+      }
+    }, 1500);
+    return () => {
+      if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing]);
+
+  // Reset autosave snapshot when opening a section
+  useEffect(() => {
+    if (editing?.id) {
+      editingSnapshot.current = JSON.stringify(editing);
+      setAutosaveState("idle");
+      isDirty.current = false;
+      void refreshVersions(editing.id);
+    } else {
+      editingSnapshot.current = "";
+      setVersions([]);
+      setShowHistory(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing?.id]);
 
   const rows = useMemo(() => {
     const all = q.data ?? [];
@@ -172,7 +256,7 @@ function AdminHomeCms() {
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "home-sections"] });
 
-  const onSave = async () => {
+  const onSave = async (publish = false) => {
     if (!editing) return;
     if (!editing.section_key.trim()) {
       toast.error("Section key is required");
@@ -182,12 +266,27 @@ function AdminHomeCms() {
     try {
       const payload = { ...editing };
       delete (payload as { id?: string }).id;
+      if (publish) (payload as { status: HomeSectionStatus }).status = "published";
       if (editing.id) {
-        await update({ data: { id: editing.id, patch: payload } });
-        toast.success("Saved");
+        await saveDraft({
+          data: {
+            id: editing.id,
+            patch: payload,
+            kind: publish ? "publish" : "manual",
+          },
+        });
+        toast.success(publish ? "Published" : "Saved");
       } else {
-        await create({ data: { section: payload } });
+        const row = await create({ data: { section: payload } });
         toast.success("Created");
+        // Snapshot the initial state so it appears in version history
+        try {
+          await saveDraft({
+            data: { id: row.id, patch: {}, kind: "manual" },
+          });
+        } catch {
+          /* non-fatal */
+        }
       }
       setEditing(null);
       refresh();
@@ -199,15 +298,53 @@ function AdminHomeCms() {
   };
 
   const onDelete = async (row: HomeSectionRow) => {
-    if (!confirm(`Delete section "${row.section_key}"? This cannot be undone.`)) return;
+    if (!confirm(`Move section "${row.section_key}" to the recycle bin?`)) return;
     try {
-      await remove({ data: { id: row.id } });
-      toast.success("Deleted");
+      await softDelete({ data: { id: row.id } });
+      toast.success("Moved to recycle bin");
       refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
     }
   };
+
+  const onRestore = async (row: HomeSectionRow) => {
+    try {
+      await restoreRow({ data: { id: row.id } });
+      toast.success("Restored");
+      refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
+  };
+
+  const onPurge = async (row: HomeSectionRow) => {
+    if (!confirm(`Permanently delete "${row.section_key}"? This cannot be undone.`)) return;
+    try {
+      await purgeRow({ data: { id: row.id } });
+      toast.success("Permanently deleted");
+      refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
+  };
+
+  const onRestoreVersion = async (v: ContentVersionRow) => {
+    if (!editing?.id) return;
+    if (!confirm("Restore this version? The current content will be snapshotted first.")) return;
+    try {
+      const row = await restoreVersion({ data: { id: editing.id, version_id: v.id } });
+      setEditing(fromRow(row));
+      toast.success("Restored");
+      void refreshVersions(editing.id);
+      refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
+  };
+
+  // Silence the unused remove warning; kept for backward compatibility
+  void remove;
 
   const onDuplicate = async (row: HomeSectionRow) => {
     try {
@@ -282,10 +419,27 @@ function AdminHomeCms() {
               <ExternalLink className="h-3.5 w-3.5" /> View homepage
             </a>
           </div>
-          <Button onClick={() => setEditing(emptyDraft())} className="gap-2">
-            <Plus className="h-4 w-4" /> New section
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={showRecycle ? "default" : "outline"}
+              onClick={() => setShowRecycle((v) => !v)}
+              className="gap-2"
+            >
+              <Trash className="h-4 w-4" />
+              {showRecycle ? "Hide recycle bin" : "Recycle bin"}
+            </Button>
+            <Button onClick={() => setEditing(emptyDraft())} className="gap-2">
+              <Plus className="h-4 w-4" /> New section
+            </Button>
+          </div>
         </div>
+
+        {showRecycle && (
+          <p className="text-xs text-muted-foreground">
+            Deleted sections are kept here and hidden from the public site. Restore to bring them
+            back, or permanently delete to remove them and their version history.
+          </p>
+        )}
 
         <div className="overflow-hidden border border-border bg-card">
           <table className="w-full text-sm">
@@ -402,27 +556,55 @@ function AdminHomeCms() {
                   </td>
                   <td className="px-3 py-2">
                     <div className="flex justify-end gap-1">
-                      <Button size="sm" variant="outline" onClick={() => setEditing(fromRow(r))}>
-                        Edit
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8"
-                        onClick={() => onDuplicate(r)}
-                        title="Duplicate"
-                      >
-                        <CopyIcon className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8"
-                        onClick={() => onDelete(r)}
-                        title="Delete"
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      {r.deleted_at ? (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => onRestore(r)}
+                            className="gap-1"
+                          >
+                            <RotateCcw className="h-3.5 w-3.5" /> Restore
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8"
+                            onClick={() => onPurge(r)}
+                            title="Delete permanently"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setEditing(fromRow(r))}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8"
+                            onClick={() => onDuplicate(r)}
+                            title="Duplicate"
+                          >
+                            <CopyIcon className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8"
+                            onClick={() => onDelete(r)}
+                            title="Move to recycle bin"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -494,12 +676,72 @@ function AdminHomeCms() {
                 />
               </div>
               <div>
-                <Label>Body</Label>
-                <Textarea
-                  rows={4}
+                <div className="flex items-center justify-between">
+                  <Label>Body</Label>
+                  {editing.id && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowHistory((v) => !v);
+                        if (editing.id) void refreshVersions(editing.id);
+                      }}
+                      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      <History className="h-3.5 w-3.5" />
+                      {showHistory ? "Hide history" : `Version history (${versions.length})`}
+                    </button>
+                  )}
+                </div>
+                <RichTextEditor
                   value={editing.body}
-                  onChange={(e) => setEditing({ ...editing, body: e.target.value })}
+                  onChange={(v) => setEditing({ ...editing, body: v })}
+                  rows={8}
+                  placeholder="Supports markdown: **bold**, _italic_, headings, lists, links…"
+                  className="mt-1"
                 />
+                {showHistory && editing.id && (
+                  <div className="mt-2 max-h-56 overflow-y-auto border border-border bg-muted/30">
+                    {versions.length === 0 ? (
+                      <p className="p-3 text-xs text-muted-foreground">No versions saved yet.</p>
+                    ) : (
+                      <ul className="divide-y divide-border text-sm">
+                        {versions.map((v) => (
+                          <li
+                            key={v.id}
+                            className="flex items-center justify-between gap-2 px-3 py-2"
+                          >
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <Badge
+                                  variant={v.kind === "publish" ? "default" : "outline"}
+                                  className="text-[10px]"
+                                >
+                                  {v.kind}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(v.created_at).toLocaleString()}
+                                </span>
+                              </div>
+                              {v.label && (
+                                <div className="truncate text-xs text-muted-foreground">
+                                  {v.label}
+                                </div>
+                              )}
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onRestoreVersion(v)}
+                              className="gap-1"
+                            >
+                              <RotateCcw className="h-3.5 w-3.5" /> Restore
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div>
@@ -641,13 +883,38 @@ function AdminHomeCms() {
               </div>
             </div>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditing(null)} className="gap-2">
-              <X className="h-4 w-4" /> Cancel
-            </Button>
-            <Button onClick={onSave} disabled={busy} className="gap-2">
-              <Save className="h-4 w-4" /> Save
-            </Button>
+          <DialogFooter className="flex flex-wrap items-center justify-between gap-2 sm:justify-between">
+            <div className="text-xs text-muted-foreground">
+              {autosaveState === "saving" && (
+                <span className="inline-flex items-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Autosaving…
+                </span>
+              )}
+              {autosaveState === "saved" && lastSavedAt && (
+                <span className="inline-flex items-center gap-1 text-primary">
+                  <CheckCircle2 className="h-3 w-3" /> Autosaved {lastSavedAt.toLocaleTimeString()}
+                </span>
+              )}
+              {autosaveState === "error" && (
+                <span className="text-destructive">Autosave failed — click Save Draft.</span>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button variant="outline" onClick={() => setEditing(null)} className="gap-2">
+                <X className="h-4 w-4" /> Close
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onSave(false)}
+                disabled={busy}
+                className="gap-2"
+              >
+                <Save className="h-4 w-4" /> Save draft
+              </Button>
+              <Button onClick={() => onSave(true)} disabled={busy} className="gap-2">
+                <CheckCircle2 className="h-4 w-4" /> Publish
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
