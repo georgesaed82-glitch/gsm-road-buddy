@@ -681,12 +681,67 @@ function AdminHomeCms() {
                 />
               </div>
               <div>
-                <Label>Body</Label>
-                <Textarea
-                  rows={4}
+                <div className="flex items-center justify-between">
+                  <Label>Body</Label>
+                  {editing.id && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowHistory((v) => !v);
+                        if (editing.id) void refreshVersions(editing.id);
+                      }}
+                      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      <History className="h-3.5 w-3.5" />
+                      {showHistory ? "Hide history" : `Version history (${versions.length})`}
+                    </button>
+                  )}
+                </div>
+                <RichTextEditor
                   value={editing.body}
-                  onChange={(e) => setEditing({ ...editing, body: e.target.value })}
+                  onChange={(v) => setEditing({ ...editing, body: v })}
+                  rows={8}
+                  placeholder="Supports markdown: **bold**, _italic_, headings, lists, links…"
+                  className="mt-1"
                 />
+                {showHistory && editing.id && (
+                  <div className="mt-2 max-h-56 overflow-y-auto border border-border bg-muted/30">
+                    {versions.length === 0 ? (
+                      <p className="p-3 text-xs text-muted-foreground">No versions saved yet.</p>
+                    ) : (
+                      <ul className="divide-y divide-border text-sm">
+                        {versions.map((v) => (
+                          <li key={v.id} className="flex items-center justify-between gap-2 px-3 py-2">
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <Badge
+                                  variant={v.kind === "publish" ? "default" : "outline"}
+                                  className="text-[10px]"
+                                >
+                                  {v.kind}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(v.created_at).toLocaleString()}
+                                </span>
+                              </div>
+                              {v.label && (
+                                <div className="truncate text-xs text-muted-foreground">{v.label}</div>
+                              )}
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => onRestoreVersion(v)}
+                              className="gap-1"
+                            >
+                              <RotateCcw className="h-3.5 w-3.5" /> Restore
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div>
