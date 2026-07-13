@@ -19,6 +19,8 @@ import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import heroCarImage from "@/assets/gsm-hero-mercedes.jpg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
+import memorable1 from "@/assets/memorable-1.jpg.asset.json";
+import memorable2 from "@/assets/memorable-2.jpg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
 import g2 from "@/assets/gallery/gsm-gallery-2.jpg.asset.json";
@@ -136,6 +138,7 @@ const DEFAULT_SECTIONS: Array<
   Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
 > = [
   { section_key: "hero", section_type: "hero", sort_order: 10 },
+  { section_key: "memorable", section_type: "memorable", sort_order: 15 },
   { section_key: "recent-pass", section_type: "recent-pass", sort_order: 20 },
   { section_key: "why", section_type: "why", sort_order: 30 },
   { section_key: "postcodes", section_type: "postcodes", sort_order: 40 },
@@ -176,6 +179,8 @@ function Home() {
             return <AreasSection key={key} s={s} />;
           case "recent-pass":
             return <RecentPassSection key={key} s={s} />;
+          case "memorable":
+            return <MemorableMomentsSection key={key} />;
           case "gallery":
             return <GallerySection key={key} s={s} />;
           case "quizzes":
