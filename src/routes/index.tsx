@@ -429,6 +429,46 @@ function AreasSection({ s }: SectionProps) {
 }
 
 function RecentPassSection({ s }: SectionProps) {
+  return null as never; // placeholder replaced below
+}
+
+function MemorableMomentsSection() {
+  const photos = [
+    { url: memorable1.url, alt: "GSM founder standing beside the GSM Ford Fiesta on a leafy West London street" },
+    { url: memorable2.url, alt: "A GSM student smiling with their practical driving test pass certificate beside the GSM car" },
+  ];
+  return (
+    <section className="bg-background pt-6 pb-4 sm:pt-10 sm:pb-8">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
+        <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
+          <span className="h-px w-8 bg-accent" />
+          Memorable Moments
+        </div>
+        <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl">
+          Memorable Moments
+          <span className="italic text-accent"> with GSM.</span>
+        </h2>
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-4">
+          {photos.map((p) => (
+            <div
+              key={p.url}
+              className="overflow-hidden rounded-2xl border border-border bg-background shadow-lg"
+            >
+              <img
+                src={p.url}
+                alt={p.alt}
+                loading="lazy"
+                className="aspect-[4/5] w-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RecentPassSectionImpl({ s }: SectionProps) {
   return (
     <section className="bg-background pb-10 pt-2 sm:py-16">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
