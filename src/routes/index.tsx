@@ -216,20 +216,52 @@ function HeroSection({ s }: SectionProps) {
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 pb-8 pt-6 sm:px-6 sm:gap-10 sm:pb-12 sm:pt-10 lg:grid-cols-[1.05fr_1.15fr] lg:gap-14 lg:px-8 lg:pb-14 lg:pt-12">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:gap-10 lg:px-8 lg:pb-14 lg:pt-6">
+        {/* 1) GSM PLUS+ hero card */}
+        <Link
+          to="/auth"
+          aria-label="Open GSM Plus learner portal"
+          className="group relative flex items-center gap-3 rounded-3xl border border-border/60 bg-card px-4 py-3.5 shadow-[0_8px_24px_-14px_rgba(29,42,34,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lg sm:gap-4 sm:px-5 sm:py-4"
+        >
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-primary-foreground shadow-md sm:h-12 sm:w-12">
+            <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <GsmPlus
+              className="text-[20px] sm:text-[24px]"
+              gsmClassName="text-primary"
+              plusClassName="text-accent"
+            />
+          </span>
+          <ArrowRight className="h-5 w-5 text-accent transition-transform duration-200 group-hover:translate-x-0.5" />
+        </Link>
+
+        {/* 2) Mercedes hero image */}
+        <div className="overflow-hidden rounded-3xl bg-muted shadow-2xl ring-1 ring-border/40">
+          <img
+            src={or(s.image_url, heroCarImage.url)}
+            alt="The GSM Driving School Mercedes-Benz GLA AMG Line with a green rooftop sign and GSM 2005 number plate, parked on a leafy West London street."
+            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[16/9] lg:max-h-[62vh]"
+            width={1536}
+            height={1024}
+            fetchPriority="high"
+          />
+        </div>
+
+        {/* 3) Tagline + buttons */}
         <div className="flex flex-col justify-center">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
-          <h1 className="mt-4 text-balance font-display text-[36px] font-medium leading-[1.05] text-foreground sm:mt-6 sm:text-5xl lg:text-[56px] xl:text-[64px]">
+          <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:text-[56px] xl:text-[60px]">
             {renderHeroTitle(heroTitle)}
           </h1>
           <a
             href="https://maps.google.com/?cid=12315071950298926858"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 flex items-center gap-3 hover:opacity-80"
+            className="mt-4 flex items-center gap-3 hover:opacity-80 sm:mt-6"
           >
             <div className="flex text-accent">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -238,13 +270,13 @@ function HeroSection({ s }: SectionProps) {
             </div>
             <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
-          <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
             {or(
               s.body,
               "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.",
             )}
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
             <Button
               asChild
               size="lg"
@@ -271,34 +303,6 @@ function HeroSection({ s }: SectionProps) {
                 <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              className="group h-14 w-full rounded-2xl border border-border bg-card px-6 text-primary shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:bg-accent/10 hover:shadow-lg active:translate-y-0 sm:w-auto"
-            >
-              <Link
-                to="/auth"
-                className="inline-flex items-center gap-3 font-medium"
-                aria-label="Open GSM Plus learner portal"
-              >
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-accent text-primary-foreground shadow-sm">
-                  <GraduationCap className="h-4 w-4" />
-                </span>
-                <GsmPlus gsmClassName="text-primary" plusClassName="text-accent" />
-                <ArrowRight className="h-4 w-4 text-accent transition-transform duration-200 group-hover:translate-x-0.5" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-        <div className="relative order-last lg:order-none">
-          <div className="overflow-hidden rounded-2xl bg-muted shadow-2xl ring-1 ring-border/40">
-            <img
-              src={or(s.image_url, heroCarImage.url)}
-              alt="The white GSM Driving School car with GSM 2005 number plate parked on a leafy street in Notting Hill, West London."
-              className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[5/4] lg:max-h-[68vh]"
-              width={1600}
-              height={1408}
-            />
           </div>
         </div>
       </div>
