@@ -63,6 +63,7 @@ import { Route as AuthenticatedAdminPwaInstallsRouteImport } from './routes/_aut
 import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated/admin.pricing'
 import { Route as AuthenticatedAdminPoliceSignalsRouteImport } from './routes/_authenticated/admin.police-signals'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
+import { Route as AuthenticatedAdminMediaRouteImport } from './routes/_authenticated/admin.media'
 import { Route as AuthenticatedAdminLoginEventsRouteImport } from './routes/_authenticated/admin.login-events'
 import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin.lessons'
 import { Route as AuthenticatedAdminLegalRouteImport } from './routes/_authenticated/admin.legal'
@@ -373,6 +374,11 @@ const AuthenticatedAdminNavigationRoute =
     path: '/navigation',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminMediaRoute = AuthenticatedAdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminLoginEventsRoute =
   AuthenticatedAdminLoginEventsRouteImport.update({
     id: '/login-events',
@@ -559,6 +565,7 @@ export interface FileRoutesByFullPath {
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
+  '/admin/media': typeof AuthenticatedAdminMediaRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -635,6 +642,7 @@ export interface FileRoutesByTo {
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
+  '/admin/media': typeof AuthenticatedAdminMediaRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -714,6 +722,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/_authenticated/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
+  '/_authenticated/admin/media': typeof AuthenticatedAdminMediaRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/police-signals': typeof AuthenticatedAdminPoliceSignalsRoute
   '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
@@ -793,6 +802,7 @@ export interface FileRouteTypes {
     | '/admin/legal'
     | '/admin/lessons'
     | '/admin/login-events'
+    | '/admin/media'
     | '/admin/navigation'
     | '/admin/police-signals'
     | '/admin/pricing'
@@ -869,6 +879,7 @@ export interface FileRouteTypes {
     | '/admin/legal'
     | '/admin/lessons'
     | '/admin/login-events'
+    | '/admin/media'
     | '/admin/navigation'
     | '/admin/police-signals'
     | '/admin/pricing'
@@ -947,6 +958,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/legal'
     | '/_authenticated/admin/lessons'
     | '/_authenticated/admin/login-events'
+    | '/_authenticated/admin/media'
     | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/police-signals'
     | '/_authenticated/admin/pricing'
@@ -1370,6 +1382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminNavigationRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/media': {
+      id: '/_authenticated/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AuthenticatedAdminMediaRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/login-events': {
       id: '/_authenticated/admin/login-events'
       path: '/login-events'
@@ -1549,6 +1568,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminLegalRoute: typeof AuthenticatedAdminLegalRoute
   AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
   AuthenticatedAdminLoginEventsRoute: typeof AuthenticatedAdminLoginEventsRoute
+  AuthenticatedAdminMediaRoute: typeof AuthenticatedAdminMediaRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPoliceSignalsRoute: typeof AuthenticatedAdminPoliceSignalsRoute
   AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
@@ -1587,6 +1607,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminLegalRoute: AuthenticatedAdminLegalRoute,
   AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
   AuthenticatedAdminLoginEventsRoute: AuthenticatedAdminLoginEventsRoute,
+  AuthenticatedAdminMediaRoute: AuthenticatedAdminMediaRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPoliceSignalsRoute: AuthenticatedAdminPoliceSignalsRoute,
   AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
