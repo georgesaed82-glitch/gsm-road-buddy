@@ -67,7 +67,7 @@ export const listPublicHomeSections = createServerFn({ method: "GET" })
       .select(SELECT_COLS)
       .eq("status", "published")
       .eq(column, true)
-      .is("deleted_at", null)
+      .is("deleted_at" as never, null)
       .order("sort_order", { ascending: true });
     if (error) throw new Error(error.message);
     return (rows ?? []).map((r) => toRow(r as Record<string, unknown>));
