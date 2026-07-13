@@ -221,7 +221,7 @@ function HeroSection({ s }: SectionProps) {
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:gap-10 lg:px-8 lg:pb-14 lg:pt-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:max-w-6xl lg:gap-6 lg:px-8 lg:pb-10 lg:pt-5">
         {/* 1) GSM PLUS+ hero card */}
         <Link
           to="/auth"
@@ -246,7 +246,7 @@ function HeroSection({ s }: SectionProps) {
           <img
             src={or(s.image_url, heroCarImage.url)}
             alt="The GSM Driving School Mercedes-Benz GLA AMG Line with a green rooftop sign and GSM 2005 number plate, parked on a leafy West London street."
-            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[16/9] lg:max-h-[62vh]"
+            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[21/9] lg:max-h-[46vh]"
             width={1536}
             height={1024}
             fetchPriority="high"
@@ -259,7 +259,7 @@ function HeroSection({ s }: SectionProps) {
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
-          <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:text-[56px] xl:text-[60px]">
+          <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:mt-4 lg:text-[44px] xl:text-[48px]">
             {renderHeroTitle(heroTitle)}
           </h1>
           <a
@@ -275,17 +275,17 @@ function HeroSection({ s }: SectionProps) {
             </div>
             <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mt-4 lg:max-w-xl lg:text-base">
             {or(
               s.body,
               "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.",
             )}
           </p>
-          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap lg:mt-6 lg:gap-3">
             <Button
               asChild
               size="lg"
-              className="h-14 w-full rounded-2xl bg-primary px-7 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 sm:w-auto"
+              className="h-14 w-full rounded-2xl bg-primary px-7 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-12 lg:px-6 lg:text-[15px]"
             >
               <a
                 href={or(s.cta_primary_href, "/contact")}
@@ -298,7 +298,7 @@ function HeroSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 w-full rounded-2xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0 sm:w-auto"
+              className="h-14 w-full rounded-2xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-12 lg:px-6 lg:text-[15px]"
             >
               <a
                 href={or(s.cta_secondary_href, "/#download-app")}
@@ -325,21 +325,21 @@ const FEATURES: { icon: typeof UserRound; title: string; body: string }[] = [
 
 function FeatureStrip() {
   return (
-    <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-12 lg:px-8">
-      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border/60 bg-card px-4 py-5 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:grid-cols-4 sm:gap-6 sm:px-6 sm:py-6">
+    <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-12 lg:max-w-6xl lg:px-8 lg:pb-8">
+      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border/60 bg-card px-4 py-5 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:grid-cols-4 sm:gap-6 sm:px-6 sm:py-6 lg:gap-4 lg:px-5 lg:py-4">
         {FEATURES.map(({ icon: Icon, title, body }) => (
           <div
             key={title}
-            className="flex items-start gap-3 sm:gap-4"
+            className="flex items-start gap-3 sm:gap-4 lg:gap-3"
           >
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent sm:h-11 sm:w-11">
-              <Icon className="h-5 w-5" />
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent sm:h-11 sm:w-11 lg:h-9 lg:w-9">
+              <Icon className="h-5 w-5 lg:h-[18px] lg:w-[18px]" />
             </span>
             <div className="min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary sm:text-xs">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary sm:text-xs lg:text-[11px]">
                 {title}
               </div>
-              <div className="mt-1 text-[12px] leading-snug text-muted-foreground sm:text-[13px]">
+              <div className="mt-1 text-[12px] leading-snug text-muted-foreground sm:text-[13px] lg:text-[12px]">
                 {body}
               </div>
             </div>
