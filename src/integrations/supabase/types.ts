@@ -499,6 +499,39 @@ export type Database = {
         }
         Relationships: []
       }
+      content_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          entity_id: string
+          entity_table: string
+          id: string
+          kind: string
+          label: string | null
+          snapshot: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          entity_id: string
+          entity_table: string
+          id?: string
+          kind?: string
+          label?: string | null
+          snapshot: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          entity_id?: string
+          entity_table?: string
+          id?: string
+          kind?: string
+          label?: string | null
+          snapshot?: Json
+        }
+        Relationships: []
+      }
       downloads: {
         Row: {
           category: string | null
@@ -856,6 +889,7 @@ export type Database = {
           cta_primary_label: string
           cta_secondary_href: string
           cta_secondary_label: string
+          deleted_at: string | null
           extra: Json
           eyebrow: string
           id: string
@@ -879,6 +913,7 @@ export type Database = {
           cta_primary_label?: string
           cta_secondary_href?: string
           cta_secondary_label?: string
+          deleted_at?: string | null
           extra?: Json
           eyebrow?: string
           id?: string
@@ -902,6 +937,7 @@ export type Database = {
           cta_primary_label?: string
           cta_secondary_href?: string
           cta_secondary_label?: string
+          deleted_at?: string | null
           extra?: Json
           eyebrow?: string
           id?: string
