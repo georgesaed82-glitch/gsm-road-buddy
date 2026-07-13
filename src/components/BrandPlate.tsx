@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { cn } from "@/lib/utils";
 
@@ -17,44 +19,19 @@ const COPPER_SOFT = "rgba(198,135,60,0.55)";
 export function BrandPlate({
   size = "md",
   className,
+  rightSlot,
+  fill = false,
+  homeLink = false,
 }: {
   size?: Size;
   className?: string;
+  rightSlot?: ReactNode;
+  fill?: boolean;
+  homeLink?: boolean;
 }) {
   const s = SIZES[size];
-
-  return (
-    <div
-      className={cn(
-        "relative isolate inline-flex items-center gap-3 sm:gap-4",
-        "rounded-[22px] sm:rounded-[26px] border",
-        "shadow-[0_10px_30px_-14px_rgba(0,0,0,0.55)]",
-        s.padding,
-        className,
-      )}
-      style={{
-        background:
-          "linear-gradient(180deg,#2a5a3f 0%,#1f4530 55%,#173525 100%)",
-        borderColor: "rgba(198,135,60,0.85)",
-      }}
-    >
-      {/* Inner copper hairline for the double-bevel look */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-[3px] rounded-[18px] sm:rounded-[22px]"
-        style={{ boxShadow: `inset 0 0 0 1px ${COPPER_SOFT}` }}
-      />
-      {/* Top light glaze */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-x-3 top-1 h-[38%] rounded-t-[18px]"
-        style={{
-          background:
-            "linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0) 100%)",
-        }}
-      />
-
-      {/* Circular logo (kept, not replaced) */}
+  const BrandInner = (
+    <>
       <span
         className={cn("relative shrink-0 rounded-full", s.logoWrap)}
         style={{
@@ -70,8 +47,7 @@ export function BrandPlate({
         />
       </span>
 
-      {/* Type lockup */}
-      <div className="relative min-w-0 leading-[1.05]">
+      <div className={cn("relative min-w-0 leading-[1.05]", fill && "flex-1")}>
         <div className={cn("font-display font-extrabold tracking-tight", s.title)}>
           <span
             className="text-white"
@@ -126,6 +102,61 @@ export function BrandPlate({
           </span>
         </div>
       </div>
+    </>
+  );
+
+  return (
+    <div
+      className={cn(
+        "relative isolate inline-flex items-center gap-2.5 sm:gap-3.5",
+        fill && "flex w-full",
+        "rounded-[22px] sm:rounded-[26px] border",
+        "shadow-[0_10px_30px_-14px_rgba(0,0,0,0.55)]",
+        s.padding,
+        className,
+      )}
+      style={{
+        background:
+          "linear-gradient(180deg,#2a5a3f 0%,#1f4530 55%,#173525 100%)",
+        borderColor: "rgba(198,135,60,0.85)",
+      }}
+    >
+      {/* Inner copper hairline for the double-bevel look */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-[3px] rounded-[18px] sm:rounded-[22px]"
+        style={{ boxShadow: `inset 0 0 0 1px ${COPPER_SOFT}` }}
+      />
+      {/* Top light glaze */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-3 top-1 h-[38%] rounded-t-[18px]"
+        style={{
+          background:
+            "linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0) 100%)",
+        }}
+      />
+
+      {homeLink ? (
+        <Link
+          to="/"
+          aria-label="GSM Driving School — home"
+          className={cn(
+            "relative flex items-center gap-2.5 sm:gap-3.5 rounded-[18px] outline-none focus-visible:ring-2 focus-visible:ring-accent/60",
+            fill && "flex-1 min-w-0",
+          )}
+        >
+          {BrandInner}
+        </Link>
+      ) : (
+        BrandInner
+      )}
+
+      {rightSlot ? (
+        <div className="relative ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+          {rightSlot}
+        </div>
+      ) : null}
     </div>
   );
 }
