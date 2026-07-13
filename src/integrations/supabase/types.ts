@@ -1911,6 +1911,10 @@ export type Database = {
         }
         Returns: number
       }
+      profile_update_allowed: {
+        Args: { _new: Database["public"]["Tables"]["profiles"]["Row"] }
+        Returns: boolean
+      }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {
