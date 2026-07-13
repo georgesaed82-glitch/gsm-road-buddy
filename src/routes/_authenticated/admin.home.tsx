@@ -783,13 +783,34 @@ function AdminHomeCms() {
               </div>
             </div>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditing(null)} className="gap-2">
-              <X className="h-4 w-4" /> Cancel
-            </Button>
-            <Button onClick={onSave} disabled={busy} className="gap-2">
-              <Save className="h-4 w-4" /> Save
-            </Button>
+          <DialogFooter className="flex flex-wrap items-center justify-between gap-2 sm:justify-between">
+            <div className="text-xs text-muted-foreground">
+              {autosaveState === "saving" && (
+                <span className="inline-flex items-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Autosaving…
+                </span>
+              )}
+              {autosaveState === "saved" && lastSavedAt && (
+                <span className="inline-flex items-center gap-1 text-primary">
+                  <CheckCircle2 className="h-3 w-3" /> Autosaved{" "}
+                  {lastSavedAt.toLocaleTimeString()}
+                </span>
+              )}
+              {autosaveState === "error" && (
+                <span className="text-destructive">Autosave failed — click Save Draft.</span>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button variant="outline" onClick={() => setEditing(null)} className="gap-2">
+                <X className="h-4 w-4" /> Close
+              </Button>
+              <Button variant="outline" onClick={() => onSave(false)} disabled={busy} className="gap-2">
+                <Save className="h-4 w-4" /> Save draft
+              </Button>
+              <Button onClick={() => onSave(true)} disabled={busy} className="gap-2">
+                <CheckCircle2 className="h-4 w-4" /> Publish
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
