@@ -536,13 +536,13 @@ function GallerySection({ s }: SectionProps) {
           caption: captions[i] ?? DEFAULT_GALLERY_CAPTIONS[i] ?? "",
         }));
   return (
-    <section className="bg-muted py-12 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="bg-muted py-12 sm:py-16 lg:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "From our students")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl lg:text-4xl">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -552,7 +552,7 @@ function GallerySection({ s }: SectionProps) {
             </>
           )}
         </h2>
-        <div className="mt-12">
+        <div className="mt-12 lg:mt-8">
           <PhotoGallery photos={galleryPhotos} />
         </div>
       </div>
@@ -562,13 +562,13 @@ function GallerySection({ s }: SectionProps) {
 
 function QuizzesSection({ s }: SectionProps) {
   return (
-    <section className="border-t border-border bg-background py-12 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="border-t border-border bg-background py-12 sm:py-16 lg:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "Free theory practice")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-4xl">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -577,13 +577,13 @@ function QuizzesSection({ s }: SectionProps) {
             </>
           )}
         </h2>
-        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground lg:text-base">
           {or(
             s.body,
             `This is a taster of GSM Plus. Every question in the full platform is explained the same way — answer, then a plain-English "why" — so you actually understand the road, not just memorise it. That's how our students pass quicker.`,
           )}
         </p>
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        <div className="mt-10 grid gap-6 lg:mt-8 lg:grid-cols-2 lg:gap-5">
           <div>
             <div className="mb-3 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               Road signs · 10 questions
@@ -643,15 +643,15 @@ function QuizzesSection({ s }: SectionProps) {
 
 function PortalSection({ s }: SectionProps) {
   return (
-    <section className="bg-primary py-20 text-primary-foreground sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+    <section className="bg-primary py-20 text-primary-foreground sm:py-28 lg:py-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/60">
               <span className="h-px w-8 bg-accent" />
               {or(s.eyebrow, "GSM Plus")}
             </div>
-            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.1] sm:text-5xl">
+            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.1] sm:text-5xl lg:text-4xl">
               {s.title && s.title.trim().length > 0 ? (
                 s.title
               ) : (
@@ -660,7 +660,7 @@ function PortalSection({ s }: SectionProps) {
                 </>
               )}
             </h2>
-            <p className="mt-6 max-w-md text-lg leading-relaxed opacity-80">
+            <p className="mt-6 max-w-md text-lg leading-relaxed opacity-80 lg:mt-4 lg:text-base">
               {or(
                 s.body,
                 "Lesson notes, payment history, theory revision and hazard perception — synced from your instructor's tablet after every session.",
@@ -702,17 +702,17 @@ function PortalSection({ s }: SectionProps) {
 function CtaSection({ s }: SectionProps) {
   return (
     <section className="border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:max-w-6xl lg:px-8 lg:py-12">
         <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               <span className="h-px w-8 bg-accent" />
               Ready to start
             </div>
-            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl">
+            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl lg:text-4xl">
               {or(s.title, "Ready to start? Get in Touch.")}
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground lg:text-[15px]">
               Message us on WhatsApp, give us a call, or download the app to book your first lesson
               today.
             </p>
