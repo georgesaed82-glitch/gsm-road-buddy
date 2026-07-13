@@ -353,13 +353,13 @@ function FeatureStrip() {
 function WhySection({ s }: SectionProps) {
   const reasons = usePageBlocks("home-reasons", DEFAULT_REASONS);
   return (
-    <section className="py-12 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="py-12 sm:py-16 lg:py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "Why GSM")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-4xl">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -370,12 +370,12 @@ function WhySection({ s }: SectionProps) {
             </>
           )}
         </h2>
-        <div className="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
+        <div className="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3 lg:mt-10">
           {reasons.map((r) => (
-            <div key={r.id} className="bg-background p-8 lg:p-10">
-              <div className="font-display text-2xl font-medium text-accent">{r.id}</div>
-              <h3 className="mt-6 font-display text-2xl text-foreground">{r.name}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{r.description}</p>
+            <div key={r.id} className="bg-background p-8 lg:p-6">
+              <div className="font-display text-2xl font-medium text-accent lg:text-xl">{r.id}</div>
+              <h3 className="mt-6 font-display text-2xl text-foreground lg:mt-4 lg:text-xl">{r.name}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground lg:mt-2">{r.description}</p>
             </div>
           ))}
         </div>
@@ -407,15 +407,15 @@ function PostcodesSection({ s }: SectionProps) {
 
 function AreasSection({ s }: SectionProps) {
   return (
-    <section className="border-b border-border bg-background py-14 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="border-b border-border bg-background py-14 sm:py-16 lg:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               <span className="h-px w-8 bg-accent" />
               {or(s.eyebrow, "Driving lessons by area")}
             </div>
-            <h2 className="mt-3 font-display text-3xl font-medium leading-tight text-foreground sm:text-4xl">
+            <h2 className="mt-3 font-display text-3xl font-medium leading-tight text-foreground sm:text-4xl lg:text-3xl">
               {or(s.title, "Lessons in your West London postcode")}
             </h2>
           </div>
