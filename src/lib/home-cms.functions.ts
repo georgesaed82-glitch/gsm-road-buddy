@@ -26,10 +26,11 @@ export type HomeSectionRow = {
   show_app: boolean;
   sort_order: number;
   updated_at: string;
+  deleted_at: string | null;
 };
 
 const SELECT_COLS =
-  "id, section_key, section_type, eyebrow, title, subtitle, body, image_url, cta_primary_label, cta_primary_href, cta_secondary_label, cta_secondary_href, background, layout, extra, status, show_web, show_app, sort_order, updated_at";
+  "id, section_key, section_type, eyebrow, title, subtitle, body, image_url, cta_primary_label, cta_primary_href, cta_secondary_label, cta_secondary_href, background, layout, extra, status, show_web, show_app, sort_order, updated_at, deleted_at";
 
 function toRow(r: Record<string, unknown>): HomeSectionRow {
   return {
@@ -53,6 +54,7 @@ function toRow(r: Record<string, unknown>): HomeSectionRow {
     show_app: (r.show_app as boolean) ?? true,
     sort_order: (r.sort_order as number) ?? 0,
     updated_at: (r.updated_at as string) ?? new Date().toISOString(),
+    deleted_at: (r.deleted_at as string | null) ?? null,
   };
 }
 
