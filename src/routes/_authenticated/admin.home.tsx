@@ -11,6 +11,7 @@ import {
   X,
   ArrowUp,
   ArrowDown,
+  GripVertical,
   Eye,
   EyeOff,
   ImagePlus,
@@ -51,6 +52,7 @@ import {
   deleteHomeSection,
   duplicateHomeSection,
   reorderHomeSection,
+  reorderHomeSections,
   uploadHomeSectionMedia,
   saveHomeSectionDraft,
   listHomeSectionVersions,
@@ -158,6 +160,7 @@ function AdminHomeCms() {
   const remove = useServerFn(deleteHomeSection);
   const dupe = useServerFn(duplicateHomeSection);
   const reorder = useServerFn(reorderHomeSection);
+  const reorderBulk = useServerFn(reorderHomeSections);
   const upload = useServerFn(uploadHomeSectionMedia);
   const saveDraft = useServerFn(saveHomeSectionDraft);
   const listVersions = useServerFn(listHomeSectionVersions);
@@ -167,6 +170,9 @@ function AdminHomeCms() {
   const purgeRow = useServerFn(purgeHomeSection);
 
   const [showRecycle, setShowRecycle] = useState(false);
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
+  const [orderOverride, setOrderOverride] = useState<HomeSectionRow[] | null>(null);
 
   const q = useQuery({
     queryKey: ["admin", "home-sections", showRecycle],
@@ -243,7 +249,8 @@ function AdminHomeCms() {
   }, [editing?.id]);
 
   const rows = useMemo(() => {
-    const all = q.data ?? [];
+    const base = orderOverride ?? q.data ?? [];
+    const all = base;
     if (!filter.trim()) return all;
     const f = filter.toLowerCase();
     return all.filter(
@@ -252,7 +259,64 @@ function AdminHomeCms() {
         r.title.toLowerCase().includes(f) ||
         r.section_type.toLowerCase().includes(f),
     );
-  }, [q.data, filter]);
+  }, [q.data, filter, orderOverride]);
+
+  // Clear local override when the server data returns matching order.
+  useEffect(() => {
+    if (!orderOverride || !q.data) return;
+    const sameLength = orderOverride.length === q.data.length;
+    const sameOrder =
+      sameLength && orderOverride.every((r, i) => r.id === q.data![i].id);
+    if (sameOrder) setOrderOverride(null);
+  }, [q.data, orderOverride]);
+
+  const dndEnabled = !filter.trim() && !showRecycle;
+
+  const onDragStart = (id: string) => (e: React.DragEvent) => {
+    if (!dndEnabled) return;
+    setDragId(id);
+    try {
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", id);
+    } catch {
+      /* no-op */
+    }
+  };
+  const onDragOver = (id: string) => (e: React.DragEvent) => {
+    if (!dndEnabled || !dragId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (overId !== id) setOverId(id);
+  };
+  const onDragLeaveRow = () => {
+    setOverId(null);
+  };
+  const onDrop = (targetId: string) => async (e: React.DragEvent) => {
+    e.preventDefault();
+    const sourceId = dragId;
+    setDragId(null);
+    setOverId(null);
+    if (!sourceId || sourceId === targetId || !dndEnabled) return;
+    const base = orderOverride ?? q.data ?? [];
+    const fromIdx = base.findIndex((r) => r.id === sourceId);
+    const toIdx = base.findIndex((r) => r.id === targetId);
+    if (fromIdx === -1 || toIdx === -1) return;
+    const next = base.slice();
+    const [moved] = next.splice(fromIdx, 1);
+    next.splice(toIdx, 0, moved);
+    setOrderOverride(next);
+    try {
+      await reorderBulk({ data: { ids: next.map((r) => r.id) } });
+      refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to reorder");
+      setOrderOverride(null);
+    }
+  };
+  const onDragEnd = () => {
+    setDragId(null);
+    setOverId(null);
+  };
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "home-sections"] });
 
@@ -441,6 +505,13 @@ function AdminHomeCms() {
           </p>
         )}
 
+        {dndEnabled && rows.length > 1 && (
+          <p className="text-xs text-muted-foreground">
+            Tip: drag the <GripVertical className="inline h-3 w-3 align-middle" /> handle on any row
+            to reorder sections. Changes save automatically.
+          </p>
+        )}
+
         <div className="overflow-hidden border border-border bg-card">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted text-xs uppercase tracking-wider text-muted-foreground">
@@ -470,9 +541,34 @@ function AdminHomeCms() {
                 </tr>
               )}
               {rows.map((r, i) => (
-                <tr key={r.id} className="border-b border-border/60 last:border-0">
+                <tr
+                  key={r.id}
+                  onDragOver={onDragOver(r.id)}
+                  onDragLeave={onDragLeaveRow}
+                  onDrop={onDrop(r.id)}
+                  className={`border-b border-border/60 last:border-0 ${
+                    dragId === r.id ? "opacity-40" : ""
+                  } ${overId === r.id && dragId && dragId !== r.id ? "bg-accent/30" : ""}`}
+                >
                   <td className="px-3 py-2">
                     <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        draggable={dndEnabled}
+                        onDragStart={onDragStart(r.id)}
+                        onDragEnd={onDragEnd}
+                        title={
+                          dndEnabled
+                            ? "Drag to reorder"
+                            : "Clear filter and hide recycle bin to reorder"
+                        }
+                        className={`inline-flex h-7 w-5 items-center justify-center text-muted-foreground hover:text-foreground ${
+                          dndEnabled ? "cursor-grab active:cursor-grabbing" : "cursor-not-allowed opacity-40"
+                        }`}
+                        aria-label="Drag handle"
+                      >
+                        <GripVertical className="h-4 w-4" />
+                      </button>
                       <Button
                         size="icon"
                         variant="ghost"

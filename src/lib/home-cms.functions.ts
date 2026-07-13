@@ -231,6 +231,24 @@ export const reorderHomeSection = createServerFn({ method: "POST" })
     return { ok: true } as const;
   });
 
+// Bulk reorder via drag-and-drop: writes sort_order = index * 10 for each id.
+export const reorderHomeSections = createServerFn({ method: "POST" })
+  .inputValidator((d) =>
+    z.object({ ids: z.array(z.string().uuid()).min(1) }).parse(d),
+  )
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    for (let i = 0; i < data.ids.length; i++) {
+      const { error } = await supabaseAdmin
+        .from("home_sections")
+        .update({ sort_order: (i + 1) * 10 } as never)
+        .eq("id", data.ids[i]);
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true } as const;
+  });
+
 // Upload media into content-images bucket (shared with lessons CMS)
 export const uploadHomeSectionMedia = createServerFn({ method: "POST" })
   .inputValidator((d) =>
