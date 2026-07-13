@@ -45,7 +45,7 @@ const GALLERY_URLS = [
   g11, g12, g13, g14, g15, g16, g17, g18, g19,
 ].map((img) => img.url);
 const DEFAULT_GALLERY_CAPTIONS = [
-  "The GSM Driving School T-Cross — Notting Hill",
+  "The GSM Driving School Mercedes — Notting Hill",
   "Student pass — Greenford Test Centre",
   "On lesson around Holland Park",
   "Pass certificate moment",
