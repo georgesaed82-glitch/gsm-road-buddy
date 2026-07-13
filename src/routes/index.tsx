@@ -19,6 +19,8 @@ import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import heroCarImage from "@/assets/gsm-hero-mercedes.jpg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
+import memorable1 from "@/assets/memorable-1.jpg.asset.json";
+import memorable2 from "@/assets/memorable-2.jpg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
 import g2 from "@/assets/gallery/gsm-gallery-2.jpg.asset.json";
@@ -136,6 +138,7 @@ const DEFAULT_SECTIONS: Array<
   Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
 > = [
   { section_key: "hero", section_type: "hero", sort_order: 10 },
+  { section_key: "memorable", section_type: "memorable", sort_order: 15 },
   { section_key: "recent-pass", section_type: "recent-pass", sort_order: 20 },
   { section_key: "why", section_type: "why", sort_order: 30 },
   { section_key: "postcodes", section_type: "postcodes", sort_order: 40 },
@@ -176,6 +179,8 @@ function Home() {
             return <AreasSection key={key} s={s} />;
           case "recent-pass":
             return <RecentPassSection key={key} s={s} />;
+          case "memorable":
+            return <MemorableMomentsSection key={key} />;
           case "gallery":
             return <GallerySection key={key} s={s} />;
           case "quizzes":
@@ -417,6 +422,42 @@ function AreasSection({ s }: SectionProps) {
           <Link to="/areas" className="text-sm font-medium text-primary hover:underline">
             {or(s.cta_primary_label, "See all areas →")}
           </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MemorableMomentsSection() {
+  const photos = [
+    { url: memorable1.url, alt: "GSM founder standing beside the GSM Ford Fiesta on a leafy West London street" },
+    { url: memorable2.url, alt: "A GSM student smiling with their practical driving test pass certificate beside the GSM car" },
+  ];
+  return (
+    <section className="bg-background pt-6 pb-4 sm:pt-10 sm:pb-8">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
+        <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
+          <span className="h-px w-8 bg-accent" />
+          Memorable Moments
+        </div>
+        <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl">
+          Memorable Moments
+          <span className="italic text-accent"> with GSM.</span>
+        </h2>
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-4">
+          {photos.map((p) => (
+            <div
+              key={p.url}
+              className="overflow-hidden rounded-2xl border border-border bg-background shadow-lg"
+            >
+              <img
+                src={p.url}
+                alt={p.alt}
+                loading="lazy"
+                className="aspect-[4/5] w-full object-cover"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </section>
