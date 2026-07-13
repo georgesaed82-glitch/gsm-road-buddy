@@ -26,7 +26,6 @@ import {
 import { AdminShell } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -186,11 +185,7 @@ function AdminHomeCms() {
   const editingSnapshot = useRef<string>("");
   const isDirty = useRef(false);
 
-  const rowById = useMemo(() => {
-    const m = new Map<string, HomeSectionRow>();
-    (q.data ?? []).forEach((r) => m.set(r.id, r));
-    return m;
-  }, [q.data]);
+  // (rowById map removed; not currently needed)
 
   const refreshVersions = async (id: string) => {
     try {
