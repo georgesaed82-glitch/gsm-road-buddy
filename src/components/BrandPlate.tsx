@@ -17,16 +17,21 @@ const COPPER_SOFT = "rgba(198,135,60,0.55)";
 export function BrandPlate({
   size = "md",
   className,
+  rightSlot,
+  fill = false,
 }: {
   size?: Size;
   className?: string;
+  rightSlot?: React.ReactNode;
+  fill?: boolean;
 }) {
   const s = SIZES[size];
 
   return (
     <div
       className={cn(
-        "relative isolate inline-flex items-center gap-3 sm:gap-4",
+        "relative isolate inline-flex items-center gap-2.5 sm:gap-3.5",
+        fill && "flex w-full",
         "rounded-[22px] sm:rounded-[26px] border",
         "shadow-[0_10px_30px_-14px_rgba(0,0,0,0.55)]",
         s.padding,
@@ -71,7 +76,7 @@ export function BrandPlate({
       </span>
 
       {/* Type lockup */}
-      <div className="relative min-w-0 leading-[1.05]">
+      <div className={cn("relative min-w-0 leading-[1.05]", fill && "flex-1")}>
         <div className={cn("font-display font-extrabold tracking-tight", s.title)}>
           <span
             className="text-white"
@@ -126,6 +131,12 @@ export function BrandPlate({
           </span>
         </div>
       </div>
+
+      {rightSlot ? (
+        <div className="relative ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
+          {rightSlot}
+        </div>
+      ) : null}
     </div>
   );
 }
