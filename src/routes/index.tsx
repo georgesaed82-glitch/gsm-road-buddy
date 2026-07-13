@@ -427,21 +427,22 @@ function RecentPassSection({ s }: SectionProps) {
   return (
     <section className="bg-background pb-10 pt-2 sm:py-16">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
-        <div className="overflow-hidden rounded-3xl border border-border bg-background shadow-xl">
-          <img
-            src={or(s.image_url, studentPassImage.url)}
-            alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
-            className="aspect-[4/5] w-full object-cover object-top sm:aspect-[4/3]"
-            width={1200}
-            height={1500}
-          />
-        </div>
-        <div className="mt-5 rounded-3xl border border-accent/20 bg-[color-mix(in_oklab,var(--accent)_8%,var(--card))] px-5 py-6 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:mt-8 sm:px-8 sm:py-8">
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
+        <div className="relative">
+          <div className="overflow-hidden rounded-3xl border border-border bg-background shadow-xl">
+            <img
+              src={or(s.image_url, studentPassImage.url)}
+              alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
+              className="aspect-[3/4] w-full object-cover object-top sm:aspect-[4/3]"
+              width={1200}
+              height={1500}
+            />
+          </div>
+          <div className="relative z-10 -mt-16 mx-3 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:-mt-24 sm:mx-8 sm:px-8 sm:py-8">
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "About GSM")}
           </div>
-          <h2 className="mt-3 font-display text-[26px] font-medium leading-[1.15] text-foreground sm:mt-4 sm:text-4xl lg:text-5xl">
+          <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl lg:text-5xl">
             {s.title && s.title.trim().length > 0 ? (
               s.title
             ) : (
@@ -451,12 +452,13 @@ function RecentPassSection({ s }: SectionProps) {
               </>
             )}
           </h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-foreground/85 sm:mt-5 sm:text-lg">
+          <p className="mt-3 text-[15px] leading-relaxed text-primary/90 sm:mt-5 sm:text-lg">
             {or(
               s.body,
               "George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.",
             )}
           </p>
+          </div>
         </div>
       </div>
     </section>
