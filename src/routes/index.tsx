@@ -17,7 +17,7 @@ import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
 import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
 import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
-import heroCarImage from "@/assets/gsm-hero-car.jpg.asset.json";
+import heroCarImage from "@/assets/gsm-hero-mercedes.jpg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import g0 from "@/assets/gallery/gsm-gallery-0.jpg.asset.json";
 import g1 from "@/assets/gallery/gsm-gallery-1.jpg.asset.json";
@@ -136,10 +136,10 @@ const DEFAULT_SECTIONS: Array<
   Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
 > = [
   { section_key: "hero", section_type: "hero", sort_order: 10 },
-  { section_key: "why", section_type: "why", sort_order: 20 },
-  { section_key: "postcodes", section_type: "postcodes", sort_order: 30 },
-  { section_key: "areas", section_type: "areas", sort_order: 40 },
-  { section_key: "recent-pass", section_type: "recent-pass", sort_order: 50 },
+  { section_key: "recent-pass", section_type: "recent-pass", sort_order: 20 },
+  { section_key: "why", section_type: "why", sort_order: 30 },
+  { section_key: "postcodes", section_type: "postcodes", sort_order: 40 },
+  { section_key: "areas", section_type: "areas", sort_order: 50 },
   { section_key: "gallery", section_type: "gallery", sort_order: 60 },
   { section_key: "quizzes", section_type: "quizzes", sort_order: 70 },
   { section_key: "install-app", section_type: "install-app", sort_order: 80 },
