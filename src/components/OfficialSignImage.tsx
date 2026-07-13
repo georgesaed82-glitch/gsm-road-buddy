@@ -99,7 +99,7 @@ export function OfficialSignImage({
 
   if (!zoomable) return content;
   return (
-    <Zoomable label={sign.name} aspectRatio="1 / 1" className="inline-block">
+    <Zoomable label={sign.name} aspectRatio="1 / 1" className="block leading-none">
       {content}
     </Zoomable>
   );
