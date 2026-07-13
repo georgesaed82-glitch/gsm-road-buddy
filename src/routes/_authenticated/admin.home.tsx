@@ -183,6 +183,7 @@ function AdminHomeCms() {
   const [versions, setVersions] = useState<ContentVersionRow[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const editingSnapshot = useRef<string>("");
   const isDirty = useRef(false);
 
   const rowById = useMemo(() => {
@@ -203,7 +204,9 @@ function AdminHomeCms() {
   // Autosave: 1.5s debounce for edits to existing sections
   useEffect(() => {
     if (!editing?.id) return;
-    if (!isDirty.current) return;
+    const current = JSON.stringify(editing);
+    if (current === editingSnapshot.current) return; // no real change
+    isDirty.current = true;
     if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
     autosaveTimer.current = setTimeout(async () => {
       if (!editing.id) return;
@@ -217,6 +220,7 @@ function AdminHomeCms() {
         setAutosaveState("saved");
         setLastSavedAt(new Date());
         isDirty.current = false;
+        editingSnapshot.current = current;
         qc.invalidateQueries({ queryKey: ["admin", "home-sections"] });
       } catch {
         setAutosaveState("error");
@@ -228,10 +232,20 @@ function AdminHomeCms() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editing]);
 
-  const setEditingDirty = (next: Draft | null) => {
-    if (next && editing) isDirty.current = true;
-    setEditing(next);
-  };
+  // Reset autosave snapshot when opening a section
+  useEffect(() => {
+    if (editing?.id) {
+      editingSnapshot.current = JSON.stringify(editing);
+      setAutosaveState("idle");
+      isDirty.current = false;
+      void refreshVersions(editing.id);
+    } else {
+      editingSnapshot.current = "";
+      setVersions([]);
+      setShowHistory(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing?.id]);
 
   const rows = useMemo(() => {
     const all = q.data ?? [];
