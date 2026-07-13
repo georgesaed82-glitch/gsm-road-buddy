@@ -428,10 +428,6 @@ function AreasSection({ s }: SectionProps) {
   );
 }
 
-function RecentPassSection({ s }: SectionProps) {
-  return null as never; // placeholder replaced below
-}
-
 function MemorableMomentsSection() {
   const photos = [
     { url: memorable1.url, alt: "GSM founder standing beside the GSM Ford Fiesta on a leafy West London street" },
@@ -468,7 +464,7 @@ function MemorableMomentsSection() {
   );
 }
 
-function RecentPassSectionImpl({ s }: SectionProps) {
+function RecentPassSection({ s }: SectionProps) {
   return (
     <section className="bg-background pb-10 pt-2 sm:py-16">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
