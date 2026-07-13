@@ -261,7 +261,7 @@ function AdminHomeCms() {
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin", "home-sections"] });
 
-  const onSave = async () => {
+  const onSave = async (publish = false) => {
     if (!editing) return;
     if (!editing.section_key.trim()) {
       toast.error("Section key is required");
@@ -271,12 +271,27 @@ function AdminHomeCms() {
     try {
       const payload = { ...editing };
       delete (payload as { id?: string }).id;
+      if (publish) (payload as { status: HomeSectionStatus }).status = "published";
       if (editing.id) {
-        await update({ data: { id: editing.id, patch: payload } });
-        toast.success("Saved");
+        await saveDraft({
+          data: {
+            id: editing.id,
+            patch: payload,
+            kind: publish ? "publish" : "manual",
+          },
+        });
+        toast.success(publish ? "Published" : "Saved");
       } else {
-        await create({ data: { section: payload } });
+        const row = await create({ data: { section: payload } });
         toast.success("Created");
+        // Snapshot the initial state so it appears in version history
+        try {
+          await saveDraft({
+            data: { id: row.id, patch: {}, kind: "manual" },
+          });
+        } catch {
+          /* non-fatal */
+        }
       }
       setEditing(null);
       refresh();
@@ -288,15 +303,53 @@ function AdminHomeCms() {
   };
 
   const onDelete = async (row: HomeSectionRow) => {
-    if (!confirm(`Delete section "${row.section_key}"? This cannot be undone.`)) return;
+    if (!confirm(`Move section "${row.section_key}" to the recycle bin?`)) return;
     try {
-      await remove({ data: { id: row.id } });
-      toast.success("Deleted");
+      await softDelete({ data: { id: row.id } });
+      toast.success("Moved to recycle bin");
       refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
     }
   };
+
+  const onRestore = async (row: HomeSectionRow) => {
+    try {
+      await restoreRow({ data: { id: row.id } });
+      toast.success("Restored");
+      refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
+  };
+
+  const onPurge = async (row: HomeSectionRow) => {
+    if (!confirm(`Permanently delete "${row.section_key}"? This cannot be undone.`)) return;
+    try {
+      await purgeRow({ data: { id: row.id } });
+      toast.success("Permanently deleted");
+      refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
+  };
+
+  const onRestoreVersion = async (v: ContentVersionRow) => {
+    if (!editing?.id) return;
+    if (!confirm("Restore this version? The current content will be snapshotted first.")) return;
+    try {
+      const row = await restoreVersion({ data: { id: editing.id, version_id: v.id } });
+      setEditing(fromRow(row));
+      toast.success("Restored");
+      void refreshVersions(editing.id);
+      refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    }
+  };
+
+  // Silence the unused remove warning; kept for backward compatibility
+  void remove;
 
   const onDuplicate = async (row: HomeSectionRow) => {
     try {
