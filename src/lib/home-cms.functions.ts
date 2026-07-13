@@ -259,3 +259,182 @@ export const uploadHomeSectionMedia = createServerFn({ method: "POST" })
     if (e2 || !signed) throw new Error(e2?.message ?? "Failed to sign URL");
     return { url: signed.signedUrl };
   });
+
+// ============================================================
+// Version history + recycle bin (Phase 2)
+// ============================================================
+
+export type ContentVersionRow = {
+  id: string;
+  entity_table: string;
+  entity_id: string;
+  kind: string;
+  label: string | null;
+  snapshot: Json;
+  created_by: string | null;
+  created_at: string;
+};
+
+const versionKinds = z.enum(["autosave", "manual", "publish"]);
+
+async function insertVersion(params: {
+  entityId: string;
+  kind: "autosave" | "manual" | "publish";
+  snapshot: unknown;
+  label?: string | null;
+}) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  await supabaseAdmin
+    .from("content_versions" as never)
+    .insert({
+      entity_table: "home_sections",
+      entity_id: params.entityId,
+      kind: params.kind,
+      label: params.label ?? null,
+      snapshot: params.snapshot as never,
+    } as never);
+  // Trim: keep newest 30 for this entity (best-effort)
+  const { data: keep } = await supabaseAdmin
+    .from("content_versions" as never)
+    .select("id")
+    .eq("entity_table", "home_sections")
+    .eq("entity_id", params.entityId)
+    .order("created_at", { ascending: false })
+    .limit(30);
+  const keepIds = ((keep ?? []) as Array<{ id: string }>).map((r) => r.id);
+  if (keepIds.length === 30) {
+    await supabaseAdmin
+      .from("content_versions" as never)
+      .delete()
+      .eq("entity_table", "home_sections")
+      .eq("entity_id", params.entityId)
+      .not("id", "in", `(${keepIds.map((i) => `"${i}"`).join(",")})`);
+  }
+}
+
+// Save draft (auto or manual). If id present, updates + snapshots.
+export const saveHomeSectionDraft = createServerFn({ method: "POST" })
+  .inputValidator((d) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        patch: sectionInput.partial(),
+        kind: versionKinds.default("autosave"),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }): Promise<HomeSectionRow> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("home_sections")
+      .update(data.patch as never)
+      .eq("id", data.id)
+      .select(SELECT_COLS)
+      .single();
+    if (error) throw new Error(error.message);
+    const rowTyped = toRow(row as Record<string, unknown>);
+    await insertVersion({
+      entityId: data.id,
+      kind: data.kind,
+      snapshot: rowTyped,
+    });
+    return rowTyped;
+  });
+
+export const listHomeSectionVersions = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }): Promise<ContentVersionRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: rows, error } = await supabaseAdmin
+      .from("content_versions" as never)
+      .select("id, entity_table, entity_id, kind, label, snapshot, created_by, created_at")
+      .eq("entity_table", "home_sections")
+      .eq("entity_id", data.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw new Error(error.message);
+    return (rows ?? []) as unknown as ContentVersionRow[];
+  });
+
+export const restoreHomeSectionVersion = createServerFn({ method: "POST" })
+  .inputValidator((d) =>
+    z.object({ id: z.string().uuid(), version_id: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data }): Promise<HomeSectionRow> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: v, error: e1 } = await supabaseAdmin
+      .from("content_versions" as never)
+      .select("snapshot")
+      .eq("id", data.version_id)
+      .single();
+    if (e1 || !v) throw new Error(e1?.message ?? "Version not found");
+    const snap = (v as { snapshot: Record<string, unknown> }).snapshot;
+    // Strip id + timestamps
+    const patch: Record<string, unknown> = { ...snap };
+    delete patch.id;
+    delete patch.updated_at;
+    delete patch.deleted_at;
+    const { data: row, error } = await supabaseAdmin
+      .from("home_sections")
+      .update(patch as never)
+      .eq("id", data.id)
+      .select(SELECT_COLS)
+      .single();
+    if (error) throw new Error(error.message);
+    const rowTyped = toRow(row as Record<string, unknown>);
+    await insertVersion({
+      entityId: data.id,
+      kind: "manual",
+      snapshot: rowTyped,
+      label: `Restored from ${new Date().toISOString()}`,
+    });
+    return rowTyped;
+  });
+
+// Recycle bin: soft delete, restore, and permanent purge
+export const softDeleteHomeSection = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("home_sections")
+      .update({ deleted_at: new Date().toISOString() } as never)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true } as const;
+  });
+
+export const restoreHomeSection = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("home_sections")
+      .update({ deleted_at: null } as never)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true } as const;
+  });
+
+export const purgeHomeSection = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin
+      .from("content_versions" as never)
+      .delete()
+      .eq("entity_table", "home_sections")
+      .eq("entity_id", data.id);
+    const { error } = await supabaseAdmin
+      .from("home_sections")
+      .delete()
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true } as const;
+  });
