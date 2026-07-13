@@ -267,10 +267,10 @@ export function Header() {
     >
       <div className="mx-auto w-full max-w-7xl px-2 py-2 sm:px-4 sm:py-2.5 lg:px-6">
         <div className="sm:hidden">
-          <BrandPlate size="xs" fill brandHref="/" rightSlot={actions} />
+          <BrandPlate size="xs" fill homeLink rightSlot={actions} />
         </div>
         <div className="hidden sm:block">
-          <BrandPlate size="sm" fill brandHref="/" rightSlot={actions} />
+          <BrandPlate size="sm" fill homeLink rightSlot={actions} />
         </div>
       </div>
     </header>
