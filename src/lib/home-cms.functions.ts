@@ -67,6 +67,7 @@ export const listPublicHomeSections = createServerFn({ method: "GET" })
       .select(SELECT_COLS)
       .eq("status", "published")
       .eq(column, true)
+      .is("deleted_at", null)
       .order("sort_order", { ascending: true });
     if (error) throw new Error(error.message);
     return (rows ?? []).map((r) => toRow(r as Record<string, unknown>));
@@ -74,15 +75,19 @@ export const listPublicHomeSections = createServerFn({ method: "GET" })
 
 // Admin: list all
 export const listHomeSectionsAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({}).parse(d))
+  .inputValidator((d) =>
+    z.object({ include_deleted: z.boolean().optional() }).parse(d ?? {}),
+  )
   .handler(async ({ data }): Promise<HomeSectionRow[]> => {
     if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: rows, error } = await supabaseAdmin
+    let query = supabaseAdmin
       .from("home_sections")
-      .select(SELECT_COLS)
+      .select(SELECT_COLS + ", deleted_at")
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
+    if (!data.include_deleted) query = query.is("deleted_at", null);
+    const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
     return (rows ?? []).map((r) => toRow(r as Record<string, unknown>));
   });
