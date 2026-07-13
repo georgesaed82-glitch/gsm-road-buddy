@@ -199,7 +199,21 @@ async function main() {
       // Screenshot only the 1:1 sign wrapper — excluding the dev-page caption
       // text below, whose font antialiasing shifts between Chromium builds
       // and busts the pixel budget on the small tiles.
-      await wrapper.screenshot({ path: curPath });
+      //
+      // Use page.screenshot with a clip snapped to integer pixels. Element
+      // screenshots use the raw bounding box, which can carry a fractional
+      // y offset (e.g. 159.046875) inherited from the app header above the
+      // dev harness; that fractional offset makes Chromium round the image
+      // to 65px tall instead of 64 and shifts every pixel by ~1px, blowing
+      // the diff budget. Rounding the clip to whole pixels gives us a
+      // stable, deterministic capture regardless of upstream layout math.
+      const clip = {
+        x: Math.round(wbox.x),
+        y: Math.round(wbox.y),
+        width: Math.round(wbox.width),
+        height: Math.round(wbox.height),
+      };
+      await page.screenshot({ path: curPath, clip });
       const basePath = resolve(BASE, `${viewName}_${v}.png`);
       if (!existsSync(basePath)) {
         // copy current screenshot to baseline

@@ -1,0 +1,1 @@
+UPDATE public.home_sections SET eyebrow='GSM Plus' WHERE section_key='portal';
