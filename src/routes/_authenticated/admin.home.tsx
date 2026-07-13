@@ -160,16 +160,78 @@ function AdminHomeCms() {
   const dupe = useServerFn(duplicateHomeSection);
   const reorder = useServerFn(reorderHomeSection);
   const upload = useServerFn(uploadHomeSectionMedia);
+  const saveDraft = useServerFn(saveHomeSectionDraft);
+  const listVersions = useServerFn(listHomeSectionVersions);
+  const restoreVersion = useServerFn(restoreHomeSectionVersion);
+  const softDelete = useServerFn(softDeleteHomeSection);
+  const restoreRow = useServerFn(restoreHomeSection);
+  const purgeRow = useServerFn(purgeHomeSection);
+
+  const [showRecycle, setShowRecycle] = useState(false);
 
   const q = useQuery({
-    queryKey: ["admin", "home-sections"],
-    queryFn: () => list({ data: {} }),
+    queryKey: ["admin", "home-sections", showRecycle],
+    queryFn: () => list({ data: { include_deleted: showRecycle } }),
   });
 
   const [editing, setEditing] = useState<Draft | null>(null);
   const [filter, setFilter] = useState("");
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [autosaveState, setAutosaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [versions, setVersions] = useState<ContentVersionRow[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isDirty = useRef(false);
+
+  const rowById = useMemo(() => {
+    const m = new Map<string, HomeSectionRow>();
+    (q.data ?? []).forEach((r) => m.set(r.id, r));
+    return m;
+  }, [q.data]);
+
+  const refreshVersions = async (id: string) => {
+    try {
+      const v = await listVersions({ data: { id } });
+      setVersions(v);
+    } catch {
+      // ignore
+    }
+  };
+
+  // Autosave: 1.5s debounce for edits to existing sections
+  useEffect(() => {
+    if (!editing?.id) return;
+    if (!isDirty.current) return;
+    if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+    autosaveTimer.current = setTimeout(async () => {
+      if (!editing.id) return;
+      setAutosaveState("saving");
+      try {
+        const payload = { ...editing };
+        delete (payload as { id?: string }).id;
+        await saveDraft({
+          data: { id: editing.id, patch: payload, kind: "autosave" },
+        });
+        setAutosaveState("saved");
+        setLastSavedAt(new Date());
+        isDirty.current = false;
+        qc.invalidateQueries({ queryKey: ["admin", "home-sections"] });
+      } catch {
+        setAutosaveState("error");
+      }
+    }, 1500);
+    return () => {
+      if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing]);
+
+  const setEditingDirty = (next: Draft | null) => {
+    if (next && editing) isDirty.current = true;
+    setEditing(next);
+  };
 
   const rows = useMemo(() => {
     const all = q.data ?? [];
