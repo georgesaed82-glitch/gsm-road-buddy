@@ -534,9 +534,34 @@ function AdminHomeCms() {
                 </tr>
               )}
               {rows.map((r, i) => (
-                <tr key={r.id} className="border-b border-border/60 last:border-0">
+                <tr
+                  key={r.id}
+                  onDragOver={onDragOver(r.id)}
+                  onDragLeave={onDragLeaveRow}
+                  onDrop={onDrop(r.id)}
+                  className={`border-b border-border/60 last:border-0 ${
+                    dragId === r.id ? "opacity-40" : ""
+                  } ${overId === r.id && dragId && dragId !== r.id ? "bg-accent/30" : ""}`}
+                >
                   <td className="px-3 py-2">
                     <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        draggable={dndEnabled}
+                        onDragStart={onDragStart(r.id)}
+                        onDragEnd={onDragEnd}
+                        title={
+                          dndEnabled
+                            ? "Drag to reorder"
+                            : "Clear filter and hide recycle bin to reorder"
+                        }
+                        className={`inline-flex h-7 w-5 items-center justify-center text-muted-foreground hover:text-foreground ${
+                          dndEnabled ? "cursor-grab active:cursor-grabbing" : "cursor-not-allowed opacity-40"
+                        }`}
+                        aria-label="Drag handle"
+                      >
+                        <GripVertical className="h-4 w-4" />
+                      </button>
                       <Button
                         size="icon"
                         variant="ghost"
