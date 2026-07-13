@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -17,6 +17,11 @@ import {
   Globe,
   Smartphone,
   ExternalLink,
+  History,
+  RotateCcw,
+  Trash,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
@@ -25,6 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import {
   Select,
   SelectContent,
@@ -47,6 +53,13 @@ import {
   duplicateHomeSection,
   reorderHomeSection,
   uploadHomeSectionMedia,
+  saveHomeSectionDraft,
+  listHomeSectionVersions,
+  restoreHomeSectionVersion,
+  softDeleteHomeSection,
+  restoreHomeSection,
+  purgeHomeSection,
+  type ContentVersionRow,
   type HomeSectionRow,
   type HomeSectionStatus,
 } from "@/lib/home-cms.functions";
