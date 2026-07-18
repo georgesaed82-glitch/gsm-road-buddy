@@ -831,6 +831,19 @@ function LessonsPanel({ topic }: { topic: TopicRow }) {
               <Button
                 size="sm"
                 variant="ghost"
+                className="h-7 gap-1 px-2 text-xs"
+                asChild
+              >
+                <Link
+                  to="/admin/lesson-blocks/$lessonId"
+                  params={{ lessonId: l.id }}
+                >
+                  <Blocks className="h-3.5 w-3.5" /> Blocks
+                </Link>
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
                 className="h-7 w-7 p-0"
                 onClick={() => toggle(l)}
                 aria-label={l.is_published ? "Unpublish" : "Publish"}
