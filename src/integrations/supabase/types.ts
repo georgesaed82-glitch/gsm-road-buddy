@@ -1604,6 +1604,42 @@ export type Database = {
         }
         Relationships: []
       }
+      lesson_block_videos: {
+        Row: {
+          block_id: string
+          created_at: string
+          position: number
+          video_id: string
+        }
+        Insert: {
+          block_id: string
+          created_at?: string
+          position?: number
+          video_id: string
+        }
+        Update: {
+          block_id?: string
+          created_at?: string
+          position?: number
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_block_videos_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "lesson_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_block_videos_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "ai_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_blocks: {
         Row: {
           asset_id: string | null

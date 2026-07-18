@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import {
   Layers,
   ChevronRight,
   Pencil,
+  Blocks,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
@@ -830,6 +831,19 @@ function LessonsPanel({ topic }: { topic: TopicRow }) {
               <Button
                 size="sm"
                 variant="ghost"
+                className="h-7 gap-1 px-2 text-xs"
+                asChild
+              >
+                <Link
+                  to="/admin/lesson-blocks/$lessonId"
+                  params={{ lessonId: l.id }}
+                >
+                  <Blocks className="h-3.5 w-3.5" /> Blocks
+                </Link>
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
                 className="h-7 w-7 p-0"
                 onClick={() => toggle(l)}
                 aria-label={l.is_published ? "Unpublish" : "Publish"}
@@ -854,8 +868,9 @@ function LessonsPanel({ topic }: { topic: TopicRow }) {
       </div>
 
       <p className="mt-4 rounded-lg border border-dashed border-accent/40 bg-accent/5 p-3 text-xs leading-relaxed text-muted-foreground">
-        Full block editor (text, diagrams, animations, videos, quizzes, GSM teaching elements) ships
-        in the next phase drop. This screen already lets you structure the syllabus end-to-end.
+        Use <b>Blocks</b> on any lesson to add teaching blocks and attach approved videos from
+        the AI Video Library. Attached videos appear automatically for students when they open the
+        lesson.
       </p>
     </div>
   );

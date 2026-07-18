@@ -92,6 +92,7 @@ import { Route as AuthenticatedAdminAreasRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
 import { Route as AuthenticatedAdminAccessRouteImport } from './routes/_authenticated/admin.access'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as AuthenticatedAdminLessonBlocksLessonIdRouteImport } from './routes/_authenticated/admin.lesson-blocks.$lessonId'
 
 const TheoryRoute = TheoryRouteImport.update({
   id: '/theory',
@@ -544,6 +545,12 @@ const LovableEmailQueueProcessRoute =
     path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthenticatedAdminLessonBlocksLessonIdRoute =
+  AuthenticatedAdminLessonBlocksLessonIdRouteImport.update({
+    id: '/lesson-blocks/$lessonId',
+    path: '/lesson-blocks/$lessonId',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -627,6 +634,7 @@ export interface FileRoutesByFullPath {
   '/ai-videos/manage': typeof AuthenticatedAiVideosManageRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/lesson-blocks/$lessonId': typeof AuthenticatedAdminLessonBlocksLessonIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
@@ -710,6 +718,7 @@ export interface FileRoutesByTo {
   '/ai-videos/manage': typeof AuthenticatedAiVideosManageRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/lesson-blocks/$lessonId': typeof AuthenticatedAdminLessonBlocksLessonIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
@@ -796,6 +805,7 @@ export interface FileRoutesById {
   '/_authenticated/ai-videos/manage': typeof AuthenticatedAiVideosManageRoute
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/lesson-blocks/$lessonId': typeof AuthenticatedAdminLessonBlocksLessonIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
@@ -882,6 +892,7 @@ export interface FileRouteTypes {
     | '/ai-videos/manage'
     | '/driving-clips/$slug'
     | '/admin/'
+    | '/admin/lesson-blocks/$lessonId'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -965,6 +976,7 @@ export interface FileRouteTypes {
     | '/ai-videos/manage'
     | '/driving-clips/$slug'
     | '/admin'
+    | '/admin/lesson-blocks/$lessonId'
     | '/lovable/email/queue/process'
   id:
     | '__root__'
@@ -1050,6 +1062,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ai-videos/manage'
     | '/_authenticated/driving-clips/$slug'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/lesson-blocks/$lessonId'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
@@ -1661,6 +1674,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/lesson-blocks/$lessonId': {
+      id: '/_authenticated/admin/lesson-blocks/$lessonId'
+      path: '/lesson-blocks/$lessonId'
+      fullPath: '/admin/lesson-blocks/$lessonId'
+      preLoaderRoute: typeof AuthenticatedAdminLessonBlocksLessonIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
@@ -1704,6 +1724,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminTrafficRoute: typeof AuthenticatedAdminTrafficRoute
   AuthenticatedAdminWebsiteRoute: typeof AuthenticatedAdminWebsiteRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminLessonBlocksLessonIdRoute: typeof AuthenticatedAdminLessonBlocksLessonIdRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
@@ -1746,6 +1767,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminTrafficRoute: AuthenticatedAdminTrafficRoute,
   AuthenticatedAdminWebsiteRoute: AuthenticatedAdminWebsiteRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminLessonBlocksLessonIdRoute:
+    AuthenticatedAdminLessonBlocksLessonIdRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
