@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 export type SectionAnchor = {
@@ -17,58 +16,8 @@ export type SectionAnchor = {
  */
 export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
   const [active, setActive] = useState<string>(sections[0]?.id ?? "");
-  const [visible, setVisible] = useState(false);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const chipRefs = useRef<Record<string, HTMLElement | null>>({});
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const els = sections
-      .filter((s) => !s.href)
-      .map((s) => document.getElementById(s.id))
-      .filter((el): el is HTMLElement => !!el);
-    if (!els.length) {
-      const onScrollOnly = () => setVisible(window.scrollY > 320);
-      onScrollOnly();
-      window.addEventListener("scroll", onScrollOnly, { passive: true });
-      return () => window.removeEventListener("scroll", onScrollOnly);
-    }
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        const inView = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (inView?.target?.id) setActive(inView.target.id);
-      },
-      { rootMargin: "-30% 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
-    );
-    els.forEach((el) => io.observe(el));
-
-    const onScroll = () => setVisible(window.scrollY > 320);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      io.disconnect();
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [sections]);
-
-  // Keep the active chip fully in view within the horizontal scroller.
-  useEffect(() => {
-    const chip = chipRefs.current[active];
-    const scroller = scrollerRef.current;
-    if (!chip || !scroller) return;
-    const cRect = chip.getBoundingClientRect();
-    const sRect = scroller.getBoundingClientRect();
-    const pad = 16;
-    if (cRect.left < sRect.left + pad) {
-      scroller.scrollBy({ left: cRect.left - sRect.left - pad, behavior: "smooth" });
-    } else if (cRect.right > sRect.right - pad) {
-      scroller.scrollBy({ left: cRect.right - sRect.right + pad, behavior: "smooth" });
-    }
-  }, [active]);
 
   const jump = (id: string) => {
     const el = document.getElementById(id);
@@ -79,7 +28,7 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
     const chipBar = scrollerRef.current?.parentElement;
     const chipH = chipBar ? chipBar.getBoundingClientRect().height : 48;
     const y = el.getBoundingClientRect().top + window.scrollY - headerH - chipH - 8;
-    window.scrollTo({ top: y, behavior: "smooth" });
+    window.scrollTo({ top: y, behavior: "auto" });
     setActive(id);
   };
 
@@ -88,9 +37,7 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
       {/* Mobile / tablet horizontal chip bar */}
       <nav
         aria-label="Jump to section"
-        className={`notranslate sticky top-[64px] z-[115] mb-2 border-y border-border/60 bg-background/95 backdrop-blur-md transition-opacity duration-200 sm:top-[76px] lg:hidden ${
-          visible ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className="notranslate sticky top-[64px] z-[115] mb-2 border-y border-border/60 bg-background/95 sm:top-[76px] lg:hidden"
         style={{
           WebkitMaskImage:
             "linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%)",
@@ -143,9 +90,7 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
       {/* Desktop dot rail */}
       <nav
         aria-label="Jump to section"
-        className={`fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-2 rounded-2xl border border-border/60 bg-card/90 p-2 shadow-xl backdrop-blur-md transition-all duration-300 lg:flex ${
-          visible ? "opacity-100" : "translate-x-4 opacity-0 pointer-events-none"
-        }`}
+        className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-2 rounded-2xl border border-border/60 bg-card/90 p-2 shadow-xl lg:flex"
       >
         {sections.map((s) => (
           s.href ? (
