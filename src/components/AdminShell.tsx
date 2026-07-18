@@ -80,7 +80,8 @@ const groups: Group[] = [
     id: "learning",
     label: "Learning content",
     items: [
-      { to: "/admin/lessons", label: "Lessons CMS", icon: GraduationCap },
+      { to: "/admin/learning", label: "Learning modules & topics", icon: GraduationCap },
+      { to: "/admin/lessons", label: "Lessons CMS (legacy)", icon: GraduationCap },
       { to: "/admin/theory", label: "Theory questions CMS", icon: BookOpen },
       { to: "/admin/hazard-clips", label: "Practical animations CMS", icon: Video },
       { to: "/admin/hazard-videos", label: "Hazard perception CMS", icon: Film },
