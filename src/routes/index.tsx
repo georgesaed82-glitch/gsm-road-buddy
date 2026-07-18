@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,8 @@ import { GsmPlus } from "@/components/GsmPlus";
 import { HomeSignsQuiz } from "@/components/HomeSignsQuiz";
 import { HomeHazardQuiz } from "@/components/HomeHazardQuiz";
 import { HomeTheoryQuiz } from "@/components/HomeTheoryQuiz";
+import { GsmPlusExplainer } from "@/components/GsmPlusExplainer";
+import { HomeSectionNav, type SectionAnchor } from "@/components/HomeSectionNav";
 
 import { trackContactClick } from "@/lib/trackContactClick";
 import { listPublicHomeSections, type HomeSectionRow } from "@/lib/home-cms.functions";
@@ -138,6 +141,7 @@ const DEFAULT_SECTIONS: Array<
   Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
 > = [
   { section_key: "hero", section_type: "hero", sort_order: 10 },
+  { section_key: "gsm-plus-explainer", section_type: "gsm-plus-explainer", sort_order: 12 },
   { section_key: "memorable", section_type: "memorable", sort_order: 15 },
   { section_key: "recent-pass", section_type: "recent-pass", sort_order: 20 },
   { section_key: "why", section_type: "why", sort_order: 30 },
@@ -164,35 +168,63 @@ function Home() {
     Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
   > = data && data.length > 0 ? data : DEFAULT_SECTIONS;
 
+  const SECTION_META: Record<string, { id: string; label: string }> = {
+    hero: { id: "top", label: "Top" },
+    "gsm-plus-explainer": { id: "gsm-plus", label: "GSM Plus" },
+    why: { id: "why-gsm", label: "Why GSM" },
+    areas: { id: "areas", label: "Areas" },
+    "recent-pass": { id: "recent-pass", label: "Recent Pass" },
+    quizzes: { id: "training", label: "Theory & Hazard" },
+    memorable: { id: "moments", label: "Moments" },
+    gallery: { id: "gallery", label: "Reviews" },
+    portal: { id: "portal", label: "Instructors" },
+    cta: { id: "contact", label: "Contact" },
+  };
+  const navAnchors: SectionAnchor[] = sections
+    .map((s) => SECTION_META[s.section_type])
+    .filter((a): a is SectionAnchor => !!a);
+
   return (
     <div className="flex flex-col">
+      <HomeSectionNav sections={navAnchors} />
       {sections.map((s) => {
         const key = s.section_key ?? s.section_type;
+        const anchorId = SECTION_META[s.section_type]?.id;
+        const wrap = (node: ReactNode) =>
+          anchorId ? (
+            <div id={anchorId} key={key} className="scroll-mt-24">
+              {node}
+            </div>
+          ) : (
+            <div key={key}>{node}</div>
+          );
         switch (s.section_type) {
           case "hero":
-            return <HeroSection key={key} s={s} />;
+            return wrap(<HeroSection s={s} />);
+          case "gsm-plus-explainer":
+            return wrap(<GsmPlusExplainer />);
           case "why":
-            return <WhySection key={key} s={s} />;
+            return wrap(<WhySection s={s} />);
           case "postcodes":
-            return <PostcodesSection key={key} s={s} />;
+            return wrap(<PostcodesSection s={s} />);
           case "areas":
-            return <AreasSection key={key} s={s} />;
+            return wrap(<AreasSection s={s} />);
           case "recent-pass":
-            return <RecentPassSection key={key} s={s} />;
+            return wrap(<RecentPassSection s={s} />);
           case "memorable":
-            return <MemorableMomentsSection key={key} />;
+            return wrap(<MemorableMomentsSection />);
           case "gallery":
-            return <GallerySection key={key} s={s} />;
+            return wrap(<GallerySection s={s} />);
           case "quizzes":
-            return <QuizzesSection key={key} s={s} />;
+            return wrap(<QuizzesSection s={s} />);
           case "install-app":
-            return <InstallAppCard key={key} />;
+            return wrap(<InstallAppCard />);
           case "portal":
-            return <PortalSection key={key} s={s} />;
+            return wrap(<PortalSection s={s} />);
           case "cta":
-            return <CtaSection key={key} s={s} />;
+            return wrap(<CtaSection s={s} />);
           case "custom":
-            return <CustomSection key={key} s={s} />;
+            return wrap(<CustomSection s={s} />);
           default:
             return null;
         }

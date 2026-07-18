@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Check, Mail, Phone } from "lucide-react";
+import { Check, Mail, Phone, Cog, MapPin, Award, Package } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { listPackages, type PackageRow } from "@/lib/catalog.functions";
@@ -52,6 +52,65 @@ function PricingPage() {
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
             Flexible driving lesson packages tailored to your goals. No hidden fees.
           </p>
+
+          {/* Transparent pricing band */}
+          <div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-border/60 bg-card p-6 shadow-lg sm:p-8">
+            <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.22em] text-accent">
+              <span className="h-px w-6 bg-accent" />
+              Lesson prices from
+              <span className="h-px w-6 bg-accent" />
+            </div>
+            <div className="mt-3 flex items-baseline justify-center gap-2">
+              <span className="font-display text-5xl font-semibold text-primary sm:text-6xl">£45</span>
+              <span className="font-display text-2xl text-muted-foreground">–</span>
+              <span className="font-display text-5xl font-semibold text-primary sm:text-6xl">£75</span>
+              <span className="ml-1 text-sm font-medium text-muted-foreground">/ hour</span>
+            </div>
+            <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
+              Prices vary based on the four factors below. Message us and we&apos;ll give you an
+              exact quote for your lessons within minutes.
+            </p>
+            <div className="mt-6 grid gap-3 text-left sm:grid-cols-2">
+              {[
+                { icon: Award, title: "Instructor grade", body: "PDI, ADI, or senior ADI with 20+ years of West London experience." },
+                { icon: Cog, title: "Manual or automatic", body: "Automatic lessons are priced slightly higher due to demand." },
+                { icon: Package, title: "Lesson package", body: "Blocks of 10, 20 or intensive courses reduce the hourly rate." },
+                { icon: MapPin, title: "Pickup location", body: "Central West London postcodes vs. wider catchment." },
+              ].map((f) => {
+                const Icon = f.icon;
+                return (
+                  <div key={f.title} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background p-4">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <div className="text-sm font-semibold text-primary">{f.title}</div>
+                      <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{f.body}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button asChild className="h-11 gap-2">
+                <a
+                  href={waHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackContactClick("whatsapp", "Pricing band")}
+                >
+                  <WhatsAppIcon className="h-4 w-4" />
+                  WhatsApp for a quote
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="h-11 gap-2">
+                <a href={emailHref} onClick={() => trackContactClick("email", "Pricing band")}>
+                  <Mail className="h-4 w-4" />
+                  Email us
+                </a>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 

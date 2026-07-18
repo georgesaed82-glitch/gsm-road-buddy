@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Users, Award, Heart, UserCheck, Star, Sun, Headphones } from "lucide-react";
 import { usePageBlocks } from "@/hooks/usePageBlocks";
@@ -98,7 +98,8 @@ const DEFAULT_FAQS = [
 function AboutPage() {
   const values = usePageBlocks("about-values", DEFAULT_VALUES);
   const keyPoints = usePageBlocks("about-key-points", DEFAULT_KEY_POINTS);
-  const faqs = usePageBlocks("about-faqs", DEFAULT_FAQS);
+  // FAQs are consolidated on /faq — keep the CMS block reference so admins can still edit legacy copy.
+  void usePageBlocks("about-faqs", DEFAULT_FAQS);
   return (
     <div className="flex flex-col">
       <section className="bg-secondary/40 py-16">
@@ -189,13 +190,17 @@ function AboutPage() {
           <h2 className="text-center text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Frequently asked questions
           </h2>
-          <div className="mt-10 space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.id} className="rounded-xl border border-border bg-card p-5">
-                <h3 className="font-display font-semibold text-foreground">{faq.name}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{faq.description}</p>
-              </div>
-            ))}
+          <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">
+            Every question we get from parents, learners and refresher drivers — from booking
+            and pricing to test-day nerves — lives in one place now.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <Link
+              to="/faq"
+              className="inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              Read the full FAQ
+            </Link>
           </div>
         </div>
       </section>

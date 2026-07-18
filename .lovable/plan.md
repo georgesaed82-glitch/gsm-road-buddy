@@ -1,67 +1,63 @@
-## Website & Content Manager — phased plan
 
-This is a very large build (roughly 6–10 focused phases). Attempting it in one update would almost certainly break parts of the live site, which you explicitly asked me to avoid. I'll ship it in safe phases behind the existing Admin dashboard, each phase self-contained and reversible, without touching the live public site until you approve each Publish step.
+# Refinement Pass — Proposed Scope
 
-You already have working CMS foundations I'll build on rather than duplicate:
+Your list mixes quick fixes, medium redesigns, and multi-week AI/video products. I want to be honest about what I can ship in this pass vs. what needs its own project so we don't half-build the big features.
 
-- Home sections editor (`admin.home`) — draft / published / hidden, per-surface (web/app), sort order, media upload
-- Lessons CMS (`admin.lessons`), Theory CMS (`admin.theory`), Road signs / markings / police signals admins
-- Content overrides (`admin.content`), Page SEO (`admin.seo`), Navigation (`admin.navigation`), Legal pages, Blog, FAQs, Reviews, Instructors, Pricing, Areas, Downloads
-- Theme editor (`admin.theme`), Site settings, Home blocks
-- RBAC (Master Owner + role permissions + audit log), Email logs, Error logs
-- Storage buckets: `content-images`, `downloads`, `hazard-clips`
+## Pass A — Ship now (this session, one commit, then publish)
 
-### Phased scope
+**1. Critical bug fixes**
+- `mailto:` links: audit Header, Footer, Contact, GSM Plus, Portal — ensure `href="mailto:…"` (not JS handlers) so the OS mail app opens; add `tel:` where used.
+- Language selector: fix Google Translate init race + click handler on mobile; ensure the dropdown is keyboard/tap accessible and closes on outside click.
+- Image zoom / lightbox: audit `Zoomable` usage across VRP diagrams, lesson animations, and gallery — make close button always visible (top-right, safe-area padded), add ESC + swipe-down close, and wrap missing images.
+- Opening hours: single source of truth in `site_settings` — banner + detail block both read the same field.
+- Contact link audit: sweep every `<a>`/`<Link>` for `#`, empty `href`, or stale routes; add a unit list to `tests/`.
 
-**Phase 1 — Website & Content Manager hub + Media Library (this turn if approved)**
-- New `/admin/website` hub route that groups every existing editor (Home sections, Content overrides, Navigation, SEO, Theme, Legal, Blog, FAQs, Reviews, Instructors, Pricing, Areas, Downloads, Student passes) into one clearly labelled dashboard with search.
-- New Media Library (`/admin/media`) backed by the existing `content-images` bucket: upload (with client-side compression), replace, delete, rename, alt-text + description, tag/filter, copy URL, insert-into-editor picker. Server-side thumbnails via signed URLs.
-- Permission gate: Master Owner full; other admins only see sections their `admin_role_permissions` allow (already enforced server-side; UI hides the rest).
-- No changes to public site.
+**2. Homepage sticky section nav**
+- Floating right-side dot nav on desktop, horizontal scroll-chip bar sticky under header on mobile.
+- Sections: Why GSM, Areas, Theory, Hazard, Reviews, GSM Plus, Instructors, FAQ, Contact.
+- Uses `IntersectionObserver` to highlight active section; smooth scroll.
 
-**Phase 2 — Rich text + section editor upgrades**
-- Upgrade Home section body/subtitle fields to a rich editor (bold, lists, links, headings) with live desktop/tablet/mobile preview panes.
-- Draft autosave (debounced) + explicit Save Draft / Publish Now / Schedule (uses a `publish_at` column) / Unpublish.
-- Version history table (`content_versions`) with restore; confirmation dialog before permanent delete; a Recycle Bin (soft-delete flag + purge after 30 days).
+**3. GSM Plus explainer block (moved higher on homepage)**
+- New `GsmPlusExplainer` section placed just under the hero: "What is GSM Plus", "Who it's for", Free vs Premium comparison table, 11 feature cards (AI Lesson Notes, Interactive Lessons, Progress Tracking, Mock Tests, Hazard Perception, Road Signs, Highway Code, Lesson History, Vehicle Reference Points, Instructor Feedback, Future Lesson Planner) — cards link to the relevant portal route or a "Coming soon" state.
 
-**Phase 3 — Page builder (drag-and-drop)**
-- Reorder Home sections via drag handle (extends existing `reorderHomeSection`).
-- Duplicate / hide / archive controls surfaced consistently across every CMS list.
-- Per-breakpoint (desktop / tablet / mobile) visibility toggles on each section.
+**4. Pricing page transparency**
+- Replace the "contact for pricing" wall with a "from £45–£75/hr" band, a "what affects price" list (Instructor grade, Manual/Auto, Package size, Location), and keep the CTA to request a quote.
 
-**Phase 4 — Training Content Manager**
-- Extend the Lessons CMS schema with structured fields: What / Why / When / Where / How / Reference points / Common mistakes / Diagrams / Animation / Quiz / Summary / Instructor-only notes / Learner-visible content.
-- Attach media from the Media Library; upload PDFs/worksheets to `downloads` bucket; per-lesson quiz editor already exists in theory CMS and will be reused.
-- Draft/Published/Hidden/Archived status, categories, tags, search.
+**5. Instructor cards upgraded**
+- Extend `instructors` table with: `qualification` (ADI/PDI), `years_experience`, `languages` (text[]), `teaching_style`, `areas_covered` (text[]), `bio_long`.
+- Migration + admin form fields + public `/instructors` and homepage card redesign.
 
-**Phase 5 — Custom pages**
-- New `custom_pages` table + dynamic route `/p/$slug`. Master Owner can create, choose menu placement (header/mobile/portal/private), and edit with the same rich editor + media picker.
+**6. Blog — temporary hide**
+- Feature-flag `blog_enabled` in `site_settings` (default off). Header + footer + sitemap hide `/blog` when off. Admin toggle in `/admin/site-settings`. When you have posts ready, flip the switch.
 
-**Phase 6 — Fine-grained instructor permissions**
-- UI in `admin.access` to grant instructors edit rights on specific sections only (already supported by `admin_role_permissions`; needs the assignment UX). Sensitive areas (payments, security, users, publishing) remain Master-Owner-only.
+**7. FAQ consolidation**
+- Move About-page FAQs into the main `/faq` page (single `faqs` table already exists). Remove the FAQ block from About and link to `/faq`.
 
-**Phase 7 — QA + Publish**
-- Cross-browser / device pass, image optimisation audit (server-side WebP + width variants for the Media Library), permission smoke tests, then publish.
+## Pass B — Deferred (needs its own project, not this session)
 
-### What I will NOT do
+I don't want to fake these — they're real product work:
 
-- Ship a live-website "visual page builder" that lets you drag any DOM node anywhere — that requires rewriting every page as JSON-driven blocks, and would risk the current design. Instead, each page keeps its React layout and exposes its editable fields through the CMS (as Home already does). If later you want a specific page (e.g. About, Services) fully block-based, that's a follow-up phase per page.
-- Overwrite any current content. All new tables are additive; existing content stays live until you press Publish on the new version.
+- **8. Realistic AI hazard-perception clips** — generating dozens of 30–45s realistic UK dashcam videos with pedestrians/cyclists/weather is a video-production project (AI video costs, review pipeline, storage, DVSA-realistic quality bar). I'd build the video-player + admin upload pipeline first, then commission/generate clips as content.
+- **9. Photorealistic VRP diagrams** — same problem: needs a photo shoot from inside the GSM teaching vehicle or high-quality 3D renders. I can wire realistic dashboard photo backgrounds behind the existing overlays once you provide 6–10 reference photos.
+- **10. Full lesson-management schema** — topics/notes/AI summary/strengths/homework/next-objectives is a proper feature; needs its own table design, instructor UX, student view.
+- **11. Lesson planner** — calendar sync (`.ics`), 48h cancel policy engine, reschedule requests → notifications. Needs booking model redesign.
+- **12. AI lesson notes from dictation** — upload/dictate → transcribe (Lovable AI STT) → structured summary (Lovable AI) → save to lesson record. Depends on #10 existing first.
+- **13. AI video library** — same shape as #8, driven by the video pipeline.
 
-### Technical notes
+For Pass B, I'll write a follow-up roadmap doc once Pass A is live so we scope each properly.
 
-- Storage: `content-images` for pictures, new `content-media` (private, signed URLs) for video/GIF/MP4, `downloads` for PDFs.
-- New tables: `content_versions` (polymorphic: entity_table, entity_id, snapshot jsonb, created_by, created_at), `custom_pages`, `media_assets` (id, path, mime, size, width, height, alt, description, tags[], uploaded_by, deleted_at).
-- All new tables: GRANTs + RLS scoped to authenticated admins via `has_permission()`; service_role for edge writes.
-- Client-side image compression via `browser-image-compression` before upload; server-side rejects > 20 MB.
-- Autosave: debounced 1.5 s, stored as latest draft snapshot in `content_versions`.
+## Pass C — QA sweep (end of this session)
 
-### Confirm scope
+Items 14 & 15: run through the site on mobile/tablet/desktop viewports, verify:
+- Sticky nav doesn't overlap Back-to-Top or WhatsApp button
+- New GSM Plus block scales cleanly
+- All mailto/tel/link fixes verified
+- Contrast + focus rings on new UI
 
-Reply with either:
+Then publish.
 
-1. **"Start Phase 1"** — I'll build the hub + Media Library now, no public-site changes.
-2. **A different starting point** — e.g. "Skip to Training Content Manager" or "Media Library only".
-3. **Adjust the plan** — tell me what to add/remove/reorder.
+## Why phased
 
-Once Phase 1 is merged, I'll ask again before Phase 2.
+Trying to ship 15 features in one turn produces 15 half-broken features. Pass A is the "premium polish" you asked for and unblocks Helena's feedback; Pass B is where the real GSM Plus platform lives.
+
+**Reply "start Pass A"** and I'll begin with the critical bug fixes, then the homepage nav + GSM Plus explainer, then instructor/pricing/FAQ/blog — one commit, then publish for review.
