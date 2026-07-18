@@ -174,6 +174,7 @@ const POST_SELECT =
 
 export const listPosts = createServerFn({ method: "GET" }).handler(
   async (): Promise<BlogPostRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("blog_posts")
@@ -401,6 +402,7 @@ async function shapeDownload(r: {
 
 export const listDownloads = createServerFn({ method: "GET" }).handler(
   async (): Promise<DownloadRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("downloads")

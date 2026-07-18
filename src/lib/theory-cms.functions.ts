@@ -49,6 +49,7 @@ async function withSignedUrls(rows: RawRow[]): Promise<TheoryQuestionRow[]> {
 
 export const listTheoryQuestionsCms = createServerFn({ method: "GET" }).handler(
   async (): Promise<TheoryQuestionRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("theory_questions")
