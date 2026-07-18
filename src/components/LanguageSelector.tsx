@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
 import { Globe, ChevronDown, Check, Search, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -89,9 +88,6 @@ declare global {
 
 let scriptPromise: Promise<void> | null = null;
 let comboPromise: Promise<HTMLSelectElement> | null = null;
-let translateTimer: number | undefined;
-let mutationObserver: MutationObserver | null = null;
-let suppressMutationUntil = 0;
 
 function setGoogTransCookie(lang: LangCode) {
   const value = lang === "en" ? "/en/en" : `/en/${lang}`;
@@ -218,30 +214,6 @@ function setDocumentLanguage(lang: LangCode) {
   document.body?.setAttribute("dir", rtl ? "rtl" : "ltr");
 }
 
-function hasVisibleText(node: Node): boolean {
-  if (node.nodeType === Node.TEXT_NODE) return !!node.textContent?.trim();
-  if (!(node instanceof Element)) return false;
-  if (
-    node.closest(".skiptranslate, .notranslate, script, style, noscript") ||
-    node.id === ELEMENT_ID
-  ) {
-    return false;
-  }
-  return Array.from(node.childNodes).some(hasVisibleText);
-}
-
-function stopMutationTranslation() {
-  mutationObserver?.disconnect();
-  mutationObserver = null;
-}
-
-function queueApplyLanguage(lang: LangCode, delay = 120) {
-  window.clearTimeout(translateTimer);
-  translateTimer = window.setTimeout(() => {
-    void applyLanguage(lang, false);
-  }, delay);
-}
-
 function triggerTranslateCombo(combo: HTMLSelectElement, lang: LangCode) {
   combo.value = "";
   combo.dispatchEvent(new Event("change", { bubbles: true }));
@@ -251,26 +223,12 @@ function triggerTranslateCombo(combo: HTMLSelectElement, lang: LangCode) {
   }, 80);
 }
 
-function startMutationTranslation(lang: LangCode) {
-  stopMutationTranslation();
-  if (lang === "en") return;
-  mutationObserver = new MutationObserver((mutations) => {
-    if (Date.now() < suppressMutationUntil) return;
-    const shouldTranslate = mutations.some((m) =>
-      Array.from(m.addedNodes).some((node) => hasVisibleText(node)),
-    );
-    if (shouldTranslate) queueApplyLanguage(lang, 500);
-  });
-  mutationObserver.observe(document.body, { childList: true, subtree: true });
-}
-
 async function applyLanguage(lang: LangCode, reloadForEnglish: boolean) {
   setDocumentLanguage(lang);
   if (lang === "en") {
     localStorage.setItem(STORAGE_KEY, lang);
     clearGoogTransCookie();
     setGoogTransCookie(lang);
-    stopMutationTranslation();
     if (reloadForEnglish) window.location.reload();
     return;
   }
@@ -280,7 +238,6 @@ async function applyLanguage(lang: LangCode, reloadForEnglish: boolean) {
   await loadTranslateScript();
   try {
     const combo = await waitForTranslateCombo();
-    suppressMutationUntil = Date.now() + 2600;
     triggerTranslateCombo(combo, lang);
     window.setTimeout(() => {
       triggerTranslateCombo(combo, lang);
@@ -292,7 +249,6 @@ async function applyLanguage(lang: LangCode, reloadForEnglish: boolean) {
     // The cookie remains in place so a refresh still lets Google Translate apply.
     comboPromise = null;
   }
-  startMutationTranslation(lang);
 }
 
 export function LanguageSelector({
@@ -310,7 +266,6 @@ export function LanguageSelector({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLInputElement | null>(null);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     const saved = (localStorage.getItem(STORAGE_KEY) as LangCode | null) || null;
@@ -337,10 +292,6 @@ export function LanguageSelector({
       window.removeEventListener("storage", handleStorage);
     };
   }, []);
-
-  useEffect(() => {
-    if (active !== "en") queueApplyLanguage(active, 450);
-  }, [active, pathname]);
 
   const choose = (code: LangCode) => {
     setActive(code);
