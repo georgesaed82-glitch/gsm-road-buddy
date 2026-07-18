@@ -2944,7 +2944,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "instructor" | "student"
+      app_role: "admin" | "instructor" | "student" | "senior_instructor"
       calendar_event_kind: "lesson" | "mock_test" | "theory" | "test" | "other"
       calendar_event_status: "scheduled" | "completed" | "cancelled" | "no_show"
       certificate_kind: "module" | "test_ready" | "passed"
@@ -2968,6 +2968,22 @@ export type Database = {
         | "homework"
         | "reference_point"
         | "gsm_method_callout"
+        | "ai_video"
+        | "interactive_animation"
+        | "quiz_true_false"
+        | "drag_drop"
+        | "hotspot"
+        | "scenario_challenge"
+        | "callout"
+        | "highway_code_rule"
+        | "road_sign"
+        | "road_marking"
+        | "vehicle_controls"
+        | "hazard_clip"
+        | "driving_test_tip"
+        | "summary"
+        | "progress_check"
+        | "downloadable_pdf"
       mock_result: "pass" | "fail"
       progress_stage:
         | "not_started"
@@ -3110,7 +3126,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "instructor", "student"],
+      app_role: ["admin", "instructor", "student", "senior_instructor"],
       calendar_event_kind: ["lesson", "mock_test", "theory", "test", "other"],
       calendar_event_status: ["scheduled", "completed", "cancelled", "no_show"],
       certificate_kind: ["module", "test_ready", "passed"],
@@ -3135,6 +3151,22 @@ export const Constants = {
         "homework",
         "reference_point",
         "gsm_method_callout",
+        "ai_video",
+        "interactive_animation",
+        "quiz_true_false",
+        "drag_drop",
+        "hotspot",
+        "scenario_challenge",
+        "callout",
+        "highway_code_rule",
+        "road_sign",
+        "road_marking",
+        "vehicle_controls",
+        "hazard_clip",
+        "driving_test_tip",
+        "summary",
+        "progress_check",
+        "downloadable_pdf",
       ],
       mock_result: ["pass", "fail"],
       progress_stage: [
