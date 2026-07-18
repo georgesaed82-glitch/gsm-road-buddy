@@ -2309,6 +2309,53 @@ export type Database = {
         }
         Relationships: []
       }
+      progress_learning_lessons: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          last_block_id: string | null
+          lesson_id: string
+          progress_pct: number
+          quiz_state: Json
+          status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          last_block_id?: string | null
+          lesson_id: string
+          progress_pct?: number
+          quiz_state?: Json
+          status?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          last_block_id?: string | null
+          lesson_id?: string
+          progress_pct?: number
+          quiz_state?: Json
+          status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "progress_learning_lessons_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "learning_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       progress_lesson_entries: {
         Row: {
           ai_summary: string | null
