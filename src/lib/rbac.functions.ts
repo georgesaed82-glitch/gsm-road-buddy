@@ -955,7 +955,7 @@ export const resendAdminInvite = createServerFn({ method: "POST" })
     }
 
     // Reset password to a fresh temp and force change on next login
-    const tp = tempPassword();
+    const tp = generateTempPassword();
     await supabase.auth.admin.updateUserById(data.user_id, { password: tp });
     await supabase
       .from("profiles")
