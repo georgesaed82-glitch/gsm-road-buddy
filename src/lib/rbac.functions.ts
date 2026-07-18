@@ -354,8 +354,20 @@ const RoleSlugSchema = z.enum([
   "read_only",
 ]);
 
-function tempPassword(): string {
-  return (process.env.DEV_TEMP_ADMIN_PASSWORD || "GSM2026").trim();
+/**
+ * Generate a cryptographically random temporary password for admin
+ * invitations and resets. Called ONCE per flow and the same value is used
+ * for both the auth update and the email — never a shared static string.
+ */
+function generateTempPassword(): string {
+  // 18 bytes → 24 base64 chars, then trim to a URL-safe alphanumeric to
+  // avoid shell/URL-copy issues when learners paste it from email.
+  const bytes = new Uint8Array(18);
+  crypto.getRandomValues(bytes);
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+  let out = "";
+  for (let i = 0; i < bytes.length; i++) out += alphabet[bytes[i] % alphabet.length];
+  return out;
 }
 
 // Send an invitation / password-reset email through the shared email queue.
