@@ -1,83 +1,68 @@
+# GSM Visual Teaching System — Full Rebuild Roadmap
 
-# GSM Complete Platform — Phased Roadmap
+Honest scope note: what you've described is a 4–8 week product build, not a single-turn edit. Roughly 25 original animated lessons + a design system + a media/animation editor for the admin portal. Trying to do it all in one message produces 25 half-broken lessons and a broken editor. I'm proposing 5 phases; each is shippable and publishable on its own. Reply with the phase name (e.g. **"start Phase 1"**) to begin.
 
-You've asked for the full platform in one go. To be honest with you: shipping all of this in a single turn produces 40 half-broken features. I'm proposing a 6-phase roadmap where each phase is a shippable, publishable milestone. Reply with the phase you want me to start (or "start Phase 1" to go in order).
-
----
-
-## Phase 1 — Website polish & UX (this session)
-
-Everything you listed under "Complete Website & User Experience". Ships as one commit, then publish.
-
-**Bug sweep**
-- `mailto:` / `tel:` audit across Header, Footer, Contact, GSM Plus, Portal
-- Language selector: fix Google Translate init race, mobile tap target, outside-click close, keyboard access
-- `Zoomable` lightbox: always-visible close button (safe-area), ESC + swipe-down close, wrap remaining gallery/VRP images
-- Opening hours: single `site_settings` field feeds banner + contact page
-- Broken link scan → `tests/link-audit.ts`
-- Focus rings + skip-to-content link + `alt` sweep for accessibility
-- Perf: preload hero image, lazy-load below-the-fold sections, defer heavy anims until in view
-
-**Homepage sticky jump-nav** — extend existing `HomeSectionNav` with the full list you gave (Why GSM, Areas, Lessons, Theory, Hazard, Reviews, GSM Plus, Instructors, FAQ, Contact) and add anchor IDs to every section.
-
-**GSM Plus explainer redesign** — replace current block with What / Who / Free vs Premium table / 11 feature cards, moved directly under hero.
-
-**Pricing transparency band** — £45–£75/hr, "what affects price" list, keep CTA.
-
-**Instructor profile pages** — extend `instructors` table with `qualification`, `years_experience`, `languages[]`, `teaching_style`, `areas_covered[]`, `bio_long`; new `/instructors/$slug` route; upgraded card + admin form.
-
-**Blog gate** — hide `/blog`, Header/Footer/sitemap links behind `BLOG_ENABLED` flag (already in code) until content is ready.
-
-**FAQ merge** — move About FAQs into `/faq` and de-duplicate.
-
-**Cross-browser QA** — Playwright pass on Chrome/Safari/Firefox/Edge viewports (desktop, tablet, mobile).
+**Non-negotiable ground rules I'll follow throughout**
+- Every diagram, vehicle, sign and road drawn from scratch as SVG in `src/components/diagram/*` — no traced or copied artwork from DITA / any instructor aid.
+- One unified GSM design language: forest green `#234B36`, cream `#F7F3E8`, gold accent, black — already tokenised in `src/styles.css`.
+- Every lesson follows the fixed GSM template: **What · Why · When · Where · How · Reference Points · Common Mistakes · Test Tips · Summary · Interactive Animation**.
+- Existing `LessonShell` extended (not replaced) — Play / Pause / Slow-motion (0.25× / 0.5× / 1×) / Step frame / Restart / Camera toggle (Driver / Overhead / Examiner).
+- Interactive quiz checkpoints pause the animation at decision points (already the pattern in `bgoSystem` and `giveWayLines`).
 
 ---
 
-## Phase 2 — Student Progress System (own session)
+## Phase 1 — GSM Design Language + Diagram Kit (this session)
 
-The 6-state progress tracker across the full DVSA + GSM syllabus. Data-heavy, needs a fresh session.
+Foundation everything else builds on. No lesson content yet — just the primitives, so all 25 lessons look consistent.
 
-- New tables: `syllabus_modules`, `syllabus_topics`, `student_progress` (status enum: not_started / in_progress / practised / independent / test_standard / completed), `lesson_notes`, `homework_items`
-- Seed migration with all 4 DVSA modules + Extra Visuals + your full GSM system list (BGO, POM 2-6-2, 15-70-15, etc.)
-- Instructor UI: per-student progress board with status toggle, notes, homework
-- Student view inside GSM Plus dashboard
-- Progress rings on lesson cards
+- **`src/components/diagram/primitives.tsx` — expanded kit**
+  - `Road`, `Lane`, `Kerb`, `CentreLine`, `HatchedArea`, `GiveWayLine`, `StopLine`, `ZebraStripes`, `PelicanStuds`, `RoundaboutHub`, `MiniRoundaboutDome`, `SlipRoad`, `HardShoulder`, `LaneArrow`, `BoxJunction`.
+  - `Car` (GSM saloon in forest-green + gold), `Bus`, `Cyclist`, `Pedestrian`, `HGV`, `Motorbike` — all as clean flat vectors with headlight/brake/indicator states.
+  - `EyeGaze` (scanning fan), `MirrorCheck` badge, `SignalArrow`, `HazardBloom`, `DecisionCard`.
+- **Camera-view controller** — `useCameraView()` hook returns Driver / Overhead / Examiner with matching viewBox transforms so any scene can render 3 angles from the same data.
+- **Playback controller upgrade** — extend `LessonShell` with 0.25× / 0.5× / 1× / step-frame / restart / camera switcher.
+- **Original UK sign set** — SVG-only, TSRGD-correct, drawn from scratch. Wire through existing `SignVisual`.
 
-## Phase 3 — AI Lesson Reports (own session)
+Deliverable: docs page `/admin/design-kit` showing every primitive, ready for lesson authors.
 
-Depends on Phase 2 tables.
-- Instructor dictation → Lovable AI STT (`openai/gpt-4o-transcribe`)
-- Auto-summary → Lovable AI chat model → structured strengths / weaknesses / homework / next objectives
-- Save to `lesson_notes` linked to the student + topics
-- Email summary to student (optional)
+## Phase 2 — Junction, Roundabout & Crossing lessons (own session)
 
-## Phase 4 — Lesson Planner (own session)
+Using the Phase 1 kit. Each lesson: What → Why → When → Where → How → Reference Points → Common Mistakes → Test Tips → Summary → animation with quiz checkpoints and 3 camera angles.
 
-- Booking model redesign: upcoming / previous, duration, calendar view
-- `.ics` export + optional Google Calendar via existing `google_calendar` App User Connector
-- Reschedule + cancel requests with 48h policy engine
-- Instructor + student notifications
+- Open Junctions · Closed Junctions · Crossroads · Controlled Junctions
+- Zebra · Pelican · Puffin · Toucan · Equestrian crossings
+- Roundabouts · Mini Roundabouts · Spiral Roundabouts · Gyratory Systems
+- **BGO** is already done — will be visually reskinned to match the new kit.
 
-## Phase 5 — Photorealistic VRP & realistic diagrams (own session, needs your input)
+## Phase 3 — Manoeuvres + On-road strategies (own session)
 
-- I'll build the dashboard-photo + overlay pipeline
-- Requires 6–10 reference photos from inside your teaching car (dashboard, side mirrors, interior mirror, standard parking view, bay lines view) — you shoot them, I integrate
-- Same style applied to all reference-point lessons
+- Parallel Park · Bay Park (forward & reverse) · Reverse on the Right · Turn in the Road · Controlled Stop · Emergency Stop
+- Meeting Traffic · Adequate Clearance · Overtaking · Dual Carriageways · Slip Roads · Motorways
+- Existing lessons (`pullUpOnLeft`, `parallelParking`, `joiningDualCarriageway`, `meetingInSmallSpaces`) get reskinned to the new kit rather than rewritten.
 
-## Phase 6 — AI video library & hazard perception (multi-week product)
+## Phase 4 — GSM Method modules (own session)
 
-Not a one-session job — it's video production plus an admin content pipeline.
-- Ship the video player + admin upload/tag pipeline first (same session as start)
-- Commission or generate realistic UK-road clips over time
-- Categories you listed (roundabouts, junctions, meeting, parking, dual carriageway, motorway, cyclists, pedestrians, emergency vehicles, hazard perception, reference points, BGO, defensive driving)
-- Hazard perception mode: 6 clips per test, DVSA-style scoring window, replay for review
-- Each clip: transcript / commentary track + linked lesson
+Rebuild `/gsm-method` as fully interactive:
+- DSSSM · PALM · MSPSL · POM 2-6-2 · 15-70-15 · Stretch Your Vision · Plan to Stop Look to Go · BGO · Reference Points · GSM Commentary · Fault categories (Driving / Serious / Dangerous).
+
+## Phase 5 — Admin Lesson Studio (own session)
+
+The editor you asked for, in the existing admin portal. Field-based (not visual drag-drop of SVG) so React structure stays intact.
+
+- New tables: `lessons_cms`, `lesson_sections`, `lesson_media`, `lesson_quizzes`, `lesson_reference_points`, `lesson_publish_events`.
+- Admin routes: `/admin/lessons` (list + reorder), `/admin/lessons/$slug` (editor).
+- Editor tabs: **Content** (rich text per section) · **Diagram** (pick scene template + tweak params like ego path, hazards, timings) · **Media** (upload MP4/WebM/Lottie via existing Media Library) · **Quiz** (checkpoints, options, feedback) · **Reference Points** (photo + hotspots) · **Publish** (draft / preview / publish + version history — reuses `content_versions`).
+- RBAC: content_editor can edit drafts, admin/owner can publish (extends existing `has_role`).
+- Instant publish: TanStack Query cache invalidation + `queryClient.invalidateQueries(["lessons-cms"])`.
+
+## Technical notes
+
+- No new dependencies for animation — continue with SVG + `requestAnimationFrame` timeline that `LessonShell` already runs (60fps, deterministic, cheap, no framer-motion in hot paths).
+- 3D-lite where it helps (roundabouts, motorway merges) via CSS `perspective` on the SVG group — not a WebGL engine. Full WebGL/Three.js would blow scope and battery on mobile.
+- Everything remains offline-cacheable (SW already registered) so GSM Plus works during lessons.
 
 ---
 
 ## What I'd start with
 
-If you say **"start Phase 1"** I'll implement all of it in this session and publish. Phases 2–6 each get their own turn so they're built properly rather than stubbed.
-
-If you want a different order (e.g. Progress System first because it's the biggest lift), just say which phase to start.
+Reply **"start Phase 1"** and I'll build the design kit + camera/playback controller in this session and publish. Or name a different phase (e.g. "start Phase 5" if you want the editor before the content).
