@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Circle, Loader2, Lock, PlayCircle,
@@ -77,67 +77,28 @@ function LessonContent({
   const { lesson, topic, module: mod, blocks, progress, prev, next } = data;
   const isCompleted = progress?.status === "completed";
 
-  // Auto-scroll to last-visited block on load
   const containerRef = useRef<HTMLDivElement | null>(null);
   const blockRefs = useRef<Map<string, HTMLElement>>(new Map());
-  useEffect(() => {
-    if (!progress?.last_block_id) return;
-    const el = blockRefs.current.get(progress.last_block_id);
-    if (el) {
-      requestAnimationFrame(() =>
-        el.scrollIntoView({ behavior: "smooth", block: "start" }),
-      );
-    }
-  // Run once when data loads
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Track "seen" blocks via intersection observer for auto-save
   const [seen, setSeen] = useState<Set<string>>(new Set(progress?.last_block_id ? [progress.last_block_id] : []));
   const seenIdsRef = useRef<Set<string>>(seen);
   seenIdsRef.current = seen;
-  const savedPctRef = useRef<number>(progress?.progress_pct ?? 0);
   const total = blocks.length;
-
-  useEffect(() => {
-    if (blocks.length === 0) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        let latestVisible: string | null = null;
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            const id = (e.target as HTMLElement).dataset.blockId;
-            if (id) {
-              if (!seenIdsRef.current.has(id)) {
-                seenIdsRef.current.add(id);
-                setSeen(new Set(seenIdsRef.current));
-              }
-              latestVisible = id;
-            }
-          }
-        }
-        if (latestVisible && !isCompleted) {
-          const pct = Math.min(100, Math.round((seenIdsRef.current.size / total) * 100));
-          // Only auto-save when % advances by at least 5 to avoid chattiness
-          if (pct >= savedPctRef.current + 5 || pct === 100) {
-            savedPctRef.current = pct;
-            save.mutate({ last_block_id: latestVisible, progress_pct: pct });
-          } else {
-            // Still update last_block_id occasionally (debounced by mutation queue)
-            save.mutate({ last_block_id: latestVisible });
-          }
-        }
-      },
-      { rootMargin: "-30% 0px -55% 0px", threshold: 0.01 },
-    );
-    for (const el of blockRefs.current.values()) io.observe(el);
-    return () => io.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blocks.length]);
 
   const registerRef = (id: string) => (el: HTMLElement | null) => {
     if (el) blockRefs.current.set(id, el);
     else blockRefs.current.delete(id);
+  };
+
+  const markBlockSeen = (id: string) => {
+    if (seenIdsRef.current.has(id)) return;
+    const next = new Set(seenIdsRef.current);
+    next.add(id);
+    seenIdsRef.current = next;
+    setSeen(next);
+    if (!isCompleted) {
+      const pct = Math.min(100, Math.round((next.size / Math.max(total, 1)) * 100));
+      save.mutate({ last_block_id: id, progress_pct: pct });
+    }
   };
 
   const readingPct = useMemo(
@@ -200,6 +161,7 @@ function LessonContent({
             block={b}
             index={i + 1}
             registerRef={registerRef(b.id)}
+            onSeen={() => markBlockSeen(b.id)}
             quiz={quiz}
             onQuizSubmit={submitQuiz}
           />
@@ -278,11 +240,12 @@ function asStr(v: unknown): string | null {
 }
 
 function BlockRenderer({
-  block, index, registerRef, quiz, onQuizSubmit,
+  block, index, registerRef, onSeen, quiz, onQuizSubmit,
 }: {
   block: LessonBlockView;
   index: number;
   registerRef: (el: HTMLElement | null) => void;
+  onSeen: () => void;
   quiz: Record<string, string | number | boolean | null>;
   onQuizSubmit: (blockId: string, correct: boolean, choice: number) => void;
 }) {
@@ -301,6 +264,9 @@ function BlockRenderer({
     <section
       ref={registerRef}
       data-block-id={block.id}
+      onMouseEnter={onSeen}
+      onFocus={onSeen}
+      onClick={onSeen}
       className="scroll-mt-24 rounded-3xl border border-border/60 bg-card p-5 shadow-sm sm:p-6"
     >
       <header className="mb-3 flex items-center gap-2 text-[11px] uppercase tracking-widest text-accent">
