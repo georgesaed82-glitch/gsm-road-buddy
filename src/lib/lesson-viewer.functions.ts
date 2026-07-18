@@ -98,6 +98,48 @@ export const listLessonsForTopic = createServerFn({ method: "POST" })
     });
   });
 
+// -------- All lessons across the syllabus + my progress (for GSM Plus dashboard) --------
+export const listAllPortalLessons = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<LessonListItem[]> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: lessons, error } = await supabaseAdmin
+      .from("learning_lessons")
+      .select("id, topic_id, slug, title, order_index")
+      .eq("is_published", true)
+      .order("order_index", { ascending: true });
+    if (error) throw new Error(error.message);
+    const rows = (lessons ?? []) as Array<
+      Pick<LessonRow, "id" | "topic_id" | "slug" | "title" | "order_index">
+    >;
+    if (rows.length === 0) return [];
+    const { data: progress } = await (context.supabase as unknown as {
+      from: (t: string) => {
+        select: (c: string) => {
+          eq: (col: string, val: string) => Promise<{
+            data: Array<{ lesson_id: string; status: string; progress_pct: number }> | null;
+          }>;
+        };
+      };
+    })
+      .from("progress_learning_lessons")
+      .select("lesson_id, status, progress_pct")
+      .eq("student_id", context.userId);
+    const pmap = new Map((progress ?? []).map((p) => [p.lesson_id, p]));
+    return rows.map((r) => {
+      const p = pmap.get(r.id);
+      return {
+        id: r.id,
+        topic_id: r.topic_id,
+        slug: r.slug,
+        title: r.title,
+        order_index: r.order_index,
+        status: (p?.status as LessonListItem["status"]) ?? "not_started",
+        progress_pct: p?.progress_pct ?? 0,
+      };
+    });
+  });
+
 // -------- Full viewer payload for one lesson --------
 export const getLessonViewer = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
