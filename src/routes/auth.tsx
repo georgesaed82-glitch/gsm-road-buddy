@@ -2,7 +2,27 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Mail, Lock, User } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BarChart3,
+  BookOpen,
+  CheckCircle2,
+  Eye,
+  GraduationCap,
+  Languages,
+  Lock,
+  Mail,
+  MessageSquareText,
+  MonitorPlay,
+  PlaySquare,
+  Scroll,
+  ShieldCheck,
+  Signpost,
+  Sparkles,
+  Trophy,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,6 +35,7 @@ import { getCaptchaConfig } from "@/lib/auth-guard.functions";
 import { recordAdminLogin } from "@/lib/rbac.functions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { supabase } from "@/integrations/supabase/client";
+import { GsmPlus } from "@/components/GsmPlus";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): { admin?: 1 } => {
@@ -23,16 +44,85 @@ export const Route = createFileRoute("/auth")({
   },
   head: () => ({
     meta: [
-      { title: "GSM Plus coming soon | GSM Driving School" },
+      { title: "GSM Plus — Complete Driving Learning Portal" },
       {
         name: "description",
         content:
-          "GSM Plus, the premium learner platform from GSM Driving School, is coming soon. Manage lessons, payments, and progress online.",
+          "Learn what GSM Plus includes, then sign in to access lesson progress, driving topics, training videos, theory practice, mock tests and feedback.",
+      },
+      { property: "og:title", content: "GSM Plus — Complete Driving Learning Portal" },
+      {
+        property: "og:description",
+        content:
+          "GSM Plus supports GSM learners with progress tracking, videos, diagrams, theory practice, mock tests, hazard perception and personalised feedback.",
       },
     ],
   }),
   component: AuthPage,
 });
+
+const portalFeatures = [
+  {
+    icon: BarChart3,
+    title: "Lesson progress",
+    body: "View completed lessons, overall progress and what is still developing.",
+  },
+  {
+    icon: Scroll,
+    title: "Covered topics",
+    body: "See every driving topic you have covered and what needs improvement.",
+  },
+  {
+    icon: PlaySquare,
+    title: "GSM media library",
+    body: "Access original GSM training videos, animations and diagrams.",
+  },
+  {
+    icon: GraduationCap,
+    title: "GSM teaching system",
+    body: "Learn reference points, clear routines and common mistakes in plain language.",
+  },
+  {
+    icon: Signpost,
+    title: "Theory support",
+    body: "Practise theory questions, road signs, road markings and Highway Code topics.",
+  },
+  {
+    icon: Trophy,
+    title: "Mock tests",
+    body: "Complete mock theory tests and review incorrect answers properly.",
+  },
+  {
+    icon: Eye,
+    title: "Hazard perception",
+    body: "Practise developing-hazard training between practical lessons.",
+  },
+  {
+    icon: MessageSquareText,
+    title: "Instructor feedback",
+    body: "View feedback and preparation advice for your future lessons.",
+  },
+  {
+    icon: MonitorPlay,
+    title: "Any device",
+    body: "Open the portal on a mobile phone, tablet or computer.",
+  },
+  {
+    icon: Languages,
+    title: "Language options",
+    body: "Change the portal language where available for easier learning.",
+  },
+];
+
+const freeAccess = ["Basic information", "Selected learning materials", "Starter theory support"];
+const premiumAccess = [
+  "Full driving topics",
+  "Training videos and animations",
+  "Progress tracking",
+  "Theory practice and mock tests",
+  "Hazard perception",
+  "Personalised learning support",
+];
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -148,8 +238,8 @@ function AuthPage() {
       window.location.assign("/admin/");
       return;
     }
-    if (!emailValue) {
-      const msg = "Enter your email address.";
+      if (!emailValue) {
+        const msg = "Enter your email address or student ID.";
       setAuthMessage({ type: "error", text: msg });
       toast.error(msg);
       setSubmitting(false);
@@ -227,183 +317,401 @@ function AuthPage() {
     }
   };
 
+  const loginForm = (
+    <form onSubmit={handleSubmit} className="space-y-4 text-left">
+      <div className="space-y-1.5">
+        <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <User className="h-4 w-4 text-accent" /> {isAdmin ? "Email address" : "Email address or student ID"}
+        </label>
+        <Input
+          type={isAdmin ? "email" : "text"}
+          required
+          autoComplete={isAdmin ? "email" : "username"}
+          placeholder={isAdmin ? "you@example.com" : "Email address or student ID"}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={submitting}
+          className="h-12 rounded-xl bg-background text-base"
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <Lock className="h-4 w-4 text-accent" /> {isAdmin ? "Password" : "Password or PIN"}
+        </label>
+        {!isAdmin && (
+          <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+            <span>Keyboard:</span>
+            <div className="inline-flex overflow-hidden rounded-full border border-border bg-background">
+              <button
+                type="button"
+                onClick={() => setKeyboardMode("numeric")}
+                className={
+                  "px-3 py-1 text-[11px] font-medium transition " +
+                  (keyboardMode === "numeric"
+                    ? "bg-accent text-accent-foreground"
+                    : "bg-transparent text-muted-foreground hover:text-primary")
+                }
+                aria-pressed={keyboardMode === "numeric"}
+              >
+                123 Numbers
+              </button>
+              <button
+                type="button"
+                onClick={() => setKeyboardMode("text")}
+                className={
+                  "px-3 py-1 text-[11px] font-medium transition " +
+                  (keyboardMode === "text"
+                    ? "bg-accent text-accent-foreground"
+                    : "bg-transparent text-muted-foreground hover:text-primary")
+                }
+                aria-pressed={keyboardMode === "text"}
+              >
+                ABC Full
+              </button>
+            </div>
+          </div>
+        )}
+        <div className="flex gap-2">
+          <Input
+            type={showPassword ? "text" : "password"}
+            required
+            inputMode={effectiveKeyboardMode}
+            pattern={!isAdmin && effectiveKeyboardMode === "numeric" ? "[0-9]*" : undefined}
+            autoComplete={isAdmin ? "current-password" : "off"}
+            placeholder={isAdmin ? "Enter your password" : "Enter your password or PIN"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={submitting}
+            className="h-12 rounded-xl bg-background text-base"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "Hide password or PIN" : "Show password or PIN"}
+            className="h-12 shrink-0 rounded-xl px-4"
+          >
+            {showPassword ? "Hide" : "Show"}
+          </Button>
+        </div>
+      </div>
+
+      {codeCaptchaRequired && siteKey ? (
+        <div className="rounded-xl border border-border bg-muted/40 p-3">
+          <p className="mb-2 text-xs text-muted-foreground">Please confirm you're not a bot:</p>
+          <TurnstileWidget siteKey={siteKey} onToken={setCodeCaptchaToken} />
+        </div>
+      ) : null}
+
+      {authMessage ? (
+        <p
+          role={authMessage.type === "error" ? "alert" : "status"}
+          className={
+            authMessage.type === "error"
+              ? "rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+              : "rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-primary"
+          }
+        >
+          {authMessage.text}
+        </p>
+      ) : null}
+
+      {!isAdmin ? (
+        <div className="flex flex-col gap-3 pt-1 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <label className="flex items-center gap-2">
+            <Checkbox
+              checked={remember}
+              onCheckedChange={(v) => setRemember(v === true)}
+              disabled={submitting}
+            />
+            <span>Remember me</span>
+          </label>
+          <a
+            href="mailto:gsmdrivingschool@outlook.com?subject=Forgot%20GSM%20Plus%20password%20or%20PIN"
+            className="font-semibold text-primary underline underline-offset-4"
+          >
+            Forgot password or PIN?
+          </a>
+        </div>
+      ) : null}
+
+      <Button
+        type="submit"
+        disabled={submitting}
+        className="h-14 w-full rounded-2xl bg-primary text-base font-bold text-primary-foreground shadow-lg hover:bg-primary/90"
+      >
+        {submitting ? "Checking…" : isAdmin ? "Sign in" : "Log In to GSM Plus"}
+      </Button>
+    </form>
+  );
+
+  if (isAdmin) {
+    return (
+      <div className="flex flex-1 items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-md border-border bg-card text-center">
+          <CardHeader>
+            <CardTitle className="font-display text-2xl">Secure Administrator Login</CardTitle>
+            <CardDescription>
+              <Badge variant="secondary" className="mt-2">
+                Email + password login
+              </Badge>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Sign in using your registered administrator email address and password to access the
+              GSM Driving School Administration Portal.
+            </p>
+            {loginForm}
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to the site
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md border-border bg-card text-center">
-        <CardHeader>
-          <CardTitle className="font-display text-2xl">
-            {isAdmin ? (
-              "Secure Administrator Login"
-            ) : (
-              <>
-                <span className="font-bold">GSM</span>{" "}
-                <span className="font-semibold text-accent">PLUS+</span>
-              </>
-            )}
-          </CardTitle>
-          <CardDescription>
-            <Badge variant="secondary" className="mt-2">
-              {isAdmin ? "Email + password login" : "Email + PIN login"}
-            </Badge>
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            {isAdmin
-              ? "Sign in using your registered administrator email address and password to access the GSM Driving School Administration Portal."
-              : "Enter your email address and the PIN George sent you. Your progress saves automatically to your account."}
-          </p>
-          <form onSubmit={handleSubmit} className="space-y-3 text-left">
-            {!isAdmin && (
-              <div className="space-y-1">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <User className="h-4 w-4" /> Email address
-                </label>
-                <Input
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={submitting}
-                />
-              </div>
-            )}
-            {isAdmin && (
-              <div className="space-y-1">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <User className="h-4 w-4" /> Email address
-                </label>
-                <Input
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={submitting}
-                />
-              </div>
-            )}
-            <label className="text-sm font-medium flex items-center gap-2">
-              <Lock className="h-4 w-4" /> {isAdmin ? "Password" : "PIN"}
-            </label>
-            {!isAdmin && (
-              <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
-                <span>Keyboard:</span>
-                <div className="inline-flex overflow-hidden rounded-full border border-border">
-                  <button
-                    type="button"
-                    onClick={() => setKeyboardMode("numeric")}
-                    className={
-                      "px-3 py-1 text-[11px] font-medium transition " +
-                      (keyboardMode === "numeric"
-                        ? "bg-accent text-accent-foreground"
-                        : "bg-transparent text-muted-foreground hover:text-primary")
-                    }
-                    aria-pressed={keyboardMode === "numeric"}
-                  >
-                    123 Numbers
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setKeyboardMode("text")}
-                    className={
-                      "px-3 py-1 text-[11px] font-medium transition " +
-                      (keyboardMode === "text"
-                        ? "bg-accent text-accent-foreground"
-                        : "bg-transparent text-muted-foreground hover:text-primary")
-                    }
-                    aria-pressed={keyboardMode === "text"}
-                  >
-                    ABC Full
-                  </button>
+    <main className="bg-background">
+      <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-background via-secondary/20 to-background">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:py-24">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
+              <Sparkles className="h-4 w-4" /> GSM Learning Platform
+            </div>
+            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.04] text-foreground sm:text-5xl lg:text-6xl">
+              GSM Plus — Your Complete Driving Learning Portal
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              GSM Plus is an online learning and progress platform designed to support learners
+              alongside their practical driving lessons. It gives students access to lesson progress,
+              driving topics, training videos, diagrams, theory support, mock tests and personalised
+              feedback in one place.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a
+                href="#student-login"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-bold text-primary-foreground shadow-lg hover:bg-primary/90"
+              >
+                Student Login
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-accent/50 bg-card px-6 py-4 font-bold text-primary shadow-sm hover:border-accent"
+              >
+                Contact support
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="rounded-[2rem] border border-border/60 bg-card p-4 shadow-[0_30px_80px_-40px_rgba(29,42,34,0.45)] sm:p-6">
+              <div className="rounded-[1.5rem] bg-primary p-5 text-primary-foreground sm:p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <GsmPlus variant="pill" gsmClassName="text-primary-foreground" />
+                  <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">
+                    Live progress
+                  </span>
+                </div>
+                <div className="mt-7 grid gap-4 sm:grid-cols-3">
+                  {[
+                    ["Lessons", "18", "completed"],
+                    ["Topics", "42", "covered"],
+                    ["Mocks", "86%", "average"],
+                  ].map(([label, value, caption]) => (
+                    <div key={label} className="rounded-2xl bg-primary-foreground/10 p-4">
+                      <div className="text-xs uppercase tracking-widest text-primary-foreground/65">
+                        {label}
+                      </div>
+                      <div className="mt-2 font-display text-3xl font-bold text-accent">{value}</div>
+                      <div className="text-xs text-primary-foreground/70">{caption}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-6 space-y-3">
+                  {[
+                    ["Reference points", "92%"],
+                    ["Meeting traffic", "76%"],
+                    ["Hazard perception", "68%"],
+                  ].map(([topic, pct]) => (
+                    <div key={topic}>
+                      <div className="flex justify-between text-sm">
+                        <span>{topic}</span>
+                        <span className="font-semibold text-accent">{pct}</span>
+                      </div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-primary-foreground/15">
+                        <div className="h-full rounded-full bg-accent" style={{ width: pct }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            )}
-            <div className="flex gap-2">
-              <Input
-                type={showPassword ? "text" : "password"}
-                required
-                inputMode={effectiveKeyboardMode}
-                pattern={effectiveKeyboardMode === "numeric" ? "[0-9]*" : undefined}
-                autoComplete="off"
-                placeholder={isAdmin ? "Enter your password" : "Enter your PIN"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={submitting}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? "Hide" : "Show"}
-                className="px-2"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </Button>
-              <Button type="submit" disabled={submitting}>
-                {submitting ? "..." : isAdmin ? "Sign in" : "Enter"}
-              </Button>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-border/60 bg-background p-4">
+                  <BookOpen className="h-5 w-5 text-accent" />
+                  <div className="mt-2 font-semibold text-foreground">Next lesson prep</div>
+                  <p className="mt-1 text-sm text-muted-foreground">Open junctions, mirrors and MSPSL recap.</p>
+                </div>
+                <div className="rounded-2xl border border-border/60 bg-background p-4">
+                  <ShieldCheck className="h-5 w-5 text-accent" />
+                  <div className="mt-2 font-semibold text-foreground">Test readiness</div>
+                  <p className="mt-1 text-sm text-muted-foreground">Clear targets before your next drive.</p>
+                </div>
+              </div>
             </div>
-            {codeCaptchaRequired && siteKey ? (
-              <div className="pt-2">
-                <p className="mb-1 text-xs text-muted-foreground">
-                  Please confirm you're not a bot:
-                </p>
-                <TurnstileWidget siteKey={siteKey} onToken={setCodeCaptchaToken} />
-              </div>
-            ) : null}
-            {authMessage ? (
-              <p
-                role={authMessage.type === "error" ? "alert" : "status"}
-                className={
-                  authMessage.type === "error"
-                    ? "rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
-                    : "rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-primary"
-                }
-              >
-                {authMessage.text}
-              </p>
-            ) : null}
-            {!isAdmin && (
-              <label className="flex items-center gap-2 pt-1 text-sm text-muted-foreground">
-                <Checkbox
-                  checked={remember}
-                  onCheckedChange={(v) => setRemember(v === true)}
-                  disabled={submitting}
-                />
-                <span>Remember my email and PIN on this device</span>
-              </label>
-            )}
-          </form>
-          {!isAdmin ? (
-            <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-left">
-              <div className="flex items-center gap-2 font-medium">
-                <Mail className="h-4 w-4 text-primary" /> Don't have a PIN yet?
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Email George at{" "}
-                <a
-                  href="mailto:gsmdrivingschool@outlook.com?subject=Learner%20portal%20PIN%20request"
-                  className="font-medium text-primary underline"
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">
+              What students can do
+            </div>
+            <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
+              Everything that supports your practical driving lessons.
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {portalFeatures.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="rounded-2xl border border-border/60 bg-card p-5 shadow-[0_12px_30px_-24px_rgba(29,42,34,0.35)]"
                 >
-                  gsmdrivingschool@outlook.com
-                </a>{" "}
-                to request a PIN for GSM Plus.
-              </p>
+                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent/12 text-accent">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-4 font-display text-lg font-bold text-foreground">{feature.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{feature.body}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-secondary/35 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center">
+            <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary/80">
+              Access levels
             </div>
-          ) : null}
-          <Button asChild variant="outline" className="w-full">
-            <Link to="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to the site
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+            <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
+              Free access vs GSM Plus premium access
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            <div className="rounded-3xl border border-border/60 bg-card p-7 shadow-[0_18px_45px_-32px_rgba(29,42,34,0.35)] sm:p-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-success/15 px-3 py-1 text-sm font-bold text-success">
+                <CheckCircle2 className="h-4 w-4" /> Free access
+              </div>
+              <p className="mt-4 text-muted-foreground">
+                Basic information and selected learning materials to help visitors and new learners
+                understand the GSM approach.
+              </p>
+              <ul className="mt-6 space-y-3">
+                {freeAccess.map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm font-medium text-foreground">
+                    <CheckCircle2 className="h-4 w-4 text-success" /> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-3xl border border-accent/60 bg-primary p-7 text-primary-foreground shadow-[0_25px_60px_-30px_rgba(35,75,54,0.65)] sm:p-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-sm font-bold text-accent-foreground">
+                <Sparkles className="h-4 w-4" /> GSM Plus premium access
+              </div>
+              <p className="mt-4 text-primary-foreground/82">
+                Full training topics, videos, animations, progress tracking, theory practice, mock
+                tests, hazard perception and personalised learning support.
+              </p>
+              <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+                {premiumAccess.map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm font-semibold">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" /> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="student-login" className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div className="lg:sticky lg:top-28">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
+              <Lock className="h-4 w-4" /> Student Login
+            </div>
+            <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-foreground sm:text-4xl">
+              Log in after you understand what GSM Plus includes.
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+              Use the email address or student ID and the password or PIN provided by GSM. If you
+              cannot access your account, contact support and we will help you get back in.
+            </p>
+            <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
+              <div className="flex items-center gap-3 font-semibold text-foreground">
+                <Mail className="h-5 w-5 text-accent" /> Need help accessing your account?
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Contact GSM support for a new PIN, password help or student access issue.
+              </p>
+              <a
+                href="mailto:gsmdrivingschool@outlook.com?subject=GSM%20Plus%20student%20access%20support"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-accent/50 bg-background px-4 py-2 text-sm font-bold text-primary hover:border-accent"
+              >
+                Contact support
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+
+          <Card className="rounded-3xl border-border bg-card shadow-[0_24px_70px_-38px_rgba(29,42,34,0.45)]">
+            <CardHeader className="text-left">
+              <CardTitle className="font-display text-2xl text-foreground sm:text-3xl">
+                Log In to <GsmPlus className="text-2xl sm:text-3xl" gsmClassName="text-primary" />
+              </CardTitle>
+              <CardDescription>
+                Enter your student details to open your personal learning portal.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {loginForm}
+              <div className="rounded-2xl border border-border bg-muted/40 p-4 text-sm">
+                <div className="flex items-center gap-2 font-semibold text-foreground">
+                  <Mail className="h-4 w-4 text-primary" /> Don't have access yet?
+                </div>
+                <p className="mt-1 leading-relaxed text-muted-foreground">
+                  Email George at{" "}
+                  <a
+                    href="mailto:gsmdrivingschool@outlook.com?subject=Learner%20portal%20PIN%20request"
+                    className="font-semibold text-primary underline underline-offset-4"
+                  >
+                    gsmdrivingschool@outlook.com
+                  </a>{" "}
+                  to request GSM Plus access.
+                </p>
+              </div>
+              <Button asChild variant="outline" className="h-12 w-full rounded-xl">
+                <Link to="/">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to the website
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    </main>
   );
 }
