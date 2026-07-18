@@ -21,6 +21,15 @@ function toError(error: unknown): Error {
   }
 }
 
+function isRecoverableReactNoise(error: Error) {
+  const message = error.message || "";
+  return (
+    message.includes("Hydration failed because") ||
+    message.includes("Minified React error #418") ||
+    message.includes("Minified React error #423")
+  );
+}
+
 export class PreviewErrorBoundary extends Component<Props, State> {
   state: State = { error: null, source: null };
 
@@ -48,12 +57,14 @@ export class PreviewErrorBoundary extends Component<Props, State> {
 
   handleWindowError = (event: ErrorEvent) => {
     const error = toError(event.error ?? event.message);
+    if (isRecoverableReactNoise(error)) return;
     this.setState({ error, source: "runtime" });
     reportLovableError(error, { boundary: "preview_error_boundary", mechanism: "onerror" });
   };
 
   handleUnhandledRejection = (event: PromiseRejectionEvent) => {
     const error = toError(event.reason);
+    if (isRecoverableReactNoise(error)) return;
     this.setState({ error, source: "runtime" });
     reportLovableError(error, {
       boundary: "preview_error_boundary",
