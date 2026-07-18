@@ -247,6 +247,84 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_videos: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          description: string | null
+          difficulty: Database["public"]["Enums"]["ai_video_difficulty"]
+          duration_seconds: number | null
+          external_url: string | null
+          id: string
+          is_premium: boolean
+          lesson_ids: string[]
+          poster_url: string | null
+          provider: Database["public"]["Enums"]["ai_video_provider"]
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["ai_video_status"]
+          storage_path: string | null
+          tags: string[]
+          title: string
+          topic_ids: string[]
+          transmission: Database["public"]["Enums"]["ai_video_transmission"]
+          updated_at: string
+          uploaded_by: string | null
+          view_count: number
+          youtube_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["ai_video_difficulty"]
+          duration_seconds?: number | null
+          external_url?: string | null
+          id?: string
+          is_premium?: boolean
+          lesson_ids?: string[]
+          poster_url?: string | null
+          provider: Database["public"]["Enums"]["ai_video_provider"]
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["ai_video_status"]
+          storage_path?: string | null
+          tags?: string[]
+          title: string
+          topic_ids?: string[]
+          transmission?: Database["public"]["Enums"]["ai_video_transmission"]
+          updated_at?: string
+          uploaded_by?: string | null
+          view_count?: number
+          youtube_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["ai_video_difficulty"]
+          duration_seconds?: number | null
+          external_url?: string | null
+          id?: string
+          is_premium?: boolean
+          lesson_ids?: string[]
+          poster_url?: string | null
+          provider?: Database["public"]["Enums"]["ai_video_provider"]
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["ai_video_status"]
+          storage_path?: string | null
+          tags?: string[]
+          title?: string
+          topic_ids?: string[]
+          transmission?: Database["public"]["Enums"]["ai_video_transmission"]
+          updated_at?: string
+          uploaded_by?: string | null
+          view_count?: number
+          youtube_id?: string | null
+        }
+        Relationships: []
+      }
       areas: {
         Row: {
           area: string
@@ -2921,6 +2999,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_instructor_or_higher: { Args: { _user_id: string }; Returns: boolean }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -2944,6 +3023,19 @@ export type Database = {
       }
     }
     Enums: {
+      ai_video_difficulty:
+        | "beginner"
+        | "intermediate"
+        | "advanced"
+        | "test_ready"
+      ai_video_provider: "youtube" | "upload" | "external"
+      ai_video_status:
+        | "draft"
+        | "pending_review"
+        | "approved"
+        | "rejected"
+        | "archived"
+      ai_video_transmission: "any" | "manual" | "automatic"
       app_role: "admin" | "instructor" | "student" | "senior_instructor"
       calendar_event_kind: "lesson" | "mock_test" | "theory" | "test" | "other"
       calendar_event_status: "scheduled" | "completed" | "cancelled" | "no_show"
@@ -3126,6 +3218,21 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      ai_video_difficulty: [
+        "beginner",
+        "intermediate",
+        "advanced",
+        "test_ready",
+      ],
+      ai_video_provider: ["youtube", "upload", "external"],
+      ai_video_status: [
+        "draft",
+        "pending_review",
+        "approved",
+        "rejected",
+        "archived",
+      ],
+      ai_video_transmission: ["any", "manual", "automatic"],
       app_role: ["admin", "instructor", "student", "senior_instructor"],
       calendar_event_kind: ["lesson", "mock_test", "theory", "test", "other"],
       calendar_event_status: ["scheduled", "completed", "cancelled", "no_show"],
