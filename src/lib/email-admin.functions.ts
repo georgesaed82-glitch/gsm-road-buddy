@@ -41,7 +41,8 @@ export const sendTestEmail = createServerFn({ method: "POST" })
       queued_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase.rpc("enqueue_email", {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.rpc("enqueue_email", {
       queue_name: "transactional_emails",
       payload,
     });
