@@ -1,63 +1,83 @@
 
-# Refinement Pass — Proposed Scope
+# GSM Complete Platform — Phased Roadmap
 
-Your list mixes quick fixes, medium redesigns, and multi-week AI/video products. I want to be honest about what I can ship in this pass vs. what needs its own project so we don't half-build the big features.
+You've asked for the full platform in one go. To be honest with you: shipping all of this in a single turn produces 40 half-broken features. I'm proposing a 6-phase roadmap where each phase is a shippable, publishable milestone. Reply with the phase you want me to start (or "start Phase 1" to go in order).
 
-## Pass A — Ship now (this session, one commit, then publish)
+---
 
-**1. Critical bug fixes**
-- `mailto:` links: audit Header, Footer, Contact, GSM Plus, Portal — ensure `href="mailto:…"` (not JS handlers) so the OS mail app opens; add `tel:` where used.
-- Language selector: fix Google Translate init race + click handler on mobile; ensure the dropdown is keyboard/tap accessible and closes on outside click.
-- Image zoom / lightbox: audit `Zoomable` usage across VRP diagrams, lesson animations, and gallery — make close button always visible (top-right, safe-area padded), add ESC + swipe-down close, and wrap missing images.
-- Opening hours: single source of truth in `site_settings` — banner + detail block both read the same field.
-- Contact link audit: sweep every `<a>`/`<Link>` for `#`, empty `href`, or stale routes; add a unit list to `tests/`.
+## Phase 1 — Website polish & UX (this session)
 
-**2. Homepage sticky section nav**
-- Floating right-side dot nav on desktop, horizontal scroll-chip bar sticky under header on mobile.
-- Sections: Why GSM, Areas, Theory, Hazard, Reviews, GSM Plus, Instructors, FAQ, Contact.
-- Uses `IntersectionObserver` to highlight active section; smooth scroll.
+Everything you listed under "Complete Website & User Experience". Ships as one commit, then publish.
 
-**3. GSM Plus explainer block (moved higher on homepage)**
-- New `GsmPlusExplainer` section placed just under the hero: "What is GSM Plus", "Who it's for", Free vs Premium comparison table, 11 feature cards (AI Lesson Notes, Interactive Lessons, Progress Tracking, Mock Tests, Hazard Perception, Road Signs, Highway Code, Lesson History, Vehicle Reference Points, Instructor Feedback, Future Lesson Planner) — cards link to the relevant portal route or a "Coming soon" state.
+**Bug sweep**
+- `mailto:` / `tel:` audit across Header, Footer, Contact, GSM Plus, Portal
+- Language selector: fix Google Translate init race, mobile tap target, outside-click close, keyboard access
+- `Zoomable` lightbox: always-visible close button (safe-area), ESC + swipe-down close, wrap remaining gallery/VRP images
+- Opening hours: single `site_settings` field feeds banner + contact page
+- Broken link scan → `tests/link-audit.ts`
+- Focus rings + skip-to-content link + `alt` sweep for accessibility
+- Perf: preload hero image, lazy-load below-the-fold sections, defer heavy anims until in view
 
-**4. Pricing page transparency**
-- Replace the "contact for pricing" wall with a "from £45–£75/hr" band, a "what affects price" list (Instructor grade, Manual/Auto, Package size, Location), and keep the CTA to request a quote.
+**Homepage sticky jump-nav** — extend existing `HomeSectionNav` with the full list you gave (Why GSM, Areas, Lessons, Theory, Hazard, Reviews, GSM Plus, Instructors, FAQ, Contact) and add anchor IDs to every section.
 
-**5. Instructor cards upgraded**
-- Extend `instructors` table with: `qualification` (ADI/PDI), `years_experience`, `languages` (text[]), `teaching_style`, `areas_covered` (text[]), `bio_long`.
-- Migration + admin form fields + public `/instructors` and homepage card redesign.
+**GSM Plus explainer redesign** — replace current block with What / Who / Free vs Premium table / 11 feature cards, moved directly under hero.
 
-**6. Blog — temporary hide**
-- Feature-flag `blog_enabled` in `site_settings` (default off). Header + footer + sitemap hide `/blog` when off. Admin toggle in `/admin/site-settings`. When you have posts ready, flip the switch.
+**Pricing transparency band** — £45–£75/hr, "what affects price" list, keep CTA.
 
-**7. FAQ consolidation**
-- Move About-page FAQs into the main `/faq` page (single `faqs` table already exists). Remove the FAQ block from About and link to `/faq`.
+**Instructor profile pages** — extend `instructors` table with `qualification`, `years_experience`, `languages[]`, `teaching_style`, `areas_covered[]`, `bio_long`; new `/instructors/$slug` route; upgraded card + admin form.
 
-## Pass B — Deferred (needs its own project, not this session)
+**Blog gate** — hide `/blog`, Header/Footer/sitemap links behind `BLOG_ENABLED` flag (already in code) until content is ready.
 
-I don't want to fake these — they're real product work:
+**FAQ merge** — move About FAQs into `/faq` and de-duplicate.
 
-- **8. Realistic AI hazard-perception clips** — generating dozens of 30–45s realistic UK dashcam videos with pedestrians/cyclists/weather is a video-production project (AI video costs, review pipeline, storage, DVSA-realistic quality bar). I'd build the video-player + admin upload pipeline first, then commission/generate clips as content.
-- **9. Photorealistic VRP diagrams** — same problem: needs a photo shoot from inside the GSM teaching vehicle or high-quality 3D renders. I can wire realistic dashboard photo backgrounds behind the existing overlays once you provide 6–10 reference photos.
-- **10. Full lesson-management schema** — topics/notes/AI summary/strengths/homework/next-objectives is a proper feature; needs its own table design, instructor UX, student view.
-- **11. Lesson planner** — calendar sync (`.ics`), 48h cancel policy engine, reschedule requests → notifications. Needs booking model redesign.
-- **12. AI lesson notes from dictation** — upload/dictate → transcribe (Lovable AI STT) → structured summary (Lovable AI) → save to lesson record. Depends on #10 existing first.
-- **13. AI video library** — same shape as #8, driven by the video pipeline.
+**Cross-browser QA** — Playwright pass on Chrome/Safari/Firefox/Edge viewports (desktop, tablet, mobile).
 
-For Pass B, I'll write a follow-up roadmap doc once Pass A is live so we scope each properly.
+---
 
-## Pass C — QA sweep (end of this session)
+## Phase 2 — Student Progress System (own session)
 
-Items 14 & 15: run through the site on mobile/tablet/desktop viewports, verify:
-- Sticky nav doesn't overlap Back-to-Top or WhatsApp button
-- New GSM Plus block scales cleanly
-- All mailto/tel/link fixes verified
-- Contrast + focus rings on new UI
+The 6-state progress tracker across the full DVSA + GSM syllabus. Data-heavy, needs a fresh session.
 
-Then publish.
+- New tables: `syllabus_modules`, `syllabus_topics`, `student_progress` (status enum: not_started / in_progress / practised / independent / test_standard / completed), `lesson_notes`, `homework_items`
+- Seed migration with all 4 DVSA modules + Extra Visuals + your full GSM system list (BGO, POM 2-6-2, 15-70-15, etc.)
+- Instructor UI: per-student progress board with status toggle, notes, homework
+- Student view inside GSM Plus dashboard
+- Progress rings on lesson cards
 
-## Why phased
+## Phase 3 — AI Lesson Reports (own session)
 
-Trying to ship 15 features in one turn produces 15 half-broken features. Pass A is the "premium polish" you asked for and unblocks Helena's feedback; Pass B is where the real GSM Plus platform lives.
+Depends on Phase 2 tables.
+- Instructor dictation → Lovable AI STT (`openai/gpt-4o-transcribe`)
+- Auto-summary → Lovable AI chat model → structured strengths / weaknesses / homework / next objectives
+- Save to `lesson_notes` linked to the student + topics
+- Email summary to student (optional)
 
-**Reply "start Pass A"** and I'll begin with the critical bug fixes, then the homepage nav + GSM Plus explainer, then instructor/pricing/FAQ/blog — one commit, then publish for review.
+## Phase 4 — Lesson Planner (own session)
+
+- Booking model redesign: upcoming / previous, duration, calendar view
+- `.ics` export + optional Google Calendar via existing `google_calendar` App User Connector
+- Reschedule + cancel requests with 48h policy engine
+- Instructor + student notifications
+
+## Phase 5 — Photorealistic VRP & realistic diagrams (own session, needs your input)
+
+- I'll build the dashboard-photo + overlay pipeline
+- Requires 6–10 reference photos from inside your teaching car (dashboard, side mirrors, interior mirror, standard parking view, bay lines view) — you shoot them, I integrate
+- Same style applied to all reference-point lessons
+
+## Phase 6 — AI video library & hazard perception (multi-week product)
+
+Not a one-session job — it's video production plus an admin content pipeline.
+- Ship the video player + admin upload/tag pipeline first (same session as start)
+- Commission or generate realistic UK-road clips over time
+- Categories you listed (roundabouts, junctions, meeting, parking, dual carriageway, motorway, cyclists, pedestrians, emergency vehicles, hazard perception, reference points, BGO, defensive driving)
+- Hazard perception mode: 6 clips per test, DVSA-style scoring window, replay for review
+- Each clip: transcript / commentary track + linked lesson
+
+---
+
+## What I'd start with
+
+If you say **"start Phase 1"** I'll implement all of it in this session and publish. Phases 2–6 each get their own turn so they're built properly rather than stubbed.
+
+If you want a different order (e.g. Progress System first because it's the biggest lift), just say which phase to start.
