@@ -1,68 +1,54 @@
-# GSM Visual Teaching System — Full Rebuild Roadmap
+# GSM Complete Syllabus — Master Curriculum Build
 
-Honest scope note: what you've described is a 4–8 week product build, not a single-turn edit. Roughly 25 original animated lessons + a design system + a media/animation editor for the admin portal. Trying to do it all in one message produces 25 half-broken lessons and a broken editor. I'm proposing 5 phases; each is shippable and publishable on its own. Reply with the phase name (e.g. **"start Phase 1"**) to begin.
+You've asked for the **entire GSM Progress-Tracker syllabus** (~75 topics) built as full lessons, each with 15 sections (What / Why / When / Where / How / Reference Points / Common Mistakes / BGO / Instructor Tips / Safety Notes / Animation / Interactive Questions / Quiz / Summary / Progress Tracking / Pass Criteria), plus original diagrams, right-hand-drive animations, and portal + tracker wiring.
 
-**Non-negotiable ground rules I'll follow throughout**
-- Every diagram, vehicle, sign and road drawn from scratch as SVG in `src/components/diagram/*` — no traced or copied artwork from DITA / any instructor aid.
-- One unified GSM design language: forest green `#234B36`, cream `#F7F3E8`, gold accent, black — already tokenised in `src/styles.css`.
-- Every lesson follows the fixed GSM template: **What · Why · When · Where · How · Reference Points · Common Mistakes · Test Tips · Summary · Interactive Animation**.
-- Existing `LessonShell` extended (not replaced) — Play / Pause / Slow-motion (0.25× / 0.5× / 1×) / Step frame / Restart / Camera toggle (Driver / Overhead / Examiner).
-- Interactive quiz checkpoints pause the animation at decision points (already the pattern in `bgoSystem` and `giveWayLines`).
+That is roughly **25,000–40,000 lines** of authored content and animation code. Trying to ship it in one turn would produce shallow, repetitive lessons and unreviewable diffs. Below is how I will deliver it properly — approve and I start immediately.
 
----
+## One-time foundation (Batch 0 — first turn after approval)
 
-## Phase 1 — GSM Design Language + Diagram Kit (this session)
+Everything downstream depends on this, so it ships first.
 
-Foundation everything else builds on. No lesson content yet — just the primitives, so all 25 lessons look consistent.
+1. **Extend the `Lesson` type** to include every new section: `where`, `referencePoints`, `bgo`, `instructorTips`, `safetyNotes`, `summary`, `passCriteria` (score threshold + required checkpoints), `syllabusKey` (links to progress tracker).
+2. **Update `LessonShell`** to render all sections in a consistent mobile / tablet / desktop layout, with the existing playback + camera controls from Phase 1.
+3. **Add Pass/Fail flow** — quiz ≥ 80% posts a pass to `theory_progress` / `skill_ratings` under the lesson's `syllabusKey`; below 80% shows a "Retry" screen with the missed questions.
+4. **Curriculum registry** (`src/data/syllabus.ts`) — single source of truth mapping every syllabus key → lesson slug → progress-tracker skill. Learner portal, admin portal, and tracker all read from this one file.
+5. **Admin listing** — `/admin/lessons` shows curriculum coverage (built / draft / missing) so you can see progress at a glance.
 
-- **`src/components/diagram/primitives.tsx` — expanded kit**
-  - `Road`, `Lane`, `Kerb`, `CentreLine`, `HatchedArea`, `GiveWayLine`, `StopLine`, `ZebraStripes`, `PelicanStuds`, `RoundaboutHub`, `MiniRoundaboutDome`, `SlipRoad`, `HardShoulder`, `LaneArrow`, `BoxJunction`.
-  - `Car` (GSM saloon in forest-green + gold), `Bus`, `Cyclist`, `Pedestrian`, `HGV`, `Motorbike` — all as clean flat vectors with headlight/brake/indicator states.
-  - `EyeGaze` (scanning fan), `MirrorCheck` badge, `SignalArrow`, `HazardBloom`, `DecisionCard`.
-- **Camera-view controller** — `useCameraView()` hook returns Driver / Overhead / Examiner with matching viewBox transforms so any scene can render 3 angles from the same data.
-- **Playback controller upgrade** — extend `LessonShell` with 0.25× / 0.5× / 1× / step-frame / restart / camera switcher.
-- **Original UK sign set** — SVG-only, TSRGD-correct, drawn from scratch. Wire through existing `SignVisual`.
+## Delivery batches (one per turn thereafter)
 
-Deliverable: docs page `/admin/design-kit` showing every primitive, ready for lesson authors.
+Roughly **8 lessons per turn** — largest size that still allows genuinely original diagrams and quality quiz writing per lesson. Ordered so a learner can follow it end-to-end.
 
-## Phase 2 — Junction, Roundabout & Crossing lessons (own session)
+| Batch | Lessons |
+|---|---|
+| A | Cockpit Drill (DSSSM) · Moving Off & Stopping · Mirrors & Mirror Checks · MSPSL · Steering · Clutch Control · Gears · Hill Starts |
+| B | Junctions (overview) · Open · Closed · T-Junctions · Crossroads · Mini Roundabouts · Normal Roundabouts · Spiral Roundabouts |
+| C | Dual Carriageways · Motorways · Lane Discipline · Lane Positioning · Road Positioning · Meeting Traffic · Passing Parked Cars · Clearance & Safety Margins |
+| D | Speed Management · Following Distance · Overtaking · Traffic Lights · Box Junctions · Bus Lanes · Cycle Lanes · One-Way Systems |
+| E | Slip Roads · Emergency Vehicles · Pedestrian Crossings (overview) · Zebra · Pelican · Puffin · Toucan · Pegasus |
+| F | Hazard Perception · Observation Techniques · 15-70-15 Scanning · Stretch Your Vision · Plan to Stop, Look to Go · BGO · Defensive Driving · Eco Driving |
+| G | Weather Driving · Night Driving · Independent Driving · Sat Nav Driving · Show Me Tell Me · Bay Parking · Parallel Parking · Forward Bay Parking |
+| H | Reverse Bay Parking · Pull Up on the Right & Reverse · Pull Up on the Left · Emergency Stop · Mock Tests · Test Preparation · Highway Code index · Road Signs index |
+| I | Road Markings index · Vehicle Warning Lights · Tyres · Basic Car Maintenance |
+| J (features, not lessons) | Progress Tracker page · Instructor Feedback · Lesson Reports · Achievement Badges · Certificates · Revision Centre · Final Test Readiness Assessment |
 
-Using the Phase 1 kit. Each lesson: What → Why → When → Where → How → Reference Points → Common Mistakes → Test Tips → Summary → animation with quiz checkpoints and 3 camera angles.
+Lessons already partly built (Pull Up on Left, Meeting Traffic, POM, Give Way Lines, Meeting in Small Spaces, Joining Dual Carriageway, DSSSM, Crossroads, Mini Roundabouts, Passing Parked, BGO System, Bus Awareness, Parallel Parking, Unorthodox Roundabouts, Yellow Box) are **retrofitted to the new template** inside their respective batches — not rebuilt from scratch.
 
-- Open Junctions · Closed Junctions · Crossroads · Controlled Junctions
-- Zebra · Pelican · Puffin · Toucan · Equestrian crossings
-- Roundabouts · Mini Roundabouts · Spiral Roundabouts · Gyratory Systems
-- **BGO** is already done — will be visually reskinned to match the new kit.
+## Guarantees I'll hold on every lesson
 
-## Phase 3 — Manoeuvres + On-road strategies (own session)
+- **Original artwork only.** All diagrams are composed from `src/components/diagram/primitives.tsx` — no DVSA or third-party imagery. No third-party licensed materials.
+- **Right-hand-drive** ego vehicle and left-side traffic throughout.
+- **Mobile / tablet / desktop** verified via the existing `LessonShell` responsive layout.
+- **Progress tracker + pass criteria** wired for every lesson.
+- **Consistent visual style** — same palette, same primitives, same playback controls.
 
-- Parallel Park · Bay Park (forward & reverse) · Reverse on the Right · Turn in the Road · Controlled Stop · Emergency Stop
-- Meeting Traffic · Adequate Clearance · Overtaking · Dual Carriageways · Slip Roads · Motorways
-- Existing lessons (`pullUpOnLeft`, `parallelParking`, `joiningDualCarriageway`, `meetingInSmallSpaces`) get reskinned to the new kit rather than rewritten.
+## What I will NOT do
 
-## Phase 4 — GSM Method modules (own session)
+- Ship a shallow "for every syllabus item, generate a stub" pass. Every lesson gets a real animation authored for that specific topic.
+- Copy DVSA graphics, third-party lesson content, or copyrighted materials.
+- Collapse batches to try to ship faster — quality would drop.
 
-Rebuild `/gsm-method` as fully interactive:
-- DSSSM · PALM · MSPSL · POM 2-6-2 · 15-70-15 · Stretch Your Vision · Plan to Stop Look to Go · BGO · Reference Points · GSM Commentary · Fault categories (Driving / Serious / Dangerous).
+## Cadence
 
-## Phase 5 — Admin Lesson Studio (own session)
+Reply **"start"** and I ship Batch 0 (foundation). After each batch reply **"next"** and I ship the next one. Expected batches to full completion: 0 + A–J = **11 turns**.
 
-The editor you asked for, in the existing admin portal. Field-based (not visual drag-drop of SVG) so React structure stays intact.
-
-- New tables: `lessons_cms`, `lesson_sections`, `lesson_media`, `lesson_quizzes`, `lesson_reference_points`, `lesson_publish_events`.
-- Admin routes: `/admin/lessons` (list + reorder), `/admin/lessons/$slug` (editor).
-- Editor tabs: **Content** (rich text per section) · **Diagram** (pick scene template + tweak params like ego path, hazards, timings) · **Media** (upload MP4/WebM/Lottie via existing Media Library) · **Quiz** (checkpoints, options, feedback) · **Reference Points** (photo + hotspots) · **Publish** (draft / preview / publish + version history — reuses `content_versions`).
-- RBAC: content_editor can edit drafts, admin/owner can publish (extends existing `has_role`).
-- Instant publish: TanStack Query cache invalidation + `queryClient.invalidateQueries(["lessons-cms"])`.
-
-## Technical notes
-
-- No new dependencies for animation — continue with SVG + `requestAnimationFrame` timeline that `LessonShell` already runs (60fps, deterministic, cheap, no framer-motion in hot paths).
-- 3D-lite where it helps (roundabouts, motorway merges) via CSS `perspective` on the SVG group — not a WebGL engine. Full WebGL/Three.js would blow scope and battery on mobile.
-- Everything remains offline-cacheable (SW already registered) so GSM Plus works during lessons.
-
----
-
-## What I'd start with
-
-Reply **"start Phase 1"** and I'll build the design kit + camera/playback controller in this session and publish. Or name a different phase (e.g. "start Phase 5" if you want the editor before the content).
+Approve this plan to begin.
