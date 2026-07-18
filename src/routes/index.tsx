@@ -681,6 +681,7 @@ function QuizzesSection({ s }: SectionProps) {
 }
 
 function PortalSection({ s }: SectionProps) {
+  const portalHref = or(s.cta_primary_href, "/auth") === "/dashboard" ? "/auth" : or(s.cta_primary_href, "/auth");
   return (
     <section className="bg-primary py-20 text-primary-foreground sm:py-28 lg:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
@@ -711,7 +712,7 @@ function PortalSection({ s }: SectionProps) {
               className="mt-8 h-14 rounded-xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
             >
               <a
-                href={or(s.cta_primary_href, "/auth")}
+                href={portalHref}
                 className="inline-flex items-center gap-2 font-medium"
               >
                 {or(s.cta_primary_label, "Open your portal")}
