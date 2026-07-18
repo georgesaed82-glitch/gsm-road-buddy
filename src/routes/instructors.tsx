@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Award, Calendar, MapPin } from "lucide-react";
+import { Award, ArrowRight } from "lucide-react";
 import { listInstructors, type InstructorRow } from "@/lib/catalog.functions";
 
 export const Route = createFileRoute("/instructors")({
@@ -43,78 +43,125 @@ function InstructorsPage() {
             Meet our instructors
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Certified, experienced, and friendly. Choose the instructor who fits your learning
-            style.
+            DVSA-qualified instructors teaching manual and automatic across West London.
           </p>
         </div>
       </section>
 
       <section className="py-10 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((instructor) => (
-              <Card key={instructor.id} className="border-border bg-card">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    {instructor.image_url ? (
-                      <img
-                        src={instructor.image_url}
-                        alt={instructor.name}
-                        className="h-14 w-14 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div
-                        className={`flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold ${instructor.color}`}
-                      >
-                        {instructor.initials}
-                      </div>
-                    )}
-                    {instructor.rating != null && (
-                      <div className="flex items-center gap-1 text-sm font-semibold text-foreground">
-                        <Star className="h-4 w-4 fill-warning text-warning" />
-                        {instructor.rating}
-                      </div>
-                    )}
-                  </div>
-                  <h2 className="mt-4 font-display text-lg font-semibold">{instructor.name}</h2>
-                  <p className="text-sm text-primary">{instructor.role}</p>
-                  <p className="mt-2 text-sm text-muted-foreground">{instructor.bio}</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {(instructor.badges ?? []).map((badge) => (
-                      <span
-                        key={badge}
-                        className="inline-flex items-center rounded-full bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground"
-                      >
-                        <Award className="mr-1 h-3 w-3" />
-                        {badge}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
-                    {instructor.location && (
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {instructor.location}
-                      </span>
-                    )}
-                    {instructor.reviews != null && instructor.reviews > 0 && (
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {instructor.reviews} reviews
-                      </span>
-                    )}
-                  </div>
-                  <Button asChild className="mt-5 w-full">
-                    <Link to={instructor.cta_href || "/contact"}>
-                      Book with {instructor.name.split(" ")[0]}
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
+              <InstructorCard key={instructor.id} instructor={instructor} />
             ))}
           </div>
+          <p className="mx-auto mt-10 max-w-3xl rounded-2xl border border-dashed border-border bg-secondary/30 p-4 text-center text-sm leading-relaxed text-muted-foreground">
+            Instructor prices may vary depending on the instructor's qualifications, experience,
+            lesson location and any package discounts available.
+          </p>
         </div>
       </section>
     </div>
+  );
+}
+
+type BioParts = {
+  description: string | null;
+  standard: string | null;
+  packageRate: string | null;
+  extra: string[];
+};
+
+function parseBio(bio: string): BioParts {
+  const parts: BioParts = { description: null, standard: null, packageRate: null, extra: [] };
+  const lines = bio.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  for (const line of lines) {
+    const lower = line.toLowerCase();
+    if (lower.startsWith("standard rate:")) {
+      parts.standard = line.replace(/^standard rate:\s*/i, "").trim();
+    } else if (lower.startsWith("12-hour package:") || lower.startsWith("package:")) {
+      parts.packageRate = line.replace(/^(12-hour package|package):\s*/i, "").trim();
+    } else if (!parts.description) {
+      parts.description = line;
+    } else {
+      parts.extra.push(line);
+    }
+  }
+  return parts;
+}
+
+function InstructorCard({ instructor }: { instructor: InstructorRow }) {
+  const bio = parseBio(instructor.bio ?? "");
+  return (
+    <Card className="flex h-full flex-col overflow-hidden border-border bg-card shadow-sm transition-shadow hover:shadow-md">
+      <CardContent className="flex h-full flex-col p-6">
+        <div className="flex items-center gap-4">
+          {instructor.image_url ? (
+            <img
+              src={instructor.image_url}
+              alt={instructor.name}
+              className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-primary/10"
+            />
+          ) : (
+            <div
+              className={`grid h-16 w-16 shrink-0 place-items-center rounded-full text-xl font-bold ring-2 ring-primary/10 ${instructor.color}`}
+              aria-hidden="true"
+            >
+              {instructor.initials}
+            </div>
+          )}
+          <div className="min-w-0">
+            <h2 className="truncate font-display text-xl font-semibold text-foreground">
+              {instructor.name}
+            </h2>
+            <p className="text-sm font-medium text-primary">{instructor.role}</p>
+          </div>
+        </div>
+
+        {(instructor.badges ?? []).length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {(instructor.badges ?? []).map((badge) => (
+              <span
+                key={badge}
+                className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-medium text-secondary-foreground"
+              >
+                <Award className="mr-1 h-3 w-3" />
+                {badge}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {bio.description && (
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{bio.description}</p>
+        )}
+
+        {(bio.standard || bio.packageRate) && (
+          <dl className="mt-5 space-y-2 rounded-xl border border-border/60 bg-secondary/30 p-3 text-sm">
+            {bio.standard && (
+              <div className="flex items-baseline justify-between gap-3">
+                <dt className="text-muted-foreground">Standard rate</dt>
+                <dd className="text-right font-semibold text-foreground">{bio.standard}</dd>
+              </div>
+            )}
+            {bio.packageRate && (
+              <div className="flex items-baseline justify-between gap-3 border-t border-border/50 pt-2">
+                <dt className="text-muted-foreground">12-hour package</dt>
+                <dd className="text-right font-semibold text-primary">{bio.packageRate}</dd>
+              </div>
+            )}
+          </dl>
+        )}
+
+        <div className="mt-auto pt-6">
+          <Button asChild className="w-full">
+            <Link to={instructor.cta_href || "/contact"}>
+              Enquire / Book lessons
+              <ArrowRight className="ml-1.5 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
