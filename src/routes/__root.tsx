@@ -370,8 +370,14 @@ function RootComponent() {
       <div className="flex min-h-screen flex-col" suppressHydrationWarning>
         <ThemeProvider />
         <MaintenanceGate>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-accent"
+          >
+            Skip to main content
+          </a>
           <Header />
-          <main className="flex-1" suppressHydrationWarning>
+          <main id="main-content" className="flex-1" tabIndex={-1} suppressHydrationWarning>
             <Outlet />
           </main>
           {!isPortal && <Footer />}
