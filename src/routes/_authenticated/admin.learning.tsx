@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import {
   Layers,
   ChevronRight,
   Pencil,
+  Blocks,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
