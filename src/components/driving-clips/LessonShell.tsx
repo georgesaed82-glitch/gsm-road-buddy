@@ -63,6 +63,15 @@ export type Lesson = {
   captions?: LessonCaption[];
   questions?: LessonQuestion[];
   render: (t: number) => ReactNode;
+  // ── GSM full teaching template (all optional; older lessons still valid) ──
+  syllabusKey?: string;         // links to src/data/syllabus.ts entry
+  whereItApplies?: string[];    // Where — road types / scenarios
+  referencePoints?: string[];   // Reference Points
+  bgo?: { blockers: string[]; gap: string; opportunity: string };
+  instructorTips?: string[];    // ADI-level tips (separate from George's tips)
+  safetyNotes?: string[];       // Safety Notes
+  summary?: string[];           // Short summary bullets
+  passCriteria?: string[];      // Pass Criteria bullets
 };
 
 export function LessonShell({
