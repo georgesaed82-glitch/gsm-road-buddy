@@ -8,6 +8,7 @@ import {
   BarChart3,
   BookOpen,
   CheckCircle2,
+  Clock,
   Eye,
   GraduationCap,
   Languages,
@@ -36,6 +37,7 @@ import { recordAdminLogin } from "@/lib/rbac.functions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { GsmPlus } from "@/components/GsmPlus";
+import { ComingSoonNotice } from "@/components/ComingSoonNotice";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): { admin?: 1 } => {
@@ -44,17 +46,17 @@ export const Route = createFileRoute("/auth")({
   },
   head: () => ({
     meta: [
-      { title: "GSM Plus — Complete Driving Learning Portal" },
+      { title: "GSM Plus — Coming Soon" },
       {
         name: "description",
         content:
-          "Learn what GSM Plus includes, then sign in to access lesson progress, driving topics, training videos, theory practice, mock tests and feedback.",
+          "GSM Plus is the new premium learner portal from GSM Driving School. Discover what is coming and sign up for updates.",
       },
-      { property: "og:title", content: "GSM Plus — Complete Driving Learning Portal" },
+      { property: "og:title", content: "GSM Plus — Coming Soon" },
       {
         property: "og:description",
         content:
-          "GSM Plus supports GSM learners with progress tracking, videos, diagrams, theory practice, mock tests, hazard perception and personalised feedback.",
+          "GSM Plus will support GSM learners with progress tracking, videos, diagrams, theory practice, mock tests, hazard perception and personalised feedback.",
       },
     ],
   }),
@@ -238,8 +240,8 @@ function AuthPage() {
       window.location.assign("/admin/");
       return;
     }
-      if (!emailValue) {
-        const msg = "Enter your email address or student ID.";
+    if (!emailValue) {
+      const msg = "Enter your email address or student ID.";
       setAuthMessage({ type: "error", text: msg });
       toast.error(msg);
       setSubmitting(false);
@@ -484,29 +486,41 @@ function AuthPage() {
             <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
               <Sparkles className="h-4 w-4" /> GSM Learning Platform
             </div>
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.04] text-foreground sm:text-5xl lg:text-6xl">
-              GSM Plus — Your Complete Driving Learning Portal
-            </h1>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <h1 className="font-display text-4xl font-bold leading-[1.04] text-foreground sm:text-5xl lg:text-6xl">
+                GSM Plus
+              </h1>
+              <Badge
+                variant="secondary"
+                className="rounded-full border border-accent/50 bg-accent px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-accent-foreground shadow-sm"
+              >
+                <Clock className="mr-1.5 h-3.5 w-3.5" />
+                Coming Soon
+              </Badge>
+            </div>
+            <p className="mt-2 font-display text-xl font-semibold text-accent sm:text-2xl">
+              Your Complete Driving Learning Portal
+            </p>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
               GSM Plus is an online learning and progress platform designed to support learners
-              alongside their practical driving lessons. It gives students access to lesson progress,
-              driving topics, training videos, diagrams, theory support, mock tests and personalised
-              feedback in one place.
+              alongside their practical driving lessons. It will give students access to lesson
+              progress, driving topics, training videos, diagrams, theory support, mock tests and
+              personalised feedback in one place.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#student-login"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-bold text-primary-foreground shadow-lg hover:bg-primary/90"
-              >
-                Student Login
-                <ArrowRight className="h-4 w-4" />
-              </a>
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-accent/50 bg-card px-6 py-4 font-bold text-primary shadow-sm hover:border-accent"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-bold text-primary-foreground shadow-lg hover:bg-primary/90"
               >
                 Contact support
+                <ArrowRight className="h-4 w-4" />
               </Link>
+              <a
+                href="#coming-soon"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-accent/50 bg-card px-6 py-4 font-bold text-primary shadow-sm hover:border-accent"
+              >
+                Learn more
+              </a>
             </div>
           </div>
 
@@ -516,14 +530,14 @@ function AuthPage() {
                 <div className="flex items-center justify-between gap-3">
                   <GsmPlus variant="pill" gsmClassName="text-primary-foreground" />
                   <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">
-                    Live progress
+                    In development
                   </span>
                 </div>
                 <div className="mt-7 grid gap-4 sm:grid-cols-3">
                   {[
-                    ["Lessons", "18", "completed"],
-                    ["Topics", "42", "covered"],
-                    ["Mocks", "86%", "average"],
+                    ["Lessons", "—", "planned"],
+                    ["Topics", "—", "planned"],
+                    ["Mocks", "—", "planned"],
                   ].map(([label, value, caption]) => (
                     <div key={label} className="rounded-2xl bg-primary-foreground/10 p-4">
                       <div className="text-xs uppercase tracking-widest text-primary-foreground/65">
@@ -536,9 +550,9 @@ function AuthPage() {
                 </div>
                 <div className="mt-6 space-y-3">
                   {[
-                    ["Reference points", "92%"],
-                    ["Meeting traffic", "76%"],
-                    ["Hazard perception", "68%"],
+                    ["Reference points", "—"],
+                    ["Meeting traffic", "—"],
+                    ["Hazard perception", "—"],
                   ].map(([topic, pct]) => (
                     <div key={topic}>
                       <div className="flex justify-between text-sm">
@@ -546,7 +560,7 @@ function AuthPage() {
                         <span className="font-semibold text-accent">{pct}</span>
                       </div>
                       <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-primary-foreground/15">
-                        <div className="h-full rounded-full bg-accent" style={{ width: pct }} />
+                        <div className="h-full rounded-full bg-accent" style={{ width: "0%" }} />
                       </div>
                     </div>
                   ))}
@@ -555,13 +569,13 @@ function AuthPage() {
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-border/60 bg-background p-4">
                   <BookOpen className="h-5 w-5 text-accent" />
-                  <div className="mt-2 font-semibold text-foreground">Next lesson prep</div>
-                  <p className="mt-1 text-sm text-muted-foreground">Open junctions, mirrors and MSPSL recap.</p>
+                  <div className="mt-2 font-semibold text-foreground">Lesson progress</div>
+                  <p className="mt-1 text-sm text-muted-foreground">Track every topic as you develop.</p>
                 </div>
                 <div className="rounded-2xl border border-border/60 bg-background p-4">
                   <ShieldCheck className="h-5 w-5 text-accent" />
                   <div className="mt-2 font-semibold text-foreground">Test readiness</div>
-                  <p className="mt-1 text-sm text-muted-foreground">Clear targets before your next drive.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Clear targets before your test day.</p>
                 </div>
               </div>
             </div>
@@ -573,10 +587,10 @@ function AuthPage() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">
-              What students can do
+              What students will be able to do
             </div>
             <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
-              Everything that supports your practical driving lessons.
+              Everything that will support your practical driving lessons.
             </h2>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -603,7 +617,7 @@ function AuthPage() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary/80">
-              Access levels
+              Planned access levels
             </div>
             <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
               Free access vs GSM Plus premium access
@@ -646,70 +660,24 @@ function AuthPage() {
         </div>
       </section>
 
-      <section id="student-login" className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <div className="lg:sticky lg:top-28">
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
-              <Lock className="h-4 w-4" /> Student Login
+      <section id="coming-soon" className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <ComingSoonNotice />
+          <div className="mt-8 rounded-2xl border border-border/60 bg-card p-5 text-center">
+            <div className="flex items-center justify-center gap-2 font-semibold text-foreground">
+              <Mail className="h-5 w-5 text-accent" /> Want to know when it launches?
             </div>
-            <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-foreground sm:text-4xl">
-              Log in after you understand what GSM Plus includes.
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Use the email address or student ID and the password or PIN provided by GSM. If you
-              cannot access your account, contact support and we will help you get back in.
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Contact GSM support and we will let you know as soon as GSM Plus+ is ready.
             </p>
-            <div className="mt-6 rounded-2xl border border-border/60 bg-card p-5">
-              <div className="flex items-center gap-3 font-semibold text-foreground">
-                <Mail className="h-5 w-5 text-accent" /> Need help accessing your account?
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Contact GSM support for a new PIN, password help or student access issue.
-              </p>
-              <a
-                href="mailto:gsmdrivingschool@outlook.com?subject=GSM%20Plus%20student%20access%20support"
-                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-accent/50 bg-background px-4 py-2 text-sm font-bold text-primary hover:border-accent"
-              >
-                Contact support
-                <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
+            <a
+              href="mailto:gsmdrivingschool@outlook.com?subject=GSM%20Plus%20launch%20notification"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-accent/50 bg-background px-4 py-2 text-sm font-bold text-primary hover:border-accent"
+            >
+              Contact support
+              <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
-
-          <Card className="rounded-3xl border-border bg-card shadow-[0_24px_70px_-38px_rgba(29,42,34,0.45)]">
-            <CardHeader className="text-left">
-              <CardTitle className="font-display text-2xl text-foreground sm:text-3xl">
-                Log In to <GsmPlus className="text-2xl sm:text-3xl" gsmClassName="text-primary" />
-              </CardTitle>
-              <CardDescription>
-                Enter your student details to open your personal learning portal.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              {loginForm}
-              <div className="rounded-2xl border border-border bg-muted/40 p-4 text-sm">
-                <div className="flex items-center gap-2 font-semibold text-foreground">
-                  <Mail className="h-4 w-4 text-primary" /> Don't have access yet?
-                </div>
-                <p className="mt-1 leading-relaxed text-muted-foreground">
-                  Email George at{" "}
-                  <a
-                    href="mailto:gsmdrivingschool@outlook.com?subject=Learner%20portal%20PIN%20request"
-                    className="font-semibold text-primary underline underline-offset-4"
-                  >
-                    gsmdrivingschool@outlook.com
-                  </a>{" "}
-                  to request GSM Plus access.
-                </p>
-              </div>
-              <Button asChild variant="outline" className="h-12 w-full rounded-xl">
-                <Link to="/">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to the website
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </section>
     </main>

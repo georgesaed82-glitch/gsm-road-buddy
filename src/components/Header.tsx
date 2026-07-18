@@ -91,19 +91,24 @@ export function Header() {
               to="/auth"
               onClick={() => setSheetOpen(false)}
               className="group relative flex items-center gap-3 overflow-hidden rounded-2xl border border-accent/50 bg-gradient-to-br from-primary to-primary/85 px-4 py-3.5 shadow-md"
-              aria-label="Open GSM Plus learner portal"
+              aria-label="GSM Plus+ coming soon — learn more"
             >
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-accent text-primary-foreground shadow-inner">
                 <GraduationCap className="h-5 w-5" />
               </span>
-              <span className="flex min-w-0 flex-col">
-                <GsmPlus
-                  className="text-[17px]"
-                  gsmClassName="text-primary-foreground"
-                  plusClassName="text-accent"
-                />
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="flex items-center gap-2">
+                  <GsmPlus
+                    className="text-[17px]"
+                    gsmClassName="text-primary-foreground"
+                    plusClassName="text-accent"
+                  />
+                  <span className="rounded-full border border-accent/50 bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
+                    Coming Soon
+                  </span>
+                </span>
                 <span className="text-[11px] font-medium text-primary-foreground/80">
-                  Learner portal · sign in
+                  New learner portal launching soon
                 </span>
               </span>
             </Link>
