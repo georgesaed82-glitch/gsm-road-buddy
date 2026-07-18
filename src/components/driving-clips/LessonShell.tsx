@@ -513,6 +513,80 @@ export function LessonShell({
         <p className="mt-2 font-display text-lg leading-snug">{lesson.keyTakeaway}</p>
       </div>
 
+      {/* 10b. GSM full-template extras (rendered only when authored) */}
+      {lesson.whereItApplies && lesson.whereItApplies.length > 0 && (
+        <Collapse icon={<Target className="h-4 w-4" />} eyebrow="Where" tone="default" title="Where it applies">
+          <ul className="space-y-2 text-sm">
+            {lesson.whereItApplies.map((w, i) => (
+              <li key={i} className="flex gap-2 leading-relaxed"><span className="text-accent">•</span><span>{w}</span></li>
+            ))}
+          </ul>
+        </Collapse>
+      )}
+      {lesson.referencePoints && lesson.referencePoints.length > 0 && (
+        <Collapse icon={<Target className="h-4 w-4" />} eyebrow="Reference points" tone="accent" title="Reference points">
+          <ul className="space-y-2 text-sm">
+            {lesson.referencePoints.map((r, i) => (
+              <li key={i} className="flex gap-2 leading-relaxed"><span className="text-accent">◎</span><span>{r}</span></li>
+            ))}
+          </ul>
+        </Collapse>
+      )}
+      {lesson.bgo && (
+        <Collapse icon={<Sparkles className="h-4 w-4" />} eyebrow="BGO" tone="accent" title="Blockers · Gap · Opportunity">
+          <div className="grid gap-3 text-sm sm:grid-cols-3">
+            <div className="rounded-md border border-border/60 bg-background/40 p-3">
+              <div className="text-[10px] uppercase tracking-wider text-accent">Blockers</div>
+              <ul className="mt-2 space-y-1">{lesson.bgo.blockers.map((b, i) => <li key={i}>• {b}</li>)}</ul>
+            </div>
+            <div className="rounded-md border border-border/60 bg-background/40 p-3">
+              <div className="text-[10px] uppercase tracking-wider text-accent">Gap</div>
+              <p className="mt-2 leading-relaxed">{lesson.bgo.gap}</p>
+            </div>
+            <div className="rounded-md border border-border/60 bg-background/40 p-3">
+              <div className="text-[10px] uppercase tracking-wider text-accent">Opportunity</div>
+              <p className="mt-2 leading-relaxed">{lesson.bgo.opportunity}</p>
+            </div>
+          </div>
+        </Collapse>
+      )}
+      {lesson.instructorTips && lesson.instructorTips.length > 0 && (
+        <Collapse icon={<Lightbulb className="h-4 w-4" />} eyebrow="Instructor tips" tone="tip" title="ADI-level teaching tips">
+          <ul className="space-y-2 text-sm">
+            {lesson.instructorTips.map((tp, i) => (
+              <li key={i} className="flex gap-2 leading-relaxed"><span className="text-emerald-600">✓</span><span>{tp}</span></li>
+            ))}
+          </ul>
+        </Collapse>
+      )}
+      {lesson.safetyNotes && lesson.safetyNotes.length > 0 && (
+        <Collapse icon={<AlertTriangle className="h-4 w-4" />} eyebrow="Safety" tone="warn" title="Safety notes">
+          <ul className="space-y-2 text-sm">
+            {lesson.safetyNotes.map((s, i) => (
+              <li key={i} className="flex gap-2 leading-relaxed"><span className="text-red-500">⚠</span><span>{s}</span></li>
+            ))}
+          </ul>
+        </Collapse>
+      )}
+      {lesson.summary && lesson.summary.length > 0 && (
+        <Collapse icon={<CheckCircle2 className="h-4 w-4" />} eyebrow="Summary" tone="default" title="Summary">
+          <ul className="space-y-2 text-sm">
+            {lesson.summary.map((s, i) => (
+              <li key={i} className="flex gap-2 leading-relaxed"><span className="text-accent">→</span><span>{s}</span></li>
+            ))}
+          </ul>
+        </Collapse>
+      )}
+      {lesson.passCriteria && lesson.passCriteria.length > 0 && (
+        <Collapse icon={<Target className="h-4 w-4" />} eyebrow="Pass criteria" tone="rule" title="You've mastered this when…">
+          <ul className="space-y-2 text-sm">
+            {lesson.passCriteria.map((p, i) => (
+              <li key={i} className="flex gap-2 leading-relaxed"><span className="text-accent">✓</span><span>{p}</span></li>
+            ))}
+          </ul>
+        </Collapse>
+      )}
+
       {/* 11. NEXT LESSON */}
       {/* 11. MARK COMPLETED + PREV/NEXT */}
       <div className="space-y-3">
