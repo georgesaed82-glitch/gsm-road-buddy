@@ -104,7 +104,7 @@ export const lessonGroups: LessonGroup[] = [
       planned("turning-left", "Turning left", "Rules 182–183"),
       planned("turning-right", "Turning right", "Rules 179–181"),
       planned("t-junctions", "T-junctions", "Rules 170–171"),
-      planned("crossroads", "Crossroads", "Rules 170–181"),
+      existing("crossroads") ?? planned("crossroads", "Crossroads", "Rules 170–181"),
     ]),
   },
   {
@@ -114,7 +114,7 @@ export const lessonGroups: LessonGroup[] = [
     lessons: compact([
       existing("roundabouts"),
       existing("unorthodox-roundabouts"),
-      planned("mini-roundabouts", "Mini roundabouts", "Rule 188"),
+      existing("mini-roundabouts") ?? planned("mini-roundabouts", "Mini roundabouts", "Rule 188"),
       planned("normal-roundabouts", "Normal roundabouts", "Rules 184–187"),
       planned("roundabout-lane-discipline", "Roundabout lane discipline", "Rule 186"),
       planned("spiral-roundabouts", "Spiral roundabouts", "Rule 186"),
