@@ -1,6 +1,5 @@
 @import "tailwindcss" source(none);
 @source "../src";
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -134,8 +133,17 @@
      viewport on every device. */
   html,
   body {
-    overflow-x: clip;
+    overflow-x: hidden;
     max-width: 100vw;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
