@@ -12,8 +12,9 @@ import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
+import { BLOG_ENABLED } from "@/lib/featureFlags";
 
-const FOOTER_LINKS = [
+const ALL_FOOTER_LINKS = [
   { to: "/services", label: "Explore Services", icon: Car },
   { to: "/pricing", label: "Pricing", icon: CreditCard },
   { to: "/reviews", label: "Reviews", icon: Star },
@@ -22,6 +23,7 @@ const FOOTER_LINKS = [
   { to: "/faq", label: "FAQ", icon: HelpCircle },
   { to: "/#download-app", label: "Download", icon: Download },
 ];
+const FOOTER_LINKS = ALL_FOOTER_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/blog");
 
 export function Footer() {
   const { business, social, footer } = useSiteSettings();

@@ -22,11 +22,12 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { GsmPlus } from "@/components/GsmPlus";
 import { BrandPlate } from "@/components/BrandPlate";
 
-const NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
+const ALL_NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/about", label: "About", icon: Info },
   { to: "/services", label: "Practical Lessons", icon: Car },
   { to: "/pricing", label: "Prices & Packages", icon: CreditCard },
@@ -34,6 +35,7 @@ const NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/reviews", label: "Reviews", icon: Star },
   { to: "/blog", label: "Blog", icon: Newspaper },
 ];
+const NAV_LINKS = ALL_NAV_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/blog");
 
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
@@ -189,7 +190,7 @@ function Home() {
       {sections.map((s) => {
         const key = s.section_key ?? s.section_type;
         const anchorId = SECTION_META[s.section_type]?.id;
-        const wrap = (node: React.ReactNode) =>
+        const wrap = (node: ReactNode) =>
           anchorId ? (
             <div id={anchorId} key={key} className="scroll-mt-24">
               {node}
