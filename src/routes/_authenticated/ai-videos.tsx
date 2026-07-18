@@ -27,7 +27,7 @@ import {
   type AiVideoRow,
 } from "@/lib/ai-videos.functions";
 
-export const Route = createFileRoute("/_authenticated/ai-videos/")({
+export const Route = createFileRoute("/_authenticated/ai-videos")({
   head: () => ({
     meta: [
       { title: "AI Video Library · GSM PLUS+" },
