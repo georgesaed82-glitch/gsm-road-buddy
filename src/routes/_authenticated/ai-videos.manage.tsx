@@ -438,9 +438,9 @@ function EditDialog({
   onOpenChange: (v: boolean) => void;
   editing: AiVideoRow | null;
   onSaved: () => void;
-  upsertFn: ReturnType<typeof useServerFn<typeof upsertAiVideo>>;
-  uploadUrlFn: ReturnType<typeof useServerFn<typeof createAiVideoUploadUrl>>;
-  posterFn: ReturnType<typeof useServerFn<typeof uploadAiVideoPoster>>;
+  upsertFn: (args: { data: Parameters<typeof upsertAiVideo>[0]["data"] }) => Promise<AiVideoRow>;
+  uploadUrlFn: (args: { data: { filename: string; content_type: string; size: number } }) => Promise<{ path: string; token: string; signedUrl: string }>;
+  posterFn: (args: { data: { filename: string; content_type: string; base64: string } }) => Promise<{ path: string; url: string | null }>;
 }) {
   const [form, setForm] = useState(() => defaults(editing));
   const [saving, setSaving] = useState(false);
