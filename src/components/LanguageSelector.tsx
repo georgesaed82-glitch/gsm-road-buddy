@@ -70,37 +70,6 @@ const LANGUAGES: Lang[] = [
 
 const STORAGE_KEY = "gsm_lang";
 const CHANGE_EVENT = "gsm-language-changed";
-const INCLUDED_LANGS = LANGUAGES.map((l) => l.code).join(",");
-const ELEMENT_ID = "google_translate_element";
-const SCRIPT_ID = "google-translate-script";
-
-type GoogleTranslateCtor = {
-  new (opts: Record<string, unknown>, id: string): unknown;
-  InlineLayout?: { SIMPLE?: number };
-};
-
-declare global {
-  interface Window {
-    googleTranslateElementInit?: () => void;
-    google?: { translate?: { TranslateElement?: GoogleTranslateCtor } };
-  }
-}
-
-let scriptPromise: Promise<void> | null = null;
-let comboPromise: Promise<HTMLSelectElement> | null = null;
-
-function setGoogTransCookie(lang: LangCode) {
-  const value = lang === "en" ? "/en/en" : `/en/${lang}`;
-  // Set on current host + parent domain so it survives across subdomains.
-  const host = window.location.hostname;
-  const cookie = (domain?: string) =>
-    `googtrans=${value}; path=/; max-age=31536000; SameSite=Lax${domain ? `; domain=${domain}` : ""}`;
-  document.cookie = cookie();
-  const parts = host.split(".");
-  if (parts.length > 1 && host !== "localhost") {
-    document.cookie = cookie("." + parts.slice(-2).join("."));
-  }
-}
 
 function clearGoogTransCookie() {
   const host = window.location.hostname;
@@ -110,91 +79,6 @@ function clearGoogTransCookie() {
   if (parts.length > 1 && host !== "localhost") {
     document.cookie = expire + `; domain=.${parts.slice(-2).join(".")}`;
   }
-}
-
-function ensureTranslateElement() {
-  if (document.getElementById(ELEMENT_ID)) return;
-  const el = document.createElement("div");
-  el.id = ELEMENT_ID;
-  el.className = "skiptranslate notranslate";
-  el.style.position = "fixed";
-  el.style.left = "-10000px";
-  el.style.top = "0";
-  el.style.width = "1px";
-  el.style.height = "1px";
-  el.style.overflow = "hidden";
-  document.body.appendChild(el);
-}
-
-function initTranslateElement(resolve?: () => void) {
-  ensureTranslateElement();
-  try {
-    const T = window.google?.translate?.TranslateElement;
-    if (!T) return;
-    if (!document.querySelector(".goog-te-combo")) {
-      new T(
-        {
-          pageLanguage: "en",
-          includedLanguages: INCLUDED_LANGS,
-          autoDisplay: false,
-          layout: T.InlineLayout?.SIMPLE,
-        },
-        ELEMENT_ID,
-      );
-    }
-    resolve?.();
-  } catch {
-    resolve?.();
-  }
-}
-
-function loadTranslateScript() {
-  if (scriptPromise) return scriptPromise;
-  scriptPromise = new Promise<void>((resolve) => {
-    if (typeof document === "undefined") {
-      resolve();
-      return;
-    }
-    window.googleTranslateElementInit = () => initTranslateElement(resolve);
-    if (window.google?.translate?.TranslateElement) {
-      initTranslateElement(resolve);
-      return;
-    }
-    const existingScript = document.getElementById(SCRIPT_ID);
-    if (existingScript) {
-      window.setTimeout(resolve, 1500);
-      return;
-    }
-    const s = document.createElement("script");
-    s.id = SCRIPT_ID;
-    s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    s.async = true;
-    s.onerror = () => resolve();
-    document.head.appendChild(s);
-    window.setTimeout(resolve, 8000);
-  });
-  return scriptPromise;
-}
-
-function waitForTranslateCombo() {
-  if (comboPromise) return comboPromise;
-  comboPromise = new Promise<HTMLSelectElement>((resolve, reject) => {
-    const started = Date.now();
-    const tick = () => {
-      const combo = document.querySelector<HTMLSelectElement>(".goog-te-combo");
-      if (combo) {
-        resolve(combo);
-        return;
-      }
-      if (Date.now() - started > 9000) {
-        reject(new Error("Google Translate language menu did not load"));
-        return;
-      }
-      window.setTimeout(tick, 100);
-    };
-    tick();
-  });
-  return comboPromise;
 }
 
 function currentLangFromCookie(): LangCode {
@@ -214,40 +98,22 @@ function setDocumentLanguage(lang: LangCode) {
   document.body?.setAttribute("dir", rtl ? "rtl" : "ltr");
 }
 
-function triggerTranslateCombo(combo: HTMLSelectElement, lang: LangCode) {
-  combo.value = "";
-  combo.dispatchEvent(new Event("change", { bubbles: true }));
-  window.setTimeout(() => {
-    combo.value = lang;
-    combo.dispatchEvent(new Event("change", { bubbles: true }));
-  }, 80);
+function removeLegacyTranslateNodes() {
+  document
+    .querySelectorAll("#google_translate_element, .goog-te-banner-frame, .goog-te-menu-frame")
+    .forEach((node) => node.remove());
+  document
+    .querySelectorAll<HTMLScriptElement>('script[src*="translate.google"]')
+    .forEach((node) => node.remove());
 }
 
-async function applyLanguage(lang: LangCode, reloadForEnglish: boolean) {
+function applyLanguage(lang: LangCode) {
   setDocumentLanguage(lang);
-  if (lang === "en") {
-    localStorage.setItem(STORAGE_KEY, lang);
-    clearGoogTransCookie();
-    setGoogTransCookie(lang);
-    if (reloadForEnglish) window.location.reload();
-    return;
-  }
-
   localStorage.setItem(STORAGE_KEY, lang);
-  setGoogTransCookie(lang);
-  await loadTranslateScript();
-  try {
-    const combo = await waitForTranslateCombo();
-    triggerTranslateCombo(combo, lang);
-    window.setTimeout(() => {
-      triggerTranslateCombo(combo, lang);
-    }, 900);
-    window.setTimeout(() => {
-      triggerTranslateCombo(combo, lang);
-    }, 1800);
-  } catch {
-    // The cookie remains in place so a refresh still lets Google Translate apply.
-    comboPromise = null;
+  clearGoogTransCookie();
+  removeLegacyTranslateNodes();
+  if (lang === "en") {
+    return;
   }
 }
 
@@ -272,7 +138,7 @@ export function LanguageSelector({
     const fromCookie = currentLangFromCookie();
     const initial = saved && LANGUAGES.some((l) => l.code === saved) ? saved : fromCookie;
     setActive(initial);
-    void applyLanguage(initial, false);
+    applyLanguage(initial);
   }, []);
 
   useEffect(() => {
@@ -296,7 +162,7 @@ export function LanguageSelector({
   const choose = (code: LangCode) => {
     setActive(code);
     window.dispatchEvent(new CustomEvent(CHANGE_EVENT, { detail: code }));
-    void applyLanguage(code, code === "en");
+    applyLanguage(code);
     setOpen(false);
     setQuery("");
   };
