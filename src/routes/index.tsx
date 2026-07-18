@@ -264,18 +264,26 @@ function HeroSection({ s }: SectionProps) {
         {/* 1) GSM PLUS+ hero card */}
         <Link
           to="/auth"
-          aria-label="Open GSM Plus learner portal"
+          aria-label="GSM Plus+ coming soon — learn more"
           className="group relative flex items-center gap-3 rounded-3xl border border-border/60 bg-card px-4 py-3.5 shadow-[0_8px_24px_-14px_rgba(29,42,34,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lg sm:gap-4 sm:px-5 sm:py-4"
         >
           <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-primary-foreground shadow-md sm:h-12 sm:w-12">
             <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
           </span>
           <span className="min-w-0 flex-1">
-            <GsmPlus
-              className="text-[20px] sm:text-[24px]"
-              gsmClassName="text-primary"
-              plusClassName="text-accent"
-            />
+            <span className="flex items-center gap-2">
+              <GsmPlus
+                className="text-[20px] sm:text-[24px]"
+                gsmClassName="text-primary"
+                plusClassName="text-accent"
+              />
+              <span className="rounded-full border border-accent/50 bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
+                Coming Soon
+              </span>
+            </span>
+            <span className="mt-0.5 block text-[11px] font-medium text-muted-foreground sm:text-xs">
+              New learner portal launching soon
+            </span>
           </span>
           <ArrowRight className="h-5 w-5 text-accent transition-transform duration-200 group-hover:translate-x-0.5" />
         </Link>
