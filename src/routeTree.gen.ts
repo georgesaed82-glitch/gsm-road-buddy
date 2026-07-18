@@ -92,6 +92,7 @@ import { Route as AuthenticatedAdminAreasRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
 import { Route as AuthenticatedAdminAccessRouteImport } from './routes/_authenticated/admin.access'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as AuthenticatedGsmPlusLessonLessonIdRouteImport } from './routes/_authenticated/gsm-plus.lesson.$lessonId'
 import { Route as AuthenticatedAdminLessonBlocksLessonIdRouteImport } from './routes/_authenticated/admin.lesson-blocks.$lessonId'
 
 const TheoryRoute = TheoryRouteImport.update({
@@ -545,6 +546,12 @@ const LovableEmailQueueProcessRoute =
     path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthenticatedGsmPlusLessonLessonIdRoute =
+  AuthenticatedGsmPlusLessonLessonIdRouteImport.update({
+    id: '/lesson/$lessonId',
+    path: '/lesson/$lessonId',
+    getParentRoute: () => AuthenticatedGsmPlusRoute,
+  } as any)
 const AuthenticatedAdminLessonBlocksLessonIdRoute =
   AuthenticatedAdminLessonBlocksLessonIdRouteImport.update({
     id: '/lesson-blocks/$lessonId',
@@ -571,7 +578,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/gsm-method': typeof AuthenticatedGsmMethodRoute
-  '/gsm-plus': typeof AuthenticatedGsmPlusRoute
+  '/gsm-plus': typeof AuthenticatedGsmPlusRouteWithChildren
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
@@ -635,6 +642,7 @@ export interface FileRoutesByFullPath {
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/lesson-blocks/$lessonId': typeof AuthenticatedAdminLessonBlocksLessonIdRoute
+  '/gsm-plus/lesson/$lessonId': typeof AuthenticatedGsmPlusLessonLessonIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
@@ -655,7 +663,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/gsm-method': typeof AuthenticatedGsmMethodRoute
-  '/gsm-plus': typeof AuthenticatedGsmPlusRoute
+  '/gsm-plus': typeof AuthenticatedGsmPlusRouteWithChildren
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
@@ -719,6 +727,7 @@ export interface FileRoutesByTo {
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/lesson-blocks/$lessonId': typeof AuthenticatedAdminLessonBlocksLessonIdRoute
+  '/gsm-plus/lesson/$lessonId': typeof AuthenticatedGsmPlusLessonLessonIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
@@ -742,7 +751,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/_authenticated/gsm-method': typeof AuthenticatedGsmMethodRoute
-  '/_authenticated/gsm-plus': typeof AuthenticatedGsmPlusRoute
+  '/_authenticated/gsm-plus': typeof AuthenticatedGsmPlusRouteWithChildren
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/_authenticated/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
@@ -806,6 +815,7 @@ export interface FileRoutesById {
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/lesson-blocks/$lessonId': typeof AuthenticatedAdminLessonBlocksLessonIdRoute
+  '/_authenticated/gsm-plus/lesson/$lessonId': typeof AuthenticatedGsmPlusLessonLessonIdRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
@@ -893,6 +903,7 @@ export interface FileRouteTypes {
     | '/driving-clips/$slug'
     | '/admin/'
     | '/admin/lesson-blocks/$lessonId'
+    | '/gsm-plus/lesson/$lessonId'
     | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -977,6 +988,7 @@ export interface FileRouteTypes {
     | '/driving-clips/$slug'
     | '/admin'
     | '/admin/lesson-blocks/$lessonId'
+    | '/gsm-plus/lesson/$lessonId'
     | '/lovable/email/queue/process'
   id:
     | '__root__'
@@ -1063,6 +1075,7 @@ export interface FileRouteTypes {
     | '/_authenticated/driving-clips/$slug'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/lesson-blocks/$lessonId'
+    | '/_authenticated/gsm-plus/lesson/$lessonId'
     | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
@@ -1674,6 +1687,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/gsm-plus/lesson/$lessonId': {
+      id: '/_authenticated/gsm-plus/lesson/$lessonId'
+      path: '/lesson/$lessonId'
+      fullPath: '/gsm-plus/lesson/$lessonId'
+      preLoaderRoute: typeof AuthenticatedGsmPlusLessonLessonIdRouteImport
+      parentRoute: typeof AuthenticatedGsmPlusRoute
+    }
     '/_authenticated/admin/lesson-blocks/$lessonId': {
       id: '/_authenticated/admin/lesson-blocks/$lessonId'
       path: '/lesson-blocks/$lessonId'
@@ -1801,13 +1821,25 @@ const AuthenticatedDrivingClipsRouteWithChildren =
     AuthenticatedDrivingClipsRouteChildren,
   )
 
+interface AuthenticatedGsmPlusRouteChildren {
+  AuthenticatedGsmPlusLessonLessonIdRoute: typeof AuthenticatedGsmPlusLessonLessonIdRoute
+}
+
+const AuthenticatedGsmPlusRouteChildren: AuthenticatedGsmPlusRouteChildren = {
+  AuthenticatedGsmPlusLessonLessonIdRoute:
+    AuthenticatedGsmPlusLessonLessonIdRoute,
+}
+
+const AuthenticatedGsmPlusRouteWithChildren =
+  AuthenticatedGsmPlusRoute._addFileChildren(AuthenticatedGsmPlusRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAiVideosRoute: typeof AuthenticatedAiVideosRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDrivingClipsRoute: typeof AuthenticatedDrivingClipsRouteWithChildren
   AuthenticatedGsmMethodRoute: typeof AuthenticatedGsmMethodRoute
-  AuthenticatedGsmPlusRoute: typeof AuthenticatedGsmPlusRoute
+  AuthenticatedGsmPlusRoute: typeof AuthenticatedGsmPlusRouteWithChildren
   AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
   AuthenticatedHighwayCodeRoute: typeof AuthenticatedHighwayCodeRoute
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
@@ -1830,7 +1862,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDrivingClipsRoute: AuthenticatedDrivingClipsRouteWithChildren,
   AuthenticatedGsmMethodRoute: AuthenticatedGsmMethodRoute,
-  AuthenticatedGsmPlusRoute: AuthenticatedGsmPlusRoute,
+  AuthenticatedGsmPlusRoute: AuthenticatedGsmPlusRouteWithChildren,
   AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
   AuthenticatedHighwayCodeRoute: AuthenticatedHighwayCodeRoute,
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
