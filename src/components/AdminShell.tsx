@@ -85,6 +85,7 @@ const groups: Group[] = [
       { to: "/admin/theory", label: "Theory questions CMS", icon: BookOpen },
       { to: "/admin/hazard-clips", label: "Practical animations CMS", icon: Video },
       { to: "/admin/hazard-videos", label: "Hazard perception CMS", icon: Film },
+      { to: "/ai-videos/manage", label: "AI video library", icon: Film },
       { to: "/admin/road-signs", label: "Road signs library", icon: ImageIcon },
       { to: "/admin/road-markings", label: "Road markings library", icon: RouteIcon },
       { to: "/admin/police-signals", label: "Arm signals library", icon: Hand },
