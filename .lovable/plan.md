@@ -1,54 +1,77 @@
-# GSM Complete Syllabus — Master Curriculum Build
+# GSM Learning Platform — Phase 2 → 5
 
-You've asked for the **entire GSM Progress-Tracker syllabus** (~75 topics) built as full lessons, each with 15 sections (What / Why / When / Where / How / Reference Points / Common Mistakes / BGO / Instructor Tips / Safety Notes / Animation / Interactive Questions / Quiz / Summary / Progress Tracking / Pass Criteria), plus original diagrams, right-hand-drive animations, and portal + tracker wiring.
+Phase 1 (database foundation, 21 tables, 4 modules + 37 topics seeded, storage buckets, RLS) is already live. Pricing page shows **£40–£70/hr** with the full explanation, and the GSM Plus explainer already presents Free vs Premium tiers, "Who it's for" chips, and benefit cards. Those two items are done — I will not rebuild them.
 
-That is roughly **25,000–40,000 lines** of authored content and animation code. Trying to ship it in one turn would produce shallow, repetitive lessons and unreviewable diffs. Below is how I will deliver it properly — approve and I start immediately.
+Below is what still needs to ship, grouped so each phase is independently deployable and each ends with a mobile + desktop verification pass.
 
-## One-time foundation (Batch 0 — first turn after approval)
+## Phase 2 — Admin CMS: Content authoring (this next drop)
 
-Everything downstream depends on this, so it ships first.
+Goal: you can create, edit, reorder, and delete every piece of learner-facing content from `/admin`.
 
-1. **Extend the `Lesson` type** to include every new section: `where`, `referencePoints`, `bgo`, `instructorTips`, `safetyNotes`, `summary`, `passCriteria` (score threshold + required checkpoints), `syllabusKey` (links to progress tracker).
-2. **Update `LessonShell`** to render all sections in a consistent mobile / tablet / desktop layout, with the existing playback + camera controls from Phase 1.
-3. **Add Pass/Fail flow** — quiz ≥ 80% posts a pass to `theory_progress` / `skill_ratings` under the lesson's `syllabusKey`; below 80% shows a "Retry" screen with the missed questions.
-4. **Curriculum registry** (`src/data/syllabus.ts`) — single source of truth mapping every syllabus key → lesson slug → progress-tracker skill. Learner portal, admin portal, and tracker all read from this one file.
-5. **Admin listing** — `/admin/lessons` shows curriculum coverage (built / draft / missing) so you can see progress at a glance.
+- `/admin/learning` — Modules & Topics manager
+  - CRUD Modules (title, summary, order, icon, colour, published)
+  - CRUD Topics under each Module (title, slug, summary, order, stage, published, prerequisite topic)
+  - Drag-and-drop reordering (both levels)
+- `/admin/learning/:topic` — Lesson & Block editor
+  - CRUD Lessons per Topic
+  - Block editor: text, image, diagram, animation embed, AI video, quiz, key-points, safety-note, instructor-tip, BGO, MSPSL, POM
+  - Rich text with the existing `RichTextEditor`
+  - Version history + autosave (reusing `content_versions`)
+- `/admin/videos` — AI Video Library
+  - CRUD videos (title, description, module, topic, provider (mux/youtube/upload), poster, transcript, duration)
+  - Bulk-assign videos to topics
+- `/admin/assessments`
+  - Mock test builder (question pool, pass mark, timer)
+  - Hazard clip manager (already partially exists — extend with scoring windows)
+- `/admin/certificates` — Certificate templates (title, criteria, artwork upload, active)
+- `/admin/students` — Student progress admin
+  - View any learner's 7-stage progress per topic
+  - Instructor notes, override stage, mark topic complete, issue certificate
+  - View AI lesson summary history
+- RBAC: every screen respects existing `has_permission()` — content editor, video editor, assessment editor, learner viewer permissions added to `admin_permissions`
 
-## Delivery batches (one per turn thereafter)
+## Phase 3 — Student Portal: Full GSM Plus experience
 
-Roughly **8 lessons per turn** — largest size that still allows genuinely original diagrams and quality quiz writing per lesson. Ordered so a learner can follow it end-to-end.
+- `/portal` dashboard: 4 modules, 37 topics in the exact seeded order, readiness score, next-up card, streak
+- Topic page: renders block-graph from Phase 2 (text / diagram / animation / video / quiz / GSM elements)
+- 7-stage skill tracker per topic (introduced → confident → test-ready)
+- Hazard Perception library: filter by module, live scoring window, review mode
+- Vehicle Reference Points: interactive diagrams (extends existing `vehicle-reference-points.tsx`)
+- AI Video Library page with module/topic filters and progress markers
+- Mock tests: DVSA-style theory + practical readiness, pass probability
+- AI Lesson Summary: per-lesson strengths / focus / next steps (server function → Lovable AI Gateway, stored on `progress_lesson_entries`)
+- Lesson Planner & Calendar view (reuses `calendar_events`)
+- Certificates: earned certificates page + PDF download from `certificates` bucket
 
-| Batch | Lessons |
-|---|---|
-| A | Cockpit Drill (DSSSM) · Moving Off & Stopping · Mirrors & Mirror Checks · MSPSL · Steering · Clutch Control · Gears · Hill Starts |
-| B | Junctions (overview) · Open · Closed · T-Junctions · Crossroads · Mini Roundabouts · Normal Roundabouts · Spiral Roundabouts |
-| C | Dual Carriageways · Motorways · Lane Discipline · Lane Positioning · Road Positioning · Meeting Traffic · Passing Parked Cars · Clearance & Safety Margins |
-| D | Speed Management · Following Distance · Overtaking · Traffic Lights · Box Junctions · Bus Lanes · Cycle Lanes · One-Way Systems |
-| E | Slip Roads · Emergency Vehicles · Pedestrian Crossings (overview) · Zebra · Pelican · Puffin · Toucan · Pegasus |
-| F | Hazard Perception · Observation Techniques · 15-70-15 Scanning · Stretch Your Vision · Plan to Stop, Look to Go · BGO · Defensive Driving · Eco Driving |
-| G | Weather Driving · Night Driving · Independent Driving · Sat Nav Driving · Show Me Tell Me · Bay Parking · Parallel Parking · Forward Bay Parking |
-| H | Reverse Bay Parking · Pull Up on the Right & Reverse · Pull Up on the Left · Emergency Stop · Mock Tests · Test Preparation · Highway Code index · Road Signs index |
-| I | Road Markings index · Vehicle Warning Lights · Tyres · Basic Car Maintenance |
-| J (features, not lessons) | Progress Tracker page · Instructor Feedback · Lesson Reports · Achievement Badges · Certificates · Revision Centre · Final Test Readiness Assessment |
+## Phase 4 — Scoring engine & AI
 
-Lessons already partly built (Pull Up on Left, Meeting Traffic, POM, Give Way Lines, Meeting in Small Spaces, Joining Dual Carriageway, DSSSM, Crossroads, Mini Roundabouts, Passing Parked, BGO System, Bus Awareness, Parallel Parking, Unorthodox Roundabouts, Yellow Box) are **retrofitted to the new template** inside their respective batches — not rebuilt from scratch.
+- Composite readiness score (theory, hazards, skill stages, mock tests, homework)
+- Nightly snapshot into `progress_snapshots`
+- AI summary generator (server fn) triggered when instructor submits a lesson entry
+- Achievement rules engine reading `achievement_rules`
 
-## Guarantees I'll hold on every lesson
+## Phase 5 — QA & polish
 
-- **Original artwork only.** All diagrams are composed from `src/components/diagram/primitives.tsx` — no DVSA or third-party imagery. No third-party licensed materials.
-- **Right-hand-drive** ego vehicle and left-side traffic throughout.
-- **Mobile / tablet / desktop** verified via the existing `LessonShell` responsive layout.
-- **Progress tracker + pass criteria** wired for every lesson.
-- **Consistent visual style** — same palette, same primitives, same playback controls.
+- Playwright pass: desktop (1280) + mobile (390) across every new route
+- Lighthouse pass on portal dashboard + topic page
+- RLS audit on all new server fns
+- Migration of any legacy `skill_ratings` rows into new `progress_student_topics` (read-only preservation of old data)
+- Publish
 
-## What I will NOT do
+---
 
-- Ship a shallow "for every syllabus item, generate a stub" pass. Every lesson gets a real animation authored for that specific topic.
-- Copy DVSA graphics, third-party lesson content, or copyrighted materials.
-- Collapse batches to try to ship faster — quality would drop.
+## Delivery order and size
 
-## Cadence
+Each phase = one turn from you saying "go", one plan, one code drop, one verification pass. Phase 2 alone is the largest — roughly:
 
-Reply **"start"** and I ship Batch 0 (foundation). After each batch reply **"next"** and I ship the next one. Expected batches to full completion: 0 + A–J = **11 turns**.
+- 1 migration (permissions rows, small schema additions for video library / certificate templates)
+- ~12 new server-fn files under `src/lib/learning/*.functions.ts`
+- ~8 new admin route files
+- Reuses existing `RichTextEditor`, `MediaLibrary`, `content_versions`, drag-and-drop pattern from `/admin/home`
 
-Approve this plan to begin.
+I will **not** try to ship Phases 2–5 in a single turn — that guarantees half-broken screens. I will ship Phase 2 end-to-end next, verify it on mobile + desktop, then move to Phase 3.
+
+## Confirm before I start
+
+1. Ship **Phase 2 (Admin CMS)** first as described? Or reorder so student-facing portal (Phase 3) comes first on top of the current seeded topics with placeholder content?
+2. AI Video Library: host videos on Mux, YouTube unlisted, or Supabase storage? (Affects the video table schema I ship in Phase 2's migration.)
