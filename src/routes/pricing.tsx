@@ -57,25 +57,28 @@ function PricingPage() {
           <div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-border/60 bg-card p-6 shadow-lg sm:p-8">
             <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.22em] text-accent">
               <span className="h-px w-6 bg-accent" />
-              Lesson prices from
+              Lessons from
               <span className="h-px w-6 bg-accent" />
             </div>
             <div className="mt-3 flex items-baseline justify-center gap-2">
-              <span className="font-display text-5xl font-semibold text-primary sm:text-6xl">£45</span>
+              <span className="font-display text-5xl font-semibold text-primary sm:text-6xl">£40</span>
               <span className="font-display text-2xl text-muted-foreground">–</span>
-              <span className="font-display text-5xl font-semibold text-primary sm:text-6xl">£75</span>
-              <span className="ml-1 text-sm font-medium text-muted-foreground">/ hour</span>
+              <span className="font-display text-5xl font-semibold text-primary sm:text-6xl">£70</span>
+              <span className="ml-1 text-sm font-medium text-muted-foreground">per hour</span>
             </div>
-            <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground sm:text-base">
-              Prices vary based on the four factors below. Message us and we&apos;ll give you an
-              exact quote for your lessons within minutes.
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Lesson prices vary depending on the instructor&apos;s qualifications and experience,
+              whether the lesson is manual or automatic, the lesson location, travel time, lesson
+              duration and any discounted lesson packages. This allows us to match each learner
+              with the most suitable instructor while providing excellent value and high-quality
+              professional tuition.
             </p>
             <div className="mt-6 grid gap-3 text-left sm:grid-cols-2">
               {[
-                { icon: Award, title: "Instructor grade", body: "PDI, ADI, or senior ADI with 20+ years of West London experience." },
+                { icon: Award, title: "Instructor qualifications & experience", body: "PDI, ADI, or senior ADI with decades of West London experience." },
                 { icon: Cog, title: "Manual or automatic", body: "Automatic lessons are priced slightly higher due to demand." },
-                { icon: Package, title: "Lesson package", body: "Blocks of 10, 20 or intensive courses reduce the hourly rate." },
-                { icon: MapPin, title: "Pickup location", body: "Central West London postcodes vs. wider catchment." },
+                { icon: Package, title: "Lesson duration & packages", body: "Longer lessons and block bookings reduce the hourly rate." },
+                { icon: MapPin, title: "Location & travel time", body: "Pickup postcode and distance from your instructor's base." },
               ].map((f) => {
                 const Icon = f.icon;
                 return (
