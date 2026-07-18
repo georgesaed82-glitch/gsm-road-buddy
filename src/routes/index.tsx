@@ -176,13 +176,20 @@ function Home() {
     "recent-pass": { id: "recent-pass", label: "Recent Pass" },
     quizzes: { id: "training", label: "Theory & Hazard" },
     memorable: { id: "moments", label: "Moments" },
-    gallery: { id: "gallery", label: "Reviews" },
-    portal: { id: "portal", label: "Instructors" },
-    cta: { id: "contact", label: "Contact" },
+    gallery: { id: "gallery", label: "Gallery" },
+    portal: { id: "portal", label: "Portal" },
+    cta: { id: "get-in-touch", label: "Get in touch" },
   };
-  const navAnchors: SectionAnchor[] = sections
+  const scrollAnchors: SectionAnchor[] = sections
     .map((s) => SECTION_META[s.section_type])
     .filter((a): a is SectionAnchor => !!a);
+  // Route chips take users to the correct dedicated pages.
+  const routeAnchors: SectionAnchor[] = [
+    { id: "route-reviews", label: "Reviews", href: "/reviews" },
+    { id: "route-instructors", label: "Instructors", href: "/instructors" },
+    { id: "route-contact", label: "Contact", href: "/contact" },
+  ];
+  const navAnchors: SectionAnchor[] = [...scrollAnchors, ...routeAnchors];
 
   return (
     <div className="flex flex-col">
@@ -192,7 +199,7 @@ function Home() {
         const anchorId = SECTION_META[s.section_type]?.id;
         const wrap = (node: ReactNode) =>
           anchorId ? (
-            <div id={anchorId} key={key} className="scroll-mt-24">
+            <div id={anchorId} key={key} className="scroll-mt-32">
               {node}
             </div>
           ) : (
