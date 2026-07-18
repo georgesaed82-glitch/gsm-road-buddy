@@ -161,9 +161,9 @@ function GsmPlusHome() {
       </div>
 
       <p className="mt-10 rounded-2xl border border-dashed border-accent/40 bg-accent/5 p-4 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-        Coming next in GSM Plus: interactive topic pages with diagrams, animations, AI videos and
-        quizzes; DVSA-style mock tests with pass probability; AI lesson summaries; and downloadable
-        certificates. This dashboard is already wired to your live progress in the database.
+        Tap any lesson to open it — videos, notes, diagrams and quizzes are on a single page.
+        Your progress and quiz answers are saved automatically, so you can pick up exactly where
+        you left off. Complete a lesson to unlock the next one.
       </p>
     </PortalShell>
   );
