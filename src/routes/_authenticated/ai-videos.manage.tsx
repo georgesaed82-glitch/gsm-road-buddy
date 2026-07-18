@@ -106,7 +106,8 @@ function ManagePage() {
   const canModerate = role?.isAdmin;
   const canUpload = role?.isAdmin || role?.isSenior;
 
-  const handleModerate = async (id: string, action: Parameters<typeof moderateFn>[0]["data"]["action"], reason?: string) => {
+  type ModAction = "submit" | "approve" | "reject" | "archive" | "unarchive" | "delete";
+  const handleModerate = async (id: string, action: ModAction, reason?: string) => {
     try {
       await moderateFn({ data: { id, action, reason } });
       toast.success("Updated");

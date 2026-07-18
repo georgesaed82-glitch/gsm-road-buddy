@@ -51,6 +51,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedDrivingClipsSlugRouteImport } from './routes/_authenticated/driving-clips.$slug'
+import { Route as AuthenticatedAiVideosManageRouteImport } from './routes/_authenticated/ai-videos.manage'
 import { Route as AuthenticatedAdminWebsiteRouteImport } from './routes/_authenticated/admin.website'
 import { Route as AuthenticatedAdminTrafficRouteImport } from './routes/_authenticated/admin.traffic'
 import { Route as AuthenticatedAdminTheoryRouteImport } from './routes/_authenticated/admin.theory'
@@ -306,6 +307,12 @@ const AuthenticatedDrivingClipsSlugRoute =
     id: '/$slug',
     path: '/$slug',
     getParentRoute: () => AuthenticatedDrivingClipsRoute,
+  } as any)
+const AuthenticatedAiVideosManageRoute =
+  AuthenticatedAiVideosManageRouteImport.update({
+    id: '/ai-videos/manage',
+    path: '/ai-videos/manage',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAdminWebsiteRoute =
   AuthenticatedAdminWebsiteRouteImport.update({
@@ -610,6 +617,7 @@ export interface FileRoutesByFullPath {
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/admin/website': typeof AuthenticatedAdminWebsiteRoute
+  '/ai-videos/manage': typeof AuthenticatedAiVideosManageRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -691,6 +699,7 @@ export interface FileRoutesByTo {
   '/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/admin/website': typeof AuthenticatedAdminWebsiteRoute
+  '/ai-videos/manage': typeof AuthenticatedAiVideosManageRoute
   '/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -775,6 +784,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/theory': typeof AuthenticatedAdminTheoryRoute
   '/_authenticated/admin/traffic': typeof AuthenticatedAdminTrafficRoute
   '/_authenticated/admin/website': typeof AuthenticatedAdminWebsiteRoute
+  '/_authenticated/ai-videos/manage': typeof AuthenticatedAiVideosManageRoute
   '/_authenticated/driving-clips/$slug': typeof AuthenticatedDrivingClipsSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -859,6 +869,7 @@ export interface FileRouteTypes {
     | '/admin/theory'
     | '/admin/traffic'
     | '/admin/website'
+    | '/ai-videos/manage'
     | '/driving-clips/$slug'
     | '/admin/'
     | '/lovable/email/queue/process'
@@ -940,6 +951,7 @@ export interface FileRouteTypes {
     | '/admin/theory'
     | '/admin/traffic'
     | '/admin/website'
+    | '/ai-videos/manage'
     | '/driving-clips/$slug'
     | '/admin'
     | '/lovable/email/queue/process'
@@ -1023,6 +1035,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/theory'
     | '/_authenticated/admin/traffic'
     | '/_authenticated/admin/website'
+    | '/_authenticated/ai-videos/manage'
     | '/_authenticated/driving-clips/$slug'
     | '/_authenticated/admin/'
     | '/lovable/email/queue/process'
@@ -1348,6 +1361,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/driving-clips/$slug'
       preLoaderRoute: typeof AuthenticatedDrivingClipsSlugRouteImport
       parentRoute: typeof AuthenticatedDrivingClipsRoute
+    }
+    '/_authenticated/ai-videos/manage': {
+      id: '/_authenticated/ai-videos/manage'
+      path: '/ai-videos/manage'
+      fullPath: '/ai-videos/manage'
+      preLoaderRoute: typeof AuthenticatedAiVideosManageRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/website': {
       id: '/_authenticated/admin/website'
@@ -1746,6 +1766,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRoadSignsRoute: typeof AuthenticatedRoadSignsRoute
   AuthenticatedSignsRoute: typeof AuthenticatedSignsRoute
   AuthenticatedVehicleReferencePointsRoute: typeof AuthenticatedVehicleReferencePointsRoute
+  AuthenticatedAiVideosManageRoute: typeof AuthenticatedAiVideosManageRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1769,6 +1790,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSignsRoute: AuthenticatedSignsRoute,
   AuthenticatedVehicleReferencePointsRoute:
     AuthenticatedVehicleReferencePointsRoute,
+  AuthenticatedAiVideosManageRoute: AuthenticatedAiVideosManageRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
