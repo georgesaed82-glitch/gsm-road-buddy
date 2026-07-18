@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { areas } from "@/data/areas";
 import { listPublishedPostSlugs } from "@/lib/blog.functions";
+import { BLOG_ENABLED } from "@/lib/featureFlags";
 
 const BASE_URL = "https://www.gsmdrivingschool.com";
 
@@ -18,9 +19,11 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/reviews", priority: "0.8", changefreq: "weekly" as const },
           { path: "/contact", priority: "0.8", changefreq: "monthly" as const },
           { path: "/areas", priority: "0.9", changefreq: "monthly" as const },
-          { path: "/blog", priority: "0.9", changefreq: "weekly" as const },
           { path: "/faq", priority: "0.6", changefreq: "monthly" as const },
           { path: "/downloads", priority: "0.5", changefreq: "monthly" as const },
+          ...(BLOG_ENABLED
+            ? [{ path: "/blog", priority: "0.9", changefreq: "weekly" as const }]
+            : []),
         ];
 
         const areaPaths = areas.map((a) => ({
@@ -30,7 +33,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         }));
 
         let postPaths: { path: string; priority: string; changefreq: "monthly" }[] = [];
-        try {
+        if (BLOG_ENABLED) try {
           const slugs = await listPublishedPostSlugs();
           postPaths = slugs.map((s) => ({
             path: `/blog/${s.slug}`,
