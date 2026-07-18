@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Users, Award, Heart, UserCheck, Star, Sun, Headphones } from "lucide-react";
 import { usePageBlocks } from "@/hooks/usePageBlocks";
