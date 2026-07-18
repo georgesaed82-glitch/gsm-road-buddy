@@ -15,11 +15,15 @@ import {
   ArrowLeft,
   ChevronDown,
   Circle,
+  StepForward,
+  Gauge,
+  Camera,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { useLessonProgress } from "@/lib/lessonProgress";
 import { Zoomable } from "@/components/Zoomable";
+import { useCameraView, cameraTransform, type CameraView } from "@/hooks/useCameraView";
 
 // ─────────────────────────────────────────────────────────────
 // GSM standard lesson engine.
@@ -73,6 +77,8 @@ export function LessonShell({
   const durationMs = lesson.durationMs ?? 14000;
   const [playing, setPlaying] = useState(true);
   const [t, setT] = useState(0);
+  const [speed, setSpeed] = useState<number>(1);
+  const camera = useCameraView("overhead");
   const raf = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
   const baseRef = useRef(0);
@@ -95,7 +101,7 @@ export function LessonShell({
     const step = (now: number) => {
       if (startRef.current === null) startRef.current = now;
       const elapsed = now - startRef.current;
-      let next = baseRef.current + elapsed / durationMs;
+      let next = baseRef.current + (elapsed / durationMs) * speed;
       // Play the manoeuvre once from start to finish. When it completes,
       // hold on the final frame so the learner sees the outcome and can
       // choose to Restart. Auto-pause at the next un-answered question
@@ -130,7 +136,7 @@ export function LessonShell({
       if (raf.current) cancelAnimationFrame(raf.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, durationMs, answered]);
+  }, [playing, durationMs, answered, speed]);
 
   const reset = useCallback(() => {
     setT(0);
@@ -139,6 +145,20 @@ export function LessonShell({
     setAnswered({});
     setActiveQ(null);
     setPlaying(true);
+  }, []);
+
+  const stepFrame = useCallback(() => {
+    setPlaying(false);
+    setT((prev) => {
+      const nxt = Math.min(1, prev + 1 / 60);
+      baseRef.current = nxt;
+      startRef.current = null;
+      return nxt;
+    });
+  }, []);
+
+  const cycleSpeed = useCallback(() => {
+    setSpeed((s) => (s === 1 ? 0.5 : s === 0.5 ? 0.25 : 1));
   }, []);
 
   const answer = (qi: number, oi: number) => {
@@ -177,7 +197,7 @@ export function LessonShell({
       <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <div className="flex items-center justify-between gap-3 border-b border-border p-4">
           <div className="text-[11px] uppercase tracking-[0.2em] text-accent">Animated diagram</div>
-          <div className="flex shrink-0 gap-1">
+          <div className="flex shrink-0 flex-wrap gap-1">
             <ControlButton
               onClick={() => {
                 if (!playing && t >= 1) {
@@ -196,6 +216,33 @@ export function LessonShell({
                 <Play className="h-4 w-4" />
               )}
             </ControlButton>
+            <ControlButton onClick={stepFrame} label="Step frame">
+              <StepForward className="h-4 w-4" />
+            </ControlButton>
+            <button
+              type="button"
+              onClick={cycleSpeed}
+              aria-label={`Speed ${speed}×`}
+              title={`Playback speed (${speed}×)`}
+              className="grid h-9 min-w-[3rem] place-items-center gap-1 rounded-md border border-border bg-background px-2 text-[11px] font-semibold tabular-nums transition-colors hover:bg-secondary"
+            >
+              <span className="flex items-center gap-1">
+                <Gauge className="h-3.5 w-3.5" />
+                {speed}×
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={camera.cycle}
+              aria-label={`Camera: ${camera.label}`}
+              title={`Camera view (${camera.label})`}
+              className="grid h-9 min-w-[6rem] place-items-center rounded-md border border-border bg-background px-2 text-[11px] font-semibold uppercase tracking-wider transition-colors hover:bg-secondary"
+            >
+              <span className="flex items-center gap-1">
+                <Camera className="h-3.5 w-3.5" />
+                {camera.label}
+              </span>
+            </button>
             <ControlButton onClick={reset} label="Restart">
               <RotateCcw className="h-4 w-4" />
             </ControlButton>
@@ -212,7 +259,12 @@ export function LessonShell({
             className="absolute inset-0"
           >
             <div className="relative h-full w-full">
-              {lesson.render(t)}
+              <div
+                className="relative h-full w-full origin-center transition-transform duration-500 ease-out"
+                style={{ transform: cameraTransform(camera.view) }}
+              >
+                {lesson.render(t)}
+              </div>
               {/* Consistent GSM brand + UK convention overlay across every clip */}
               <div className="pointer-events-none absolute inset-0">
                 <div className="absolute left-3 top-3 rounded-md bg-black/55 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/85">
