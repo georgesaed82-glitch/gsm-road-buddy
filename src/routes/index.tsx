@@ -691,57 +691,42 @@ function QuizzesSection({ s }: SectionProps) {
 function PortalSection({ s }: SectionProps) {
   const portalHref = or(s.cta_primary_href, "/auth") === "/dashboard" ? "/auth" : or(s.cta_primary_href, "/auth");
   return (
-    <section className="bg-primary py-20 text-primary-foreground sm:py-28 lg:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
-          <div>
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/60">
-              <span className="h-px w-8 bg-accent" />
-              {or(s.eyebrow, "GSM Plus")}
-            </div>
-            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.1] sm:text-5xl lg:text-4xl">
-              {s.title && s.title.trim().length > 0 ? (
-                s.title
-              ) : (
-                <>
-                  Everything you need <span className="italic text-accent">in one place.</span>
-                </>
-              )}
-            </h2>
-            <p className="mt-6 max-w-md text-lg leading-relaxed opacity-80 lg:mt-4 lg:text-base">
-              {or(
-                s.body,
-                "Lesson notes, payment history, theory revision and hazard perception — synced from your instructor's tablet after every session.",
-              )}
-            </p>
-            <Button
-              asChild
-              size="lg"
-              className="mt-8 h-14 rounded-xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
-            >
-              <a
-                href={portalHref}
-                className="inline-flex items-center gap-2 font-medium"
-              >
-                {or(s.cta_primary_label, "Open your portal")}
-                <ArrowRight className="h-4 w-4" />
-              </a>
-            </Button>
-          </div>
-          <ul className="grid gap-px bg-primary-foreground/10 sm:grid-cols-2">
-            {[
-              ["Lesson progress", "Skills mastered, hours logged, instructor notes."],
-              ["Payments", "Package balance, receipts, hours remaining."],
-              ["Theory materials", "All 14 Highway Code categories with sample questions."],
-              ["Hazard perception", "Real West London clips, scored on reaction time."],
-            ].map(([t, d]) => (
-              <li key={t} className="bg-primary p-6">
-                <h2 className="font-display text-xl">{t}</h2>
-                <p className="mt-2 text-sm leading-relaxed opacity-75">{d}</p>
-              </li>
-            ))}
-          </ul>
+    <section className="bg-primary py-16 text-primary-foreground sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/60">
+          <span className="h-px w-8 bg-accent" />
+          {or(s.eyebrow, "GSM Plus")}
+          <span className="h-px w-8 bg-accent" />
         </div>
+        <h2 className="mt-5 font-display text-4xl font-medium leading-[1.05] tracking-tight sm:text-5xl">
+          {s.title && s.title.trim().length > 0 ? (
+            s.title
+          ) : (
+            <>GSM PLUS</>
+          )}
+        </h2>
+        <p className="mt-4 text-xl font-medium leading-relaxed text-primary-foreground/90 sm:text-2xl">
+          {or(s.subtitle, "Your driving journey, all in one place.")}
+        </p>
+        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-primary-foreground/70 sm:text-lg">
+          {or(
+            s.body,
+            "Track your lessons, monitor your progress, practise for your theory test and access everything you need from one simple dashboard.",
+          )}
+        </p>
+        <Button
+          asChild
+          size="lg"
+          className="mt-8 h-14 rounded-xl bg-accent px-8 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
+        >
+          <a
+            href={portalHref}
+            className="inline-flex items-center gap-2 font-medium"
+          >
+            {or(s.cta_primary_label, "Open your portal")}
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        </Button>
       </div>
     </section>
   );
