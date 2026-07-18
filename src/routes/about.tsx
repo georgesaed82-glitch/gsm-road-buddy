@@ -98,7 +98,8 @@ const DEFAULT_FAQS = [
 function AboutPage() {
   const values = usePageBlocks("about-values", DEFAULT_VALUES);
   const keyPoints = usePageBlocks("about-key-points", DEFAULT_KEY_POINTS);
-  const faqs = usePageBlocks("about-faqs", DEFAULT_FAQS);
+  // FAQs are consolidated on /faq — keep the CMS block reference so admins can still edit legacy copy.
+  void usePageBlocks("about-faqs", DEFAULT_FAQS);
   return (
     <div className="flex flex-col">
       <section className="bg-secondary/40 py-16">
