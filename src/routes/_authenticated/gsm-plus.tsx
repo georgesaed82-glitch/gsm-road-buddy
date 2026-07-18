@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { CheckCircle2, Circle, Clock, Sparkles, Trophy, Layers } from "lucide-react";
+import { CheckCircle2, Circle, Clock, Sparkles, Trophy, Layers, PlayCircle, Lock } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,6 +17,10 @@ import {
   type PortalModule,
   type StudentProgressRow,
 } from "@/lib/learning-portal.functions";
+import {
+  listAllPortalLessons,
+  type LessonListItem,
+} from "@/lib/lesson-viewer.functions";
 
 export const Route = createFileRoute("/_authenticated/gsm-plus")({
   head: () => ({ meta: [{ title: "GSM Plus · The complete GSM Learning Platform" }] }),
@@ -45,6 +49,8 @@ function GsmPlusHome() {
 
   const catalogQ = useQuery({ queryKey: ["portal-catalog"], queryFn: () => catalogFn() });
   const progressQ = useQuery({ queryKey: ["portal-progress"], queryFn: () => progressFn() });
+  const lessonsFn = useServerFn(listAllPortalLessons);
+  const lessonsQ = useQuery({ queryKey: ["portal-lessons"], queryFn: () => lessonsFn() });
 
   const setStage = useMutation({
     mutationFn: (v: { topic_id: string; stage: ProgressStage }) => setStageFn({ data: v }),
@@ -57,6 +63,16 @@ function GsmPlusHome() {
     for (const p of progressQ.data ?? []) m.set(p.topic_id, p);
     return m;
   }, [progressQ.data]);
+
+  const lessonsByTopic = useMemo(() => {
+    const m = new Map<string, LessonListItem[]>();
+    for (const l of lessonsQ.data ?? []) {
+      const arr = m.get(l.topic_id) ?? [];
+      arr.push(l);
+      m.set(l.topic_id, arr);
+    }
+    return m;
+  }, [lessonsQ.data]);
 
   const modules = catalogQ.data?.modules ?? [];
   const topics = catalogQ.data?.topics ?? [];
@@ -136,6 +152,7 @@ function GsmPlusHome() {
               module={m}
               topics={moduleTopics}
               progressByTopic={progressByTopic}
+              lessonsByTopic={lessonsByTopic}
               onSetStage={(topic_id, stage) => setStage.mutate({ topic_id, stage })}
               pending={setStage.isPending}
             />
@@ -144,9 +161,9 @@ function GsmPlusHome() {
       </div>
 
       <p className="mt-10 rounded-2xl border border-dashed border-accent/40 bg-accent/5 p-4 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-        Coming next in GSM Plus: interactive topic pages with diagrams, animations, AI videos and
-        quizzes; DVSA-style mock tests with pass probability; AI lesson summaries; and downloadable
-        certificates. This dashboard is already wired to your live progress in the database.
+        Tap any lesson to open it — videos, notes, diagrams and quizzes are on a single page.
+        Your progress and quiz answers are saved automatically, so you can pick up exactly where
+        you left off. Complete a lesson to unlock the next one.
       </p>
     </PortalShell>
   );
@@ -168,12 +185,14 @@ function ModuleBlock({
   module: m,
   topics,
   progressByTopic,
+  lessonsByTopic,
   onSetStage,
   pending,
 }: {
   module: PortalModule;
   topics: PortalTopic[];
   progressByTopic: Map<string, StudentProgressRow>;
+  lessonsByTopic: Map<string, LessonListItem[]>;
   onSetStage: (topic_id: string, stage: ProgressStage) => void;
   pending: boolean;
 }) {
@@ -206,6 +225,7 @@ function ModuleBlock({
             index={i + 1}
             topic={t}
             progress={progressByTopic.get(t.id)}
+            lessons={lessonsByTopic.get(t.id) ?? []}
             onSetStage={(stage) => onSetStage(t.id, stage)}
             disabled={pending}
           />
@@ -219,12 +239,14 @@ function TopicRow({
   index,
   topic,
   progress,
+  lessons,
   onSetStage,
   disabled,
 }: {
   index: number;
   topic: PortalTopic;
   progress: StudentProgressRow | undefined;
+  lessons: LessonListItem[];
   onSetStage: (stage: ProgressStage) => void;
   disabled: boolean;
 }) {
@@ -232,7 +254,8 @@ function TopicRow({
   const done = stage === "completed" || stage === "test_standard";
 
   return (
-    <li className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6 sm:p-5">
+    <li className="grid gap-3 p-4 sm:p-5">
+      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6">
       <div className="flex items-start gap-3 min-w-0">
         <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-bold text-primary">
           {index}
@@ -287,6 +310,60 @@ function TopicRow({
           </button>
         ))}
       </div>
+      </div>
+
+      {lessons.length > 0 && (
+        <ul className="mt-1 space-y-1.5 rounded-2xl border border-border/40 bg-muted/20 p-2 sm:ml-10">
+          {lessons.map((l, li) => {
+            const prevLesson = li > 0 ? lessons[li - 1] : null;
+            // Unlock rule: first lesson always unlocked; else previous must be completed.
+            const unlocked = li === 0 || prevLesson?.status === "completed";
+            const complete = l.status === "completed";
+            return (
+              <li key={l.id}>
+                {unlocked ? (
+                  <Link
+                    to="/gsm-plus/lesson/$lessonId"
+                    params={{ lessonId: l.id }}
+                    className="group flex items-center justify-between gap-3 rounded-xl bg-background px-3 py-2 text-sm shadow-sm transition-colors hover:bg-accent/5"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      {complete ? (
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                      ) : (
+                        <PlayCircle className="h-4 w-4 shrink-0 text-primary" />
+                      )}
+                      <span className="truncate font-medium text-foreground group-hover:text-primary">
+                        {l.title}
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-[10px] uppercase tracking-widest text-muted-foreground">
+                      {complete
+                        ? "Complete"
+                        : l.progress_pct > 0
+                          ? `${l.progress_pct}% · Resume`
+                          : "Start"}
+                    </span>
+                  </Link>
+                ) : (
+                  <div
+                    className="flex items-center justify-between gap-3 rounded-xl bg-background/60 px-3 py-2 text-sm text-muted-foreground"
+                    title="Complete the previous lesson to unlock"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <Lock className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{l.title}</span>
+                    </span>
+                    <span className="shrink-0 text-[10px] uppercase tracking-widest">
+                      Locked
+                    </span>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </li>
   );
 }
