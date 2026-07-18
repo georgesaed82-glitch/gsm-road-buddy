@@ -169,7 +169,6 @@ function Home() {
 
   const SECTION_META: Record<string, { id: string; label: string }> = {
     hero: { id: "top", label: "Top" },
-    "gsm-plus-explainer": { id: "gsm-plus", label: "GSM Plus" },
     why: { id: "why-gsm", label: "Why GSM" },
     areas: { id: "areas", label: "Areas" },
     "recent-pass": { id: "recent-pass", label: "Recent Pass" },
