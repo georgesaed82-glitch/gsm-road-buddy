@@ -92,7 +92,7 @@ function AdminLearningPage() {
   );
 
   return (
-    <AdminShell title="Learning content" subtitle="Modules, topics, lessons & block content">
+    <AdminShell title="Learning content" eyebrow="Modules, topics & lessons">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
         <ModulesPanel
           modules={modulesQ.data ?? []}

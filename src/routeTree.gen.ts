@@ -69,6 +69,7 @@ import { Route as AuthenticatedAdminMediaRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminLoginEventsRouteImport } from './routes/_authenticated/admin.login-events'
 import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin.lessons'
 import { Route as AuthenticatedAdminLegalRouteImport } from './routes/_authenticated/admin.legal'
+import { Route as AuthenticatedAdminLearningRouteImport } from './routes/_authenticated/admin.learning'
 import { Route as AuthenticatedAdminInstructorsRouteImport } from './routes/_authenticated/admin.instructors'
 import { Route as AuthenticatedAdminHomeRouteImport } from './routes/_authenticated/admin.home'
 import { Route as AuthenticatedAdminHazardVideosRouteImport } from './routes/_authenticated/admin.hazard-videos'
@@ -410,6 +411,12 @@ const AuthenticatedAdminLegalRoute = AuthenticatedAdminLegalRouteImport.update({
   path: '/legal',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminLearningRoute =
+  AuthenticatedAdminLearningRouteImport.update({
+    id: '/learning',
+    path: '/learning',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminInstructorsRoute =
   AuthenticatedAdminInstructorsRouteImport.update({
     id: '/instructors',
@@ -576,6 +583,7 @@ export interface FileRoutesByFullPath {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/admin/learning': typeof AuthenticatedAdminLearningRoute
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
@@ -655,6 +663,7 @@ export interface FileRoutesByTo {
   '/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
   '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/admin/learning': typeof AuthenticatedAdminLearningRoute
   '/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
@@ -737,6 +746,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/hazard-videos': typeof AuthenticatedAdminHazardVideosRoute
   '/_authenticated/admin/home': typeof AuthenticatedAdminHomeRoute
   '/_authenticated/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
+  '/_authenticated/admin/learning': typeof AuthenticatedAdminLearningRoute
   '/_authenticated/admin/legal': typeof AuthenticatedAdminLegalRoute
   '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/_authenticated/admin/login-events': typeof AuthenticatedAdminLoginEventsRoute
@@ -819,6 +829,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/home'
     | '/admin/instructors'
+    | '/admin/learning'
     | '/admin/legal'
     | '/admin/lessons'
     | '/admin/login-events'
@@ -898,6 +909,7 @@ export interface FileRouteTypes {
     | '/admin/hazard-videos'
     | '/admin/home'
     | '/admin/instructors'
+    | '/admin/learning'
     | '/admin/legal'
     | '/admin/lessons'
     | '/admin/login-events'
@@ -979,6 +991,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/hazard-videos'
     | '/_authenticated/admin/home'
     | '/_authenticated/admin/instructors'
+    | '/_authenticated/admin/learning'
     | '/_authenticated/admin/legal'
     | '/_authenticated/admin/lessons'
     | '/_authenticated/admin/login-events'
@@ -1450,6 +1463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLegalRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/learning': {
+      id: '/_authenticated/admin/learning'
+      path: '/learning'
+      fullPath: '/admin/learning'
+      preLoaderRoute: typeof AuthenticatedAdminLearningRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/instructors': {
       id: '/_authenticated/admin/instructors'
       path: '/instructors'
@@ -1605,6 +1625,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminHazardVideosRoute: typeof AuthenticatedAdminHazardVideosRoute
   AuthenticatedAdminHomeRoute: typeof AuthenticatedAdminHomeRoute
   AuthenticatedAdminInstructorsRoute: typeof AuthenticatedAdminInstructorsRoute
+  AuthenticatedAdminLearningRoute: typeof AuthenticatedAdminLearningRoute
   AuthenticatedAdminLegalRoute: typeof AuthenticatedAdminLegalRoute
   AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
   AuthenticatedAdminLoginEventsRoute: typeof AuthenticatedAdminLoginEventsRoute
@@ -1646,6 +1667,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminHazardVideosRoute: AuthenticatedAdminHazardVideosRoute,
   AuthenticatedAdminHomeRoute: AuthenticatedAdminHomeRoute,
   AuthenticatedAdminInstructorsRoute: AuthenticatedAdminInstructorsRoute,
+  AuthenticatedAdminLearningRoute: AuthenticatedAdminLearningRoute,
   AuthenticatedAdminLegalRoute: AuthenticatedAdminLegalRoute,
   AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
   AuthenticatedAdminLoginEventsRoute: AuthenticatedAdminLoginEventsRoute,
