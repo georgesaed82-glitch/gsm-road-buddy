@@ -29,6 +29,7 @@ import {
   Star,
 } from "lucide-react";
 import { GsmPlus } from "@/components/GsmPlus";
+import { Reveal } from "@/components/Reveal";
 
 type Feature = { icon: typeof BookOpen; title: string; body: string };
 
@@ -82,57 +83,56 @@ export function GsmPlusExplainer() {
   return (
     <section
       id="gsm-plus"
-      className="relative overflow-hidden bg-gradient-to-b from-background via-secondary/20 to-secondary/40 py-16 sm:py-24"
+      className="relative overflow-hidden bg-gradient-to-b from-background via-secondary/15 to-secondary/30 py-20 sm:py-28 lg:py-36 scroll-smooth"
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-accent/10 blur-3xl"
+        className="pointer-events-none absolute -top-40 left-1/2 h-[28rem] w-[52rem] -translate-x-1/2 rounded-full bg-accent/10 blur-[110px]"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full bg-primary/5 blur-3xl"
+        className="pointer-events-none absolute bottom-0 right-0 h-[30rem] w-[30rem] rounded-full bg-primary/5 blur-[120px]"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-6 lg:max-w-6xl lg:px-8">
         {/* ============ HERO ============ */}
-        <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
+        <Reveal>
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/8 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-accent backdrop-blur">
               <Sparkles className="h-3.5 w-3.5" />
               The GSM Learning Platform
             </div>
-            <h2 className="mt-5 font-display text-4xl font-semibold leading-[1.05] text-foreground sm:text-5xl lg:text-6xl">
+            <h2 className="mt-7 font-display text-[2.5rem] font-semibold leading-[1.02] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
               Meet{" "}
               <GsmPlus
-                className="text-4xl sm:text-5xl lg:text-6xl"
+                className="text-[2.5rem] sm:text-6xl lg:text-7xl"
                 gsmClassName="text-primary"
                 plusClassName="text-accent"
               />
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              GSM Plus is our complete digital learning platform — professional driving lessons
-              combined with structured online learning, an AI driving coach, animated tutorials,
-              hazard perception, DVSA-style theory, mock tests, lesson notes and real progress
-              tracking. Everything you need to pass faster and drive safer, in one place.
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              The complete digital learning platform behind every GSM lesson. AI coach, animated
+              tutorials, hazard clips, DVSA theory, mocks and real progress tracking —{" "}
+              <span className="text-foreground">all in one place.</span>
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 to="/auth"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-semibold text-primary-foreground shadow-[0_10px_30px_-12px_rgba(35,75,54,0.55)] transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-14px_rgba(35,75,54,0.65)] sm:w-auto"
               >
                 Start free
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-accent bg-accent/10 px-6 py-3 font-semibold text-accent transition-all hover:-translate-y-0.5 hover:bg-accent/15"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border/70 bg-card/80 px-7 py-3.5 text-[15px] font-semibold text-foreground backdrop-blur transition-all hover:-translate-y-0.5 hover:border-accent/50 hover:text-accent sm:w-auto"
               >
                 Book lessons — unlock Premium
               </Link>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground sm:text-sm">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <Check className="h-4 w-4 text-success" /> Free forever tier
               </span>
@@ -144,209 +144,263 @@ export function GsmPlusExplainer() {
               </span>
             </div>
           </div>
+        </Reveal>
 
-          {/* Platform preview card */}
-          <div className="relative">
+        {/* ============ HERO DASHBOARD SCREENSHOT ============ */}
+        <Reveal delay={120} className="mt-14 sm:mt-20">
+          <div className="relative mx-auto max-w-4xl">
             <div
-              className="absolute inset-0 -z-10 translate-x-2 translate-y-2 rounded-3xl bg-accent/20"
               aria-hidden
+              className="absolute -inset-8 -z-10 rounded-[2.5rem] bg-gradient-to-b from-accent/20 via-primary/10 to-transparent blur-2xl"
             />
-            <div className="rounded-3xl border border-border/60 bg-card p-5 shadow-xl sm:p-6">
-              <div className="flex items-center justify-between">
-                <GsmPlus variant="pill" />
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  Your dashboard
+            <div className="rounded-[2rem] border border-border/50 bg-card/95 p-4 shadow-[0_30px_80px_-30px_rgba(29,42,34,0.35)] backdrop-blur-sm sm:p-6 lg:p-8">
+              {/* Mock browser chrome */}
+              <div className="flex items-center gap-1.5 pb-4">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
+                <span className="ml-3 flex-1 truncate rounded-md bg-secondary/50 px-3 py-1 text-[11px] text-muted-foreground">
+                  gsmdrivingschool.com / plus / dashboard
                 </span>
               </div>
 
-              <div className="mt-4 rounded-2xl bg-gradient-to-br from-primary to-primary/90 p-4 text-primary-foreground">
-                <div className="text-[10px] font-semibold uppercase tracking-widest text-accent">
-                  Test readiness
+              <div className="grid gap-4 sm:grid-cols-[1.2fr_1fr] sm:gap-5">
+                {/* Big readiness gauge */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-primary/85 p-6 text-primary-foreground sm:p-8">
+                  <div
+                    aria-hidden
+                    className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent/25 blur-2xl"
+                  />
+                  <div className="relative">
+                    <div className="flex items-center justify-between">
+                      <GsmPlus variant="pill" />
+                      <span className="text-[10px] font-semibold uppercase tracking-widest text-primary-foreground/70">
+                        Your dashboard
+                      </span>
+                    </div>
+                    <div className="mt-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
+                      Test readiness
+                    </div>
+                    <div className="mt-1 flex items-baseline gap-2">
+                      <span className="font-display text-5xl font-bold sm:text-6xl">78%</span>
+                      <span className="text-sm text-primary-foreground/75">on track for pass</span>
+                    </div>
+                    <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-primary-foreground/15">
+                      <div className="h-full w-[78%] rounded-full bg-gradient-to-r from-accent to-accent/80" />
+                    </div>
+                    <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+                      {[
+                        { k: "Skills", v: "42/64" },
+                        { k: "Mocks", v: "8 passed" },
+                        { k: "Hazards", v: "91%" },
+                      ].map((s) => (
+                        <div key={s.k} className="rounded-xl bg-primary-foreground/10 p-2.5">
+                          <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">
+                            {s.k}
+                          </div>
+                          <div className="mt-0.5 text-sm font-semibold">{s.v}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-1 flex items-baseline gap-2">
-                  <span className="font-display text-3xl font-bold">78%</span>
-                  <span className="text-xs text-primary-foreground/70">on track for pass</span>
-                </div>
-                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-primary-foreground/15">
-                  <div className="h-full w-[78%] rounded-full bg-accent" />
-                </div>
-              </div>
 
-              <ul className="mt-4 space-y-2 text-sm">
-                {[
-                  { label: "Roundabouts", pct: 92, tone: "text-success" },
-                  { label: "Bay parking", pct: 74, tone: "text-accent" },
-                  { label: "Meeting traffic", pct: 58, tone: "text-primary" },
-                ].map((s) => (
-                  <li key={s.label} className="flex items-center gap-3">
-                    <span className="w-28 shrink-0 truncate text-muted-foreground">{s.label}</span>
-                    <span className="flex-1 h-1.5 overflow-hidden rounded-full bg-secondary">
-                      <span
-                        className="block h-full rounded-full bg-primary"
-                        style={{ width: `${s.pct}%` }}
-                      />
-                    </span>
-                    <span className={`w-10 text-right text-xs font-semibold ${s.tone}`}>
-                      {s.pct}%
-                    </span>
-                  </li>
-                ))}
-              </ul>
+                {/* Right column */}
+                <div className="flex flex-col gap-4">
+                  <div className="rounded-2xl border border-border/60 bg-background/70 p-5">
+                    <div className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                      Skill progress
+                    </div>
+                    <ul className="mt-3 space-y-3 text-sm">
+                      {[
+                        { label: "Roundabouts", pct: 92, tone: "text-success" },
+                        { label: "Bay parking", pct: 74, tone: "text-accent" },
+                        { label: "Meeting traffic", pct: 58, tone: "text-primary" },
+                      ].map((s) => (
+                        <li key={s.label}>
+                          <div className="flex items-center justify-between text-[13px]">
+                            <span className="truncate text-foreground">{s.label}</span>
+                            <span className={`font-semibold ${s.tone}`}>{s.pct}%</span>
+                          </div>
+                          <span className="mt-1.5 block h-1.5 overflow-hidden rounded-full bg-secondary/70">
+                            <span
+                              className="block h-full rounded-full bg-primary"
+                              style={{ width: `${s.pct}%` }}
+                            />
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-              <div className="mt-4 flex items-center gap-3 rounded-2xl border border-border/60 bg-background/60 p-3">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent/15 text-accent">
-                  <Bot className="h-4 w-4" />
-                </span>
-                <div className="min-w-0">
-                  <div className="text-xs font-semibold text-primary">AI Coach</div>
-                  <p className="truncate text-[11px] text-muted-foreground">
-                    "How do I judge a mini roundabout?"
-                  </p>
+                  <div className="rounded-2xl border border-accent/25 bg-gradient-to-br from-accent/8 to-transparent p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground shadow-md">
+                        <Bot className="h-5 w-5" />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-semibold uppercase tracking-widest text-accent">
+                          AI Coach
+                        </div>
+                        <p className="mt-0.5 text-sm leading-snug text-foreground">
+                          "How do I judge a mini roundabout?"
+                        </p>
+                        <p className="mt-1 text-[11px] text-muted-foreground">
+                          Answers in 30+ languages, 24/7.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </Reveal>
 
         {/* ============ WHO IS IT FOR ============ */}
-        <div className="mt-16 rounded-3xl border border-border/60 bg-card/60 p-6 sm:p-8">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
-                Who it's for
-              </div>
-              <h3 className="mt-1 font-display text-2xl font-semibold text-primary sm:text-3xl">
-                Built for every kind of learner
-              </h3>
+        <Reveal className="mt-24 sm:mt-32">
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">
+              Who it's for
             </div>
-            <p className="max-w-sm text-sm text-muted-foreground">
+            <h3 className="mt-3 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              Built for every kind of learner
+            </h3>
+            <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
               Whether you're picking up the keys for the first time or brushing up before your test,
               GSM Plus meets you where you are.
             </p>
           </div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
             {[
               { label: "Absolute beginners", body: "Never driven before? Start here." },
               { label: "Current GSM students", body: "Prepare and revise between lessons." },
               { label: "Theory-only learners", body: "Free DVSA-style theory practice." },
               { label: "Refresher & Pass Plus", body: "Rebuild confidence after a break." },
-            ].map((w) => (
-              <div
-                key={w.label}
-                className="rounded-2xl border border-border/60 bg-background/70 p-4 transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md"
-              >
-                <div className="text-sm font-semibold text-primary">{w.label}</div>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{w.body}</p>
-              </div>
+            ].map((w, i) => (
+              <Reveal key={w.label} delay={i * 60}>
+                <div className="h-full rounded-2xl border border-border/50 bg-card/70 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_8px_24px_-16px_rgba(0,0,0,0.15)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_2px_4px_rgba(0,0,0,0.03),0_18px_40px_-20px_rgba(0,0,0,0.25)]">
+                  <div className="text-[15px] font-semibold text-foreground">{w.label}</div>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{w.body}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
-        </div>
+        </Reveal>
 
         {/* ============ WHY DIFFERENT ============ */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
-            Why we're different
+        <Reveal className="mt-28 sm:mt-36">
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-primary/80">
+              Why we're different
+            </div>
+            <h3 className="mt-3 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              Not just another driving school
+            </h3>
+            <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
+              Most schools give you an hour in a car and a wave goodbye. GSM Plus is a full
+              learning platform behind every lesson.
+            </p>
           </div>
-          <h3 className="mt-4 font-display text-3xl font-semibold text-foreground sm:text-4xl">
-            Not just another driving school
-          </h3>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Most schools give you an hour in a car and a wave goodbye. GSM Plus is a full learning
-            platform behind every lesson.
-          </p>
-        </div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {DIFFERENTIATORS.map((d) => {
-            const Icon = d.icon;
-            return (
-              <div
-                key={d.title}
-                className="group rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-accent/40 hover:shadow-lg"
-              >
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-md transition-transform group-hover:scale-105">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div className="mt-4 font-display text-lg font-semibold text-primary">
-                  {d.title}
-                </div>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{d.body}</p>
-              </div>
-            );
-          })}
-        </div>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {DIFFERENTIATORS.map((d, i) => {
+              const Icon = d.icon;
+              return (
+                <Reveal key={d.title} delay={i * 80}>
+                  <div className="group h-full rounded-2xl border border-border/50 bg-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_12px_32px_-20px_rgba(0,0,0,0.2)] transition-all hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-[0_2px_4px_rgba(0,0,0,0.03),0_24px_48px_-24px_rgba(0,0,0,0.3)]">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-md transition-transform group-hover:scale-110">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div className="mt-5 font-display text-lg font-semibold text-foreground">
+                      {d.title}
+                    </div>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{d.body}</p>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </Reveal>
 
         {/* ============ HOW IT WORKS ============ */}
-        <div className="mt-20 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
-            How it works
+        <Reveal className="mt-28 sm:mt-36">
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">
+              How it works
+            </div>
+            <h3 className="mt-3 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              Your journey to a full licence
+            </h3>
+            <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
+              Six simple steps from your first booking to passing your practical test.
+            </p>
           </div>
-          <h3 className="mt-4 font-display text-3xl font-semibold text-foreground sm:text-4xl">
-            Your journey to a full licence
-          </h3>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Six simple steps from your first booking to passing your practical test.
-          </p>
-        </div>
 
-        <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {HOW_IT_WORKS.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <li
-                key={step.title}
-                className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
-              >
-                <span className="absolute right-3 top-3 font-display text-4xl font-bold text-primary/10 sm:text-5xl">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent/15 text-accent">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div className="mt-4 font-display text-lg font-semibold text-primary">
-                  {step.title}
-                </div>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
-              </li>
-            );
-          })}
-        </ol>
+          <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {HOW_IT_WORKS.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <Reveal as="li" key={step.title} delay={i * 70}>
+                  <div className="relative h-full overflow-hidden rounded-2xl border border-border/50 bg-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_12px_28px_-18px_rgba(0,0,0,0.18)] transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_2px_4px_rgba(0,0,0,0.03),0_22px_44px_-22px_rgba(0,0,0,0.28)]">
+                    <span className="pointer-events-none absolute right-4 top-3 font-display text-5xl font-bold text-primary/8 sm:text-6xl">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent/12 text-accent">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div className="mt-5 font-display text-lg font-semibold text-foreground">
+                      {step.title}
+                    </div>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      {step.body}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </ol>
+        </Reveal>
 
         {/* ============ BENEFITS ============ */}
-        <div className="mt-16 grid gap-4 sm:grid-cols-3">
-          {BENEFITS.map((b) => {
-            const Icon = b.icon;
-            return (
-              <div
-                key={b.title}
-                className="group rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md"
-              >
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-md">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div className="mt-4 font-display text-lg font-semibold text-primary">{b.title}</div>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
-              </div>
-            );
-          })}
-        </div>
+        <Reveal className="mt-24 sm:mt-28">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {BENEFITS.map((b, i) => {
+              const Icon = b.icon;
+              return (
+                <Reveal key={b.title} delay={i * 80}>
+                  <div className="group h-full rounded-2xl border border-border/50 bg-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_12px_28px_-18px_rgba(0,0,0,0.18)] transition-all hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_2px_4px_rgba(0,0,0,0.03),0_22px_44px_-22px_rgba(0,0,0,0.28)]">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-md">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div className="mt-5 font-display text-lg font-semibold text-foreground">
+                      {b.title}
+                    </div>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </Reveal>
 
         {/* ============ FREE vs PREMIUM ============ */}
-        <div className="mt-20 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
-            What's included
+        <Reveal className="mt-28 sm:mt-36">
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-primary/80">
+              What's included
+            </div>
+            <h3 className="mt-3 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              Free forever. Premium included with lessons.
+            </h3>
+            <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
+              Anyone can start learning for free. Book driving lessons with GSM and every Premium
+              feature unlocks automatically — no extra fee.
+            </p>
           </div>
-          <h3 className="mt-4 font-display text-3xl font-semibold text-foreground sm:text-4xl">
-            Free forever. Premium included with lessons.
-          </h3>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Anyone can start learning for free. Book driving lessons with GSM and every Premium
-            feature unlocks automatically — no extra fee.
-          </p>
-        </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {/* Free tier */}
-          <div className="relative flex flex-col rounded-3xl border border-border/60 bg-card p-6 shadow-sm sm:p-8">
+          <div className="relative flex flex-col rounded-3xl border border-border/50 bg-card p-7 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_20px_50px_-28px_rgba(0,0,0,0.2)] sm:p-9">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-success">
@@ -388,7 +442,7 @@ export function GsmPlusExplainer() {
 
             <Link
               to="/auth"
-              className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-background px-6 py-3 font-semibold text-primary transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+              className="mt-7 inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3 font-semibold text-primary transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
             >
               Start learning for free
               <ArrowRight className="h-4 w-4" />
@@ -396,7 +450,7 @@ export function GsmPlusExplainer() {
           </div>
 
           {/* Premium tier */}
-          <div className="relative flex flex-col overflow-hidden rounded-3xl border-2 border-accent/60 bg-gradient-to-br from-primary to-primary/90 p-6 text-primary-foreground shadow-xl sm:p-8">
+          <div className="relative flex flex-col overflow-hidden rounded-3xl border border-accent/50 bg-gradient-to-br from-primary via-primary to-primary/85 p-7 text-primary-foreground shadow-[0_25px_60px_-25px_rgba(35,75,54,0.6)] sm:p-9">
             <div
               className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-accent/30 blur-3xl"
               aria-hidden
@@ -441,59 +495,62 @@ export function GsmPlusExplainer() {
               })}
             </ul>
 
-            <div className="relative mt-6 flex flex-col gap-3 sm:flex-row">
+            <div className="relative mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/contact"
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-accent px-6 py-3 font-semibold text-accent-foreground shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-accent-foreground shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
               >
                 Book lessons to unlock Premium
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/pricing"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-primary-foreground/30 bg-primary-foreground/5 px-6 py-3 font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:bg-primary-foreground/15"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/5 px-6 py-3 font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:bg-primary-foreground/15"
               >
                 See pricing
               </Link>
             </div>
           </div>
-        </div>
+          </div>
+        </Reveal>
 
         {/* ============ FINAL CTA ============ */}
-        <div className="mt-16 overflow-hidden rounded-3xl border border-accent/40 bg-gradient-to-br from-accent/10 via-card to-primary/5 p-6 sm:p-10">
-          <div className="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
-                <Lock className="h-3.5 w-3.5" />
-                Ready when you are
+        <Reveal className="mt-24 sm:mt-32">
+          <div className="overflow-hidden rounded-[2rem] border border-accent/30 bg-gradient-to-br from-accent/10 via-card to-primary/5 p-8 shadow-[0_20px_60px_-30px_rgba(201,120,69,0.35)] sm:p-12">
+            <div className="grid gap-8 sm:grid-cols-[1fr_auto] sm:items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">
+                  <Lock className="h-3.5 w-3.5" />
+                  Ready when you are
+                </div>
+                <h3 className="mt-4 font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+                  Learn free today. Pass faster tomorrow.
+                </h3>
+                <p className="mt-3 max-w-xl text-base text-muted-foreground sm:text-lg">
+                  Create your free GSM Plus account in seconds. Book lessons whenever you're ready
+                  and Premium unlocks the same day.
+                </p>
               </div>
-              <h3 className="mt-3 font-display text-2xl font-semibold text-foreground sm:text-3xl">
-                Learn free today. Pass faster tomorrow.
-              </h3>
-              <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-                Create your free GSM Plus account in seconds. Book lessons whenever you're ready
-                and Premium unlocks the same day.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link
-                to="/auth"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                Start free
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-accent bg-accent px-6 py-3 font-semibold text-accent-foreground shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                Book lessons
-              </Link>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 font-semibold text-primary-foreground shadow-[0_10px_30px_-12px_rgba(35,75,54,0.55)] transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-14px_rgba(35,75,54,0.65)]"
+                >
+                  Start free
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-accent bg-accent px-7 py-3.5 font-semibold text-accent-foreground shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  Book lessons
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </Reveal>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground sm:text-sm">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground sm:text-sm">
           <span className="inline-flex items-center gap-1.5">
             <Check className="h-4 w-4 text-success" /> Free tier — no card required
           </span>
