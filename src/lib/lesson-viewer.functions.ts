@@ -26,7 +26,7 @@ export type LessonProgress = {
   status: "in_progress" | "completed";
   last_block_id: string | null;
   progress_pct: number;
-  quiz_state: Record<string, unknown>;
+  quiz_state: Record<string, string | number | boolean | null>;
   completed_at: string | null;
   updated_at: string;
 };
@@ -222,7 +222,9 @@ export const saveLessonProgress = createServerFn({ method: "POST" })
         lesson_id: z.string().uuid(),
         last_block_id: z.string().uuid().nullable().optional(),
         progress_pct: z.number().int().min(0).max(100).optional(),
-        quiz_state: z.record(z.string(), z.unknown()).optional(),
+        quiz_state: z
+          .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))
+          .optional(),
       })
       .parse(d),
   )
