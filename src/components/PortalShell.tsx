@@ -46,6 +46,7 @@ const learningGroup: Group = {
   id: "learning",
   label: "Learning",
   items: [
+    { to: "/gsm-plus", label: "GSM Plus dashboard", icon: LayoutDashboard },
     { to: "/gsm-method", label: "GSM Driving Method", icon: Compass },
     { to: "/hazard-perception", label: "Hazard perception", icon: Eye },
     { to: "/driving-clips/", label: "Practical strategy videos", icon: Film },

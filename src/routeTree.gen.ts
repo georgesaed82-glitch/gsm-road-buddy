@@ -44,6 +44,7 @@ import { Route as AuthenticatedMockTestsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedLessonsRouteImport } from './routes/_authenticated/lessons'
 import { Route as AuthenticatedHighwayCodeRouteImport } from './routes/_authenticated/highway-code'
 import { Route as AuthenticatedHazardPerceptionRouteImport } from './routes/_authenticated/hazard-perception'
+import { Route as AuthenticatedGsmPlusRouteImport } from './routes/_authenticated/gsm-plus'
 import { Route as AuthenticatedGsmMethodRouteImport } from './routes/_authenticated/gsm-method'
 import { Route as AuthenticatedDrivingClipsRouteImport } from './routes/_authenticated/driving-clips'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -269,6 +270,11 @@ const AuthenticatedHazardPerceptionRoute =
     path: '/hazard-perception',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedGsmPlusRoute = AuthenticatedGsmPlusRouteImport.update({
+  id: '/gsm-plus',
+  path: '/gsm-plus',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedGsmMethodRoute = AuthenticatedGsmMethodRouteImport.update({
   id: '/gsm-method',
   path: '/gsm-method',
@@ -544,6 +550,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/gsm-method': typeof AuthenticatedGsmMethodRoute
+  '/gsm-plus': typeof AuthenticatedGsmPlusRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
@@ -624,6 +631,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/gsm-method': typeof AuthenticatedGsmMethodRoute
+  '/gsm-plus': typeof AuthenticatedGsmPlusRoute
   '/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/lessons': typeof AuthenticatedLessonsRoute
@@ -707,6 +715,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/driving-clips': typeof AuthenticatedDrivingClipsRouteWithChildren
   '/_authenticated/gsm-method': typeof AuthenticatedGsmMethodRoute
+  '/_authenticated/gsm-plus': typeof AuthenticatedGsmPlusRoute
   '/_authenticated/hazard-perception': typeof AuthenticatedHazardPerceptionRoute
   '/_authenticated/highway-code': typeof AuthenticatedHighwayCodeRoute
   '/_authenticated/lessons': typeof AuthenticatedLessonsRoute
@@ -790,6 +799,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/driving-clips'
     | '/gsm-method'
+    | '/gsm-plus'
     | '/hazard-perception'
     | '/highway-code'
     | '/lessons'
@@ -870,6 +880,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/driving-clips'
     | '/gsm-method'
+    | '/gsm-plus'
     | '/hazard-perception'
     | '/highway-code'
     | '/lessons'
@@ -952,6 +963,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/driving-clips'
     | '/_authenticated/gsm-method'
+    | '/_authenticated/gsm-plus'
     | '/_authenticated/hazard-perception'
     | '/_authenticated/highway-code'
     | '/_authenticated/lessons'
@@ -1286,6 +1298,13 @@ declare module '@tanstack/react-router' {
       path: '/hazard-perception'
       fullPath: '/hazard-perception'
       preLoaderRoute: typeof AuthenticatedHazardPerceptionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/gsm-plus': {
+      id: '/_authenticated/gsm-plus'
+      path: '/gsm-plus'
+      fullPath: '/gsm-plus'
+      preLoaderRoute: typeof AuthenticatedGsmPlusRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/gsm-method': {
@@ -1712,6 +1731,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDrivingClipsRoute: typeof AuthenticatedDrivingClipsRouteWithChildren
   AuthenticatedGsmMethodRoute: typeof AuthenticatedGsmMethodRoute
+  AuthenticatedGsmPlusRoute: typeof AuthenticatedGsmPlusRoute
   AuthenticatedHazardPerceptionRoute: typeof AuthenticatedHazardPerceptionRoute
   AuthenticatedHighwayCodeRoute: typeof AuthenticatedHighwayCodeRoute
   AuthenticatedLessonsRoute: typeof AuthenticatedLessonsRoute
@@ -1733,6 +1753,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDrivingClipsRoute: AuthenticatedDrivingClipsRouteWithChildren,
   AuthenticatedGsmMethodRoute: AuthenticatedGsmMethodRoute,
+  AuthenticatedGsmPlusRoute: AuthenticatedGsmPlusRoute,
   AuthenticatedHazardPerceptionRoute: AuthenticatedHazardPerceptionRoute,
   AuthenticatedHighwayCodeRoute: AuthenticatedHighwayCodeRoute,
   AuthenticatedLessonsRoute: AuthenticatedLessonsRoute,
