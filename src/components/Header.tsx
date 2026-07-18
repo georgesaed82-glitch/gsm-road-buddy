@@ -3,7 +3,6 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
   Phone,
-  ChevronDown,
   ChevronRight,
   UserCog,
   LogOut,
@@ -14,7 +13,6 @@ import {
   BookOpen,
   Newspaper,
   GraduationCap,
-  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -39,7 +37,6 @@ const NAV_LINKS = ALL_NAV_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/blog");
 
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [languagesMobileOpen, setLanguagesMobileOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const [hidden, setHidden] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -191,38 +188,14 @@ export function Header() {
                 <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
               </Link>
 
-              <button
-                type="button"
-                onClick={() => setLanguagesMobileOpen((v) => !v)}
-                aria-expanded={languagesMobileOpen}
-                className={cn(
-                  "group flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-3 text-left text-[15px] font-semibold shadow-[0_2px_10px_-4px_rgba(29,42,34,0.18)] transition-all active:scale-[0.98]",
-                  languagesMobileOpen
-                    ? "border-accent/60 bg-accent/10 text-primary"
-                    : "text-foreground hover:-translate-y-0.5 hover:border-accent/40",
-                )}
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/50 bg-primary text-accent shadow-sm">
-                  <Globe className="h-5 w-5" />
-                </span>
-                <span className="h-8 w-px shrink-0 bg-border/70" aria-hidden="true" />
-                <span className="min-w-0 flex-1 truncate">Languages</span>
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
-                    languagesMobileOpen && "rotate-180",
-                  )}
-                />
-              </button>
-              {languagesMobileOpen && (
-                <div className="max-h-[55vh] overflow-y-auto rounded-2xl border border-accent/20 bg-card p-2 shadow-inner">
-                  <LanguageSelector variant="inline" />
-                </div>
-              )}
             </nav>
 
+            <div className="mt-5 border-t border-border/60 pt-4">
+              <LanguageSelector variant="menu-row" side="top" align="end" />
+            </div>
+
             {isAuthed ? (
-              <div className="mt-5 border-t border-border/60 pt-4">
+              <div className="mt-4">
                 <Button className="w-full rounded-full" variant="outline" onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" /> Sign out
                 </Button>
@@ -235,6 +208,11 @@ export function Header() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Desktop globe: compact popover language switcher */}
+      <span className="hidden sm:inline-flex">
+        <LanguageSelector variant="icon" side="bottom" align="end" />
+      </span>
 
       {isAuthed ? (
         <button
