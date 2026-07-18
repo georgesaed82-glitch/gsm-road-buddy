@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
+import { useRef } from "react";
+import { Link } from "@tanstack/react-router";
 
-export type SectionAnchor = { id: string; label: string };
+export type SectionAnchor = {
+  /** DOM id to scroll to on the current page, OR a stable key when using `href`. */
+  id: string;
+  label: string;
+  /** If set, tapping the chip navigates to this route instead of scrolling. */
+  href?: string;
+};
 
 /**
  * Floating jump-nav for the long homepage.
@@ -10,13 +18,21 @@ export type SectionAnchor = { id: string; label: string };
 export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
   const [active, setActive] = useState<string>(sections[0]?.id ?? "");
   const [visible, setVisible] = useState(false);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const chipRefs = useRef<Record<string, HTMLElement | null>>({});
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const els = sections
+      .filter((s) => !s.href)
       .map((s) => document.getElementById(s.id))
       .filter((el): el is HTMLElement => !!el);
-    if (!els.length) return;
+    if (!els.length) {
+      const onScrollOnly = () => setVisible(window.scrollY > 320);
+      onScrollOnly();
+      window.addEventListener("scroll", onScrollOnly, { passive: true });
+      return () => window.removeEventListener("scroll", onScrollOnly);
+    }
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -39,11 +55,32 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
     };
   }, [sections]);
 
+  // Keep the active chip fully in view within the horizontal scroller.
+  useEffect(() => {
+    const chip = chipRefs.current[active];
+    const scroller = scrollerRef.current;
+    if (!chip || !scroller) return;
+    const cRect = chip.getBoundingClientRect();
+    const sRect = scroller.getBoundingClientRect();
+    const pad = 16;
+    if (cRect.left < sRect.left + pad) {
+      scroller.scrollBy({ left: cRect.left - sRect.left - pad, behavior: "smooth" });
+    } else if (cRect.right > sRect.right - pad) {
+      scroller.scrollBy({ left: cRect.right - sRect.right + pad, behavior: "smooth" });
+    }
+  }, [active]);
+
   const jump = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY - 90;
+    // Account for the sticky header (~64px) + the chip bar itself (~48px).
+    const header = document.querySelector("header");
+    const headerH = header ? header.getBoundingClientRect().height : 64;
+    const chipBar = scrollerRef.current?.parentElement;
+    const chipH = chipBar ? chipBar.getBoundingClientRect().height : 48;
+    const y = el.getBoundingClientRect().top + window.scrollY - headerH - chipH - 8;
     window.scrollTo({ top: y, behavior: "smooth" });
+    setActive(id);
   };
 
   return (
@@ -51,25 +88,55 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
       {/* Mobile / tablet horizontal chip bar */}
       <nav
         aria-label="Jump to section"
-        className={`notranslate sticky top-[64px] z-30 -mx-4 mb-2 border-y border-border/60 bg-background/85 backdrop-blur-md transition-opacity duration-200 lg:hidden ${
+        className={`notranslate sticky top-[56px] z-30 -mx-4 mb-2 border-y border-border/60 bg-background/90 backdrop-blur-md transition-opacity duration-200 sm:top-[64px] lg:hidden ${
           visible ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%)",
+          maskImage:
+            "linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%)",
+        }}
       >
-        <div className="flex snap-x snap-mandatory gap-1.5 overflow-x-auto px-3 py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {sections.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              onClick={() => jump(s.id)}
-              className={`shrink-0 snap-start rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors ${
-                active === s.id
-                  ? "border-accent bg-accent text-accent-foreground"
-                  : "border-border/70 bg-card text-muted-foreground hover:border-accent/50 hover:text-primary"
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
+        <div
+          ref={scrollerRef}
+          className="flex snap-x gap-1.5 overflow-x-auto overscroll-x-contain px-4 py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          {sections.map((s) => {
+            const isActive = active === s.id;
+            const cls = `shrink-0 snap-start whitespace-nowrap rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+              isActive
+                ? "border-accent bg-accent text-accent-foreground"
+                : "border-border/70 bg-card text-muted-foreground hover:border-accent/50 hover:text-primary"
+            }`;
+            const setRef = (el: HTMLElement | null) => {
+              chipRefs.current[s.id] = el;
+            };
+            if (s.href) {
+              return (
+                <Link
+                  key={s.id}
+                  ref={setRef as never}
+                  to={s.href}
+                  className={cls}
+                >
+                  {s.label}
+                </Link>
+              );
+            }
+            return (
+              <button
+                key={s.id}
+                ref={setRef as never}
+                type="button"
+                onClick={() => jump(s.id)}
+                className={cls}
+              >
+                {s.label}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
@@ -81,6 +148,29 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
         }`}
       >
         {sections.map((s) => (
+          s.href ? (
+            <Link
+              key={s.id}
+              title={s.label}
+              to={s.href}
+              className="group flex items-center gap-2"
+            >
+              <span
+                className={`h-2 w-2 rounded-full transition-all ${
+                  active === s.id ? "bg-accent scale-125" : "bg-border group-hover:bg-accent/70"
+                }`}
+              />
+              <span
+                className={`whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] transition-all ${
+                  active === s.id
+                    ? "text-primary opacity-100"
+                    : "text-muted-foreground opacity-0 group-hover:opacity-100"
+                }`}
+              >
+                {s.label}
+              </span>
+            </Link>
+          ) : (
           <button
             key={s.id}
             type="button"
@@ -103,6 +193,7 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
               {s.label}
             </span>
           </button>
+          )
         ))}
       </nav>
     </>
