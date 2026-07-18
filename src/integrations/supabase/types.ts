@@ -2999,6 +2999,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_ai_video_view: {
+        Args: { _video_id: string }
+        Returns: undefined
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
