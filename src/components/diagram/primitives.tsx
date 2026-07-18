@@ -604,3 +604,444 @@ export function DiagramCanvas({ children }: { children: ReactNode }) {
     </svg>
   );
 }
+
+// ─────────────────────────────────────────────────────────────
+// Extended GSM diagram kit — Phase 1 additions.
+// These primitives are used by every lesson from Phase 2 onwards
+// so junctions, roundabouts, manoeuvres and motorway scenes are
+// visually consistent. Everything here is original SVG — no
+// traced artwork.
+// ─────────────────────────────────────────────────────────────
+
+export function Kerb({
+  x = 0,
+  y,
+  width = 640,
+  height = 3,
+}: {
+  x?: number;
+  y: number;
+  width?: number;
+  height?: number;
+}) {
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height} fill="#c8ccd1" />
+      <rect x={x} y={y + height} width={width} height={0.8} fill="#5b6068" opacity={0.7} />
+    </g>
+  );
+}
+
+export function GiveWayLine({
+  x1,
+  x2,
+  y,
+  triangle = true,
+}: {
+  x1: number;
+  x2: number;
+  y: number;
+  triangle?: boolean;
+}) {
+  const n = Math.max(2, Math.floor((x2 - x1) / 6));
+  const step = (x2 - x1) / n;
+  return (
+    <g>
+      {Array.from({ length: n }).map((_, i) => (
+        <rect
+          key={`u-${i}`}
+          x={x1 + i * step + 0.6}
+          y={y - 3}
+          width={step - 1.2}
+          height={2}
+          fill={COLORS.paint}
+        />
+      ))}
+      {Array.from({ length: n }).map((_, i) => (
+        <rect
+          key={`d-${i}`}
+          x={x1 + i * step + 0.6}
+          y={y + 1}
+          width={step - 1.2}
+          height={2}
+          fill={COLORS.paint}
+        />
+      ))}
+      {triangle && (
+        <polygon
+          points={`${(x1 + x2) / 2 - 6},${y + 10} ${(x1 + x2) / 2 + 6},${y + 10} ${(x1 + x2) / 2},${y + 20}`}
+          fill={COLORS.paint}
+          opacity={0.9}
+        />
+      )}
+    </g>
+  );
+}
+
+export function StopLine({
+  x1,
+  x2,
+  y,
+}: {
+  x1: number;
+  x2: number;
+  y: number;
+}) {
+  return <rect x={x1} y={y - 2} width={x2 - x1} height={4} fill={COLORS.paint} />;
+}
+
+export function ZebraStripes({
+  x,
+  y,
+  width,
+  height = 20,
+  stripes = 8,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height?: number;
+  stripes?: number;
+}) {
+  const sw = width / (stripes * 2 - 1);
+  return (
+    <g>
+      {Array.from({ length: stripes }).map((_, i) => (
+        <rect key={i} x={x + i * sw * 2} y={y} width={sw} height={height} fill={COLORS.paint} />
+      ))}
+    </g>
+  );
+}
+
+export function PelicanStuds({
+  x1,
+  x2,
+  y,
+}: {
+  x1: number;
+  x2: number;
+  y: number;
+}) {
+  const n = Math.floor((x2 - x1) / 8);
+  return (
+    <g>
+      {Array.from({ length: n }).map((_, i) => (
+        <circle key={i} cx={x1 + i * 8 + 4} cy={y} r={1.4} fill={COLORS.paint} />
+      ))}
+    </g>
+  );
+}
+
+export function RoundaboutHub({
+  cx,
+  cy,
+  r,
+}: {
+  cx: number;
+  cy: number;
+  r: number;
+}) {
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={r} fill={COLORS.grass} stroke="#1f4520" strokeWidth={1.5} />
+      <circle cx={cx} cy={cy} r={r * 0.55} fill="#325d24" opacity={0.6} />
+    </g>
+  );
+}
+
+export function MiniRoundaboutDome({
+  cx,
+  cy,
+  r = 14,
+}: {
+  cx: number;
+  cy: number;
+  r?: number;
+}) {
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={r} fill={COLORS.paint} opacity={0.95} />
+      <circle cx={cx} cy={cy} r={r * 0.55} fill="#e1d9c1" />
+    </g>
+  );
+}
+
+export function LaneArrow({
+  x,
+  y,
+  direction = "ahead",
+  size = 16,
+}: {
+  x: number;
+  y: number;
+  direction?: "ahead" | "left" | "right" | "ahead-left" | "ahead-right";
+  size?: number;
+}) {
+  const s = size;
+  const shaft = `M0 ${s} L0 -${s * 0.2}`;
+  const head = `M-${s * 0.35} -${s * 0.2} L0 -${s * 0.6} L${s * 0.35} -${s * 0.2} Z`;
+  const branchAngle =
+    direction === "left" || direction === "ahead-left"
+      ? -90
+      : direction === "right" || direction === "ahead-right"
+        ? 90
+        : 0;
+  const showAheadOnly = direction === "ahead";
+  return (
+    <g transform={`translate(${x} ${y})`} stroke={COLORS.paint} fill={COLORS.paint} strokeLinecap="round">
+      {(showAheadOnly || direction.startsWith("ahead")) && (
+        <g strokeWidth={2}>
+          <path d={shaft} />
+          <path d={head} />
+        </g>
+      )}
+      {!showAheadOnly && (
+        <g transform={`rotate(${branchAngle})`}>
+          <path d={shaft} strokeWidth={2} />
+          <path d={head} />
+        </g>
+      )}
+    </g>
+  );
+}
+
+export function BoxJunction({
+  x,
+  y,
+  width,
+  height,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}) {
+  const YELLOW = "#f5c518";
+  const step = 14;
+  const lines: ReactNode[] = [];
+  for (let i = -height; i < width; i += step) {
+    lines.push(<line key={`a${i}`} x1={x + i} y1={y} x2={x + i + height} y2={y + height} stroke={YELLOW} strokeWidth={1.4} />);
+    lines.push(<line key={`b${i}`} x1={x + i + height} y1={y} x2={x + i} y2={y + height} stroke={YELLOW} strokeWidth={1.4} />);
+  }
+  return (
+    <g>
+      <clipPath id={`bj-${x}-${y}`}>
+        <rect x={x} y={y} width={width} height={height} />
+      </clipPath>
+      <g clipPath={`url(#bj-${x}-${y})`}>{lines}</g>
+      <rect x={x} y={y} width={width} height={height} fill="none" stroke={YELLOW} strokeWidth={2} />
+    </g>
+  );
+}
+
+export function Bus({ x, y, angle = 0, brake }: { x: number; y: number; angle?: number; brake?: boolean }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${angle})`}>
+      <rect x={-32} y={-11} width={64} height={22} rx={3} fill="#c8102e" stroke="#0a0a0a" strokeWidth={0.9} />
+      <rect x={-28} y={-9} width={6} height={18} rx={1} fill="#111" opacity={0.7} />
+      <rect x={-18} y={-9} width={6} height={18} rx={1} fill="#111" opacity={0.55} />
+      <rect x={-8} y={-9} width={6} height={18} rx={1} fill="#111" opacity={0.55} />
+      <rect x={2} y={-9} width={6} height={18} rx={1} fill="#111" opacity={0.55} />
+      <rect x={12} y={-9} width={6} height={18} rx={1} fill="#111" opacity={0.55} />
+      {brake && <rect x={-33.5} y={-9} width={1.8} height={18} fill="#ff2a2a" />}
+    </g>
+  );
+}
+
+export function HGV({ x, y, angle = 0 }: { x: number; y: number; angle?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${angle})`}>
+      <rect x={-6} y={-11} width={26} height={22} rx={2} fill="#e5e7eb" stroke="#0a0a0a" strokeWidth={0.9} />
+      <rect x={-30} y={-10} width={24} height={20} rx={2} fill="#2b5da8" stroke="#0a0a0a" strokeWidth={0.9} />
+      <rect x={16} y={-8} width={4} height={16} rx={1} fill="#111" opacity={0.7} />
+    </g>
+  );
+}
+
+export function Cyclist({ x, y, angle = 0 }: { x: number; y: number; angle?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${angle})`}>
+      <circle cx={-6} cy={0} r={3.4} fill="none" stroke="#eaeaea" strokeWidth={1.4} />
+      <circle cx={6} cy={0} r={3.4} fill="none" stroke="#eaeaea" strokeWidth={1.4} />
+      <line x1={-6} y1={0} x2={6} y2={0} stroke="#eaeaea" strokeWidth={1.4} />
+      <circle cx={0} cy={-6} r={2.4} fill="#f59e0b" />
+      <line x1={0} y1={-4} x2={0} y2={-1} stroke="#f59e0b" strokeWidth={1.4} />
+    </g>
+  );
+}
+
+export function Motorbike({ x, y, angle = 0 }: { x: number; y: number; angle?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${angle})`}>
+      <ellipse cx={0} cy={0} rx={9} ry={3.2} fill="#111" stroke="#0a0a0a" />
+      <circle cx={0} cy={-5} r={2.4} fill="#c8102e" />
+    </g>
+  );
+}
+
+export function Pedestrian({ x, y, color = "#eaeaea" }: { x: number; y: number; color?: string }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <circle cx={0} cy={-6} r={2.4} fill={color} />
+      <rect x={-2} y={-3.5} width={4} height={7} rx={1.2} fill={color} />
+      <line x1={-1.4} y1={3} x2={-2.6} y2={7} stroke={color} strokeWidth={1.2} />
+      <line x1={1.4} y1={3} x2={2.6} y2={7} stroke={color} strokeWidth={1.2} />
+    </g>
+  );
+}
+
+// Cone-of-vision "eye fan" for showing observation direction.
+export function EyeGaze({
+  x,
+  y,
+  angle = 0,
+  spread = 60,
+  reach = 60,
+  color = COLORS.accent,
+}: {
+  x: number;
+  y: number;
+  angle?: number;
+  spread?: number;
+  reach?: number;
+  color?: string;
+}) {
+  const a1 = ((angle - spread / 2) * Math.PI) / 180;
+  const a2 = ((angle + spread / 2) * Math.PI) / 180;
+  const p1 = `${Math.cos(a1) * reach},${Math.sin(a1) * reach}`;
+  const p2 = `${Math.cos(a2) * reach},${Math.sin(a2) * reach}`;
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <polygon points={`0,0 ${p1} ${p2}`} fill={color} opacity={0.18} stroke={color} strokeOpacity={0.55} strokeWidth={1} />
+      <circle r={2.4} fill={color} />
+    </g>
+  );
+}
+
+export function SignalArrow({
+  x,
+  y,
+  direction = "left",
+  color = "#ffb020",
+}: {
+  x: number;
+  y: number;
+  direction?: "left" | "right";
+  color?: string;
+}) {
+  const flip = direction === "right" ? -1 : 1;
+  return (
+    <g transform={`translate(${x} ${y}) scale(${flip} 1)`}>
+      <path d="M0 0 L-8 -4 L-8 -1 L-16 -1 L-16 1 L-8 1 L-8 4 Z" fill={color}>
+        <animate attributeName="opacity" values="1;0.15;1" dur="0.5s" repeatCount="indefinite" />
+      </path>
+    </g>
+  );
+}
+
+export function HazardBloom({
+  x,
+  y,
+  r = 10,
+  color = COLORS.bad,
+}: {
+  x: number;
+  y: number;
+  r?: number;
+  color?: string;
+}) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <circle r={r} fill="none" stroke={color} strokeWidth={1.4}>
+        <animate attributeName="r" values={`${r * 0.4};${r * 1.4};${r * 0.4}`} dur="1.1s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="1;0.15;1" dur="1.1s" repeatCount="indefinite" />
+      </circle>
+    </g>
+  );
+}
+
+export function DecisionCard({
+  x,
+  y,
+  label,
+  detail,
+  tone = "accent",
+  width = 150,
+}: {
+  x: number;
+  y: number;
+  label: string;
+  detail?: string;
+  tone?: "accent" | "good" | "warn" | "bad";
+  width?: number;
+}) {
+  const color =
+    tone === "good"
+      ? COLORS.good
+      : tone === "warn"
+        ? COLORS.warn
+        : tone === "bad"
+          ? COLORS.bad
+          : COLORS.accent;
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <rect width={width} height={detail ? 42 : 24} rx={6} fill="#000" opacity={0.72} stroke={color} strokeWidth={1.2} />
+      <text x={10} y={15} fontSize={9} fontWeight={800} fill={color} letterSpacing={1.4} fontFamily="sans-serif">
+        {label.toUpperCase()}
+      </text>
+      {detail && (
+        <text x={10} y={31} fontSize={9} fill="#fff" opacity={0.9} fontFamily="sans-serif">
+          {detail}
+        </text>
+      )}
+    </g>
+  );
+}
+
+// Slip road taper — used for dual carriageway / motorway joins.
+export function SlipRoad({
+  x1,
+  x2,
+  y,
+  width = 80,
+  taper = 120,
+  side = "left",
+}: {
+  x1: number;
+  x2: number;
+  y: number;
+  width?: number;
+  taper?: number;
+  side?: "left" | "right";
+}) {
+  const dir = side === "left" ? -1 : 1;
+  const start = `${x1},${y}`;
+  const end = `${x2},${y}`;
+  const startO = `${x1},${y + dir * width}`;
+  const merge = `${x2 - taper},${y + dir * width}`;
+  return (
+    <polygon
+      points={`${start} ${end} ${merge} ${startO}`}
+      fill={COLORS.road}
+    />
+  );
+}
+
+export function HardShoulder({
+  x = 0,
+  y,
+  width = 640,
+  height = 12,
+}: {
+  x?: number;
+  y: number;
+  width?: number;
+  height?: number;
+}) {
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height} fill="#3a3a3d" />
+      <line x1={x} y1={y} x2={x + width} y2={y} stroke={COLORS.paint} strokeWidth={1.4} strokeDasharray="14 6" />
+    </g>
+  );
+}
