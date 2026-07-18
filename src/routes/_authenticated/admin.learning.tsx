@@ -868,8 +868,9 @@ function LessonsPanel({ topic }: { topic: TopicRow }) {
       </div>
 
       <p className="mt-4 rounded-lg border border-dashed border-accent/40 bg-accent/5 p-3 text-xs leading-relaxed text-muted-foreground">
-        Full block editor (text, diagrams, animations, videos, quizzes, GSM teaching elements) ships
-        in the next phase drop. This screen already lets you structure the syllabus end-to-end.
+        Use <b>Blocks</b> on any lesson to add teaching blocks and attach approved videos from
+        the AI Video Library. Attached videos appear automatically for students when they open the
+        lesson.
       </p>
     </div>
   );
