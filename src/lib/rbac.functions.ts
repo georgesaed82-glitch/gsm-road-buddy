@@ -354,8 +354,20 @@ const RoleSlugSchema = z.enum([
   "read_only",
 ]);
 
-function tempPassword(): string {
-  return (process.env.DEV_TEMP_ADMIN_PASSWORD || "GSM2026").trim();
+/**
+ * Generate a cryptographically random temporary password for admin
+ * invitations and resets. Called ONCE per flow and the same value is used
+ * for both the auth update and the email — never a shared static string.
+ */
+function generateTempPassword(): string {
+  // 18 bytes → 24 base64 chars, then trim to a URL-safe alphanumeric to
+  // avoid shell/URL-copy issues when learners paste it from email.
+  const bytes = new Uint8Array(18);
+  crypto.getRandomValues(bytes);
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+  let out = "";
+  for (let i = 0; i < bytes.length; i++) out += alphabet[bytes[i] % alphabet.length];
+  return out;
 }
 
 // Send an invitation / password-reset email through the shared email queue.
@@ -478,10 +490,11 @@ export const createRbacAdmin = createServerFn({ method: "POST" })
       if (list.users.length < 200) break;
     }
 
+    const tp = generateTempPassword();
     if (!target) {
       const { data: created, error: createErr } = await supabase.auth.admin.createUser({
         email: data.email,
-        password: tempPassword(),
+        password: tp,
         email_confirm: true,
         user_metadata: { full_name: data.full_name || data.username },
       });
@@ -490,7 +503,7 @@ export const createRbacAdmin = createServerFn({ method: "POST" })
       if (!target) throw new Error("Failed to create user");
     } else {
       // Existing auth user — reset password to temp
-      await supabase.auth.admin.updateUserById(target, { password: tempPassword() });
+      await supabase.auth.admin.updateUserById(target, { password: tp });
     }
 
     // Ensure profile row exists then set admin fields
@@ -526,7 +539,6 @@ export const createRbacAdmin = createServerFn({ method: "POST" })
       role_slug: data.role_slug,
     });
 
-    const tp = tempPassword();
     await sendAdminInviteEmail({
       to: data.email,
       full_name: data.full_name || null,
@@ -646,7 +658,8 @@ export const resetRbacAdminPassword = createServerFn({ method: "POST" })
     if (existing?.is_master_owner)
       throw new Error("Master Owner password can only be changed by the Master Owner directly");
 
-    await supabase.auth.admin.updateUserById(data.user_id, { password: tempPassword() });
+    const tp = generateTempPassword();
+    await supabase.auth.admin.updateUserById(data.user_id, { password: tp });
     await supabase
       .from("profiles")
       .update({ must_change_password: true, failed_login_count: 0, locked_until: null })
@@ -656,8 +669,6 @@ export const resetRbacAdminPassword = createServerFn({ method: "POST" })
     await writeAudit(context.userId, "password_reset", "profiles", data.user_id, null, {
       temp: true,
     });
-    const tp = tempPassword();
-
     // Look up the target's email + username so we can email them the new temp password.
     const { data: targetUser } = await supabase.auth.admin.getUserById(data.user_id);
     const { data: targetProfile } = await supabase
@@ -691,9 +702,8 @@ export const changeOwnPassword = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ context, data }) => {
-    if (data.newPassword === tempPassword()) {
-      throw new Error("Choose a password different from the temporary one");
-    }
+    // No static temp comparison: temp passwords are cryptographically random
+    // per invocation, so we can't (and don't need to) compare against them.
     const supabase = await loadAdmin();
     const { data: user } = await supabase.auth.admin.getUserById(context.userId);
     const email = user?.user?.email;
@@ -945,7 +955,7 @@ export const resendAdminInvite = createServerFn({ method: "POST" })
     }
 
     // Reset password to a fresh temp and force change on next login
-    const tp = tempPassword();
+    const tp = generateTempPassword();
     await supabase.auth.admin.updateUserById(data.user_id, { password: tp });
     await supabase
       .from("profiles")
