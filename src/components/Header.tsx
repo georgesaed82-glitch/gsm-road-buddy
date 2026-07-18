@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
@@ -38,7 +38,6 @@ const NAV_LINKS = ALL_NAV_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/blog");
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
@@ -53,41 +52,6 @@ export function Header() {
   useEffect(() => {
     setSheetOpen(false);
   }, [pathname]);
-
-  // Smart auto-hide on scroll down, reveal on scroll up or when idle.
-  const lastYRef = useRef(0);
-  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    lastYRef.current = window.scrollY;
-    const REVEAL_ON_IDLE_MS = 180;
-    const DELTA = 6;
-    const TOP_THRESHOLD = 40;
-
-    const onScroll = () => {
-      const y = window.scrollY;
-      const dy = y - lastYRef.current;
-      // Never hide the header while the mobile menu sheet is open.
-      if (sheetOpen) {
-        setHidden(false);
-      } else if (y <= TOP_THRESHOLD) {
-        setHidden(false);
-      } else if (dy > DELTA) {
-        setHidden(true);
-      } else if (dy < -DELTA) {
-        setHidden(false);
-      }
-      lastYRef.current = y;
-
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = setTimeout(() => setHidden(false), REVEAL_ON_IDLE_MS);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    };
-  }, [sheetOpen]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -240,10 +204,7 @@ export function Header() {
 
   return (
     <header
-      className={cn(
-        "sticky top-0 z-[120] w-full bg-background/95 backdrop-blur transition-transform duration-300 ease-out will-change-transform supports-[backdrop-filter]:bg-background/80",
-        hidden ? "-translate-y-full" : "translate-y-0",
-      )}
+      className="sticky top-0 z-[120] w-full bg-background/95 supports-[backdrop-filter]:bg-background/95"
     >
       <div className="mx-auto w-full max-w-7xl px-2 py-2 sm:px-4 sm:py-2.5 lg:px-6">
         <div className="sm:hidden">
