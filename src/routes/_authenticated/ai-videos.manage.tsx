@@ -438,7 +438,25 @@ function EditDialog({
   onOpenChange: (v: boolean) => void;
   editing: AiVideoRow | null;
   onSaved: () => void;
-  upsertFn: (args: { data: Parameters<typeof upsertAiVideo>[0]["data"] }) => Promise<AiVideoRow>;
+  upsertFn: (args: {
+    data: {
+      id?: string;
+      title: string;
+      description: string | null;
+      provider: "youtube" | "upload" | "external";
+      youtube_id: string | null;
+      external_url: string | null;
+      storage_path: string | null;
+      poster_url: string | null;
+      duration_seconds: number | null;
+      transmission: "any" | "manual" | "automatic";
+      difficulty: "beginner" | "intermediate" | "advanced" | "test_ready";
+      tags: string[];
+      topic_ids: string[];
+      lesson_ids: string[];
+      is_premium: boolean;
+    };
+  }) => Promise<AiVideoRow>;
   uploadUrlFn: (args: { data: { filename: string; content_type: string; size: number } }) => Promise<{ path: string; token: string; signedUrl: string }>;
   posterFn: (args: { data: { filename: string; content_type: string; base64: string } }) => Promise<{ path: string; url: string | null }>;
 }) {
