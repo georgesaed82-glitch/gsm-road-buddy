@@ -83,7 +83,7 @@ function GsmPlusHome() {
   }, [topics, progressByTopic]);
 
   return (
-    <PortalShell title="GSM Plus" subtitle="The complete GSM Learning Platform">
+    <PortalShell title="GSM Plus" eyebrow="The complete GSM Learning Platform">
       {/* Readiness hero */}
       <section className="rounded-3xl border border-border/60 bg-gradient-to-br from-primary to-primary/90 p-6 text-primary-foreground shadow-lg sm:p-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-accent">
