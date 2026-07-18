@@ -141,7 +141,6 @@ const DEFAULT_SECTIONS: Array<
   Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
 > = [
   { section_key: "hero", section_type: "hero", sort_order: 10 },
-  { section_key: "gsm-plus-explainer", section_type: "gsm-plus-explainer", sort_order: 12 },
   { section_key: "memorable", section_type: "memorable", sort_order: 15 },
   { section_key: "recent-pass", section_type: "recent-pass", sort_order: 20 },
   { section_key: "why", section_type: "why", sort_order: 30 },
