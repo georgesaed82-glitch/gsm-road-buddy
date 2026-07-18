@@ -29,6 +29,7 @@ import {
   Star,
 } from "lucide-react";
 import { GsmPlus } from "@/components/GsmPlus";
+import { Reveal } from "@/components/Reveal";
 
 type Feature = { icon: typeof BookOpen; title: string; body: string };
 
