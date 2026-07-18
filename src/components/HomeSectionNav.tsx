@@ -88,7 +88,7 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
       {/* Mobile / tablet horizontal chip bar */}
       <nav
         aria-label="Jump to section"
-        className={`notranslate sticky top-[56px] z-30 -mx-4 mb-2 border-y border-border/60 bg-background/90 backdrop-blur-md transition-opacity duration-200 sm:top-[64px] lg:hidden ${
+        className={`notranslate sticky top-[64px] z-[115] mb-2 border-y border-border/60 bg-background/95 backdrop-blur-md transition-opacity duration-200 sm:top-[76px] lg:hidden ${
           visible ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         style={{
