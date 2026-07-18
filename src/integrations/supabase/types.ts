@@ -247,6 +247,84 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_videos: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          description: string | null
+          difficulty: Database["public"]["Enums"]["ai_video_difficulty"]
+          duration_seconds: number | null
+          external_url: string | null
+          id: string
+          is_premium: boolean
+          lesson_ids: string[]
+          poster_url: string | null
+          provider: Database["public"]["Enums"]["ai_video_provider"]
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["ai_video_status"]
+          storage_path: string | null
+          tags: string[]
+          title: string
+          topic_ids: string[]
+          transmission: Database["public"]["Enums"]["ai_video_transmission"]
+          updated_at: string
+          uploaded_by: string | null
+          view_count: number
+          youtube_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["ai_video_difficulty"]
+          duration_seconds?: number | null
+          external_url?: string | null
+          id?: string
+          is_premium?: boolean
+          lesson_ids?: string[]
+          poster_url?: string | null
+          provider: Database["public"]["Enums"]["ai_video_provider"]
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["ai_video_status"]
+          storage_path?: string | null
+          tags?: string[]
+          title: string
+          topic_ids?: string[]
+          transmission?: Database["public"]["Enums"]["ai_video_transmission"]
+          updated_at?: string
+          uploaded_by?: string | null
+          view_count?: number
+          youtube_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["ai_video_difficulty"]
+          duration_seconds?: number | null
+          external_url?: string | null
+          id?: string
+          is_premium?: boolean
+          lesson_ids?: string[]
+          poster_url?: string | null
+          provider?: Database["public"]["Enums"]["ai_video_provider"]
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["ai_video_status"]
+          storage_path?: string | null
+          tags?: string[]
+          title?: string
+          topic_ids?: string[]
+          transmission?: Database["public"]["Enums"]["ai_video_transmission"]
+          updated_at?: string
+          uploaded_by?: string | null
+          view_count?: number
+          youtube_id?: string | null
+        }
+        Relationships: []
+      }
       areas: {
         Row: {
           area: string
@@ -2944,7 +3022,20 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "instructor" | "student"
+      ai_video_difficulty:
+        | "beginner"
+        | "intermediate"
+        | "advanced"
+        | "test_ready"
+      ai_video_provider: "youtube" | "upload" | "external"
+      ai_video_status:
+        | "draft"
+        | "pending_review"
+        | "approved"
+        | "rejected"
+        | "archived"
+      ai_video_transmission: "any" | "manual" | "automatic"
+      app_role: "admin" | "instructor" | "student" | "senior_instructor"
       calendar_event_kind: "lesson" | "mock_test" | "theory" | "test" | "other"
       calendar_event_status: "scheduled" | "completed" | "cancelled" | "no_show"
       certificate_kind: "module" | "test_ready" | "passed"
@@ -2968,6 +3059,22 @@ export type Database = {
         | "homework"
         | "reference_point"
         | "gsm_method_callout"
+        | "ai_video"
+        | "interactive_animation"
+        | "quiz_true_false"
+        | "drag_drop"
+        | "hotspot"
+        | "scenario_challenge"
+        | "callout"
+        | "highway_code_rule"
+        | "road_sign"
+        | "road_marking"
+        | "vehicle_controls"
+        | "hazard_clip"
+        | "driving_test_tip"
+        | "summary"
+        | "progress_check"
+        | "downloadable_pdf"
       mock_result: "pass" | "fail"
       progress_stage:
         | "not_started"
@@ -3110,7 +3217,22 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "instructor", "student"],
+      ai_video_difficulty: [
+        "beginner",
+        "intermediate",
+        "advanced",
+        "test_ready",
+      ],
+      ai_video_provider: ["youtube", "upload", "external"],
+      ai_video_status: [
+        "draft",
+        "pending_review",
+        "approved",
+        "rejected",
+        "archived",
+      ],
+      ai_video_transmission: ["any", "manual", "automatic"],
+      app_role: ["admin", "instructor", "student", "senior_instructor"],
       calendar_event_kind: ["lesson", "mock_test", "theory", "test", "other"],
       calendar_event_status: ["scheduled", "completed", "cancelled", "no_show"],
       certificate_kind: ["module", "test_ready", "passed"],
@@ -3135,6 +3257,22 @@ export const Constants = {
         "homework",
         "reference_point",
         "gsm_method_callout",
+        "ai_video",
+        "interactive_animation",
+        "quiz_true_false",
+        "drag_drop",
+        "hotspot",
+        "scenario_challenge",
+        "callout",
+        "highway_code_rule",
+        "road_sign",
+        "road_marking",
+        "vehicle_controls",
+        "hazard_clip",
+        "driving_test_tip",
+        "summary",
+        "progress_check",
+        "downloadable_pdf",
       ],
       mock_result: ["pass", "fail"],
       progress_stage: [
