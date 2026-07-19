@@ -259,31 +259,37 @@ function HeroSection({ s }: SectionProps) {
   return (
     <section className="relative overflow-hidden bg-background">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:max-w-6xl lg:gap-6 lg:px-8 lg:pb-10 lg:pt-5">
-        {/* 1) GSM PLUS+ hero card */}
+        {/* 1) GSM PLUS+ premium teaser card */}
         <Link
           to="/auth"
           aria-label="GSM Plus+ coming soon — learn more"
-          className="group relative flex items-center gap-3 rounded-3xl border border-border/60 bg-card px-4 py-3.5 shadow-[0_8px_24px_-14px_rgba(29,42,34,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lg sm:gap-4 sm:px-5 sm:py-4"
+          className="group relative overflow-hidden rounded-3xl border border-accent/30 bg-gradient-to-br from-primary via-primary to-[color-mix(in_oklab,var(--primary)_88%,black)] px-4 py-4 text-primary-foreground shadow-[0_18px_40px_-24px_rgba(29,42,34,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-xl sm:px-6 sm:py-5"
         >
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-primary-foreground shadow-md sm:h-12 sm:w-12">
-            <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-2">
-              <GsmPlus
-                className="text-[20px] sm:text-[24px]"
-                gsmClassName="text-primary"
-                plusClassName="text-accent"
-              />
-              <span className="rounded-full border border-accent/50 bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
-                Coming Soon
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-accent/25 blur-2xl"
+          />
+          <span className="relative flex items-center gap-3 sm:gap-4">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-accent text-accent-foreground shadow-md sm:h-12 sm:w-12">
+              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex flex-wrap items-center gap-2">
+                <GsmPlus
+                  className="text-[20px] sm:text-[24px]"
+                  gsmClassName="text-primary-foreground"
+                  plusClassName="text-accent"
+                />
+                <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
+                  Coming Soon
+                </span>
+              </span>
+              <span className="mt-1 block text-[12px] font-medium text-primary-foreground/85 sm:text-[13px]">
+                The premium GSM learner platform — one place for progress, videos, theory & hazard perception.
               </span>
             </span>
-            <span className="mt-0.5 block text-[11px] font-medium text-muted-foreground sm:text-xs">
-              New learner portal launching soon
-            </span>
+            <ArrowRight className="h-5 w-5 text-accent transition-transform duration-200 group-hover:translate-x-0.5" />
           </span>
-          <ArrowRight className="h-5 w-5 text-accent transition-transform duration-200 group-hover:translate-x-0.5" />
         </Link>
 
         {/* 2) Mercedes hero image */}
