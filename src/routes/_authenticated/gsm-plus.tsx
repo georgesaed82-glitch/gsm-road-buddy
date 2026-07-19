@@ -388,14 +388,14 @@ function TopicRow({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-1.5">
+      <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
         {STAGES.map((s) => (
           <button
             key={s}
             type="button"
             disabled={disabled}
             onClick={() => onSetStage(s)}
-            className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide transition-all disabled:opacity-50 sm:text-[11px] ${
+            className={`min-h-[36px] rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide transition-all disabled:opacity-50 sm:min-h-[32px] sm:text-[11px] ${
               stage === s
                 ? STAGE_COLOUR[s] + " ring-2 ring-accent ring-offset-1"
                 : "bg-muted/40 text-muted-foreground hover:bg-muted"
