@@ -689,42 +689,138 @@ function QuizzesSection({ s }: SectionProps) {
 function PortalSection({ s }: SectionProps) {
   const portalHref = or(s.cta_primary_href, "/auth") === "/dashboard" ? "/auth" : or(s.cta_primary_href, "/auth");
   return (
-    <section className="bg-primary py-16 text-primary-foreground sm:py-20 lg:py-24">
-      <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/60">
-          <span className="h-px w-8 bg-accent" />
-          {or(s.eyebrow, "GSM Plus")}
-          <span className="h-px w-8 bg-accent" />
+    <section className="relative overflow-hidden bg-primary py-16 text-primary-foreground sm:py-20 lg:py-24">
+      {/* soft radial glow for premium feel */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          background:
+            "radial-gradient(60% 45% at 15% 20%, color-mix(in oklab, var(--accent) 22%, transparent) 0%, transparent 70%), radial-gradient(50% 40% at 90% 90%, color-mix(in oklab, var(--accent) 14%, transparent) 0%, transparent 70%)",
+        }}
+      />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          {/* Left column — narrative */}
+          <div>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-2 rounded-full border border-accent/50 bg-accent/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
+                <Sparkles className="h-3.5 w-3.5" />
+                {or(s.eyebrow, "GSM Learning Platform")}
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
+                <Clock className="h-3.5 w-3.5" />
+                Coming Soon
+              </span>
+            </div>
+
+            <h2 className="mt-5 font-display text-4xl font-medium leading-[1.04] tracking-tight sm:text-5xl">
+              {s.title && s.title.trim().length > 0 ? s.title : (
+                <>
+                  <GsmPlus
+                    className="text-4xl sm:text-5xl"
+                    gsmClassName="text-primary-foreground"
+                    plusClassName="text-accent"
+                  />
+                </>
+              )}
+            </h2>
+
+            {/* One-sentence explainer */}
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-primary-foreground/90 sm:text-xl">
+              {or(
+                s.subtitle,
+                "GSM Plus is our premium learner platform — everything you need to prepare, practise and pass, in one place.",
+              )}
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Button
+                asChild
+                size="lg"
+                className="h-14 rounded-2xl bg-accent px-7 text-accent-foreground shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-xl active:translate-y-0"
+              >
+                <a
+                  href="mailto:gsmdrivingschool@outlook.com?subject=Join%20GSM%20Plus%20waiting%20list"
+                  className="inline-flex items-center gap-2 font-semibold"
+                >
+                  Join GSM Plus
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="h-14 rounded-2xl border-accent/60 bg-transparent px-7 text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/10 active:translate-y-0"
+              >
+                <a
+                  href={portalHref}
+                  className="inline-flex items-center gap-2 font-semibold"
+                >
+                  Learn more
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </Button>
+            </div>
+
+            <p className="mt-5 text-xs text-primary-foreground/60">
+              {or(
+                s.body,
+                "Lesson progress, driving topics, training videos, theory practice, mock tests and personalised feedback — all in one dashboard.",
+              )}
+            </p>
+          </div>
+
+          {/* Right column — Free vs GSM Plus comparison card */}
+          <div className="relative rounded-[2rem] border border-accent/25 bg-primary-foreground/5 p-3 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.6)] backdrop-blur-sm sm:p-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {/* Free */}
+              <div className="rounded-2xl border border-primary-foreground/10 bg-primary-foreground/[0.06] p-5">
+                <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary-foreground/60">
+                  Free
+                </div>
+                <div className="mt-1 font-display text-xl font-semibold text-primary-foreground">
+                  Starter access
+                </div>
+                <ul className="mt-4 space-y-2 text-sm text-primary-foreground/85">
+                  {["Basic info & road signs", "Selected learning material", "Starter theory quizzes"].map((f) => (
+                    <li key={f} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary-foreground/60" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* GSM Plus */}
+              <div className="relative rounded-2xl border border-accent/60 bg-accent/12 p-5 ring-1 ring-accent/40">
+                <span className="absolute -top-2 right-3 rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
+                  Premium
+                </span>
+                <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-accent">
+                  GSM Plus
+                </div>
+                <div className="mt-1 font-display text-xl font-semibold text-primary-foreground">
+                  The full platform
+                </div>
+                <ul className="mt-4 space-y-2 text-sm text-primary-foreground">
+                  {[
+                    "Full syllabus & lesson progress",
+                    "AI video library & animations",
+                    "Hazard perception + mock tests",
+                    "Personalised instructor feedback",
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                      <span className="font-medium">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-        <h2 className="mt-5 font-display text-4xl font-medium leading-[1.05] tracking-tight sm:text-5xl">
-          {s.title && s.title.trim().length > 0 ? (
-            s.title
-          ) : (
-            <>GSM PLUS</>
-          )}
-        </h2>
-        <p className="mt-4 text-xl font-medium leading-relaxed text-primary-foreground/90 sm:text-2xl">
-          {or(s.subtitle, "Your driving journey, all in one place.")}
-        </p>
-        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-primary-foreground/70 sm:text-lg">
-          {or(
-            s.body,
-            "Track your lessons, monitor your progress, practise for your theory test and access everything you need from one simple dashboard.",
-          )}
-        </p>
-        <Button
-          asChild
-          size="lg"
-          className="mt-8 h-14 rounded-xl bg-accent px-8 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
-        >
-          <a
-            href={portalHref}
-            className="inline-flex items-center gap-2 font-medium"
-          >
-            {or(s.cta_primary_label, "Open your portal")}
-            <ArrowRight className="h-4 w-4" />
-          </a>
-        </Button>
       </div>
     </section>
   );
