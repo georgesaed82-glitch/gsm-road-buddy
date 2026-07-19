@@ -55,10 +55,6 @@ function InstructorsPage() {
               <InstructorCard key={instructor.id} instructor={instructor} />
             ))}
           </div>
-          <p className="mx-auto mt-10 max-w-3xl rounded-2xl border border-dashed border-border bg-secondary/30 p-4 text-center text-sm leading-relaxed text-muted-foreground">
-            Instructor prices may vary depending on the instructor's qualifications, experience,
-            lesson location and any package discounts available.
-          </p>
         </div>
       </section>
     </div>
@@ -67,21 +63,17 @@ function InstructorsPage() {
 
 type BioParts = {
   description: string | null;
-  standard: string | null;
-  packageRate: string | null;
   extra: string[];
 };
 
 function parseBio(bio: string): BioParts {
-  const parts: BioParts = { description: null, standard: null, packageRate: null, extra: [] };
+  const parts: BioParts = { description: null, extra: [] };
   const lines = bio.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   for (const line of lines) {
     const lower = line.toLowerCase();
-    if (lower.startsWith("standard rate:")) {
-      parts.standard = line.replace(/^standard rate:\s*/i, "").trim();
-    } else if (lower.startsWith("12-hour package:") || lower.startsWith("package:")) {
-      parts.packageRate = line.replace(/^(12-hour package|package):\s*/i, "").trim();
-    } else if (!parts.description) {
+    if (lower.startsWith("standard rate:")) continue;
+    if (lower.startsWith("12-hour package:") || lower.startsWith("package:")) continue;
+    if (!parts.description) {
       parts.description = line;
     } else {
       parts.extra.push(line);
@@ -132,26 +124,16 @@ function InstructorCard({ instructor }: { instructor: InstructorRow }) {
           </div>
         )}
 
-        {bio.description && (
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{bio.description}</p>
-        )}
-
-        {(bio.standard || bio.packageRate) && (
-          <dl className="mt-5 space-y-2 rounded-xl border border-border/60 bg-secondary/30 p-3 text-sm">
-            {bio.standard && (
-              <div className="flex items-baseline justify-between gap-3">
-                <dt className="text-muted-foreground">Standard rate</dt>
-                <dd className="text-right font-semibold text-foreground">{bio.standard}</dd>
-              </div>
-            )}
-            {bio.packageRate && (
-              <div className="flex items-baseline justify-between gap-3 border-t border-border/50 pt-2">
-                <dt className="text-muted-foreground">12-hour package</dt>
-                <dd className="text-right font-semibold text-primary">{bio.packageRate}</dd>
-              </div>
-            )}
-          </dl>
-        )}
+        <div className="mt-4 flex flex-col gap-2">
+          {bio.description && (
+            <p className="text-sm leading-relaxed text-muted-foreground">{bio.description}</p>
+          )}
+          {bio.extra.map((line) => (
+            <p key={line} className="text-sm leading-relaxed text-muted-foreground">
+              {line}
+            </p>
+          ))}
+        </div>
 
         <div className="mt-auto pt-6">
           <Button asChild className="w-full">
