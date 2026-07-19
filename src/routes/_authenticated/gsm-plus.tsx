@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { CheckCircle2, Circle, Clock, Sparkles, Trophy, Layers, PlayCircle, Lock } from "lucide-react";
+import { CheckCircle2, Circle, Clock, Sparkles, Trophy, Layers, PlayCircle, Lock, ArrowRight } from "lucide-react";
 import { PortalShell } from "@/components/PortalShell";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -98,39 +98,91 @@ function GsmPlusHome() {
     return n;
   }, [topics, progressByTopic]);
 
+  // Continue-learning: pick the first non-completed lesson across the syllabus,
+  // falling back to the most recently touched (has any progress %).
+  const continueLesson = useMemo(() => {
+    const all = lessonsQ.data ?? [];
+    if (all.length === 0) return null;
+    const inProgress = all.find((l) => l.status !== "completed" && l.progress_pct > 0);
+    if (inProgress) return inProgress;
+    const nextUp = all.find((l) => l.status !== "completed");
+    return nextUp ?? all[0];
+  }, [lessonsQ.data]);
+
   return (
     <PortalShell title="GSM Plus" eyebrow="The complete GSM Learning Platform">
       {/* Readiness hero */}
-      <section className="rounded-3xl border border-border/60 bg-gradient-to-br from-primary to-primary/90 p-6 text-primary-foreground shadow-lg sm:p-8">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-accent">
-          <Sparkles className="h-3.5 w-3.5" /> Your GSM journey
-        </div>
-        <h1 className="mt-2 font-display text-3xl font-semibold sm:text-4xl">
-          Test-readiness · {readiness}%
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-primary-foreground/85 sm:text-base">
-          Progress is tracked across every topic in the GSM syllabus using the 7-stage system
-          (Introduced → Test standard → Completed). Update each topic as you master it — your
-          instructor sees the same view.
-        </p>
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <StatCard
-            icon={<Layers className="h-4 w-4" />}
-            label="Modules"
-            value={`${modules.length}`}
-          />
-          <StatCard
-            icon={<Clock className="h-4 w-4" />}
-            label="Topics in syllabus"
-            value={`${totalTopics}`}
-          />
-          <StatCard
-            icon={<Trophy className="h-4 w-4" />}
-            label="Topics test-ready"
-            value={`${completedCount}`}
-          />
+      <section className="relative overflow-hidden rounded-3xl border border-accent/30 bg-gradient-to-br from-primary to-primary/90 p-6 text-primary-foreground shadow-lg sm:p-8">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/30 blur-3xl"
+        />
+        <div className="relative grid gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
+          <ProgressRing value={readiness} />
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-accent">
+              <Sparkles className="h-3.5 w-3.5" /> Your GSM journey
+            </div>
+            <h1 className="mt-2 font-display text-3xl font-semibold sm:text-4xl">
+              Test-readiness · {readiness}%
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm text-primary-foreground/85 sm:text-base">
+              Every topic is graded on the 7-stage GSM system (Introduced → Test standard → Completed).
+              Your instructor sees the same view, so we always pick up right where you left off.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <StatCard
+                icon={<Layers className="h-4 w-4" />}
+                label="Modules"
+                value={`${modules.length}`}
+              />
+              <StatCard
+                icon={<Clock className="h-4 w-4" />}
+                label="Topics"
+                value={`${totalTopics}`}
+              />
+              <StatCard
+                icon={<Trophy className="h-4 w-4" />}
+                label="Test-ready"
+                value={`${completedCount}`}
+              />
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Continue learning */}
+      {continueLesson ? (
+        <section className="mt-6">
+          <Link
+            to="/gsm-plus/lesson/$lessonId"
+            params={{ lessonId: continueLesson.id }}
+            className="group flex flex-col gap-4 rounded-3xl border border-accent/40 bg-card p-5 shadow-[0_18px_45px_-32px_rgba(29,42,34,0.35)] transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-xl sm:flex-row sm:items-center sm:justify-between sm:p-6"
+          >
+            <div className="flex min-w-0 items-center gap-4">
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-accent text-accent-foreground shadow-md">
+                <PlayCircle className="h-7 w-7" />
+              </span>
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
+                  {continueLesson.status === "completed"
+                    ? "Revise"
+                    : continueLesson.progress_pct > 0
+                      ? `Continue — ${continueLesson.progress_pct}%`
+                      : "Start your next lesson"}
+                </div>
+                <div className="mt-1 truncate font-display text-xl font-semibold text-primary sm:text-2xl">
+                  {continueLesson.title}
+                </div>
+              </div>
+            </div>
+            <span className="inline-flex h-12 items-center gap-2 self-start rounded-2xl bg-primary px-5 font-semibold text-primary-foreground shadow-md transition-transform group-hover:translate-x-0.5 sm:self-auto">
+              {continueLesson.progress_pct > 0 ? "Resume" : "Open lesson"}
+              <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+        </section>
+      ) : null}
 
       {/* Modules */}
       <div className="mt-8 space-y-6">
@@ -177,6 +229,50 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
         {label}
       </div>
       <div className="mt-1 font-display text-2xl font-semibold sm:text-3xl">{value}</div>
+    </div>
+  );
+}
+
+function ProgressRing({ value }: { value: number }) {
+  const pct = Math.max(0, Math.min(100, value));
+  const size = 120;
+  const stroke = 10;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const dash = (pct / 100) * c;
+  return (
+    <div className="relative grid h-[120px] w-[120px] shrink-0 place-items-center">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={stroke}
+          className="text-primary-foreground/15"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          className="text-accent"
+          strokeDasharray={`${dash} ${c - dash}`}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </svg>
+      <div className="absolute inset-0 grid place-items-center text-center">
+        <div>
+          <div className="font-display text-3xl font-bold leading-none">{pct}%</div>
+          <div className="mt-1 text-[10px] uppercase tracking-[0.22em] text-primary-foreground/70">
+            Ready
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -292,14 +388,14 @@ function TopicRow({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-1.5">
+      <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
         {STAGES.map((s) => (
           <button
             key={s}
             type="button"
             disabled={disabled}
             onClick={() => onSetStage(s)}
-            className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide transition-all disabled:opacity-50 sm:text-[11px] ${
+            className={`min-h-[36px] rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide transition-all disabled:opacity-50 sm:min-h-[32px] sm:text-[11px] ${
               stage === s
                 ? STAGE_COLOUR[s] + " ring-2 ring-accent ring-offset-1"
                 : "bg-muted/40 text-muted-foreground hover:bg-muted"
@@ -325,7 +421,7 @@ function TopicRow({
                   <Link
                     to="/gsm-plus/lesson/$lessonId"
                     params={{ lessonId: l.id }}
-                    className="group flex items-center justify-between gap-3 rounded-xl bg-background px-3 py-2 text-sm shadow-sm transition-colors hover:bg-accent/5"
+                    className="group flex min-h-[52px] items-center justify-between gap-3 rounded-xl bg-background px-3.5 py-3 text-sm shadow-sm transition-colors hover:bg-accent/5"
                   >
                     <span className="flex min-w-0 items-center gap-2">
                       {complete ? (

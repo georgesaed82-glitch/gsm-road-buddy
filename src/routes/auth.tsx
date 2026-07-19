@@ -583,15 +583,67 @@ function AuthPage() {
         </div>
       </section>
 
+      {/* Who it's for + Why different */}
+      <section className="border-b border-border/60 bg-background px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2">
+          <div className="rounded-3xl border border-border/60 bg-card p-7 shadow-[0_18px_45px_-32px_rgba(29,42,34,0.35)] sm:p-8">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
+              <User className="h-3.5 w-3.5" /> Who it's for
+            </div>
+            <h2 className="mt-4 font-display text-2xl font-bold text-foreground sm:text-3xl">
+              Made for GSM learners — from first lesson to test day.
+            </h2>
+            <ul className="mt-5 space-y-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+              {[
+                "Absolute beginners starting their very first lesson.",
+                "Learners who want to revise between practical sessions.",
+                "Students preparing for the theory or practical test.",
+                "Parents supervising private practice at home.",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-3xl border border-accent/40 bg-primary p-7 text-primary-foreground shadow-[0_25px_60px_-30px_rgba(35,75,54,0.55)] sm:p-8">
+            <div className="inline-flex items-center gap-2 rounded-full bg-accent/20 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
+              <Sparkles className="h-3.5 w-3.5" /> Why it's different
+            </div>
+            <h2 className="mt-4 font-display text-2xl font-bold sm:text-3xl">
+              Built by real GSM instructors — not a generic app.
+            </h2>
+            <ul className="mt-5 space-y-3 text-sm leading-relaxed text-primary-foreground/90 sm:text-base">
+              {[
+                "Every topic is taught the GSM way — MSPSL, POM, reference points and plain-English \"why\" explanations.",
+                "Hazard clips are filmed on the roads you actually drive around West London — not stock footage.",
+                "Your instructor sees the same progress view, so lessons pick up exactly where you left off.",
+                "One place for progress, videos, animations, theory and mock tests — no other app to juggle.",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* All included modules */}
       <section className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">
-              What students will be able to do
+              All included learning modules
             </div>
             <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
-              Everything that will support your practical driving lessons.
+              Everything included in GSM Plus.
             </h2>
+            <p className="mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg">
+              A complete learning system — every tool you need from day one right through to your practical test.
+            </p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {portalFeatures.map((feature) => {
@@ -609,6 +661,30 @@ function AuthPage() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Highlight strip — headline modules the user asked to see called out */}
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: PlaySquare, label: "AI Video Library" },
+              { icon: BarChart3, label: "Student Progress System" },
+              { icon: Eye, label: "Hazard Perception" },
+              { icon: Trophy, label: "Theory Tests" },
+              { icon: BookOpen, label: "Highway Code" },
+              { icon: Signpost, label: "Road Signs" },
+              { icon: MonitorPlay, label: "Driving Animations" },
+              { icon: MessageSquareText, label: "Premium Support" },
+            ].map(({ icon: Icon, label }) => (
+              <div
+                key={label}
+                className="flex items-center gap-3 rounded-2xl border border-accent/30 bg-accent/5 px-4 py-3"
+              >
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
+                  <Icon className="h-4 w-4" />
+                </span>
+                <span className="text-sm font-semibold text-foreground">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
