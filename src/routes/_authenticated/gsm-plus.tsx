@@ -233,6 +233,50 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
+function ProgressRing({ value }: { value: number }) {
+  const pct = Math.max(0, Math.min(100, value));
+  const size = 120;
+  const stroke = 10;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const dash = (pct / 100) * c;
+  return (
+    <div className="relative grid h-[120px] w-[120px] shrink-0 place-items-center">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={stroke}
+          className="text-primary-foreground/15"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          className="text-accent"
+          strokeDasharray={`${dash} ${c - dash}`}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </svg>
+      <div className="absolute inset-0 grid place-items-center text-center">
+        <div>
+          <div className="font-display text-3xl font-bold leading-none">{pct}%</div>
+          <div className="mt-1 text-[10px] uppercase tracking-[0.22em] text-primary-foreground/70">
+            Ready
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ModuleBlock({
   module: m,
   topics,
