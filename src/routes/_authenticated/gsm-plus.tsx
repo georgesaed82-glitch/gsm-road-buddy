@@ -421,7 +421,7 @@ function TopicRow({
                   <Link
                     to="/gsm-plus/lesson/$lessonId"
                     params={{ lessonId: l.id }}
-                    className="group flex items-center justify-between gap-3 rounded-xl bg-background px-3 py-2 text-sm shadow-sm transition-colors hover:bg-accent/5"
+                    className="group flex min-h-[52px] items-center justify-between gap-3 rounded-xl bg-background px-3.5 py-3 text-sm shadow-sm transition-colors hover:bg-accent/5"
                   >
                     <span className="flex min-w-0 items-center gap-2">
                       {complete ? (
