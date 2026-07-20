@@ -378,20 +378,20 @@ const FEATURES: { icon: typeof UserRound; title: string; body: string }[] = [
 function FeatureStrip() {
   return (
     <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-12 lg:max-w-6xl lg:px-8 lg:pb-8">
-      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border/60 bg-card px-4 py-5 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:grid-cols-4 sm:gap-6 sm:px-6 sm:py-6 lg:gap-4 lg:px-5 lg:py-4">
+      <div className="grid grid-cols-2 gap-4 rounded-2xl border border-border/60 bg-card px-4 py-5 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:grid-cols-4 sm:gap-6 sm:px-6 sm:py-6 lg:gap-4 lg:px-5 lg:py-4">
         {FEATURES.map(({ icon: Icon, title, body }) => (
           <div
             key={title}
-            className="flex items-start gap-3 sm:gap-4 lg:gap-3"
+            className="flex flex-col items-center text-center gap-2 sm:flex-row sm:items-start sm:text-left sm:gap-4 lg:gap-3"
           >
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent sm:h-11 sm:w-11 lg:h-9 lg:w-9">
               <Icon className="h-5 w-5 lg:h-[18px] lg:w-[18px]" />
             </span>
             <div className="min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary sm:text-xs lg:text-[11px]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary sm:text-xs sm:tracking-[0.14em] lg:text-[11px]">
                 {title}
               </div>
-              <div className="mt-1 text-[12px] leading-snug text-muted-foreground sm:text-[13px] lg:text-[12px]">
+              <div className="mt-1 text-[12px] leading-snug text-muted-foreground sm:text-[13px] lg:text-[12px] break-words">
                 {body}
               </div>
             </div>
