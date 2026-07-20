@@ -86,8 +86,9 @@ export function BrandPlate({
         <div className="mt-1.5">
           <span
             className={cn(
-              "inline-flex items-center rounded-md border px-2 py-[2px] font-semibold tracking-[0.18em]",
+              "inline-flex items-center rounded-md border font-semibold tracking-[0.18em]",
               s.badge,
+              s.badgePadding ?? "px-2 py-[2px]",
             )}
             style={{
               color: COPPER_LIGHT,
