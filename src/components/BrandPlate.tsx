@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import { cn } from "@/lib/utils";
 
-type Size = "xs" | "sm" | "md" | "lg" | "xl";
+type Size = "xs" | "sm" | "md" | "lg" | "xl" | "hero";
 
 const COPPER = "#C6873C";
 const COPPER_LIGHT = "#E4A85B";
@@ -196,5 +196,13 @@ const SIZES = {
     title: "text-[32px] xl:text-[36px]",
     subtitle: "text-[13px] xl:text-[14px]",
     badge: "text-[11px] xl:text-[12.5px]",
+  },
+  hero: {
+    padding: "px-6 py-4 pr-8 lg:px-8 lg:py-5 lg:pr-10 xl:px-10 xl:py-6 xl:pr-12",
+    logoWrap: "h-[92px] w-[92px] lg:h-[112px] lg:w-[112px] xl:h-[128px] xl:w-[128px]",
+    title:
+      "text-[38px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[1] tracking-[-0.025em]",
+    subtitle: "text-[15px] lg:text-[18px] xl:text-[20px]",
+    badge: "text-[12px] lg:text-[14px] xl:text-[15px]",
   },
 } as const;
