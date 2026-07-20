@@ -258,7 +258,7 @@ function HeroSection({ s }: SectionProps) {
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:max-w-6xl lg:gap-6 lg:px-8 lg:pb-10 lg:pt-5">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:max-w-[1180px] lg:gap-8 lg:px-8 lg:pb-8 lg:pt-4">
         {/* 1) GSM PLUS+ premium teaser card */}
         <Link
           to="/auth"
@@ -292,26 +292,26 @@ function HeroSection({ s }: SectionProps) {
           </span>
         </Link>
 
-        {/* 2) Mercedes hero image — fills the content area on all sizes
-            using object-cover so there are no white bars on the sides. */}
-        <div className="overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-2xl ring-1 ring-border/40">
+        {/* Desktop: two-column hero (image + copy). Mobile keeps stacked. */}
+        <div className="lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-10">
+        <div className="overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-2xl ring-1 ring-border/40 lg:order-1">
           <img
             src={or(s.image_url, heroCarImage.url)}
             alt="The GSM Driving School Mercedes-Benz GLA AMG Line with a green rooftop sign and GSM 2005 number plate, parked on a leafy West London street."
-            className="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10] lg:aspect-[21/9]"
+            className="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10] lg:aspect-[4/3]"
             width={1536}
             height={1024}
             fetchPriority="high"
           />
         </div>
 
-        {/* 3) Tagline + buttons */}
-        <div className="flex flex-col justify-center">
+        {/* Tagline + buttons */}
+        <div className="mt-6 flex flex-col justify-center lg:mt-0 lg:order-2">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
-          <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:mt-4 lg:text-[44px] xl:text-[48px]">
+          <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:mt-3 lg:text-[40px] xl:text-[44px]">
             {renderHeroTitle(heroTitle)}
           </h1>
           <a
@@ -327,13 +327,13 @@ function HeroSection({ s }: SectionProps) {
             </div>
             <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mt-4 lg:max-w-xl lg:text-base">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mt-4 lg:max-w-none lg:text-[15px]">
             {or(
               s.body,
               "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.",
             )}
           </p>
-          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap lg:mt-6 lg:gap-3">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap lg:mt-5 lg:gap-3">
             <Button
               asChild
               size="lg"
@@ -361,6 +361,7 @@ function HeroSection({ s }: SectionProps) {
               </a>
             </Button>
           </div>
+        </div>
         </div>
       </div>
       <FeatureStrip />
