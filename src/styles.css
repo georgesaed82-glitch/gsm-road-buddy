@@ -137,6 +137,52 @@
     max-width: 100vw;
   }
 
+  /* Native-app feel: disable pull-to-refresh bounce, tap highlight,
+     text-callout, and the mobile scrollbar gutter. */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    overscroll-behavior-y: none;
+    -webkit-touch-callout: none;
+    /* Respect iOS/Android safe areas (notch, home indicator, status bar). */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Allow text selection inside inputs & long-form content. */
+  input, textarea, [contenteditable], article, p, li, h1, h2, h3, h4, h5, h6 {
+    -webkit-touch-callout: default;
+  }
+
+  /* Hide native scrollbars on mobile for an app-like surface. */
+  @media (max-width: 767px) {
+    html, body, * {
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+  }
+
+  /* When launched from the home screen (installed PWA), extend brand color
+     into the status-bar/home-indicator safe areas. */
+  @media (display-mode: standalone) {
+    html, body {
+      background-color: var(--color-background);
+      overscroll-behavior: none;
+    }
+  }
+
   *,
   *::before,
   *::after {

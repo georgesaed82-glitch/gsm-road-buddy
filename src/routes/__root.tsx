@@ -151,7 +151,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        name: "viewport",
+        content:
+          "width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1",
+      },
       { title: "GSM Driving School — Notting Hill & West London" },
       {
         name: "description",
