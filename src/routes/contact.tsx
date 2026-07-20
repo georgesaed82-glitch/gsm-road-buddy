@@ -114,14 +114,14 @@ function ContactPage() {
 
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((c) => {
               const inner = (
                 <>
-                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-accent/40 bg-primary text-accent shadow-sm">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center self-center rounded-2xl border border-accent/40 bg-primary text-accent shadow-sm sm:h-14 sm:w-14">
                     {c.icon}
                   </span>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                       {c.label}
                     </p>
@@ -130,8 +130,8 @@ function ContactPage() {
                         key={i}
                         className={
                           i === 0
-                            ? "mt-1 truncate font-display text-lg font-semibold text-foreground"
-                            : "text-sm text-muted-foreground"
+                            ? "mt-1 break-words font-display text-base font-semibold text-foreground sm:text-lg"
+                            : "text-sm text-muted-foreground break-words"
                         }
                       >
                         {line}
@@ -141,7 +141,7 @@ function ContactPage() {
                 </>
               );
               const className =
-                "group flex items-start gap-4 rounded-2xl border border-border/70 bg-card p-5 shadow-[0_2px_14px_-6px_rgba(29,42,34,0.18)] transition-all hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_10px_28px_-14px_rgba(29,42,34,0.35)]";
+                "group flex items-center gap-4 rounded-2xl border border-border/70 bg-card p-4 sm:p-5 shadow-[0_2px_14px_-6px_rgba(29,42,34,0.18)] transition-all hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_10px_28px_-14px_rgba(29,42,34,0.35)] min-w-0";
               if (c.href) {
                 return (
                   <a
