@@ -199,12 +199,12 @@ const SIZES = {
     badge: "text-[11px] xl:text-[12.5px]",
   },
   hero: {
-    padding: "px-6 py-4 pr-8 lg:px-8 lg:py-5 lg:pr-10 xl:px-10 xl:py-6 xl:pr-12",
-    logoWrap: "h-[92px] w-[92px] lg:h-[112px] lg:w-[112px] xl:h-[128px] xl:w-[128px]",
+    padding: "px-4 py-2.5 pr-5 lg:px-5 lg:py-3 lg:pr-7 xl:px-6 xl:py-3.5 xl:pr-8",
+    logoWrap: "h-[60px] w-[60px] lg:h-[68px] lg:w-[68px] xl:h-[76px] xl:w-[76px]",
     title:
-      "text-[38px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[1] tracking-[-0.025em]",
-    subtitle: "text-[15px] lg:text-[18px] xl:text-[20px]",
-    badge: "text-[12px] lg:text-[14px] xl:text-[15px]",
-    badgePadding: "px-3 py-1 lg:px-4 lg:py-1.5",
+      "text-[24px] lg:text-[30px] xl:text-[36px] 2xl:text-[40px] leading-[1.02] tracking-[-0.02em]",
+    subtitle: "text-[12px] lg:text-[13px] xl:text-[14px]",
+    badge: "text-[10px] lg:text-[11px] xl:text-[12px]",
+    badgePadding: "px-2 py-[2px] lg:px-2.5 lg:py-[3px]",
   },
 } as const;

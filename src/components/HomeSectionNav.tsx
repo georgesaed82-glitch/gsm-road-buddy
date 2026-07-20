@@ -87,60 +87,9 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
         </div>
       </nav>
 
-      {/* Desktop dot rail */}
-      <nav
-        aria-label="Jump to section"
-        className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-2 rounded-2xl border border-border/60 bg-card/90 p-2 shadow-xl lg:flex"
-      >
-        {sections.map((s) => (
-          s.href ? (
-            <Link
-              key={s.id}
-              title={s.label}
-              to={s.href}
-              className="group flex items-center gap-2"
-            >
-              <span
-                className={`h-2 w-2 rounded-full transition-all ${
-                  active === s.id ? "bg-accent scale-125" : "bg-border group-hover:bg-accent/70"
-                }`}
-              />
-              <span
-                className={`whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] transition-all ${
-                  active === s.id
-                    ? "text-primary opacity-100"
-                    : "text-muted-foreground opacity-0 group-hover:opacity-100"
-                }`}
-              >
-                {s.label}
-              </span>
-            </Link>
-          ) : (
-          <button
-            key={s.id}
-            type="button"
-            title={s.label}
-            onClick={() => jump(s.id)}
-            className="group flex items-center gap-2"
-          >
-            <span
-              className={`h-2 w-2 rounded-full transition-all ${
-                active === s.id ? "bg-accent scale-125" : "bg-border group-hover:bg-accent/70"
-              }`}
-            />
-            <span
-              className={`whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] transition-all ${
-                active === s.id
-                  ? "text-primary opacity-100"
-                  : "text-muted-foreground opacity-0 group-hover:opacity-100"
-              }`}
-            >
-              {s.label}
-            </span>
-          </button>
-          )
-        ))}
-      </nav>
+      {/* Desktop: no floating side rail — it blocked scrolling and felt
+          like a floating panel over the page. The sticky header + in-page
+          links are enough on wide screens. */}
     </>
   );
 }
