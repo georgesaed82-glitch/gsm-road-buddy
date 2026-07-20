@@ -225,12 +225,15 @@ export function Header() {
     <header
       className="sticky top-0 z-[120] w-full bg-background/95 supports-[backdrop-filter]:bg-background/95"
     >
-      <div className="mx-auto w-full max-w-7xl px-2 py-2 sm:px-4 sm:py-2.5 lg:px-6">
+      <div className="mx-auto w-full max-w-7xl px-2 py-2 sm:px-4 sm:py-2.5 lg:max-w-[1440px] lg:px-8 lg:py-4 xl:px-10">
         <div className="sm:hidden">
           <BrandPlate size="xs" fill homeLink rightSlot={actions} />
         </div>
-        <div className="hidden sm:block">
+        <div className="hidden sm:block lg:hidden">
           <BrandPlate size="sm" fill homeLink rightSlot={actions} />
+        </div>
+        <div className="hidden lg:block">
+          <BrandPlate size="hero" fill homeLink rightSlot={actions} />
         </div>
       </div>
     </header>
