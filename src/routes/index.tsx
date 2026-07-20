@@ -258,7 +258,7 @@ function HeroSection({ s }: SectionProps) {
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:max-w-6xl lg:gap-6 lg:px-8 lg:pb-10 lg:pt-5">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:max-w-[1180px] lg:gap-8 lg:px-8 lg:pb-8 lg:pt-4">
         {/* 1) GSM PLUS+ premium teaser card */}
         <Link
           to="/auth"
@@ -292,26 +292,26 @@ function HeroSection({ s }: SectionProps) {
           </span>
         </Link>
 
-        {/* 2) Mercedes hero image — fills the content area on all sizes
-            using object-cover so there are no white bars on the sides. */}
-        <div className="overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-2xl ring-1 ring-border/40">
+        {/* Desktop: two-column hero (image + copy). Mobile keeps stacked. */}
+        <div className="lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-10">
+        <div className="overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-2xl ring-1 ring-border/40 lg:order-1">
           <img
             src={or(s.image_url, heroCarImage.url)}
             alt="The GSM Driving School Mercedes-Benz GLA AMG Line with a green rooftop sign and GSM 2005 number plate, parked on a leafy West London street."
-            className="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10] lg:aspect-[21/9]"
+            className="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10] lg:aspect-[4/3]"
             width={1536}
             height={1024}
             fetchPriority="high"
           />
         </div>
 
-        {/* 3) Tagline + buttons */}
-        <div className="flex flex-col justify-center">
+        {/* Tagline + buttons */}
+        <div className="mt-6 flex flex-col justify-center lg:mt-0 lg:order-2">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
-          <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:mt-4 lg:text-[44px] xl:text-[48px]">
+          <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:mt-3 lg:text-[40px] xl:text-[44px]">
             {renderHeroTitle(heroTitle)}
           </h1>
           <a
@@ -327,13 +327,13 @@ function HeroSection({ s }: SectionProps) {
             </div>
             <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mt-4 lg:max-w-xl lg:text-base">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mt-4 lg:max-w-none lg:text-[15px]">
             {or(
               s.body,
               "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.",
             )}
           </p>
-          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap lg:mt-6 lg:gap-3">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap lg:mt-5 lg:gap-3">
             <Button
               asChild
               size="lg"
@@ -361,6 +361,7 @@ function HeroSection({ s }: SectionProps) {
               </a>
             </Button>
           </div>
+        </div>
         </div>
       </div>
       <FeatureStrip />
@@ -405,13 +406,13 @@ function FeatureStrip() {
 function WhySection({ s }: SectionProps) {
   const reasons = usePageBlocks("home-reasons", DEFAULT_REASONS);
   return (
-    <section className="py-12 sm:py-16 lg:py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+    <section className="py-12 sm:py-16 lg:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "Why GSM")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-4xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-[32px]">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -459,8 +460,8 @@ function PostcodesSection({ s }: SectionProps) {
 
 function AreasSection({ s }: SectionProps) {
   return (
-    <section className="border-b border-border bg-background py-14 sm:py-16 lg:py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+    <section className="border-b border-border bg-background py-14 sm:py-16 lg:py-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -486,39 +487,41 @@ function MemorableMomentsSection() {
     { url: memorable2.url, alt: "A GSM student smiling with their practical driving test pass certificate beside the GSM car" },
   ];
   return (
-    <section className="bg-background pt-6 pb-4 sm:pt-10 sm:pb-8 lg:pt-8 lg:pb-6">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl lg:px-8">
+    <section className="bg-background pt-6 pb-4 sm:pt-10 sm:pb-8 lg:py-10">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
           <span className="h-px w-8 bg-accent" />
           Memorable Moments
         </div>
-        <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl lg:text-3xl">
+        <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl lg:text-[30px]">
           Memorable Moments
           <span className="italic text-accent"> with GSM.</span>
         </h2>
-        <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-4 lg:mt-5 lg:gap-3">
-          {photos.map((p) => (
-            <div
-              key={p.url}
-              className="overflow-hidden rounded-2xl border border-border bg-background shadow-lg"
-            >
-              <img
-                src={p.url}
-                alt={p.alt}
-                loading="lazy"
-                className="aspect-[4/5] w-full object-cover lg:aspect-[4/3]"
-              />
-            </div>
-          ))}
-        </div>
-        <div className="mt-5 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:mt-8 sm:px-8 sm:py-8 lg:mt-6 lg:px-6 lg:py-6">
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
-            <span className="h-px w-8 bg-accent" />
-            About GSM
+        <div className="mt-5 sm:mt-6 lg:mt-6 lg:grid lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-8">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:gap-4">
+            {photos.map((p) => (
+              <div
+                key={p.url}
+                className="overflow-hidden rounded-2xl border border-border bg-background shadow-lg"
+              >
+                <img
+                  src={p.url}
+                  alt={p.alt}
+                  loading="lazy"
+                  className="aspect-[4/5] w-full object-cover lg:aspect-[4/5]"
+                />
+              </div>
+            ))}
           </div>
-          <p className="mt-4 font-display text-[18px] leading-[1.5] text-primary sm:text-[22px] sm:leading-[1.55] lg:mt-3 lg:text-[18px] lg:leading-[1.5]">
-            George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.
-          </p>
+          <div className="mt-5 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:mt-8 sm:px-8 sm:py-8 lg:mt-0 lg:px-7 lg:py-7">
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
+              <span className="h-px w-8 bg-accent" />
+              About GSM
+            </div>
+            <p className="mt-4 font-display text-[18px] leading-[1.5] text-primary sm:text-[22px] sm:leading-[1.55] lg:mt-3 lg:text-[18px] lg:leading-[1.55]">
+              George founded GSM in 2005 and has been DVSA-approved ever since. Michael, also DVSA-approved, joined the team bringing the same patient, structured teaching style.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -528,24 +531,24 @@ function MemorableMomentsSection() {
 function RecentPassSection({ s }: SectionProps) {
   return (
     <section className="bg-background pb-10 pt-2 sm:py-16 lg:py-10">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl lg:px-8">
-        <div className="flex flex-col gap-6 sm:gap-8">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
+        <div className="flex flex-col gap-6 sm:gap-8 lg:grid lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-10">
           {/* Photograph is shown in full — no text overlay. */}
           <div className="overflow-hidden rounded-3xl border border-border bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-xl">
             <img
               src={or(s.image_url, studentPassImage.url)}
               alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
-              className="aspect-[3/4] w-full object-cover object-center sm:aspect-[4/3] lg:aspect-[16/10]"
+              className="aspect-[3/4] w-full object-cover object-center sm:aspect-[4/3] lg:aspect-[4/5]"
               width={1200}
               height={1500}
             />
           </div>
-          <div className="rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:px-8 sm:py-8 lg:px-7 lg:py-6">
+          <div className="rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:px-8 sm:py-8 lg:px-8 lg:py-8">
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "About GSM")}
           </div>
-          <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl lg:mt-3 lg:text-3xl">
+          <h2 className="mt-3 font-display text-[22px] font-medium leading-[1.15] text-primary sm:mt-4 sm:text-4xl lg:mt-3 lg:text-[30px]">
             {s.title && s.title.trim().length > 0 ? (
               s.title
             ) : (
@@ -590,12 +593,12 @@ function GallerySection({ s }: SectionProps) {
         }));
   return (
     <section className="bg-muted py-12 sm:py-16 lg:py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "From our students")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl lg:text-4xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl lg:text-[32px]">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -616,12 +619,12 @@ function GallerySection({ s }: SectionProps) {
 function QuizzesSection({ s }: SectionProps) {
   return (
     <section className="border-t border-border bg-background py-12 sm:py-16 lg:py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "Free theory practice")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-4xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-[32px]">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -837,14 +840,14 @@ function PortalSection({ s }: SectionProps) {
 function CtaSection({ s }: SectionProps) {
   return (
     <section className="border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:max-w-6xl lg:px-8 lg:py-12">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:max-w-[1180px] lg:px-8 lg:py-12">
         <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               <span className="h-px w-8 bg-accent" />
               Ready to start
             </div>
-            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl lg:text-4xl">
+            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl lg:text-[34px]">
               {or(s.title, "Ready to start? Get in Touch.")}
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground lg:text-[15px]">
