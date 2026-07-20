@@ -237,10 +237,11 @@ export function AdminShell({
         })}
       </nav>
       <Link
-        to="/dashboard"
-        className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-border/70 px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-accent/5 hover:text-primary"
+        to="/gsm-plus"
+        className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-border/70 bg-gradient-to-br from-primary/95 to-primary px-3 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:brightness-110"
       >
-        ← GSM Plus
+        <span className="grid h-6 w-6 place-items-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">+</span>
+        Enter GSM Plus (Owner Preview)
       </Link>
       <button
         onClick={onSignOut}
