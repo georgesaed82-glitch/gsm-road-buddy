@@ -77,9 +77,10 @@ const groups: Group[] = [
     ],
   },
   {
-    id: "learning",
-    label: "Learning content",
+    id: "gsmplus",
+    label: "GSM Plus (learning)",
     items: [
+      { to: "/gsm-plus", label: "Open GSM Plus (preview)", icon: GraduationCap },
       { to: "/admin/learning", label: "Learning modules & topics", icon: GraduationCap },
       { to: "/admin/lessons", label: "Lessons CMS (legacy)", icon: GraduationCap },
       { to: "/admin/theory", label: "Theory questions CMS", icon: BookOpen },
