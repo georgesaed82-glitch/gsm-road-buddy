@@ -60,7 +60,7 @@ export function Header() {
   };
 
   const circleIconBtn =
-    "inline-flex h-9 w-9 items-center justify-center rounded-full border bg-card text-primary shadow-[0_2px_6px_rgba(0,0,0,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:h-10 sm:w-10 lg:h-14 lg:w-14 xl:h-16 xl:w-16 lg:[&_svg]:!h-6 lg:[&_svg]:!w-6 xl:[&_svg]:!h-7 xl:[&_svg]:!w-7";
+    "inline-flex h-9 w-9 items-center justify-center rounded-full border bg-card text-primary shadow-[0_2px_6px_rgba(0,0,0,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:h-10 sm:w-10 lg:h-11 lg:w-11 xl:h-12 xl:w-12 lg:[&_svg]:!h-5 lg:[&_svg]:!w-5 xl:[&_svg]:!h-[22px] xl:[&_svg]:!w-[22px]";
   const circleIconBtnStyle = { borderColor: "rgba(198,135,60,0.85)" } as const;
 
   const actions = (
