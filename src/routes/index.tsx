@@ -406,13 +406,13 @@ function FeatureStrip() {
 function WhySection({ s }: SectionProps) {
   const reasons = usePageBlocks("home-reasons", DEFAULT_REASONS);
   return (
-    <section className="py-12 sm:py-16 lg:py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+    <section className="py-12 sm:py-16 lg:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "Why GSM")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-4xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-[32px]">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -460,8 +460,8 @@ function PostcodesSection({ s }: SectionProps) {
 
 function AreasSection({ s }: SectionProps) {
   return (
-    <section className="border-b border-border bg-background py-14 sm:py-16 lg:py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+    <section className="border-b border-border bg-background py-14 sm:py-16 lg:py-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -593,12 +593,12 @@ function GallerySection({ s }: SectionProps) {
         }));
   return (
     <section className="bg-muted py-12 sm:py-16 lg:py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "From our students")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl lg:text-4xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] sm:text-5xl lg:text-[32px]">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -619,12 +619,12 @@ function GallerySection({ s }: SectionProps) {
 function QuizzesSection({ s }: SectionProps) {
   return (
     <section className="border-t border-border bg-background py-12 sm:py-16 lg:py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-6xl lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           <span className="h-px w-8 bg-accent" />
           {or(s.eyebrow, "Free theory practice")}
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-4xl">
+        <h2 className="mt-4 max-w-2xl font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl lg:text-[32px]">
           {s.title && s.title.trim().length > 0 ? (
             s.title
           ) : (
@@ -840,14 +840,14 @@ function PortalSection({ s }: SectionProps) {
 function CtaSection({ s }: SectionProps) {
   return (
     <section className="border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:max-w-6xl lg:px-8 lg:py-12">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:max-w-[1180px] lg:px-8 lg:py-12">
         <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               <span className="h-px w-8 bg-accent" />
               Ready to start
             </div>
-            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl lg:text-4xl">
+            <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl lg:text-[34px]">
               {or(s.title, "Ready to start? Get in Touch.")}
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground lg:text-[15px]">
