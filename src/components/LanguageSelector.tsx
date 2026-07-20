@@ -265,7 +265,21 @@ export function LanguageSelector({
         align={resolvedAlign}
         sideOffset={8}
         collisionPadding={12}
-        className="notranslate z-[200] w-[min(92vw,20rem)] overflow-hidden rounded-2xl border-border/70 p-0 shadow-2xl"
+        data-language-menu
+        // Higher than the mobile Sheet (z-50) and sticky chip bars (z-115)
+        // so the menu is never hidden behind other sections.
+        className="notranslate z-[300] w-[min(94vw,22rem)] overflow-hidden rounded-2xl border-border/70 p-0 shadow-2xl"
+        onOpenAutoFocus={(e) => {
+          // Let the search input handle focus itself; prevents iOS Safari
+          // from scrolling the popover off-screen on open.
+          e.preventDefault();
+        }}
+        onPointerDownOutside={(e) => {
+          // Prevent an ancestor Radix Dialog (e.g. the mobile menu Sheet)
+          // from closing when the user taps inside the language list.
+          const target = e.target as HTMLElement | null;
+          if (target?.closest('[data-language-menu]')) e.preventDefault();
+        }}
       >
         <div className="flex items-center justify-between border-b border-border/60 px-3 py-2">
           <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
