@@ -34,10 +34,9 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
 
   return (
     <>
-      {/* Mobile / tablet horizontal chip bar */}
       <nav
         aria-label="Jump to section"
-        className="notranslate sticky top-[64px] z-[115] mb-2 border-y border-border/60 bg-background/95 sm:top-[76px] lg:hidden"
+        className="notranslate sticky top-[64px] z-[115] mb-2 border-y border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:top-[76px] lg:top-[96px]"
         style={{
           WebkitMaskImage:
             "linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%)",
@@ -47,12 +46,12 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
       >
         <div
           ref={scrollerRef}
-          className="flex snap-x gap-1.5 overflow-x-auto overscroll-x-contain px-4 py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="mx-auto flex max-w-7xl snap-x gap-1.5 overflow-x-auto overscroll-x-contain px-4 py-2 [-ms-overflow-style:none] [scrollbar-width:none] lg:justify-center lg:gap-2 lg:px-8 lg:py-2.5 [&::-webkit-scrollbar]:hidden"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {sections.map((s) => {
             const isActive = active === s.id;
-            const cls = `shrink-0 snap-start whitespace-nowrap rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+            const cls = `shrink-0 snap-start whitespace-nowrap rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors lg:px-4 lg:py-2 lg:text-[12px] ${
               isActive
                 ? "border-accent bg-accent text-accent-foreground"
                 : "border-border/70 bg-card text-muted-foreground hover:border-accent/50 hover:text-primary"

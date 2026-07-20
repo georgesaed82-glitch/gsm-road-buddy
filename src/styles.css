@@ -134,7 +134,14 @@
   html,
   body {
     overflow-x: hidden;
-    max-width: 100vw;
+  }
+
+  /* Desktop: always keep the native vertical scrollbar visible so users
+     have a clear scroll affordance and no perception the page is locked. */
+  @media (min-width: 768px) {
+    html {
+      overflow-y: scroll;
+    }
   }
 
   /* Native-app feel: disable pull-to-refresh bounce, tap highlight,
