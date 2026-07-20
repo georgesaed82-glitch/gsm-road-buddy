@@ -60,7 +60,7 @@ export function Header() {
   };
 
   const circleIconBtn =
-    "inline-flex h-9 w-9 items-center justify-center rounded-full border bg-card text-primary shadow-[0_2px_6px_rgba(0,0,0,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:h-10 sm:w-10";
+    "inline-flex h-9 w-9 items-center justify-center rounded-full border bg-card text-primary shadow-[0_2px_6px_rgba(0,0,0,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:h-10 sm:w-10 lg:h-14 lg:w-14 xl:h-16 xl:w-16 lg:[&_svg]:!h-6 lg:[&_svg]:!w-6 xl:[&_svg]:!h-7 xl:[&_svg]:!w-7";
   const circleIconBtnStyle = { borderColor: "rgba(198,135,60,0.85)" } as const;
 
   const actions = (
@@ -225,12 +225,15 @@ export function Header() {
     <header
       className="sticky top-0 z-[120] w-full bg-background/95 supports-[backdrop-filter]:bg-background/95"
     >
-      <div className="mx-auto w-full max-w-7xl px-2 py-2 sm:px-4 sm:py-2.5 lg:px-6">
+      <div className="mx-auto w-full max-w-7xl px-2 py-2 sm:px-4 sm:py-2.5 lg:max-w-[1440px] lg:px-8 lg:py-4 xl:px-10">
         <div className="sm:hidden">
           <BrandPlate size="xs" fill homeLink rightSlot={actions} />
         </div>
-        <div className="hidden sm:block">
+        <div className="hidden sm:block lg:hidden">
           <BrandPlate size="sm" fill homeLink rightSlot={actions} />
+        </div>
+        <div className="hidden lg:block">
+          <BrandPlate size="hero" fill homeLink rightSlot={actions} />
         </div>
       </div>
     </header>
