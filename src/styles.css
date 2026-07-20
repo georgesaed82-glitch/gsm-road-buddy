@@ -187,6 +187,22 @@ html[dir="rtl"] video {
   }
 }
 
+/* Mobile app-like feel: hide the native vertical scrollbar rail on phones
+   so there is no thin vertical line running down the side of the page. */
+@media (max-width: 767px) {
+  html,
+  body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE / old Edge */
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+  }
+}
+
 /* iOS Safari safeguards for the AI chat widget: prevent focus-zoom
    (requires >=16px font-size) and prevent visualViewport keyboard
    resize from shifting the page layout. */

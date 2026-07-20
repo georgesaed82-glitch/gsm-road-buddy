@@ -292,12 +292,14 @@ function HeroSection({ s }: SectionProps) {
           </span>
         </Link>
 
-        {/* 2) Mercedes hero image */}
-        <div className="overflow-hidden rounded-3xl bg-muted shadow-2xl ring-1 ring-border/40">
+        {/* 2) Mercedes hero image — on desktop/laptop the full car is shown
+            using object-contain so it is never cropped. On mobile & tablet
+            we keep the immersive cover crop. */}
+        <div className="overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-2xl ring-1 ring-border/40">
           <img
             src={or(s.image_url, heroCarImage.url)}
             alt="The GSM Driving School Mercedes-Benz GLA AMG Line with a green rooftop sign and GSM 2005 number plate, parked on a leafy West London street."
-            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[21/9] lg:max-h-[46vh]"
+            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[16/9] lg:max-h-[52vh] lg:object-contain lg:object-center"
             width={1536}
             height={1024}
             fetchPriority="high"
@@ -528,17 +530,18 @@ function RecentPassSection({ s }: SectionProps) {
   return (
     <section className="bg-background pb-10 pt-2 sm:py-16 lg:py-10">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-4xl lg:px-8">
-        <div className="relative">
-          <div className="overflow-hidden rounded-3xl border border-border bg-background shadow-xl">
+        <div className="flex flex-col gap-6 sm:gap-8">
+          {/* Photograph is shown in full — no text overlay. */}
+          <div className="overflow-hidden rounded-3xl border border-border bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-xl">
             <img
               src={or(s.image_url, studentPassImage.url)}
               alt="A happy GSM student holding their practical driving test pass certificate next to the GSM car"
-              className="aspect-[3/4] w-full object-cover object-top sm:aspect-[4/3] lg:aspect-[16/9]"
+              className="aspect-[3/4] w-full object-contain object-center sm:aspect-[4/3] lg:aspect-[16/9]"
               width={1200}
               height={1500}
             />
           </div>
-          <div className="relative z-10 -mt-16 mx-3 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:-mt-24 sm:mx-8 sm:px-8 sm:py-8 lg:-mt-16 lg:px-7 lg:py-6">
+          <div className="rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:px-8 sm:py-8 lg:px-7 lg:py-6">
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "About GSM")}
