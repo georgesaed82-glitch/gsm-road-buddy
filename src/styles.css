@@ -136,14 +136,6 @@
     overflow-x: hidden;
   }
 
-  /* Desktop: always keep the native vertical scrollbar visible so users
-     have a clear scroll affordance and no perception the page is locked. */
-  @media (min-width: 768px) {
-    html {
-      overflow-y: scroll;
-    }
-  }
-
   /* Native-app feel: disable pull-to-refresh bounce, tap highlight,
      text-callout, and the mobile scrollbar gutter. */
   html {
@@ -187,6 +179,28 @@
     html, body {
       background-color: var(--color-background);
       overscroll-behavior: none;
+    }
+  }
+
+  /* Desktop/laptop must scroll like a normal website in Chrome and Safari.
+     Keep the mobile app-like rules above, but explicitly remove root/body
+     scroll locks for wider screens so mouse wheels, trackpads, keyboards and
+     the browser scrollbar all move the page from any point on the viewport. */
+  @media (min-width: 768px) {
+    html {
+      overflow-x: visible;
+      overflow-y: scroll;
+      overscroll-behavior-y: auto;
+      height: auto;
+      min-height: 100%;
+    }
+
+    body {
+      overflow-x: clip;
+      overflow-y: visible;
+      overscroll-behavior-y: auto;
+      height: auto;
+      min-height: 100%;
     }
   }
 
