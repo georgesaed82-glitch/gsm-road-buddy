@@ -292,12 +292,14 @@ function HeroSection({ s }: SectionProps) {
           </span>
         </Link>
 
-        {/* 2) Mercedes hero image */}
-        <div className="overflow-hidden rounded-3xl bg-muted shadow-2xl ring-1 ring-border/40">
+        {/* 2) Mercedes hero image — on desktop/laptop the full car is shown
+            using object-contain so it is never cropped. On mobile & tablet
+            we keep the immersive cover crop. */}
+        <div className="overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-2xl ring-1 ring-border/40">
           <img
             src={or(s.image_url, heroCarImage.url)}
             alt="The GSM Driving School Mercedes-Benz GLA AMG Line with a green rooftop sign and GSM 2005 number plate, parked on a leafy West London street."
-            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[21/9] lg:max-h-[46vh]"
+            className="aspect-[4/3] w-full object-cover sm:aspect-[16/10] lg:aspect-[16/9] lg:max-h-[52vh] lg:object-contain lg:object-center"
             width={1536}
             height={1024}
             fetchPriority="high"
