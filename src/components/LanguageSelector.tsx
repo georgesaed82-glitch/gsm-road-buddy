@@ -71,6 +71,18 @@ const LANGUAGES: Lang[] = [
 const STORAGE_KEY = "gsm_lang";
 const CHANGE_EVENT = "gsm-language-changed";
 
+function setGoogTransCookie(target: LangCode) {
+  const host = window.location.hostname;
+  const value = `/en/${target}`;
+  // Session cookie so switching back to English clears cleanly.
+  const base = `googtrans=${encodeURIComponent(value)}; path=/; SameSite=Lax`;
+  document.cookie = base;
+  const parts = host.split(".");
+  if (parts.length > 1 && host !== "localhost") {
+    document.cookie = base + `; domain=.${parts.slice(-2).join(".")}`;
+  }
+}
+
 function clearGoogTransCookie() {
   const host = window.location.hostname;
   const expire = "googtrans=; path=/; max-age=0; SameSite=Lax";
@@ -79,6 +91,43 @@ function clearGoogTransCookie() {
   if (parts.length > 1 && host !== "localhost") {
     document.cookie = expire + `; domain=.${parts.slice(-2).join(".")}`;
   }
+}
+
+const GT_SCRIPT_ID = "gsm-google-translate-script";
+const GT_MOUNT_ID = "google_translate_element";
+
+function ensureGoogleTranslateLoaded() {
+  if (document.getElementById(GT_SCRIPT_ID)) return;
+  if (!document.getElementById(GT_MOUNT_ID)) {
+    const mount = document.createElement("div");
+    mount.id = GT_MOUNT_ID;
+    mount.style.cssText =
+      "position:fixed;left:-9999px;top:-9999px;width:0;height:0;overflow:hidden;";
+    document.body.appendChild(mount);
+  }
+  (window as unknown as { googleTranslateElementInit?: () => void }).googleTranslateElementInit =
+    function googleTranslateElementInit() {
+      const w = window as unknown as {
+        google?: { translate?: { TranslateElement?: new (opts: object, id: string) => unknown } };
+      };
+      const Ctor = w.google?.translate?.TranslateElement;
+      if (!Ctor) return;
+      // eslint-disable-next-line no-new
+      new Ctor(
+        {
+          pageLanguage: "en",
+          includedLanguages:
+            "ar,bn,de,el,en,es,fa,fil,fr,hi,id,it,iw,ja,ko,ms,nl,pa,pl,pt,ro,ru,th,tr,uk,ur,vi,zh-CN,zh-TW",
+          autoDisplay: false,
+        },
+        GT_MOUNT_ID,
+      );
+    };
+  const s = document.createElement("script");
+  s.id = GT_SCRIPT_ID;
+  s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  s.async = true;
+  document.head.appendChild(s);
 }
 
 function currentLangFromCookie(): LangCode {
@@ -98,22 +147,20 @@ function setDocumentLanguage(lang: LangCode) {
   document.body?.setAttribute("dir", rtl ? "rtl" : "ltr");
 }
 
-function removeLegacyTranslateNodes() {
-  document
-    .querySelectorAll("#google_translate_element, .goog-te-banner-frame, .goog-te-menu-frame")
-    .forEach((node) => node.remove());
-  document
-    .querySelectorAll<HTMLScriptElement>('script[src*="translate.google"]')
-    .forEach((node) => node.remove());
-}
-
-function applyLanguage(lang: LangCode) {
+function applyLanguage(lang: LangCode, opts: { reload?: boolean } = {}) {
   setDocumentLanguage(lang);
   localStorage.setItem(STORAGE_KEY, lang);
-  clearGoogTransCookie();
-  removeLegacyTranslateNodes();
   if (lang === "en") {
+    clearGoogTransCookie();
+    if (opts.reload) window.location.reload();
     return;
+  }
+  setGoogTransCookie(lang);
+  ensureGoogleTranslateLoaded();
+  if (opts.reload) {
+    // Reload so Google Translate picks up the cookie and translates the
+    // full page — menus, headings, buttons, body copy, and portal content.
+    window.location.reload();
   }
 }
 
@@ -138,7 +185,13 @@ export function LanguageSelector({
     const fromCookie = currentLangFromCookie();
     const initial = saved && LANGUAGES.some((l) => l.code === saved) ? saved : fromCookie;
     setActive(initial);
-    applyLanguage(initial);
+    // On mount, honour the current cookie without reloading. If a
+    // non-English cookie is set, ensure the widget is loaded so the page
+    // gets translated.
+    setDocumentLanguage(initial);
+    if (initial !== "en" || fromCookie !== "en") {
+      ensureGoogleTranslateLoaded();
+    }
   }, []);
 
   useEffect(() => {
@@ -162,9 +215,12 @@ export function LanguageSelector({
   const choose = (code: LangCode) => {
     setActive(code);
     window.dispatchEvent(new CustomEvent(CHANGE_EVENT, { detail: code }));
-    applyLanguage(code);
     setOpen(false);
     setQuery("");
+    // Reload so Google Translate re-runs across the entire document —
+    // this is what actually translates menus, headings, body copy and
+    // portal content on both website and installed PWA.
+    applyLanguage(code, { reload: true });
   };
 
   const current = LANGUAGES.find((l) => l.code === active) ?? LANGUAGES[0];

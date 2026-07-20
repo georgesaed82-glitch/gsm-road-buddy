@@ -199,12 +199,12 @@ const SIZES = {
     badge: "text-[11px] xl:text-[12.5px]",
   },
   hero: {
-    padding: "px-4 py-2.5 pr-5 lg:px-5 lg:py-3 lg:pr-7 xl:px-6 xl:py-3.5 xl:pr-8",
-    logoWrap: "h-[60px] w-[60px] lg:h-[68px] lg:w-[68px] xl:h-[76px] xl:w-[76px]",
+    padding: "px-3 py-1.5 pr-4 lg:px-3.5 lg:py-2 lg:pr-5 xl:px-4 xl:py-2 xl:pr-6",
+    logoWrap: "h-[42px] w-[42px] lg:h-[46px] lg:w-[46px] xl:h-[52px] xl:w-[52px]",
     title:
-      "text-[24px] lg:text-[30px] xl:text-[36px] 2xl:text-[40px] leading-[1.02] tracking-[-0.02em]",
-    subtitle: "text-[12px] lg:text-[13px] xl:text-[14px]",
-    badge: "text-[10px] lg:text-[11px] xl:text-[12px]",
-    badgePadding: "px-2 py-[2px] lg:px-2.5 lg:py-[3px]",
+      "text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[26px] leading-[1.02] tracking-[-0.02em]",
+    subtitle: "text-[10.5px] lg:text-[11px] xl:text-[12px]",
+    badge: "text-[9px] lg:text-[9.5px] xl:text-[10px]",
+    badgePadding: "px-1.5 py-[1px] lg:px-2 lg:py-[2px]",
   },
 } as const;
