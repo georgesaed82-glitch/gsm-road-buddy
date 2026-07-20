@@ -36,7 +36,7 @@ export function HomeSectionNav({ sections }: { sections: SectionAnchor[] }) {
     <>
       <nav
         aria-label="Jump to section"
-        className="notranslate sticky top-[64px] z-[115] mb-2 border-y border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:top-[76px] lg:top-[96px]"
+        className="notranslate sticky top-[64px] z-[115] mb-2 border-y border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:top-[76px] lg:hidden"
         style={{
           WebkitMaskImage:
             "linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%)",
