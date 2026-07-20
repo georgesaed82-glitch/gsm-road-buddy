@@ -79,6 +79,20 @@ export function Header() {
         <SheetContent
           side="right"
           className="flex w-[320px] flex-col overflow-hidden overscroll-contain bg-background p-0 sm:w-[360px]"
+          onInteractOutside={(e) => {
+            // Keep the menu open when the user is interacting with a
+            // Radix popover that renders through a portal outside the
+            // sheet (e.g. the language selector list). Without this the
+            // sheet closes before the tap on a language registers.
+            const target = e.target as HTMLElement | null;
+            if (
+              target?.closest(
+                '[data-radix-popper-content-wrapper], [data-language-menu], [data-radix-popover-content]',
+              )
+            ) {
+              e.preventDefault();
+            }
+          }}
         >
           <SheetTitle className="sr-only">Navigation menu</SheetTitle>
 
