@@ -24,6 +24,17 @@ import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { GsmPlus } from "@/components/GsmPlus";
 import { BrandPlate } from "@/components/BrandPlate";
+import heroStudent from "@/assets/gsm-hero-student.jpeg.asset.json";
+import heroStudent2 from "@/assets/gsm-hero-student-2.jpeg.asset.json";
+import heroMercedes from "@/assets/gsm-hero-mercedes.jpg.asset.json";
+import studentPass from "@/assets/gsm-student-pass.jpeg.asset.json";
+
+const MENU_HERO_SLIDES: { url: string; alt: string }[] = [
+  { url: heroStudent.url, alt: "GSM student with pass certificate" },
+  { url: studentPass.url, alt: "GSM learner celebrating a driving test pass" },
+  { url: heroStudent2.url, alt: "GSM student outside the tuition car" },
+  { url: heroMercedes.url, alt: "GSM Mercedes tuition vehicle" },
+];
 
 const ALL_NAV_LINKS: { to: string; label: string; icon: typeof Info }[] = [
   { to: "/about", label: "About", icon: Info },
@@ -38,6 +49,7 @@ const NAV_LINKS = ALL_NAV_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/blog");
 export function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [slideIdx, setSlideIdx] = useState(0);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
@@ -52,6 +64,14 @@ export function Header() {
   useEffect(() => {
     setSheetOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!sheetOpen) return;
+    const id = window.setInterval(() => {
+      setSlideIdx((i) => (i + 1) % MENU_HERO_SLIDES.length);
+    }, 4500);
+    return () => window.clearInterval(id);
+  }, [sheetOpen]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -78,7 +98,7 @@ export function Header() {
         </SheetTrigger>
         <SheetContent
           side="right"
-          className="flex w-[320px] flex-col overflow-hidden overscroll-contain bg-background p-0 sm:w-[360px]"
+          className="flex w-[320px] flex-row overflow-hidden overscroll-contain bg-background p-0 sm:w-[360px] lg:!max-w-none lg:w-[860px]"
           onInteractOutside={(e) => {
             // Keep the menu open when the user is interacting with a
             // Radix popover that renders through a portal outside the
@@ -96,6 +116,47 @@ export function Header() {
         >
           <SheetTitle className="sr-only">Navigation menu</SheetTitle>
 
+          {/* Desktop-only hero panel — rotating GSM imagery instead of a blank green area. */}
+          <aside
+            aria-hidden="true"
+            className="relative hidden shrink-0 overflow-hidden bg-primary lg:block lg:w-[500px]"
+          >
+            {MENU_HERO_SLIDES.map((slide, i) => (
+              <img
+                key={slide.url}
+                src={slide.url}
+                alt={slide.alt}
+                className={cn(
+                  "absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out",
+                  i === slideIdx ? "opacity-100" : "opacity-0",
+                )}
+                loading="lazy"
+                draggable={false}
+              />
+            ))}
+            <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/15 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 text-primary-foreground">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-accent">
+                Established 2005
+              </p>
+              <p className="mt-2 text-xl font-semibold leading-snug">
+                Real learners. Real passes.<br />Driven with GSM.
+              </p>
+              <div className="mt-4 flex gap-1.5">
+                {MENU_HERO_SLIDES.map((_, i) => (
+                  <span
+                    key={i}
+                    className={cn(
+                      "h-1 rounded-full transition-all duration-500",
+                      i === slideIdx ? "w-6 bg-accent" : "w-2 bg-primary-foreground/40",
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex items-center justify-center border-b border-accent/30 px-3 py-2.5">
             <BrandPlate size="xs" className="max-w-full" />
           </div>
@@ -188,6 +249,7 @@ export function Header() {
 
           <div className="shrink-0 border-t border-border/60 bg-background px-5 py-3">
             <DVSADisclaimer variant="compact" />
+          </div>
           </div>
         </SheetContent>
       </Sheet>
