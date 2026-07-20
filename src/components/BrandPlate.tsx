@@ -88,7 +88,7 @@ export function BrandPlate({
             className={cn(
               "inline-flex items-center rounded-md border font-semibold tracking-[0.18em]",
               s.badge,
-              s.badgePadding ?? "px-2 py-[2px]",
+              "badgePadding" in s ? (s as { badgePadding: string }).badgePadding : "px-2 py-[2px]",
             )}
             style={{
               color: COPPER_LIGHT,
@@ -205,5 +205,6 @@ const SIZES = {
       "text-[38px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[1] tracking-[-0.025em]",
     subtitle: "text-[15px] lg:text-[18px] xl:text-[20px]",
     badge: "text-[12px] lg:text-[14px] xl:text-[15px]",
+    badgePadding: "px-3 py-1 lg:px-4 lg:py-1.5",
   },
 } as const;
