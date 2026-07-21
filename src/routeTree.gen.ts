@@ -91,6 +91,7 @@ import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAreasRouteImport } from './routes/_authenticated/admin.areas'
 import { Route as AuthenticatedAdminAdminsRouteImport } from './routes/_authenticated/admin.admins'
 import { Route as AuthenticatedAdminAccessRouteImport } from './routes/_authenticated/admin.access'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as AuthenticatedGsmPlusLessonLessonIdRouteImport } from './routes/_authenticated/gsm-plus.lesson.$lessonId'
 import { Route as AuthenticatedAdminLessonBlocksLessonIdRouteImport } from './routes/_authenticated/admin.lesson-blocks.$lessonId'
@@ -540,6 +541,11 @@ const AuthenticatedAdminAccessRoute =
     path: '/access',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -600,6 +606,7 @@ export interface FileRoutesByFullPath {
   '/legal/$slug': typeof LegalSlugRoute
   '/areas/': typeof AreasIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/areas': typeof AuthenticatedAdminAreasRoute
@@ -685,6 +692,7 @@ export interface FileRoutesByTo {
   '/legal/$slug': typeof LegalSlugRoute
   '/areas': typeof AreasIndexRoute
   '/blog': typeof BlogIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/access': typeof AuthenticatedAdminAccessRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/admin/areas': typeof AuthenticatedAdminAreasRoute
@@ -773,6 +781,7 @@ export interface FileRoutesById {
   '/legal/$slug': typeof LegalSlugRoute
   '/areas/': typeof AreasIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin/access': typeof AuthenticatedAdminAccessRoute
   '/_authenticated/admin/admins': typeof AuthenticatedAdminAdminsRoute
   '/_authenticated/admin/areas': typeof AuthenticatedAdminAreasRoute
@@ -861,6 +870,7 @@ export interface FileRouteTypes {
     | '/legal/$slug'
     | '/areas/'
     | '/blog/'
+    | '/.lovable/oauth/consent'
     | '/admin/access'
     | '/admin/admins'
     | '/admin/areas'
@@ -946,6 +956,7 @@ export interface FileRouteTypes {
     | '/legal/$slug'
     | '/areas'
     | '/blog'
+    | '/.lovable/oauth/consent'
     | '/admin/access'
     | '/admin/admins'
     | '/admin/areas'
@@ -1033,6 +1044,7 @@ export interface FileRouteTypes {
     | '/legal/$slug'
     | '/areas/'
     | '/blog/'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/admin/access'
     | '/_authenticated/admin/admins'
     | '/_authenticated/admin/areas'
@@ -1101,6 +1113,7 @@ export interface RootRouteChildren {
   LegalSlugRoute: typeof LegalSlugRoute
   AreasIndexRoute: typeof AreasIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
@@ -1680,6 +1693,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAccessRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -1905,6 +1925,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalSlugRoute: LegalSlugRoute,
   AreasIndexRoute: AreasIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
