@@ -15,6 +15,8 @@ import { installGlobalErrorHandlers } from "../lib/lovable-error-reporting";
 import { initSentryOnce } from "../lib/sentry";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { NativeAppLanguageButton } from "../components/NativeAppLanguageButton";
+import { useIsNativeApp } from "../lib/isNativeApp";
 import { AIChatWidget } from "../components/AIChatWidget";
 import { PageViewTracker } from "../components/PageViewTracker";
 import { PWAInstallTracker } from "../components/PWAInstallTracker";
