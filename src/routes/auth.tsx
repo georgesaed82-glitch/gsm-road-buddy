@@ -40,9 +40,15 @@ import { GsmPlus } from "@/components/GsmPlus";
 import { ComingSoonNotice } from "@/components/ComingSoonNotice";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { admin?: 1 } => {
+  validateSearch: (search: Record<string, unknown>): { admin?: 1; next?: string } => {
     const isAdmin = search.admin === 1 || search.admin === "1";
-    return isAdmin ? { admin: 1 } : {};
+    // Only accept a same-origin relative path; discard anything else.
+    const rawNext = typeof search.next === "string" ? search.next : "";
+    const safeNext = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "";
+    const out: { admin?: 1; next?: string } = {};
+    if (isAdmin) out.admin = 1;
+    if (safeNext) out.next = safeNext;
+    return out;
   },
   head: () => ({
     meta: [
