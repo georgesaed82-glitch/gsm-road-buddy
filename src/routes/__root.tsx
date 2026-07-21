@@ -400,7 +400,7 @@ function RootComponent() {
             {!isPortal && !isNative && <Footer />}
             {!isPortal && <AIChatWidget />}
             <BackToTop />
-            <HomeButton />
+            {isPortal && <HomeButton />}
             {!isPortal && <BottomTabBar />}
             <Toaster />
             <PageViewTracker />
