@@ -14,7 +14,6 @@ import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
-import { FEATURE_FLAGS } from "@/lib/featureFlags";
 
 const ALL_FOOTER_LINKS = [
   { to: "/services", label: "Explore Services", icon: Car },
