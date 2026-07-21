@@ -384,7 +384,8 @@ function RootComponent() {
             >
               Skip to main content
             </a>
-            <Header />
+            {!isNative && <Header />}
+            <NativeAppLanguageButton />
             <main id="main-content" className="flex-1" tabIndex={-1} suppressHydrationWarning>
               <Outlet />
             </main>
