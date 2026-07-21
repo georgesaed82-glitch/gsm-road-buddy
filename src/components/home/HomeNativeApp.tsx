@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Phone, Info, Car, Tag, BookOpen, Star, Users, Mail, ArrowRight, Sparkles } from "lucide-react";
+import { Phone, Info, Car, Tag, BookOpen, Star, Users, Mail, ArrowRight, Sparkles, MapPin } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
 import logo from "@/assets/gsm-logo.jpeg.asset.json";
