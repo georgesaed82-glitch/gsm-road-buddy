@@ -15,6 +15,8 @@ import { installGlobalErrorHandlers } from "../lib/lovable-error-reporting";
 import { initSentryOnce } from "../lib/sentry";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { NativeAppLanguageButton } from "../components/NativeAppLanguageButton";
+import { useIsNativeApp } from "../lib/isNativeApp";
 import { AIChatWidget } from "../components/AIChatWidget";
 import { PageViewTracker } from "../components/PageViewTracker";
 import { PWAInstallTracker } from "../components/PWAInstallTracker";
@@ -318,6 +320,7 @@ function RootComponent() {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
   const isPortal = hydrated && routerIsPortal;
+  const isNative = useIsNativeApp();
 
   useEffect(() => {
     function handleExternalClick(e: MouseEvent) {
@@ -382,7 +385,8 @@ function RootComponent() {
             >
               Skip to main content
             </a>
-            <Header />
+            {!isNative && <Header />}
+            <NativeAppLanguageButton />
             <main id="main-content" className="flex-1" tabIndex={-1} suppressHydrationWarning>
               <Outlet />
             </main>
