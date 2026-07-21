@@ -391,7 +391,7 @@ function RootComponent() {
             <main id="main-content" className="flex-1" tabIndex={-1} suppressHydrationWarning>
               <Outlet />
             </main>
-            {!isPortal && <Footer />}
+            {!isPortal && !isNative && <Footer />}
             {!isPortal && <AIChatWidget />}
             <BackToTop />
             <HomeButton />
