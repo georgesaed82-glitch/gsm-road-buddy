@@ -28,6 +28,7 @@ import { Toaster } from "../components/ui/sonner";
 import { useIsPortal } from "../hooks/useIsPortal";
 import { BackToTop } from "../components/BackToTop";
 import { HomeButton } from "../components/HomeButton";
+import { BottomTabBar } from "../components/BottomTabBar";
 import { useIsAdmin } from "../hooks/useIsAdmin";
 import { useRouterState } from "@tanstack/react-router";
 import { PreviewErrorBoundary } from "../components/PreviewErrorBoundary";
@@ -395,6 +396,7 @@ function RootComponent() {
             {!isPortal && <AIChatWidget />}
             <BackToTop />
             <HomeButton />
+            {!isPortal && <BottomTabBar />}
             <Toaster />
             <PageViewTracker />
             <PWAInstallTracker />
