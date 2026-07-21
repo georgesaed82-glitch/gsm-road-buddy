@@ -20,6 +20,8 @@ const NAV_CARDS: NavCard[] = [
   { label: "Contact", href: "/contact", icon: Mail },
 ];
 
+const POSTCODES = ["W2", "W3", "W4", "SW6", "W8", "W10", "W11", "W12", "W14"];
+
 export function HomeNativeApp() {
   return (
     <div
