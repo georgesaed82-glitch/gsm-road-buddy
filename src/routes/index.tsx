@@ -15,6 +15,8 @@ import { GsmPlusExplainer } from "@/components/GsmPlusExplainer";
 import { HomeSectionNav, type SectionAnchor } from "@/components/HomeSectionNav";
 
 import { trackContactClick } from "@/lib/trackContactClick";
+import { HomeNativeApp } from "@/components/home/HomeNativeApp";
+import { useIsNativeApp } from "@/lib/isNativeApp";
 import { listPublicHomeSections, type HomeSectionRow } from "@/lib/home-cms.functions";
 import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
 import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
@@ -157,11 +159,14 @@ const DEFAULT_SECTIONS: Array<
 const or = (v: string | undefined, def: string) => (v && v.trim().length > 0 ? v : def);
 
 function Home() {
+  const isNative = useIsNativeApp();
   const listFn = useServerFn(listPublicHomeSections);
   const { data } = useQuery({
     queryKey: ["home-sections", "web"],
     queryFn: () => listFn({ data: { surface: "web" } }),
   });
+
+  if (isNative) return <HomeNativeApp />;
 
   const sections: Array<
     Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
