@@ -40,9 +40,15 @@ import { GsmPlus } from "@/components/GsmPlus";
 import { ComingSoonNotice } from "@/components/ComingSoonNotice";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { admin?: 1 } => {
+  validateSearch: (search: Record<string, unknown>): { admin?: 1; next?: string } => {
     const isAdmin = search.admin === 1 || search.admin === "1";
-    return isAdmin ? { admin: 1 } : {};
+    // Only accept a same-origin relative path; discard anything else.
+    const rawNext = typeof search.next === "string" ? search.next : "";
+    const safeNext = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "";
+    const out: { admin?: 1; next?: string } = {};
+    if (isAdmin) out.admin = 1;
+    if (safeNext) out.next = safeNext;
+    return out;
   },
   head: () => ({
     meta: [
@@ -128,7 +134,7 @@ const premiumAccess = [
 
 function AuthPage() {
   const navigate = useNavigate();
-  const { admin } = Route.useSearch();
+  const { admin, next } = Route.useSearch();
   const isAdmin = admin === 1;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -237,7 +243,7 @@ function AuthPage() {
       const msg = "Signed in. Opening admin portal...";
       setAuthMessage({ type: "success", text: msg });
       toast.success(msg);
-      window.location.assign("/admin/");
+      window.location.assign(next && next.startsWith("/") ? next : "/admin/");
       return;
     }
     if (!emailValue) {
@@ -310,7 +316,11 @@ function AuthPage() {
             : "Access granted. Welcome to GSM Plus.";
       setAuthMessage({ type: "success", text: successMessage });
       toast.success(successMessage);
-      navigate({ to: "/dashboard" });
+      if (next && next.startsWith("/")) {
+        window.location.assign(next);
+      } else {
+        navigate({ to: "/dashboard" });
+      }
     } catch {
       const msg = "Could not verify code. Please try again.";
       setAuthMessage({ type: "error", text: msg });
