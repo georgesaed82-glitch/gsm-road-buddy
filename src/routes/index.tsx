@@ -168,9 +168,11 @@ function Home() {
 
   if (isNative) return <HomeNativeApp />;
 
-  const sections: Array<
+  const KEEP_ON_WEB = new Set(["hero", "cta"]);
+  const allSections: Array<
     Partial<HomeSectionRow> & { section_type: string; section_key: string; sort_order: number }
   > = data && data.length > 0 ? data : DEFAULT_SECTIONS;
+  const sections = allSections.filter((s) => KEEP_ON_WEB.has(s.section_type));
 
   const SECTION_META: Record<string, { id: string; label: string }> = {
     hero: { id: "top", label: "Top" },
