@@ -134,7 +134,7 @@ const premiumAccess = [
 
 function AuthPage() {
   const navigate = useNavigate();
-  const { admin } = Route.useSearch();
+  const { admin, next } = Route.useSearch();
   const isAdmin = admin === 1;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -243,7 +243,7 @@ function AuthPage() {
       const msg = "Signed in. Opening admin portal...";
       setAuthMessage({ type: "success", text: msg });
       toast.success(msg);
-      window.location.assign("/admin/");
+      window.location.assign(next && next.startsWith("/") ? next : "/admin/");
       return;
     }
     if (!emailValue) {
@@ -316,7 +316,11 @@ function AuthPage() {
             : "Access granted. Welcome to GSM Plus.";
       setAuthMessage({ type: "success", text: successMessage });
       toast.success(successMessage);
-      navigate({ to: "/dashboard" });
+      if (next && next.startsWith("/")) {
+        window.location.assign(next);
+      } else {
+        navigate({ to: "/dashboard" });
+      }
     } catch {
       const msg = "Could not verify code. Please try again.";
       setAuthMessage({ type: "error", text: msg });
