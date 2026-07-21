@@ -14,6 +14,8 @@ export default defineTool({
       title: l.title,
       rule: l.rule ?? null,
       summary: l.summary ?? null,
+      objective: l.objective,
+      category: l.category,
       url: `https://www.gsmdrivingschool.com/driving-strategy/${l.slug}`,
     }));
     return {
