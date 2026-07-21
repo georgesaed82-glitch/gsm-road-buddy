@@ -20,6 +20,7 @@ import { Route as InstructorsRouteImport } from './routes/instructors'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -153,6 +154,11 @@ const DownloadsRoute = DownloadsRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnectRoute = ConnectRouteImport.update({
+  id: '/connect',
+  path: '/connect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -596,6 +602,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/connect': typeof ConnectRoute
   '/contact': typeof ContactRoute
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
@@ -687,6 +694,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/connect': typeof ConnectRoute
   '/contact': typeof ContactRoute
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
@@ -779,6 +787,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/connect': typeof ConnectRoute
   '/contact': typeof ContactRoute
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
@@ -872,6 +881,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/connect'
     | '/contact'
     | '/downloads'
     | '/faq'
@@ -963,6 +973,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/connect'
     | '/contact'
     | '/downloads'
     | '/faq'
@@ -1054,6 +1065,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/about'
     | '/auth'
+    | '/connect'
     | '/contact'
     | '/downloads'
     | '/faq'
@@ -1147,6 +1159,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
+  ConnectRoute: typeof ConnectRoute
   ContactRoute: typeof ContactRoute
   DownloadsRoute: typeof DownloadsRoute
   FaqRoute: typeof FaqRoute
@@ -1249,6 +1262,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connect': {
+      id: '/connect'
+      path: '/connect'
+      fullPath: '/connect'
+      preLoaderRoute: typeof ConnectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -1991,6 +2011,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
+  ConnectRoute: ConnectRoute,
   ContactRoute: ContactRoute,
   DownloadsRoute: DownloadsRoute,
   FaqRoute: FaqRoute,
