@@ -22,6 +22,7 @@ const ALL_FOOTER_LINKS = [
   { to: "/contact", label: "Contact", icon: MessageSquare },
   { to: "/blog", label: "Blogs", icon: Newspaper },
   { to: "/faq", label: "FAQ", icon: HelpCircle },
+  { to: "/connect", label: "AI Assistant", icon: Bot },
   { to: "/#download-app", label: "Download", icon: Download },
 ];
 const FOOTER_LINKS = ALL_FOOTER_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/blog");
