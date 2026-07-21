@@ -1,54 +1,86 @@
-## Mobile App Home Redesign (Capacitor only)
+## Goal
 
-The desktop and mobile website stay exactly as they are today. A new, purpose-built home screen renders only when the app is running inside the installed iPhone/Android app.
+Adopt the screenshot as the new premium direction across mobile app, mobile web, and desktop — one unified design system with a simpler homepage and a persistent bottom tab bar (Home · Lessons · Theory · GSM Plus · Contact).
 
-### What the app home will look like
+## Design system pass
 
-1. **Hero (first screen, no scroll needed)**
-   - Centered GSM logo, single-line headline "Drive today. Succeed tomorrow.", one sub-line.
-   - 3 primary action pills below the headline: Call, WhatsApp, Book.
-   - Fits inside the first viewport on iPhone 12+ so users see hero + top of grid immediately.
+- Lock the palette: forest green `#234B36`, gold accent `#C97845` / `#B8863A`, cream `#F7F3E8`, ink `#1D2A22`.
+- Introduce shared premium primitives in `src/styles.css`:
+  - `.premium-card` — cream card, subtle border, soft shadow, rounded-2xl.
+  - `.premium-cta` — gold pill with hover lift.
+  - `.premium-hero-plate` — forest→deep-green gradient with hairline gold divider (matches the arced header in the screenshot).
+- Apply a consistent page frame to every route (About, Lessons, Prices, Theory, Reviews, Contact, Instructors, GSM Plus): same eyebrow style, same H1 scale, same soft cream background, same section padding.
 
-2. **Primary navigation grid (7 cards)**
-   Exact list, in this order:
-   - About
-   - Practical Lessons
-   - Prices & Packages
-   - Theory Training
-   - Reviews
-   - Instructors
-   - Contact
+## Homepage (only what stays)
 
-   Card spec (all identical):
-   - 2-column grid, equal height, `rounded-2xl`, forest-green border, cream surface.
-   - Centered icon (24px) above centered label (15px semibold), two lines max.
-   - Uniform 16px page padding left/right, 12px gap.
+Everything else moves off the homepage and into the Menu / bottom-tab destinations.
 
-3. **Condensed GSM Plus card**
-   - Single compact card with gold "Coming Soon" chip, one-line pitch, "Learn more" arrow.
-   - Roughly 1/3 the height of the current explainer; links to the existing GSM Plus landing page.
+Sections kept:
+1. Hero — Mercedes image (existing `gsm-hero-mercedes.jpg`, refined framing/overlay only, no new image), tagline "Learn. Improve. **Pass with confidence.**", one primary CTA "Book a Lesson".
+2. Slim GSM Plus "Coming Soon" banner (single-line, links to `/auth`).
+3. 3 feature cards: Manual & Automatic · Local Instructors · Proven Success.
+4. Single "Ready to Start?" contact strip.
+5. DVSA disclaimer line above footer.
 
-4. **Below-the-fold sections** (kept, tightened, in order)
-   - Recent Passes strip (horizontal scroll of 6 photos, no big block).
-   - Short reviews snippet (1 featured review + "See all reviews").
-   - Footer contact block (phone + WhatsApp + address).
+Sections removed from the homepage (still reachable via menu / dedicated routes):
+- Memorable Moments, Recent Passes, Why GSM, Postcodes, Areas, Gallery, Quizzes, Install-app card, Portal section, GSM Plus explainer.
 
-   Everything else that currently appears on `/` (Memorable Moments, About-GSM two-column, Areas grid, Signs/Hazard/Theory quiz teasers, gallery, install card, full GsmPlusExplainer) is hidden inside the native app to remove repetition. Nothing is deleted — the web still renders them.
+The homepage CMS section order stays intact in the database; only the web renderer stops rendering the removed types on `/`. Admin editing continues to work for the other pages that use those sections.
 
-### Visual & typography rules
-- 16px symmetrical horizontal padding on every section.
-- Section vertical rhythm: 24px between blocks (was 48-64px).
-- Type scale: hero title 28px, section titles 18px, card labels 15px, body 14px.
-- All cards share: `rounded-2xl`, `border-border/60`, `shadow-[0_2px_10px_-4px_rgba(29,42,34,0.15)]`, 88px min-height.
-- Icons all 24px, forest-green stroke, terracotta on active/hover.
+## Bottom tab bar (new, global)
 
-### Technical implementation
-- New component `src/components/home/HomeNativeApp.tsx` containing the whole redesigned screen.
-- `src/routes/index.tsx` reads `useIsNativeApp()` (hydration-safe: renders web layout during SSR, swaps to native layout on mount when detected). Zero changes to the existing web JSX branch.
-- Reuses existing `trackContactClick`, `WhatsAppIcon`, gallery assets, and links to existing routes (`/about`, `/services`, `/pricing`, `/theory`, `/reviews`, `/instructors`, `/contact`, `/auth` for GSM Plus).
-- No DB, no server function, no new dependency changes.
+Persistent bottom nav on every route, mobile + desktop:
 
-### Out of scope
-- No changes to desktop or mobile-web home.
-- No changes to Header, Footer, GSM Plus landing, or any other route.
-- No new routes or backend work.
+```text
+Home · Lessons · Theory · GSM Plus · Contact
+```
+
+- Mounted in `src/routes/__root.tsx` as `<BottomTabBar />`.
+- Fixed bottom, safe-area aware, forest-green surface with gold active tab.
+- Icons: Home, Car, BookOpen, GraduationCap, Phone.
+- Active tab derived from `useRouterState` pathname.
+- Reserves bottom padding on the page so content isn't hidden.
+- The floating BackToTop and HomeButton reposition above it; on `/` the HomeButton hides (already does).
+
+## Native app home
+
+`HomeNativeApp.tsx` follows the same 5-section homepage rules (hero → GSM Plus banner → 3 feature cards → Ready to Start → disclaimer). Remove the 7-card nav grid and postcodes block — those live in the menu now. Bottom tab bar takes their place for primary navigation.
+
+## Menu (Sheet)
+
+The full-screen menu keeps every existing destination (About, Practical Lessons, Prices & Packages, Theory Training, Reviews, Instructors, Contact, Areas, Recent Passes, GSM Plus, Downloads, FAQ, Legal). No content is lost — it just moves off the homepage.
+
+## Consistency across pages
+
+Apply the shared premium frame + updated header/section spacing to:
+- `/about`, `/services`, `/pricing`, `/theory`, `/reviews`, `/instructors`, `/contact`, `/auth` (GSM Plus landing), `/faq`, `/downloads`.
+
+No content changes on those pages — visual polish only (eyebrow, H1 scale, cream background, card treatment, CTA style, bottom-tab padding).
+
+## Animations
+
+- Reuse existing `Reveal` fade-in-up for section entry (250ms, ease-out).
+- Tab bar active indicator: 200ms translate + gold underline.
+- Hover: `-translate-y-0.5` on cards/CTAs, `duration-200 ease-out`.
+- No new animation libraries.
+
+## Files touched
+
+Frontend / presentation only.
+
+- New: `src/components/BottomTabBar.tsx`, plus premium utility classes appended to `src/styles.css`.
+- Edit: `src/routes/__root.tsx` (mount tab bar, hide on admin/portal shells if needed).
+- Edit: `src/routes/index.tsx` (filter web section list to hero/gsm-plus banner/features/cta; keep hero refinements).
+- Edit: `src/components/home/HomeNativeApp.tsx` (simplify to the 5-section shape).
+- Edit: `src/components/BackToTop.tsx`, `src/components/HomeButton.tsx` (raise offsets above tab bar).
+- Light polish edits on the listed public pages for premium consistency.
+
+No database, RLS, server-function, or business-logic changes.
+
+## Out of scope
+
+- Generating a new Mercedes image (reusing existing per your answer).
+- Removing content from other pages — just visual consistency.
+- Changing the admin portal or GSM Plus authenticated dashboards.
+
+Approve and I'll implement in one pass.

@@ -28,6 +28,7 @@ import { Toaster } from "../components/ui/sonner";
 import { useIsPortal } from "../hooks/useIsPortal";
 import { BackToTop } from "../components/BackToTop";
 import { HomeButton } from "../components/HomeButton";
+import { BottomTabBar } from "../components/BottomTabBar";
 import { useIsAdmin } from "../hooks/useIsAdmin";
 import { useRouterState } from "@tanstack/react-router";
 import { PreviewErrorBoundary } from "../components/PreviewErrorBoundary";
@@ -388,13 +389,19 @@ function RootComponent() {
             </a>
             {!isNative && <Header />}
             <NativeAppLanguageButton />
-            <main id="main-content" className="flex-1" tabIndex={-1} suppressHydrationWarning>
+            <main
+              id="main-content"
+              className={`flex-1 ${!isPortal ? "pb-[calc(env(safe-area-inset-bottom,0px)+76px)]" : ""}`}
+              tabIndex={-1}
+              suppressHydrationWarning
+            >
               <Outlet />
             </main>
             {!isPortal && !isNative && <Footer />}
             {!isPortal && <AIChatWidget />}
             <BackToTop />
-            <HomeButton />
+            {isPortal && <HomeButton />}
+            {!isPortal && <BottomTabBar />}
             <Toaster />
             <PageViewTracker />
             <PWAInstallTracker />
