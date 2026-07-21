@@ -27,6 +27,7 @@ import { getSiteRating, type SiteRatingValue } from "../lib/cms.functions";
 import { Toaster } from "../components/ui/sonner";
 import { useIsPortal } from "../hooks/useIsPortal";
 import { BackToTop } from "../components/BackToTop";
+import { HomeButton } from "../components/HomeButton";
 import { useIsAdmin } from "../hooks/useIsAdmin";
 import { useRouterState } from "@tanstack/react-router";
 import { PreviewErrorBoundary } from "../components/PreviewErrorBoundary";
@@ -392,7 +393,8 @@ function RootComponent() {
             </main>
             {!isPortal && <Footer />}
             {!isPortal && <AIChatWidget />}
-            {isPortal && <BackToTop />}
+            <BackToTop />
+            <HomeButton />
             <Toaster />
             <PageViewTracker />
             <PWAInstallTracker />
