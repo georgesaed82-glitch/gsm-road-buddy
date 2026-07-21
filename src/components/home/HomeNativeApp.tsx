@@ -92,7 +92,7 @@ export function HomeNativeApp() {
                 className="flex min-h-[92px] flex-col items-center justify-center gap-2 rounded-2xl border border-border/60 bg-card p-3 text-center shadow-[0_2px_10px_-4px_rgba(29,42,34,0.15)] active:scale-[0.98] transition-transform"
               >
                 <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/5">
-                  <Icon className="h-5 w-5 text-primary" strokeWidth={2} />
+                  <Icon className="h-5 w-5 text-primary" />
                 </span>
                 <span className="text-[14px] font-semibold leading-tight text-primary">
                   {card.label}
