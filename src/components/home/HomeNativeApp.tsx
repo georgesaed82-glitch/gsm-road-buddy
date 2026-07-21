@@ -123,6 +123,28 @@ export function HomeNativeApp() {
         </div>
       </section>
 
+      {/* Postcodes covered */}
+      <section className="px-5 pt-8">
+        <div className="flex items-center gap-2">
+          <MapPin className="h-3.5 w-3.5 text-accent" />
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+            Postcodes covered
+          </h2>
+        </div>
+        <div className="mt-2.5 grid grid-cols-3 gap-2 sm:grid-cols-3">
+          {POSTCODES.map((pc) => (
+            <div
+              key={pc}
+              className="flex items-center justify-center rounded-lg border border-border/60 bg-card px-1 py-2 shadow-[0_2px_8px_-4px_rgba(29,42,34,0.12)]"
+            >
+              <span className="text-[13px] font-semibold tracking-wide text-primary">
+                {pc}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Footer meta */}
       <p className="mt-10 px-5 text-center text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
         Notting Hill · Holland Park · Kensington
