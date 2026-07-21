@@ -320,6 +320,7 @@ function RootComponent() {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
   const isPortal = hydrated && routerIsPortal;
+  const isNative = useIsNativeApp();
 
   useEffect(() => {
     function handleExternalClick(e: MouseEvent) {
