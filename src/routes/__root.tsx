@@ -389,7 +389,12 @@ function RootComponent() {
             </a>
             {!isNative && <Header />}
             <NativeAppLanguageButton />
-            <main id="main-content" className="flex-1" tabIndex={-1} suppressHydrationWarning>
+            <main
+              id="main-content"
+              className={`flex-1 ${!isPortal ? "pb-[calc(env(safe-area-inset-bottom,0px)+76px)]" : ""}`}
+              tabIndex={-1}
+              suppressHydrationWarning
+            >
               <Outlet />
             </main>
             {!isPortal && !isNative && <Footer />}
