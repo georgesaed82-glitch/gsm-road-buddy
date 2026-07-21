@@ -1,77 +1,54 @@
-# GSM Learning Platform — Phase 2 → 5
+## Mobile App Home Redesign (Capacitor only)
 
-Phase 1 (database foundation, 21 tables, 4 modules + 37 topics seeded, storage buckets, RLS) is already live. Pricing page shows **£40–£70/hr** with the full explanation, and the GSM Plus explainer already presents Free vs Premium tiers, "Who it's for" chips, and benefit cards. Those two items are done — I will not rebuild them.
+The desktop and mobile website stay exactly as they are today. A new, purpose-built home screen renders only when the app is running inside the installed iPhone/Android app.
 
-Below is what still needs to ship, grouped so each phase is independently deployable and each ends with a mobile + desktop verification pass.
+### What the app home will look like
 
-## Phase 2 — Admin CMS: Content authoring (this next drop)
+1. **Hero (first screen, no scroll needed)**
+   - Centered GSM logo, single-line headline "Drive today. Succeed tomorrow.", one sub-line.
+   - 3 primary action pills below the headline: Call, WhatsApp, Book.
+   - Fits inside the first viewport on iPhone 12+ so users see hero + top of grid immediately.
 
-Goal: you can create, edit, reorder, and delete every piece of learner-facing content from `/admin`.
+2. **Primary navigation grid (7 cards)**
+   Exact list, in this order:
+   - About
+   - Practical Lessons
+   - Prices & Packages
+   - Theory Training
+   - Reviews
+   - Instructors
+   - Contact
 
-- `/admin/learning` — Modules & Topics manager
-  - CRUD Modules (title, summary, order, icon, colour, published)
-  - CRUD Topics under each Module (title, slug, summary, order, stage, published, prerequisite topic)
-  - Drag-and-drop reordering (both levels)
-- `/admin/learning/:topic` — Lesson & Block editor
-  - CRUD Lessons per Topic
-  - Block editor: text, image, diagram, animation embed, AI video, quiz, key-points, safety-note, instructor-tip, BGO, MSPSL, POM
-  - Rich text with the existing `RichTextEditor`
-  - Version history + autosave (reusing `content_versions`)
-- `/admin/videos` — AI Video Library
-  - CRUD videos (title, description, module, topic, provider (mux/youtube/upload), poster, transcript, duration)
-  - Bulk-assign videos to topics
-- `/admin/assessments`
-  - Mock test builder (question pool, pass mark, timer)
-  - Hazard clip manager (already partially exists — extend with scoring windows)
-- `/admin/certificates` — Certificate templates (title, criteria, artwork upload, active)
-- `/admin/students` — Student progress admin
-  - View any learner's 7-stage progress per topic
-  - Instructor notes, override stage, mark topic complete, issue certificate
-  - View AI lesson summary history
-- RBAC: every screen respects existing `has_permission()` — content editor, video editor, assessment editor, learner viewer permissions added to `admin_permissions`
+   Card spec (all identical):
+   - 2-column grid, equal height, `rounded-2xl`, forest-green border, cream surface.
+   - Centered icon (24px) above centered label (15px semibold), two lines max.
+   - Uniform 16px page padding left/right, 12px gap.
 
-## Phase 3 — Student Portal: Full GSM Plus experience
+3. **Condensed GSM Plus card**
+   - Single compact card with gold "Coming Soon" chip, one-line pitch, "Learn more" arrow.
+   - Roughly 1/3 the height of the current explainer; links to the existing GSM Plus landing page.
 
-- `/portal` dashboard: 4 modules, 37 topics in the exact seeded order, readiness score, next-up card, streak
-- Topic page: renders block-graph from Phase 2 (text / diagram / animation / video / quiz / GSM elements)
-- 7-stage skill tracker per topic (introduced → confident → test-ready)
-- Hazard Perception library: filter by module, live scoring window, review mode
-- Vehicle Reference Points: interactive diagrams (extends existing `vehicle-reference-points.tsx`)
-- AI Video Library page with module/topic filters and progress markers
-- Mock tests: DVSA-style theory + practical readiness, pass probability
-- AI Lesson Summary: per-lesson strengths / focus / next steps (server function → Lovable AI Gateway, stored on `progress_lesson_entries`)
-- Lesson Planner & Calendar view (reuses `calendar_events`)
-- Certificates: earned certificates page + PDF download from `certificates` bucket
+4. **Below-the-fold sections** (kept, tightened, in order)
+   - Recent Passes strip (horizontal scroll of 6 photos, no big block).
+   - Short reviews snippet (1 featured review + "See all reviews").
+   - Footer contact block (phone + WhatsApp + address).
 
-## Phase 4 — Scoring engine & AI
+   Everything else that currently appears on `/` (Memorable Moments, About-GSM two-column, Areas grid, Signs/Hazard/Theory quiz teasers, gallery, install card, full GsmPlusExplainer) is hidden inside the native app to remove repetition. Nothing is deleted — the web still renders them.
 
-- Composite readiness score (theory, hazards, skill stages, mock tests, homework)
-- Nightly snapshot into `progress_snapshots`
-- AI summary generator (server fn) triggered when instructor submits a lesson entry
-- Achievement rules engine reading `achievement_rules`
+### Visual & typography rules
+- 16px symmetrical horizontal padding on every section.
+- Section vertical rhythm: 24px between blocks (was 48-64px).
+- Type scale: hero title 28px, section titles 18px, card labels 15px, body 14px.
+- All cards share: `rounded-2xl`, `border-border/60`, `shadow-[0_2px_10px_-4px_rgba(29,42,34,0.15)]`, 88px min-height.
+- Icons all 24px, forest-green stroke, terracotta on active/hover.
 
-## Phase 5 — QA & polish
+### Technical implementation
+- New component `src/components/home/HomeNativeApp.tsx` containing the whole redesigned screen.
+- `src/routes/index.tsx` reads `useIsNativeApp()` (hydration-safe: renders web layout during SSR, swaps to native layout on mount when detected). Zero changes to the existing web JSX branch.
+- Reuses existing `trackContactClick`, `WhatsAppIcon`, gallery assets, and links to existing routes (`/about`, `/services`, `/pricing`, `/theory`, `/reviews`, `/instructors`, `/contact`, `/auth` for GSM Plus).
+- No DB, no server function, no new dependency changes.
 
-- Playwright pass: desktop (1280) + mobile (390) across every new route
-- Lighthouse pass on portal dashboard + topic page
-- RLS audit on all new server fns
-- Migration of any legacy `skill_ratings` rows into new `progress_student_topics` (read-only preservation of old data)
-- Publish
-
----
-
-## Delivery order and size
-
-Each phase = one turn from you saying "go", one plan, one code drop, one verification pass. Phase 2 alone is the largest — roughly:
-
-- 1 migration (permissions rows, small schema additions for video library / certificate templates)
-- ~12 new server-fn files under `src/lib/learning/*.functions.ts`
-- ~8 new admin route files
-- Reuses existing `RichTextEditor`, `MediaLibrary`, `content_versions`, drag-and-drop pattern from `/admin/home`
-
-I will **not** try to ship Phases 2–5 in a single turn — that guarantees half-broken screens. I will ship Phase 2 end-to-end next, verify it on mobile + desktop, then move to Phase 3.
-
-## Confirm before I start
-
-1. Ship **Phase 2 (Admin CMS)** first as described? Or reorder so student-facing portal (Phase 3) comes first on top of the current seeded topics with placeholder content?
-2. AI Video Library: host videos on Mux, YouTube unlisted, or Supabase storage? (Affects the video table schema I ship in Phase 2's migration.)
+### Out of scope
+- No changes to desktop or mobile-web home.
+- No changes to Header, Footer, GSM Plus landing, or any other route.
+- No new routes or backend work.
