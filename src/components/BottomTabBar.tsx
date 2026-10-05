@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Car, BookOpen, GraduationCap, Phone, Youtube, Mail, MessageCircle, ChevronRight } from "lucide-react";
+import { Home, Car, BookOpen, GraduationCap, Phone, Youtube, Mail, MessageCircle, ChevronRight, PoundSterling } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BUSINESS } from "@/lib/business";
 import { cn } from "@/lib/utils";
@@ -17,9 +17,12 @@ const LESSONS: Tab = { to: "/services", label: "Lessons", icon: Car, match: (p) 
 const CONTACT: Tab = { to: "/contact", label: "Contact", icon: Phone, match: (p) => p.startsWith("/contact") };
 
 /** Public website tabs: no theory practice or GSM Plus promotion. */
+const PRICING: Tab = { to: "/pricing", label: "Pricing", icon: PoundSterling, match: (p) => p.startsWith("/pricing") };
+
 const WEB_TABS: Tab[] = [
   HOME,
   LESSONS,
+  PRICING,
   { to: "/youtube", label: "Videos", icon: Youtube, match: (p) => p.startsWith("/youtube") },
   CONTACT,
 ];
@@ -61,6 +64,24 @@ export function BottomTabBar({ placement = "bottom" }: { placement?: "bottom" | 
           const Icon = tab.icon;
           const active = tab.match(pathname);
           if (tab === CONTACT) return <ContactTab key="contact" active={active} />;
+          if (tab === PRICING)
+            return (
+              <Link
+                key="pricing"
+                to="/pricing"
+                aria-current={active ? "page" : undefined}
+                aria-label="Pricing"
+                className={cn(
+                  "btn-3d mx-0.5 flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl border-2 px-1 py-1.5 text-[11px] font-extrabold leading-none transition-all duration-200",
+                  active
+                    ? "border-primary-foreground/60 bg-accent text-accent-foreground"
+                    : "border-accent/70 bg-accent/90 text-accent-foreground hover:bg-accent",
+                )}
+              >
+                <PoundSterling className="h-5 w-5" strokeWidth={2.5} />
+                <span className="tracking-tight">Pricing</span>
+              </Link>
+            );
           return (
             <Link
               key={tab.to}
