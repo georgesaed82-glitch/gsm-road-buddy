@@ -38,6 +38,7 @@ import {
   Menu,
   LayoutGrid,
   ImagePlus,
+  CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -99,6 +100,7 @@ const groups: Group[] = [
     id: "business",
     label: "Business",
     items: [
+      { to: "/admin/bookings", label: "Lesson bookings", icon: CalendarDays },
       { to: "/admin/instructors", label: "Instructors", icon: Users },
       { to: "/admin/pricing", label: "Pricing packages", icon: Tag },
       { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },

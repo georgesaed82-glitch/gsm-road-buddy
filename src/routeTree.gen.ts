@@ -66,6 +66,7 @@ import { Route as AuthenticatedAdminAreasRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
 import { Route as AuthenticatedAdminBlocksRouteImport } from './routes/_authenticated/admin.blocks'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
+import { Route as AuthenticatedAdminBookingsRouteImport } from './routes/_authenticated/admin.bookings'
 import { Route as AuthenticatedAdminContactClicksRouteImport } from './routes/_authenticated/admin.contact-clicks'
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
 import { Route as AuthenticatedAdminDiagnosticsRouteImport } from './routes/_authenticated/admin.diagnostics'
@@ -400,6 +401,12 @@ const AuthenticatedAdminBlogRoute = AuthenticatedAdminBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminBookingsRoute =
+  AuthenticatedAdminBookingsRouteImport.update({
+    id: '/bookings',
+    path: '/bookings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminContactClicksRoute =
   AuthenticatedAdminContactClicksRouteImport.update({
     id: '/contact-clicks',
@@ -672,6 +679,7 @@ export interface FileRoutesByFullPath {
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
+  '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
@@ -766,6 +774,7 @@ export interface FileRoutesByTo {
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
+  '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
@@ -863,6 +872,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/blocks': typeof AuthenticatedAdminBlocksRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
+  '/_authenticated/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/_authenticated/admin/contact-clicks': typeof AuthenticatedAdminContactClicksRoute
   '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
   '/_authenticated/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
@@ -960,6 +970,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/blocks'
     | '/admin/blog'
+    | '/admin/bookings'
     | '/admin/contact-clicks'
     | '/admin/content'
     | '/admin/diagnostics'
@@ -1054,6 +1065,7 @@ export interface FileRouteTypes {
     | '/admin/audit'
     | '/admin/blocks'
     | '/admin/blog'
+    | '/admin/bookings'
     | '/admin/contact-clicks'
     | '/admin/content'
     | '/admin/diagnostics'
@@ -1150,6 +1162,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/audit'
     | '/_authenticated/admin/blocks'
     | '/_authenticated/admin/blog'
+    | '/_authenticated/admin/bookings'
     | '/_authenticated/admin/contact-clicks'
     | '/_authenticated/admin/content'
     | '/_authenticated/admin/diagnostics'
@@ -1625,6 +1638,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBlogRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/bookings': {
+      id: '/_authenticated/admin/bookings'
+      path: '/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AuthenticatedAdminBookingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/contact-clicks': {
       id: '/_authenticated/admin/contact-clicks'
       path: '/contact-clicks'
@@ -1894,6 +1914,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminBlocksRoute: typeof AuthenticatedAdminBlocksRoute
   AuthenticatedAdminBlogRoute: typeof AuthenticatedAdminBlogRoute
+  AuthenticatedAdminBookingsRoute: typeof AuthenticatedAdminBookingsRoute
   AuthenticatedAdminContactClicksRoute: typeof AuthenticatedAdminContactClicksRoute
   AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
   AuthenticatedAdminDiagnosticsRoute: typeof AuthenticatedAdminDiagnosticsRoute
@@ -1937,6 +1958,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminBlocksRoute: AuthenticatedAdminBlocksRoute,
   AuthenticatedAdminBlogRoute: AuthenticatedAdminBlogRoute,
+  AuthenticatedAdminBookingsRoute: AuthenticatedAdminBookingsRoute,
   AuthenticatedAdminContactClicksRoute: AuthenticatedAdminContactClicksRoute,
   AuthenticatedAdminContentRoute: AuthenticatedAdminContentRoute,
   AuthenticatedAdminDiagnosticsRoute: AuthenticatedAdminDiagnosticsRoute,
