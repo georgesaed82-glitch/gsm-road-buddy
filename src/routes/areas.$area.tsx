@@ -103,6 +103,18 @@ export const Route = createFileRoute("/areas/$area")({
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://www.gsmdrivingschool.com/" },
+              { "@type": "ListItem", position: 2, name: "Areas we cover", item: "https://www.gsmdrivingschool.com/areas" },
+              { "@type": "ListItem", position: 3, name: a.area, item: url },
+            ],
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
             "@type": "FAQPage",
             mainEntity: a.faqs.map((f) => ({
               "@type": "Question",

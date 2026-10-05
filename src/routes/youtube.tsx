@@ -63,7 +63,7 @@ const LESSONS = [
 const AREAS: { label: string; postcode: string; slug?: string }[] = [
   { label: "Notting Hill", postcode: "W11", slug: "notting-hill" },
   { label: "Kensington", postcode: "W8", slug: "kensington" },
-  { label: "North Kensington", postcode: "W10" },
+  { label: "North Kensington", postcode: "W10", slug: "north-kensington" },
   { label: "Shepherd's Bush", postcode: "W12", slug: "shepherds-bush" },
   { label: "Holland Park / Brook Green", postcode: "W14", slug: "holland-park" },
   { label: "Bayswater / Paddington", postcode: "W2", slug: "bayswater" },

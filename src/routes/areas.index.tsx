@@ -33,7 +33,11 @@ function AreasIndex() {
   const enabled = (dbRows ?? []).filter((r) => r.enabled);
   const list =
     enabled.length > 0
-      ? enabled.map((r) => ({ slug: r.slug, area: r.area, postcode: r.postcode }))
+      ? [
+          ...enabled.map((r) => ({ slug: r.slug, area: r.area, postcode: r.postcode })),
+          // Built-in area pages not yet saved in settings (e.g. North Kensington).
+          ...areas.filter((a) => !enabled.some((r) => r.slug === a.slug)),
+        ]
       : areas;
   return (
     <div className="flex flex-col">

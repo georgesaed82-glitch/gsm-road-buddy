@@ -86,6 +86,31 @@ export const areas: AreaPage[] = [
     ],
   },
   {
+    slug: "north-kensington",
+    area: "North Kensington",
+    postcode: "W10",
+    nearbyPostcodes: ["W11", "W12", "W2"],
+    intro:
+      "Driving lessons in North Kensington (W10) with GSM Driving School — teaching West London since 2005. Manual and automatic lessons with pickup from home or an agreed meeting point.",
+    highlights: [
+      "Pickup across W10 — Ladbroke Grove, Kensal Town and the streets around Westbourne Park",
+      "Next door to our W11 base, so lessons start close to home",
+      "Manual and automatic, beginners to test ready",
+    ],
+    routes:
+      "Lessons start on quieter residential streets, then build up to busier roads such as Ladbroke Grove, Harrow Road and Scrubs Lane, before moving on to the test routes for your chosen centre.",
+    faqs: [
+      {
+        q: "Do you pick up in North Kensington?",
+        a: "Yes. W10 sits right next to our Notting Hill base. We pick up from home or agree a convenient meeting point.",
+      },
+      {
+        q: "Do you offer automatic lessons in W10?",
+        a: "Yes — automatic lessons with George and manual lessons with the team. Send a WhatsApp with your postcode to check availability.",
+      },
+    ],
+  },
+  {
     slug: "bayswater",
     area: "Bayswater",
     postcode: "W2",

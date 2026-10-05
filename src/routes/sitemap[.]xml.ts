@@ -21,7 +21,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/areas", priority: "0.9", changefreq: "monthly" as const },
           { path: "/youtube", priority: "0.8", changefreq: "weekly" as const },
           { path: "/faq", priority: "0.6", changefreq: "monthly" as const },
-          { path: "/downloads", priority: "0.5", changefreq: "monthly" as const },
           ...(BLOG_ENABLED
             ? [{ path: "/blog", priority: "0.9", changefreq: "weekly" as const }]
             : []),
