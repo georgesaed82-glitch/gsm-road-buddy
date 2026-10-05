@@ -8,7 +8,9 @@ import { listInstructors, type InstructorRow } from "@/lib/catalog.functions";
 
 export const Route = createFileRoute("/instructors")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/instructors" }],
     meta: [
+      { property: "og:url", content: "https://www.gsmdrivingschool.com/instructors" },
       { title: "Our Instructors | GSM Driving School" },
       {
         name: "description",

@@ -10,7 +10,9 @@ import { useSiteRating } from "@/hooks/useSiteRating";
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/reviews" }],
     meta: [
+      { property: "og:url", content: "https://www.gsmdrivingschool.com/reviews" },
       { title: "Reviews — GSM Driving School (147 five-star Google reviews)" },
       {
         name: "description",
