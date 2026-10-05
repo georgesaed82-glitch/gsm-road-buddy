@@ -106,7 +106,7 @@ function ReviewsPage() {
 
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
             <a
-              href="https://www.google.com/maps/search/?api=1&query=GSM+Driving+School+71+Sandbourne+House+London+W11+1DS"
+              href="https://maps.google.com/?cid=12315071950298926858"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-medium text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
@@ -124,7 +124,7 @@ function ReviewsPage() {
               Comments on Instagram
             </a>
             <a
-              href="https://www.facebook.com/search/top?q=gsm%20driving%20school%20london"
+              href="https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border  bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
