@@ -1,5 +1,5 @@
 import { defineTool } from "@lovable.dev/mcp-js";
-import { areas } from "@/data/areas";
+import { publicAreas as areas } from "@/data/areas";
 
 export default defineTool({
   name: "list_areas",

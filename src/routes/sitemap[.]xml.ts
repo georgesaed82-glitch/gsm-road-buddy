@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { areas } from "@/data/areas";
+import { publicAreas as areas } from "@/data/areas";
 import { listPublishedPostSlugs } from "@/lib/blog.functions";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
 
