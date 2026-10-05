@@ -11,7 +11,9 @@ import { BUSINESS_ADDRESS } from "@/lib/business";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/contact" }],
     meta: [
+      { property: "og:url", content: "https://www.gsmdrivingschool.com/contact" },
       { title: "Contact Us | GSM Driving School" },
       {
         name: "description",

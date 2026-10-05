@@ -5,7 +5,9 @@ import { usePageBlocks } from "@/hooks/usePageBlocks";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/about" }],
     meta: [
+      { property: "og:url", content: "https://www.gsmdrivingschool.com/about" },
       { title: "About Us | GSM Driving School" },
       {
         name: "description",
