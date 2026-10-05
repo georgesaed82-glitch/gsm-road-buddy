@@ -31,19 +31,28 @@ const NATIVE_TABS: Tab[] = [
   CONTACT,
 ];
 
-export function BottomTabBar() {
+export function BottomTabBar({ placement = "bottom" }: { placement?: "bottom" | "top" }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isNative = useIsNativeApp();
   const tabs = isNative ? NATIVE_TABS : WEB_TABS;
+  const top = placement === "top";
 
   return (
     <nav
       aria-label="Primary"
-      style={{
-        paddingBottom: "max(env(safe-area-inset-bottom, 0px), 8px)",
-        boxShadow: "0 -12px 30px -18px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)",
-      }}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-primary-foreground/10 bg-[var(--brand-dark)]"
+      style={
+        top
+          ? { boxShadow: "0 4px 0 0 #0b231c, 0 10px 18px -8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)" }
+          : {
+              paddingBottom: "max(env(safe-area-inset-bottom, 0px), 8px)",
+              boxShadow: "0 -12px 30px -18px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)",
+            }
+      }
+      className={
+        top
+          ? "mx-2 mb-2 rounded-2xl border border-primary-foreground/10 bg-[var(--brand-dark)] pb-1.5 sm:mx-4 lg:mx-auto lg:max-w-[1156px]"
+          : "fixed inset-x-0 bottom-0 z-40 border-t border-primary-foreground/10 bg-[var(--brand-dark)]"
+      }
     >
       <div className="mx-auto flex max-w-3xl items-stretch justify-between px-2 pt-1.5 sm:px-4">
         {tabs.map((tab) => {
