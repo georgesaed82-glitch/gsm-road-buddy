@@ -170,7 +170,7 @@ function AboutPage() {
             {values.map((value) => {
               const Icon = VALUE_ICONS[value.id] ?? Shield;
               return (
-                <Card key={value.id} className="border-border bg-background">
+                <Card key={value.id} className="border-border bg-background box-3d">
                   <CardContent className="p-6">
                     <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
                       <Icon className="h-5 w-5" />

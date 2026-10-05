@@ -164,7 +164,7 @@ function ContactPage() {
           </div>
 
           {/* Detailed hours */}
-          <Card className="mt-8 border-border bg-card">
+          <Card className="mt-8 bg-card box-3d">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-primary" />
@@ -187,7 +187,7 @@ function ContactPage() {
           </Card>
 
           {/* Instant CTAs */}
-          <Card className="mt-6 border-border bg-card">
+          <Card className="mt-6 bg-card box-3d">
             <CardHeader className="pb-4 text-center">
               <CardTitle className="font-display text-2xl">Talk to us instantly</CardTitle>
             </CardHeader>

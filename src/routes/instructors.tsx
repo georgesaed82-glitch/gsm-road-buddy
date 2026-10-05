@@ -85,7 +85,7 @@ function parseBio(bio: string): BioParts {
 function InstructorCard({ instructor }: { instructor: InstructorRow }) {
   const bio = parseBio(instructor.bio ?? "");
   return (
-    <Card className="flex h-full flex-col overflow-hidden border-border bg-card shadow-sm transition-shadow hover:shadow-md">
+    <Card className="flex h-full flex-col overflow-hidden bg-card box-3d">
       <CardContent className="flex h-full flex-col p-6">
         <div className="flex items-center gap-4">
           {instructor.image_url ? (
