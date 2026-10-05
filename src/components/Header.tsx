@@ -40,6 +40,7 @@ const PRIMARY_NAV: NavItem[] = [
   { to: "/", label: "Home", icon: Home, desc: "Back to homepage" },
   { to: "/about", label: "About Us", icon: Info, desc: "Since 2005" },
   { to: "/reviews", label: "Reviews", icon: Star, desc: "What learners say" },
+  { to: "/passes", label: "Passed Students", icon: Award, desc: "Test pass photos" },
   { to: "/areas", label: "Areas We Cover", icon: MapPin, desc: "West London" },
   { to: "/instructors", label: "Instructors", icon: Users, desc: "Meet the team" },
   { to: "/contact", label: "Contact Us", icon: Phone, desc: "Call, WhatsApp, email" },
