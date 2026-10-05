@@ -172,6 +172,15 @@ async function main() {
       const sel = `[data-testid="variant-${v}"]`;
       const el = page.locator(sel);
       const wrapper = el.locator("> div").first();
+      // The clip below is viewport-relative: bring the wrapper fully into the
+      // viewport first, otherwise a taller site header can push it partly
+      // below the fold and the capture is silently truncated.
+      await wrapper.scrollIntoViewIfNeeded();
+      await page.evaluate(
+        (s) => document.querySelector(s)?.firstElementChild?.scrollIntoView({ block: "center", inline: "nearest" }),
+        sel,
+      );
+      await page.waitForTimeout(100);
       const wbox = await wrapper.boundingBox();
       if (!wbox) {
         failures.push(`[${viewName}/${v}] no wrapper box`);
@@ -213,6 +222,11 @@ async function main() {
         width: Math.round(wbox.width),
         height: Math.round(wbox.height),
       };
+      const vp = page.viewportSize();
+      if (vp && (clip.y < 0 || clip.x < 0 || clip.y + clip.height > vp.height || clip.x + clip.width > vp.width)) {
+        failures.push(`[${viewName}/${v}] wrapper not fully visible for capture (${JSON.stringify(clip)} in ${vp.width}x${vp.height})`);
+        continue;
+      }
       await page.screenshot({ path: curPath, clip });
       const basePath = resolve(BASE, `${viewName}_${v}.png`);
       if (!existsSync(basePath)) {
