@@ -291,6 +291,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "https://www.instagram.com/gsm_driving_school_",
             "https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr",
             "https://maps.google.com/?cid=12315071950298926858",
+            "https://www.youtube.com/@GSMDrivingSchool",
           ],
         }),
       },
