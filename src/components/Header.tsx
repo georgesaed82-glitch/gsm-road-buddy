@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
@@ -82,6 +82,22 @@ export function Header() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const { business } = useSiteSettings();
+  const headerRef = useRef<HTMLElement>(null);
+
+  // Publish the real header height so sticky bars (HomeSectionNav) sit just below it.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const root = document.documentElement;
+    const set = () => root.style.setProperty("--site-header-h", `${Math.round(el.getBoundingClientRect().height)}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty("--site-header-h");
+    };
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
@@ -143,7 +159,7 @@ export function Header() {
   };
 
   return (
-    <header className={cn("sticky top-0 w-full bg-background/95", sheetOpen ? "z-40" : "z-[120]")}>
+    <header ref={headerRef} className={cn("sticky top-0 w-full bg-background/95", sheetOpen ? "z-40" : "z-[120]")}>
       <div className="mx-auto flex w-full max-w-7xl items-center gap-2 px-2 py-2 sm:gap-3 sm:px-4 lg:max-w-[1220px] lg:px-8">
         <BrandBanner />
 
