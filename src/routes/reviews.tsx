@@ -118,7 +118,7 @@ function ReviewsPage() {
               href="https://www.instagram.com/gsm_driving_school_/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center gap-2 rounded-xl border border-primary/20 bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/5 hover:shadow-lg active:translate-y-0"
+              className="inline-flex h-14 items-center justify-center gap-2 rounded-xl border  bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
             >
               <Instagram className="h-4 w-4 text-accent" />
               Comments on Instagram
@@ -127,7 +127,7 @@ function ReviewsPage() {
               href="https://www.facebook.com/search/top?q=gsm%20driving%20school%20london"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center gap-2 rounded-xl border border-primary/20 bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/5 hover:shadow-lg active:translate-y-0"
+              className="inline-flex h-14 items-center justify-center gap-2 rounded-xl border  bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
             >
               <Facebook className="h-4 w-4 text-accent" />
               Reviews on Facebook
