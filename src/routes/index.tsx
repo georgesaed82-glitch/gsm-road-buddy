@@ -292,7 +292,7 @@ function HeroSection({ s }: SectionProps) {
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
           <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:mt-3 lg:text-[40px] xl:text-[44px]">
-            <span className="mb-3 inline-flex rounded-full border border-accent/60 bg-accent/10 px-3 py-1 font-sans text-[12px] font-bold uppercase tracking-[0.12em] text-primary">
+            <span className="mb-3 inline-flex rounded-full bg-primary px-3 py-1 font-sans text-[12px] font-bold uppercase tracking-[0.12em] text-primary-foreground">
               20+ years teaching West London · Since 2005
             </span>
             <span className="mb-2 block font-sans text-[13px] font-semibold uppercase tracking-[0.14em] text-primary sm:text-sm">

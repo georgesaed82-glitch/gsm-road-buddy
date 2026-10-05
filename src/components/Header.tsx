@@ -37,13 +37,10 @@ type NavItem = {
 
 const PRIMARY_NAV: NavItem[] = [
   { to: "/", label: "Home", icon: Home, desc: "Back to homepage" },
-  { to: "/services", label: "Driving Lessons", icon: Car, desc: "Manual & automatic" },
-  { to: "/pricing", label: "Prices", icon: CreditCard, desc: "Rates & packages" },
-  { to: "/youtube", label: "Driving Videos", icon: Youtube, desc: "Free tips on YouTube" },
-  { to: "/areas", label: "Areas Covered", icon: MapPin, desc: "West London" },
-  { to: "/reviews", label: "Reviews", icon: Star, desc: "What learners say" },
-  { to: "/instructors", label: "Instructors", icon: Users, desc: "Meet the team" },
   { to: "/about", label: "About Us", icon: Info, desc: "Since 2005" },
+  { to: "/reviews", label: "Reviews", icon: Star, desc: "What learners say" },
+  { to: "/areas", label: "Areas We Cover", icon: MapPin, desc: "West London" },
+  { to: "/instructors", label: "Instructors", icon: Users, desc: "Meet the team" },
   { to: "/contact", label: "Contact Us", icon: Phone, desc: "Call, WhatsApp, email" },
 ];
 

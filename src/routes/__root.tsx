@@ -18,7 +18,6 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { NativeAppLanguageButton } from "../components/NativeAppLanguageButton";
 import { useIsNativeApp } from "../lib/isNativeApp";
-import { AIChatWidget } from "../components/AIChatWidget";
 import { PageViewTracker } from "../components/PageViewTracker";
 import { PWAInstallTracker } from "../components/PWAInstallTracker";
 import { PageSeoOverride } from "../components/PageSeoOverride";
@@ -400,7 +399,7 @@ function RootComponent() {
               <Outlet />
             </main>
             {!isPortal && !isNative && <Footer />}
-            {!isPortal && <AIChatWidget />}
+            {/* AI chat removed from public site */}
             <BackToTop />
             {isPortal && <HomeButton />}
             {!isPortal && <BottomTabBar />}
