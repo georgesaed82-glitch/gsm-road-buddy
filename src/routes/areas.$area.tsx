@@ -56,6 +56,7 @@ export const Route = createFileRoute("/areas/$area")({
     const url = `https://www.gsmdrivingschool.com/areas/${a.slug}`;
     return {
       meta: [
+        ...(a.pendingConfirmation ? [{ name: "robots", content: "noindex, follow" }] : []),
         { title },
         { name: "description", content: description },
         { property: "og:title", content: title },

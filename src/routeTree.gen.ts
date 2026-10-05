@@ -18,6 +18,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as InstructorsRouteImport } from './routes/instructors'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -144,6 +145,11 @@ const FaqRoute = FaqRouteImport.update({
 const InstructorsRoute = InstructorsRouteImport.update({
   id: '/instructors',
   path: '/instructors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -613,6 +619,7 @@ export interface FileRoutesByFullPath {
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -706,6 +713,7 @@ export interface FileRoutesByTo {
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -800,6 +808,7 @@ export interface FileRoutesById {
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
   '/instructors': typeof InstructorsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -895,6 +904,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/faq'
     | '/instructors'
+    | '/llms.txt'
     | '/mcp'
     | '/pricing'
     | '/reset-password'
@@ -988,6 +998,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/faq'
     | '/instructors'
+    | '/llms.txt'
     | '/mcp'
     | '/pricing'
     | '/reset-password'
@@ -1081,6 +1092,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/faq'
     | '/instructors'
+    | '/llms.txt'
     | '/mcp'
     | '/pricing'
     | '/reset-password'
@@ -1176,6 +1188,7 @@ export interface RootRouteChildren {
   DownloadsRoute: typeof DownloadsRoute
   FaqRoute: typeof FaqRoute
   InstructorsRoute: typeof InstructorsRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   McpRoute: typeof McpRoute
   PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -1261,6 +1274,13 @@ declare module '@tanstack/react-router' {
       path: '/instructors'
       fullPath: '/instructors'
       preLoaderRoute: typeof InstructorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -2036,6 +2056,7 @@ const rootRouteChildren: RootRouteChildren = {
   DownloadsRoute: DownloadsRoute,
   FaqRoute: FaqRoute,
   InstructorsRoute: InstructorsRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   McpRoute: McpRoute,
   PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,

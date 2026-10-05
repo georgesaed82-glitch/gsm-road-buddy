@@ -14,7 +14,7 @@ export default defineTool({
       phoneTel: "tel:+447961585231",
       whatsapp: "https://wa.me/447961585231",
       website: "https://www.gsmdrivingschool.com",
-      coverage: "West London — W2, W3, W4, SW6, W8, W10, W11, W12, W14",
+      coverage: "West London — W2, W8, W10, W11, W12, W14",
     };
     return {
       content: [

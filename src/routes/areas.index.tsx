@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin } from "lucide-react";
-import { areas } from "@/data/areas";
+import { areas as allAreas, publicAreas as areas } from "@/data/areas";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { listAreas } from "@/lib/local-content.functions";
@@ -12,13 +12,13 @@ export const Route = createFileRoute("/areas/")({
       {
         name: "description",
         content:
-          "GSM Driving School covers Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and Fulham. Find driving lessons in your postcode.",
+          "GSM Driving School covers Notting Hill, High Street Kensington, Holland Park, North Kensington, Bayswater and Shepherd's Bush. Find driving lessons in your postcode.",
       },
       { property: "og:title", content: "West London Driving Lesson Areas | GSM Driving School" },
       {
         property: "og:description",
         content:
-          "Driving lessons across W2, W4, W8, W10, W11, W12, W14 and SW6. Local instructor, manual & automatic.",
+          "Driving lessons across W2, W8, W10, W11, W12 and W14. Local instructor, manual & automatic.",
       },
       { property: "og:url", content: "https://www.gsmdrivingschool.com/areas" },
     ],
@@ -30,7 +30,8 @@ export const Route = createFileRoute("/areas/")({
 function AreasIndex() {
   const listFn = useServerFn(listAreas);
   const { data: dbRows } = useQuery({ queryKey: ["areas-public"], queryFn: () => listFn() });
-  const enabled = (dbRows ?? []).filter((r) => r.enabled);
+  const hidden = new Set(allAreas.filter((a) => a.pendingConfirmation).map((a) => a.slug));
+  const enabled = (dbRows ?? []).filter((r) => r.enabled && !hidden.has(r.slug));
   const list =
     enabled.length > 0
       ? [

@@ -7,6 +7,8 @@ export interface AreaPage {
   highlights: string[];
   routes: string;
   faqs: { q: string; a: string }[];
+  /** Hidden from public listings until the owner confirms coverage. */
+  pendingConfirmation?: boolean;
 }
 
 export const areas: AreaPage[] = [
@@ -162,6 +164,7 @@ export const areas: AreaPage[] = [
   },
   {
     slug: "chiswick",
+    pendingConfirmation: true,
     area: "Chiswick",
     postcode: "W4",
     nearbyPostcodes: ["W3", "W6", "W12"],
@@ -187,6 +190,7 @@ export const areas: AreaPage[] = [
   },
   {
     slug: "fulham",
+    pendingConfirmation: true,
     area: "Fulham",
     postcode: "SW6",
     nearbyPostcodes: ["SW10", "W14", "W6"],
@@ -211,6 +215,8 @@ export const areas: AreaPage[] = [
     ],
   },
 ];
+
+export const publicAreas = areas.filter((a) => !a.pendingConfirmation);
 
 export function getArea(slug: string) {
   return areas.find((a) => a.slug === slug);

@@ -1,3 +1,4 @@
+import { BUSINESS, BUSINESS_ADDRESS, OPENING_HOURS_BY_DAY } from "@/lib/business";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
@@ -21,12 +22,12 @@ export type SocialLinks = { facebook: string; instagram: string; tiktok: string;
 export type OpeningHours = Record<"mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun", string>;
 
 const DEFAULT_BUSINESS: BusinessInfo = {
-  name: "GSM Driving School",
-  tagline: "George's School of Motoring · Established 2005",
-  phone: "07961 585231",
-  phone_intl: "447961585231",
-  email: "gsmdrivingschool@outlook.com",
-  address: "71 Sandbourne House, Dartmouth Close, London W11 1DS",
+  name: BUSINESS.name,
+  tagline: BUSINESS.tagline,
+  phone: BUSINESS.phone,
+  phone_intl: BUSINESS.phoneIntl,
+  email: BUSINESS.email,
+  address: BUSINESS_ADDRESS,
 };
 const DEFAULT_SOCIAL: SocialLinks = {
   facebook: "https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr",
@@ -34,15 +35,7 @@ const DEFAULT_SOCIAL: SocialLinks = {
   tiktok: "",
   youtube: "",
 };
-const DEFAULT_HOURS: OpeningHours = {
-  mon: "7:00 – 20:00",
-  tue: "7:00 – 21:00",
-  wed: "7:00 – 21:00",
-  thu: "7:00 – 20:30",
-  fri: "7:00 – 20:00",
-  sat: "7:00 – 18:00",
-  sun: "Closed",
-};
+const DEFAULT_HOURS: OpeningHours = { ...OPENING_HOURS_BY_DAY };
 const DEFAULT_FOOTER = {
   copy: `© ${new Date().getFullYear()} George's School of Motoring. All rights reserved.`,
   disclaimer: "",
