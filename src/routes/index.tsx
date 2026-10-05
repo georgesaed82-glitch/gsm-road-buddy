@@ -79,15 +79,15 @@ const DEFAULT_GALLERY_CAPTIONS = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Manual & Automatic Driving Lessons in West London | GSM Driving School" },
-      { name: "description", content: "Patient manual and automatic driving lessons in Notting Hill, Kensington, Holland Park and West London since 2005. Beginners, refreshers and test preparation." },
-      { property: "og:title", content: "Manual & Automatic Driving Lessons in West London | GSM Driving School" },
-      { property: "og:description", content: "Patient manual and automatic driving lessons in Notting Hill, Kensington, Holland Park and West London since 2005. Beginners, refreshers and test preparation." },
+      { title: "Driving Lessons West London | Manual & Automatic | GSM Driving School" },
+      { name: "description", content: "Driving lessons in West London since 2005 — manual and automatic, home pickup across Notting Hill, Kensington, Holland Park, Shepherd's Bush and Bayswater. Call 07961 585231." },
+      { property: "og:title", content: "Driving Lessons West London | Manual & Automatic | GSM Driving School" },
+      { property: "og:description", content: "Driving lessons in West London since 2005 — manual and automatic, home pickup across Notting Hill, Kensington, Holland Park, Shepherd's Bush and Bayswater. Call 07961 585231." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.gsmdrivingschool.com/" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Manual & Automatic Driving Lessons in West London | GSM Driving School" },
-      { name: "twitter:description", content: "Patient manual and automatic driving lessons in Notting Hill, Kensington, Holland Park and West London since 2005. Beginners, refreshers and test preparation." },
+      { name: "twitter:title", content: "Driving Lessons West London | Manual & Automatic | GSM Driving School" },
+      { name: "twitter:description", content: "Driving lessons in West London since 2005 — manual and automatic, home pickup across Notting Hill, Kensington, Holland Park, Shepherd's Bush and Bayswater. Call 07961 585231." },
     ],
     links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/" }],
   }),

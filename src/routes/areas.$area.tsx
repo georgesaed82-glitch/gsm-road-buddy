@@ -51,8 +51,13 @@ export const Route = createFileRoute("/areas/$area")({
     if (!a) return { meta: [] };
     const rv = a._rating ?? { rating: 5, review_count: 147 };
     const ratingLabel = `${rv.rating.toFixed(1)} from ${rv.review_count} Google reviews`;
-    const title = `Driving Lessons ${a.area} (${a.postcode}) | GSM Driving School`;
-    const description = `Driving lessons in ${a.area} ${a.postcode}. DVSA-approved local instructor, manual & automatic, door-to-door pickup. Rated ${ratingLabel}.`;
+    const isKen = a.slug === "kensington";
+    const title = isKen
+      ? "Driving Lessons Kensington W8 | High Street Kensington | GSM"
+      : `Driving Lessons ${a.area} (${a.postcode}) | GSM Driving School`;
+    const description = isKen
+      ? `Driving lessons in Kensington (W8) since 2005. Manual & automatic, pickup around High Street Kensington, meeting point for South Kensington. Rated ${ratingLabel}.`
+      : `Driving lessons in ${a.area} ${a.postcode}. DVSA-approved local instructor, manual & automatic, door-to-door pickup. Rated ${ratingLabel}.`;
     const url = `https://www.gsmdrivingschool.com/areas/${a.slug}`;
     return {
       meta: [
