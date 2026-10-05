@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Car, BookOpen, GraduationCap, Phone, Youtube, Mail, MessageCircle, ChevronRight } from "lucide-react";
+import { Home, Car, BookOpen, GraduationCap, Phone, Youtube, Mail, MessageCircle, ChevronRight, PoundSterling } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BUSINESS } from "@/lib/business";
 import { cn } from "@/lib/utils";
