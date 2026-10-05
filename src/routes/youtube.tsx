@@ -90,12 +90,12 @@ function YouTubePage() {
             one-to-one practical lessons around Notting Hill, Kensington and West London.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Button asChild size="lg" className="h-14 rounded-2xl bg-primary px-7 text-primary-foreground">
+            <Button asChild size="lg" className="h-10 rounded-2xl bg-primary px-5 text-primary-foreground">
               <a href={channel} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
                 <Youtube className="h-5 w-5" /> Watch on YouTube
               </a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-14 rounded-2xl border-primary/30 px-7 text-primary">
+            <Button asChild size="lg" variant="outline" className="h-10 rounded-2xl border-primary/30 px-5 text-primary">
               <a href={YOUTUBE_SHORTS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
                 Watch the Shorts <ArrowRight className="h-4 w-4" />
               </a>
@@ -165,17 +165,17 @@ function YouTubePage() {
             postcode, automatic/manual/refresher, experience and availability.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            <Button asChild size="lg" className="h-16 rounded-xl shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-base font-bold bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button asChild size="lg" className="h-10 rounded-xl shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-sm font-bold bg-accent text-accent-foreground hover:bg-accent/90">
               <a href={wa} target="_blank" rel="noopener noreferrer" onClick={() => trackContactClick("whatsapp", "YouTube page")} className="inline-flex items-center justify-center gap-2">
                 <WhatsAppIcon className="h-5 w-5" /> WhatsApp
               </a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-16 rounded-xl border-2 shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-base font-bold border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <Button asChild size="lg" variant="outline" className="h-10 rounded-xl border-2 shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-sm font-bold border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
               <a href={`tel:+${business.phone_intl}`} onClick={() => trackContactClick("phone", "YouTube page")} className="inline-flex items-center justify-center gap-2">
                 <Phone className="h-5 w-5" /> Call {business.phone}
               </a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-16 rounded-xl border-2 shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-base font-bold border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <Button asChild size="lg" variant="outline" className="h-10 rounded-xl border-2 shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-sm font-bold border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
               <a href={`mailto:${business.email}`} className="inline-flex min-w-0 items-center justify-center gap-2">
                 <Mail className="h-5 w-5 shrink-0" /> Email us
               </a>

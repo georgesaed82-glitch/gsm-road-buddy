@@ -98,7 +98,7 @@ export function Footer() {
         </div>
 
         <p className="mt-8 text-center">
-          <a href={`tel:+${business.phone_intl}`} className="inline-flex items-center rounded-2xl border-2 border-primary/25 bg-card px-6 py-3 text-lg font-extrabold text-primary shadow-[0_6px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-none">
+          <a href={`tel:+${business.phone_intl}`} className="inline-flex items-center rounded-xl border-2 border-primary/25 bg-card px-4 py-2 text-base font-extrabold text-primary shadow-[0_6px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-none">
             Call {business.phone}
           </a>
         </p>

@@ -323,7 +323,7 @@ function HeroSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 w-full rounded-2xl bg-primary px-7 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-12 lg:px-6 lg:text-[15px]"
+              className="h-10 w-full rounded-2xl bg-primary px-5 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-10 lg:px-6 lg:text-[15px]"
             >
               <a
                 href={or(s.cta_primary_href, "/contact")}
@@ -336,7 +336,7 @@ function HeroSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 w-full rounded-2xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-12 lg:px-6 lg:text-[15px]"
+              className="h-10 w-full rounded-2xl bg-accent px-5 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-10 lg:px-6 lg:text-[15px]"
             >
               {secondaryIsStale ? (
                 <a
@@ -744,7 +744,7 @@ function PortalSection({ s }: SectionProps) {
               <Button
                 asChild
                 size="lg"
-                className="h-14 rounded-2xl bg-accent px-7 text-accent-foreground shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-xl active:translate-y-0"
+                className="h-10 rounded-2xl bg-accent px-5 text-accent-foreground shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-xl active:translate-y-0"
               >
                 <a
                   href="mailto:gsmdrivingschool@outlook.com?subject=Join%20GSM%20Plus%20waiting%20list"
@@ -758,7 +758,7 @@ function PortalSection({ s }: SectionProps) {
                 asChild
                 size="lg"
                 variant="outline"
-                className="h-14 rounded-2xl border-accent/60 bg-transparent px-7 text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/10 active:translate-y-0"
+                className="h-10 rounded-2xl border-accent/60 bg-transparent px-5 text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/10 active:translate-y-0"
               >
                 <a
                   href={portalHref}
@@ -854,7 +854,7 @@ function CtaSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 rounded-xl bg-primary px-6 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
+              className="h-10 rounded-xl bg-primary px-6 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
             >
               <a
                 href="https://wa.me/447961585231"
@@ -870,7 +870,7 @@ function CtaSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 rounded-xl border  bg-background px-6 text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
+              className="h-10 rounded-xl border  bg-background px-6 text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
             >
               <a
                 href="tel:+447961585231"
@@ -884,7 +884,7 @@ function CtaSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 rounded-xl bg-accent px-6 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
+              className="h-10 rounded-xl bg-accent px-6 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
             >
               <Link to="/youtube" className="inline-flex items-center justify-center gap-2 font-medium">
                 <Youtube className="h-5 w-5" />
@@ -942,7 +942,7 @@ function CustomSection({ s }: SectionProps) {
               <Button
                 asChild
                 size="lg"
-                className="h-12 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90"
+                className="h-10 rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/90"
               >
                 <a href={or(s.cta_primary_href, "#")} className="inline-flex items-center gap-2">
                   {s.cta_primary_label}
@@ -951,7 +951,7 @@ function CustomSection({ s }: SectionProps) {
               </Button>
             )}
             {s.cta_secondary_label && (
-              <Button asChild size="lg" variant="outline" className="h-12 rounded-none px-6">
+              <Button asChild size="lg" variant="outline" className="h-10 rounded-none px-6">
                 <a href={or(s.cta_secondary_href, "#")} className="inline-flex items-center gap-2">
                   {s.cta_secondary_label}
                 </a>
@@ -996,17 +996,17 @@ function VideoTipsSection() {
           ))}
         </div>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Button asChild size="lg" className="h-12 rounded-2xl bg-accent px-6 text-accent-foreground hover:bg-accent/90">
+          <Button asChild size="lg" className="h-10 rounded-2xl bg-accent px-6 text-accent-foreground hover:bg-accent/90">
             <a href={channel} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
               <Youtube className="h-5 w-5" /> Watch on YouTube
             </a>
           </Button>
-          <Button asChild size="lg" variant="outline" className="h-12 rounded-2xl border-primary-foreground/40 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+          <Button asChild size="lg" variant="outline" className="h-10 rounded-2xl border-primary-foreground/40 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
             <a href={YOUTUBE_SHORTS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
               Watch the Shorts <ArrowRight className="h-4 w-4" />
             </a>
           </Button>
-          <Button asChild size="lg" variant="outline" className="h-12 rounded-2xl border-primary-foreground/40 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+          <Button asChild size="lg" variant="outline" className="h-10 rounded-2xl border-primary-foreground/40 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
             <Link to="/youtube" className="inline-flex items-center gap-2">
               Driving tips &amp; lessons <ArrowRight className="h-4 w-4" />
             </Link>
