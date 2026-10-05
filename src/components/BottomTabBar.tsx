@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Car, BookOpen, GraduationCap, Phone } from "lucide-react";
+import { Home, Car, BookOpen, GraduationCap, Phone, Youtube } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useIsNativeApp } from "@/lib/isNativeApp";
 
 type Tab = {
   to: string;
@@ -9,35 +10,43 @@ type Tab = {
   match: (p: string) => boolean;
 };
 
-const TABS: Tab[] = [
-  { to: "/", label: "Home", icon: Home, match: (p) => p === "/" },
-  { to: "/services", label: "Lessons", icon: Car, match: (p) => p.startsWith("/services") },
-  { to: "/theory", label: "Theory", icon: BookOpen, match: (p) => p.startsWith("/theory") },
-  { to: "/auth", label: "GSM Plus", icon: GraduationCap, match: (p) => p.startsWith("/auth") || p.startsWith("/gsm-plus") },
-  { to: "/contact", label: "Contact", icon: Phone, match: (p) => p.startsWith("/contact") },
+const HOME: Tab = { to: "/", label: "Home", icon: Home, match: (p) => p === "/" };
+const LESSONS: Tab = { to: "/services", label: "Lessons", icon: Car, match: (p) => p.startsWith("/services") };
+const CONTACT: Tab = { to: "/contact", label: "Contact", icon: Phone, match: (p) => p.startsWith("/contact") };
+
+/** Public website tabs: no theory practice or GSM Plus promotion. */
+const WEB_TABS: Tab[] = [
+  HOME,
+  LESSONS,
+  { to: "/youtube", label: "Videos", icon: Youtube, match: (p) => p.startsWith("/youtube") },
+  CONTACT,
 ];
 
-/**
- * Persistent premium bottom tab bar. Mounted globally for public routes
- * on both mobile and desktop. Uses forest-green surface with gold accent
- * for the active tab. Respects iOS safe-area insets.
- */
+/** Native app keeps its existing tabs. */
+const NATIVE_TABS: Tab[] = [
+  HOME,
+  LESSONS,
+  { to: "/theory", label: "Theory", icon: BookOpen, match: (p) => p.startsWith("/theory") },
+  { to: "/auth", label: "GSM Plus", icon: GraduationCap, match: (p) => p.startsWith("/auth") || p.startsWith("/gsm-plus") },
+  CONTACT,
+];
+
 export function BottomTabBar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isNative = useIsNativeApp();
+  const tabs = isNative ? NATIVE_TABS : WEB_TABS;
 
   return (
     <nav
       aria-label="Primary"
       style={{
         paddingBottom: "max(env(safe-area-inset-bottom, 0px), 8px)",
-        backgroundColor: "#234B36",
-        boxShadow:
-          "0 -12px 30px -18px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)",
+        boxShadow: "0 -12px 30px -18px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)",
       }}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-primary-foreground/10 bg-[var(--brand-dark)]"
     >
       <div className="mx-auto flex max-w-3xl items-stretch justify-between px-2 pt-1.5 sm:px-4">
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = tab.match(pathname);
           return (
@@ -48,7 +57,7 @@ export function BottomTabBar() {
               aria-label={tab.label}
               className={cn(
                 "group relative flex flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-1.5 text-[11px] font-medium leading-none transition-all duration-200 ease-out",
-                active ? "text-accent" : "text-white/75 hover:text-white",
+                active ? "text-accent" : "text-primary-foreground/80 hover:text-primary-foreground",
               )}
             >
               <span
@@ -58,13 +67,7 @@ export function BottomTabBar() {
                   active ? "scale-x-100" : "scale-x-0",
                 )}
               />
-              <Icon
-                className={cn(
-                  "h-5 w-5 transition-transform duration-200",
-                  active ? "scale-110" : "group-active:scale-95",
-                )}
-                strokeWidth={active ? 2.5 : 2}
-              />
+              <Icon className={cn("h-5 w-5", active && "scale-110")} strokeWidth={active ? 2.5 : 2} />
               <span className="tracking-tight">{tab.label}</span>
             </Link>
           );

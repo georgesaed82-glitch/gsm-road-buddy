@@ -52,7 +52,7 @@ const DEFAULT_SERVICES = [
     name: "Intensive courses",
     description:
       "Fast-track your learning with daily lessons. Ideal if you need to pass quickly or have a deadline.",
-    key_points: ["Daily lessons", "Theory support", "Test booking help"],
+    key_points: ["Daily lessons", "Mock test practice", "Test booking help"],
   },
 ];
 const SERVICE_ICONS: Record<string, typeof Car> = {

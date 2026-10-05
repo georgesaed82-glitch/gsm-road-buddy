@@ -24,7 +24,7 @@ const SheetOverlay = React.forwardRef<
       // GSM branded backdrop: deep forest-green with a warm terracotta wash
       // and cream highlight, matching the site palette. Replaces the plain
       // black overlay so the exposed area on desktop feels on-brand.
-      "fixed inset-0 z-50 backdrop-blur-md bg-[radial-gradient(ellipse_at_20%_20%,color-mix(in_oklab,var(--accent)_35%,transparent),transparent_55%),radial-gradient(ellipse_at_80%_80%,color-mix(in_oklab,var(--background)_25%,transparent),transparent_60%),linear-gradient(135deg,color-mix(in_oklab,var(--primary)_92%,black)_0%,color-mix(in_oklab,var(--primary)_80%,black)_100%)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-[200] backdrop-blur-md bg-[radial-gradient(ellipse_at_20%_20%,color-mix(in_oklab,var(--accent)_35%,transparent),transparent_55%),radial-gradient(ellipse_at_80%_80%,color-mix(in_oklab,var(--background)_25%,transparent),transparent_60%),linear-gradient(135deg,color-mix(in_oklab,var(--primary)_92%,black)_0%,color-mix(in_oklab,var(--primary)_80%,black)_100%)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className,
     )}
     {...props}
@@ -34,7 +34,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
+  "fixed z-[200] gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
   {
     variants: {
       side: {

@@ -24,7 +24,7 @@ import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
 import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
 import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
-import heroCarImage from "@/assets/gsm-hero-mercedes.jpg.asset.json";
+import heroCarImage from "@/assets/gsm-video-car.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import memorable1 from "@/assets/memorable-1.jpg.asset.json";
 import memorable2 from "@/assets/memorable-2.jpg.asset.json";
@@ -210,6 +210,7 @@ function Home() {
                 <div id="local-areas" className="scroll-mt-32">
                   <LocalAreasSection />
                 </div>
+                <BuddyNote />
               </div>
             );
           case "gsm-plus-explainer":
@@ -275,11 +276,11 @@ function HeroSection({ s }: SectionProps) {
         <div className="lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-10">
         <div className="overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-2xl ring-1 ring-border/40 lg:order-1">
           <img
-            src={or(s.image_url, heroCarImage.url)}
-            alt="The GSM Driving School Mercedes-Benz GLA AMG Line with a green rooftop sign and GSM 2005 number plate, parked on a leafy West London street."
-            className="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10] lg:aspect-[4/3]"
-            width={1536}
-            height={1024}
+            src={heroCarImage.url}
+            alt="GSM branded learner car with a GSM roof sign, red L plate and GSM display plate"
+            className="aspect-[1170/659] w-full object-contain"
+            width={1170}
+            height={659}
             fetchPriority="high"
           />
         </div>
@@ -980,7 +981,7 @@ function VideoTipsSection() {
           Learn with GSM on <span className="italic text-accent">YouTube</span>
         </h2>
         <p className="mt-3 max-w-2xl text-primary-foreground/80">
-          Short, practical tips from George and the team, filmed on real West London roads.
+          Clear, practical driving tips from George and the GSM team, with step-by-step visual explanations.
         </p>
         <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {VIDEO_TOPICS.map(({ icon: Icon, title, body }) => (
@@ -1063,5 +1064,16 @@ function LocalAreasSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+function BuddyNote() {
+  return (
+    <aside className="mx-auto mb-10 w-full max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
+      <div className="rounded-xl border border-border bg-card px-4 py-3 text-sm">
+        <p className="font-semibold text-primary">GSM Buddy</p>
+        <p className="text-muted-foreground">Progress sheets and driving topics coming soon.</p>
+      </div>
+    </aside>
   );
 }

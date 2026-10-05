@@ -7,5 +7,6 @@ Disallow: /payments
 Disallow: /hazard-perception
 Disallow: /profile
 Disallow: /admin
+Disallow: /theory
 
 Sitemap: https://www.gsmdrivingschool.com/sitemap.xml
