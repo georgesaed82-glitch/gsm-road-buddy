@@ -160,7 +160,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "viewport",
         content:
-          "width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1",
+          "width=device-width, initial-scale=1, viewport-fit=cover",
       },
       { title: "GSM Driving School — Notting Hill & West London" },
       {
@@ -216,7 +216,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "DrivingSchool",
+          "@type": ["LocalBusiness", "EducationalOrganization"],
           "@id": `${BUSINESS.url}/#school`,
           name: BUSINESS.name,
           alternateName: BUSINESS.legalName,
