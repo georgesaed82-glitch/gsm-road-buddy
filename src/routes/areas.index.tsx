@@ -56,7 +56,7 @@ function AreasIndex() {
       <section className="py-8 sm:py-12">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
-            {list.map((a) => {
+            {[...list].sort((x, y) => Number(y.slug === "kensington") - Number(x.slug === "kensington")).map((a) => {
               const name = a.slug === "kensington" ? "High Street Kensington" : a.area;
               return (
                 <Link

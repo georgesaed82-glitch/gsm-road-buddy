@@ -53,10 +53,10 @@ export const Route = createFileRoute("/areas/$area")({
     const ratingLabel = `${rv.rating.toFixed(1)} from ${rv.review_count} Google reviews`;
     const isKen = a.slug === "kensington";
     const title = isKen
-      ? "Driving Lessons Kensington W8 | High Street Kensington | GSM"
+      ? "Driving Lessons in High Street Kensington (W8) | GSM Driving School"
       : `Driving Lessons ${a.area} (${a.postcode}) | GSM Driving School`;
     const description = isKen
-      ? `Driving lessons in Kensington (W8) since 2005. Manual & automatic, pickup around High Street Kensington, meeting point for South Kensington. Rated ${ratingLabel}.`
+      ? `Driving lessons in High Street Kensington (W8) since 2005. Manual or automatic, two-hour lessons, patient one-to-one tuition and an agreed High Street Kensington meeting point. Rated ${ratingLabel}.`
       : `Driving lessons in ${a.area} ${a.postcode}. DVSA-approved local instructor, manual & automatic, door-to-door pickup. Rated ${ratingLabel}.`;
     const url = `https://www.gsmdrivingschool.com/areas/${a.slug}`;
     return {
@@ -159,7 +159,7 @@ function AreaPage() {
             {a.postcode} · West London
           </p>
           <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Driving Lessons in {a.area}
+            {a.slug === "kensington" ? "Driving lessons in High Street Kensington" : `Driving Lessons in ${a.area}`}
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{a.intro}</p>
           <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">

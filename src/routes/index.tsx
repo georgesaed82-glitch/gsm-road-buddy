@@ -79,15 +79,15 @@ const DEFAULT_GALLERY_CAPTIONS = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Driving Lessons West London | Manual & Automatic | GSM Driving School" },
-      { name: "description", content: "Driving lessons in West London since 2005 — manual and automatic, home pickup across Notting Hill, Kensington, Holland Park, Shepherd's Bush and Bayswater. Call 07961 585231." },
-      { property: "og:title", content: "Driving Lessons West London | Manual & Automatic | GSM Driving School" },
-      { property: "og:description", content: "Driving lessons in West London since 2005 — manual and automatic, home pickup across Notting Hill, Kensington, Holland Park, Shepherd's Bush and Bayswater. Call 07961 585231." },
+      { title: "Driving Lessons High Street Kensington W8 | Manual & Automatic | GSM" },
+      { name: "description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — manual and automatic, two-hour lessons with patient local instructors. Call 07961 585231." },
+      { property: "og:title", content: "Driving Lessons High Street Kensington W8 | Manual & Automatic | GSM" },
+      { property: "og:description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — manual and automatic, two-hour lessons with patient local instructors. Call 07961 585231." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.gsmdrivingschool.com/" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Driving Lessons West London | Manual & Automatic | GSM Driving School" },
-      { name: "twitter:description", content: "Driving lessons in West London since 2005 — manual and automatic, home pickup across Notting Hill, Kensington, Holland Park, Shepherd's Bush and Bayswater. Call 07961 585231." },
+      { name: "twitter:title", content: "Driving Lessons High Street Kensington W8 | Manual & Automatic | GSM" },
+      { name: "twitter:description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — manual and automatic, two-hour lessons with patient local instructors. Call 07961 585231." },
     ],
     links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/" }],
   }),
@@ -296,7 +296,7 @@ function HeroSection({ s }: SectionProps) {
               20+ years teaching West London · Since 2005
             </span>
             <span className="mb-2 block font-sans text-[13px] font-semibold uppercase tracking-[0.14em] text-primary sm:text-sm">
-              Manual &amp; automatic driving lessons in Notting Hill, Kensington &amp; West London
+              Manual &amp; automatic driving lessons in High Street Kensington (W8), Notting Hill &amp; West London
             </span>
             <span className="block">{renderHeroTitle(heroTitle)}</span>
           </h1>
@@ -1018,8 +1018,8 @@ function VideoTipsSection() {
 }
 
 const LOCAL_AREAS: { postcode: string; label: string; slug?: string }[] = [
-  { postcode: "W11", label: "Notting Hill", slug: "notting-hill" },
   { postcode: "W8", label: "High Street Kensington", slug: "kensington" },
+  { postcode: "W11", label: "Notting Hill", slug: "notting-hill" },
   { postcode: "W14", label: "Holland Park", slug: "holland-park" },
   { postcode: "W12", label: "Shepherd's Bush", slug: "shepherds-bush" },
   { postcode: "W2", label: "Bayswater", slug: "bayswater" },
@@ -1038,7 +1038,7 @@ function LocalAreasSection() {
         </p>
         <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {LOCAL_AREAS.map((a) => (
-            <li key={a.postcode}>
+            <li key={a.postcode} className={a.slug === "kensington" ? "col-span-2 sm:col-span-1" : undefined}>
               {a.slug ? (
                 <Link
                   to="/areas/$area"
