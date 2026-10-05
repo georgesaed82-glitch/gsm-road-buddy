@@ -2,13 +2,35 @@ name: Homepage section order
 
 on:
   push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "tests/section-order/**"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/section-order.yml"
   pull_request:
+    paths:
+      - "src/**"
+      - "tests/section-order/**"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/section-order.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: section-order-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   section-order:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         browser: [chromium, firefox, webkit]
     name: section-order (${{ matrix.browser }})
@@ -16,43 +38,24 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
-      - name: Cache bun dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock', 'package.json') }}
-          restore-keys: |
-            bun-${{ runner.os }}-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('bun.lock', 'package.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-${{ matrix.browser }}-
-            playwright-${{ runner.os }}-
+          bun-version: "1.2.x"
       - name: Install dependencies
         run: bun install --frozen-lockfile
-      - name: Install Playwright browsers
+      - name: Install Playwright browser
         run: bunx playwright install --with-deps ${{ matrix.browser }}
       - name: Start dev server
         run: |
-          bun run dev &
-          echo $! > /tmp/dev.pid
-          for i in {1..60}; do
-            if curl -sf http://localhost:8080/ >/dev/null; then
-              echo "dev server ready"; exit 0
-            fi
+          nohup bun run dev -- --host 127.0.0.1 --port 8080 > /tmp/dev.log 2>&1 &
+          for i in $(seq 1 90); do
+            if curl -sf http://127.0.0.1:8080/ >/dev/null; then echo "dev server ready"; exit 0; fi
             sleep 2
           done
-          echo "dev server failed to start"; exit 1
-      - name: Run section-order check
+          echo "dev server failed to start"; tail -n 100 /tmp/dev.log; exit 1
+      - name: Run homepage structure check
         env:
           BROWSER: ${{ matrix.browser }}
+          BASE_URL: http://127.0.0.1:8080/
         run: bun tests/section-order/check.ts
-      - name: Stop dev server
-        if: always()
-        run: kill $(cat /tmp/dev.pid) || true
+      - name: Dev server log on failure
+        if: failure()
+        run: tail -n 200 /tmp/dev.log || true

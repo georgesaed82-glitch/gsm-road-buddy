@@ -33,8 +33,18 @@ const DEFAULT_SOCIAL: SocialLinks = {
   facebook: "https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr",
   instagram: "https://www.instagram.com/gsm_driving_school_",
   tiktok: "",
-  youtube: "",
+  youtube: "https://www.youtube.com/@GSMDrivingSchool",
 };
+
+/** Merge saved settings over defaults, ignoring blank saved values so an empty CMS field never blanks a confirmed link. */
+function mergeNonEmpty<T extends object>(base: T, saved: Partial<T> | undefined): T {
+  const out = { ...base };
+  for (const [k, v] of Object.entries(saved ?? {})) {
+    if (v === "" || v === null || v === undefined) continue;
+    (out as Record<string, unknown>)[k] = v;
+  }
+  return out;
+}
 const DEFAULT_HOURS: OpeningHours = { ...OPENING_HOURS_BY_DAY };
 const DEFAULT_FOOTER = {
   copy: `© ${new Date().getFullYear()} George's School of Motoring. All rights reserved.`,
@@ -51,14 +61,8 @@ export function useSiteSettings() {
   });
   return useMemo(() => {
     const map = new Map((q.data ?? []).map((r) => [r.key, r.value] as const));
-    const business = {
-      ...DEFAULT_BUSINESS,
-      ...(map.get("business") as Partial<BusinessInfo> | undefined),
-    };
-    const social = {
-      ...DEFAULT_SOCIAL,
-      ...(map.get("social") as Partial<SocialLinks> | undefined),
-    };
+    const business = mergeNonEmpty(DEFAULT_BUSINESS, map.get("business") as Partial<BusinessInfo> | undefined);
+    const social = mergeNonEmpty(DEFAULT_SOCIAL, map.get("social") as Partial<SocialLinks> | undefined);
     const opening_hours = {
       ...DEFAULT_HOURS,
       ...(map.get("opening_hours") as Partial<OpeningHours> | undefined),

@@ -1072,7 +1072,7 @@ function LocalAreasSection() {
 
 function BuddyNote() {
   return (
-    <aside className="mx-auto mb-10 w-full max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
+    <aside id="gsm-buddy" className="mx-auto mb-10 w-full max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
       <div className="rounded-xl border  bg-card px-4 py-3 text-sm box-3d">
         <p className="font-semibold text-primary">GSM Buddy</p>
         <p className="text-muted-foreground">Progress sheets and driving topics coming soon.</p>
