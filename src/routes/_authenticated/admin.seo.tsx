@@ -66,7 +66,7 @@ function SeoPage() {
     review_count?: number;
     show?: boolean;
   };
-  const [rating, setRating] = useState({ rating: 5.0, review_count: 143, show: true });
+  const [rating, setRating] = useState({ rating: 5.0, review_count: 147, show: true });
   const [savingRating, setSavingRating] = useState(false);
   useEffect(() => {
     setRating({

@@ -10,7 +10,7 @@ import { listAreas } from "@/lib/local-content.functions";
 import { getSiteRating, type SiteRatingValue } from "@/lib/cms.functions";
 
 async function resolveArea(slug: string): Promise<AreaPage & { _rating: SiteRatingValue }> {
-  const fallbackRating: SiteRatingValue = { rating: 5.0, review_count: 143, show: true };
+  const fallbackRating: SiteRatingValue = { rating: 5.0, review_count: 147, show: true };
   let ratingVal: SiteRatingValue = fallbackRating;
   try {
     ratingVal = await getSiteRating();
@@ -49,7 +49,7 @@ export const Route = createFileRoute("/areas/$area")({
   head: ({ loaderData }) => {
     const a = loaderData;
     if (!a) return { meta: [] };
-    const rv = a._rating ?? { rating: 5, review_count: 143 };
+    const rv = a._rating ?? { rating: 5, review_count: 147 };
     const ratingLabel = `${rv.rating.toFixed(1)} from ${rv.review_count} Google reviews`;
     const title = `Driving Lessons ${a.area} (${a.postcode}) | GSM Driving School`;
     const description = `Driving lessons in ${a.area} ${a.postcode}. DVSA-approved local instructor, manual & automatic, door-to-door pickup. Rated ${ratingLabel}.`;
