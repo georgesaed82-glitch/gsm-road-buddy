@@ -1,5 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Car, BookOpen, GraduationCap, Phone, Youtube } from "lucide-react";
+import { Home, Car, BookOpen, GraduationCap, Phone, Youtube, Mail, MessageCircle, ChevronRight } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { BUSINESS } from "@/lib/business";
 import { cn } from "@/lib/utils";
 import { useIsNativeApp } from "@/lib/isNativeApp";
 
@@ -58,6 +60,7 @@ export function BottomTabBar({ placement = "bottom" }: { placement?: "bottom" | 
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = tab.match(pathname);
+          if (tab === CONTACT) return <ContactTab key="contact" active={active} />;
           return (
             <Link
               key={tab.to}
@@ -83,5 +86,39 @@ export function BottomTabBar({ placement = "bottom" }: { placement?: "bottom" | 
         })}
       </div>
     </nav>
+  );
+}
+
+const quickBtn =
+  "flex items-center gap-3 rounded-xl border-2 border-primary bg-card px-3 py-2.5 text-sm font-bold text-primary shadow-[0_3px_0_0_var(--primary)] active:translate-y-0.5 active:shadow-[0_1px_0_0_var(--primary)]";
+
+function ContactTab({ active }: { active: boolean }) {
+  return (
+    <Popover>
+      <PopoverTrigger
+        aria-label="Contact"
+        className={cn(
+          "group relative flex flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-1.5 text-[11px] font-medium leading-none transition-all duration-200 ease-out",
+          active ? "text-accent" : "text-primary-foreground/80 hover:text-primary-foreground",
+        )}
+      >
+        <Phone className={cn("h-5 w-5", active && "scale-110")} strokeWidth={active ? 2.5 : 2} />
+        <span className="tracking-tight">Contact</span>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="z-[150] w-64 space-y-2 rounded-2xl border-2 border-primary bg-background p-3">
+        <a href={`tel:+${BUSINESS.phoneIntl}`} className={quickBtn}>
+          <Phone className="h-4 w-4" /> Call {BUSINESS.phone}
+        </a>
+        <a href={`https://wa.me/${BUSINESS.phoneIntl}`} target="_blank" rel="noopener noreferrer" className={quickBtn}>
+          <MessageCircle className="h-4 w-4" /> WhatsApp us
+        </a>
+        <a href={`mailto:${BUSINESS.email}`} className={quickBtn}>
+          <Mail className="h-4 w-4" /> Email us
+        </a>
+        <Link to="/contact" className="flex items-center justify-between px-1 pt-1 text-xs font-semibold text-muted-foreground hover:text-primary">
+          All contact details <ChevronRight className="h-3.5 w-3.5" />
+        </Link>
+      </PopoverContent>
+    </Popover>
   );
 }
