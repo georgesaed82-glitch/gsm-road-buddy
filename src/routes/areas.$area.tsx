@@ -53,10 +53,10 @@ export const Route = createFileRoute("/areas/$area")({
     const ratingLabel = `${rv.rating.toFixed(1)} from ${rv.review_count} Google reviews`;
     const isKen = a.slug === "kensington";
     const title = isKen
-      ? "Driving Lessons Kensington W8 | High Street Kensington | GSM"
+      ? "Driving Lessons in High Street Kensington (W8) | GSM Driving School"
       : `Driving Lessons ${a.area} (${a.postcode}) | GSM Driving School`;
     const description = isKen
-      ? `Driving lessons in Kensington (W8) since 2005. Manual & automatic, pickup around High Street Kensington, meeting point for South Kensington. Rated ${ratingLabel}.`
+      ? `Driving lessons in High Street Kensington (W8) since 2005. Manual or automatic, two-hour lessons, patient one-to-one tuition and an agreed High Street Kensington meeting point. Rated ${ratingLabel}.`
       : `Driving lessons in ${a.area} ${a.postcode}. DVSA-approved local instructor, manual & automatic, door-to-door pickup. Rated ${ratingLabel}.`;
     const url = `https://www.gsmdrivingschool.com/areas/${a.slug}`;
     return {
@@ -158,8 +158,8 @@ function AreaPage() {
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {a.postcode} · West London
           </p>
-          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Driving Lessons in {a.area}
+          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            {a.slug === "kensington" ? "Driving lessons in High Street Kensington" : `Driving Lessons in ${a.area}`}
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{a.intro}</p>
           <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
@@ -196,6 +196,40 @@ function AreaPage() {
           </div>
         </div>
       </section>
+
+      {a.slug === "kensington" ? (
+        <section className="py-10 sm:py-14">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div className="rounded-2xl border-2 border-primary/25 bg-card p-5 shadow-[0_6px_0_0_var(--color-primary),0_14px_24px_-10px_rgba(19,56,46,0.45)] sm:p-8">
+              <h2 className="font-display text-2xl font-semibold text-primary">
+                Your driving lessons in High Street Kensington
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                High Street Kensington is our main focus for new learners. We meet you at an agreed
+                point in High Street Kensington (W8) and teach one-to-one from there, so you learn on
+                the same busy West London roads you will drive on after your test.
+              </p>
+              <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Manual or automatic</strong><span className="block text-sm text-muted-foreground">Choose the car that suits you; both are available.</span></li>
+                <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Two-hour lessons</strong><span className="block text-sm text-muted-foreground">Every lesson is two hours, paid in advance when you book.</span></li>
+                <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Patient tuition</strong><span className="block text-sm text-muted-foreground">Calm, clear teaching for beginners and nervous learners alike.</span></li>
+                <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Fair, simple prices</strong><span className="block text-sm text-muted-foreground">£45–£70 per hour with 48 hours' notice to cancel or reschedule.</span></li>
+              </ul>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Button asChild className="btn-3d rounded-2xl bg-primary text-primary-foreground">
+                  <a href="tel:+447961585231">Call 07961 585231</a>
+                </Button>
+                <Button asChild variant="outline" className="rounded-2xl border-2 border-primary">
+                  <a href="https://wa.me/447961585231" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
+                </Button>
+                <Button asChild variant="outline" className="rounded-2xl border-2 border-primary">
+                  <Link to="/contact">Send an enquiry</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
