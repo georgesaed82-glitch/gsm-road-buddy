@@ -21,14 +21,14 @@ export const Route = createFileRoute("/reviews")({
       {
         property: "og:description",
         content:
-          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Rated 5.0 from 143 Google reviews.",
+          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Rated 5.0 from 147 Google reviews.",
       },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "143 five-star Google reviews — GSM Driving School" },
       {
         name: "twitter:description",
         content:
-          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Rated 5.0 from 143 Google reviews.",
+          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Rated 5.0 from 147 Google reviews.",
       },
     ],
   }),
