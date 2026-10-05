@@ -34,16 +34,30 @@ export const Route = createFileRoute("/theory")({
   component: TheoryPage,
 });
 
+/**
+ * Platform gate: theory practice is native-app only. Web visitors are sent to
+ * Driving Videos without mounting any theory content or queries.
+ */
 function TheoryPage() {
-  // Theory practice is off the public website; web visitors go to Driving Videos.
-  // The native app keeps its existing theory screen.
-  const redirectNav = useNavigate();
+  const navigate = useNavigate();
+  const [platform, setPlatform] = useState<"pending" | "native" | "web">("pending");
   useEffect(() => {
+    if (isNativeApp()) return setPlatform("native");
+    // Capacitor can inject its global slightly after first paint; re-check once.
     const t = window.setTimeout(() => {
-      if (!isNativeApp()) redirectNav({ to: "/youtube", replace: true });
-    }, 250);
+      if (isNativeApp()) setPlatform("native");
+      else {
+        setPlatform("web");
+        navigate({ to: "/youtube", replace: true });
+      }
+    }, 150);
     return () => window.clearTimeout(t);
-  }, [redirectNav]);
+  }, [navigate]);
+  if (platform !== "native") return <div aria-busy="true" className="min-h-[60vh]" />;
+  return <TheoryContent />;
+}
+
+function TheoryContent() {
   const { category: initialCategory } = Route.useSearch();
   const [active, setActive] = useState<string | null>(
     initialCategory && theoryCategories.some((c) => c.slug === initialCategory)

@@ -133,9 +133,13 @@
   /* Prevent stray decorations (e.g. negative-offset hero accents) from
      causing horizontal scroll on phones — keeps content centered in the
      viewport on every device. */
-  html,
-  body {
+  /* body uses clip (not hidden) so it never becomes its own scroll
+     container — otherwise sticky header/section bars stop sticking. */
+  html {
     overflow-x: hidden;
+  }
+  body {
+    overflow-x: clip;
   }
 
   /* Native-app feel: disable pull-to-refresh bounce, tap highlight,
