@@ -293,7 +293,7 @@ function AreaPage() {
           <h2 className="font-display text-xl font-semibold">Other areas we cover</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {areas
-              .filter((x) => x.slug !== a.slug)
+              .filter((x) => x.slug !== a.slug && !x.pendingConfirmation)
               .map((x) => (
                 <Link
                   key={x.slug}
