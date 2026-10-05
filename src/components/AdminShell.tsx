@@ -38,6 +38,7 @@ import {
   Menu,
   LayoutGrid,
   ImagePlus,
+  CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
