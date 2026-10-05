@@ -117,7 +117,7 @@ function ContactPage() {
             {cards.map((c) => {
               const inner = (
                 <>
-                  <span className="grid h-10 w-12 shrink-0 place-items-center self-center rounded-2xl border border-accent/40 bg-primary text-accent shadow-sm sm:h-10 sm:w-14">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center self-center rounded-2xl border border-accent/40 bg-primary text-accent shadow-sm sm:h-11 sm:w-11">
                     {c.icon}
                   </span>
                   <div className="min-w-0 flex-1">
