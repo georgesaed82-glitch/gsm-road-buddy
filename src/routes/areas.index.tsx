@@ -48,26 +48,46 @@ function AreasIndex() {
           </p>
         </div>
       </section>
-      <section className="py-8 sm:py-10">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-3">
-            {list.map((a) => (
-              <Link
-                key={a.slug}
-                to="/areas/$area"
-                params={{ area: a.slug }}
-                className="group flex aspect-square flex-col justify-between rounded-lg border border-border bg-card p-3 transition-colors hover:bg-accent/5"
-              >
-                <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                  <MapPin className="h-3 w-3" />
-                  {a.postcode}
-                </div>
-                <h2 className="font-display text-base font-semibold leading-tight group-hover:text-primary sm:text-lg">
-                  {a.area}
-                </h2>
-                <span className="text-[11px] text-muted-foreground">Driving lessons →</span>
-              </Link>
-            ))}
+      <section className="py-8 sm:py-12">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
+            {list.map((a) => {
+              const name = a.slug === "kensington" ? "High Street Kensington" : a.area;
+              return (
+                <Link
+                  key={a.slug}
+                  to="/areas/$area"
+                  params={{ area: a.slug }}
+                  className="group flex min-h-[132px] flex-col justify-between rounded-2xl border-2 border-primary/25 bg-card p-4 shadow-[0_6px_0_0_var(--color-primary),0_14px_24px_-10px_rgba(19,56,46,0.45)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_10px_0_0_var(--color-primary),0_20px_30px_-12px_rgba(19,56,46,0.5)] active:translate-y-1 active:shadow-[0_2px_0_0_var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                >
+                  <span className="inline-flex w-fit items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold tracking-wide text-primary-foreground">
+                    <MapPin className="h-3 w-3" />
+                    {a.postcode}
+                  </span>
+                  <h2 className="mt-3 font-display text-base font-semibold leading-tight text-foreground sm:text-lg">
+                    {name}
+                  </h2>
+                  <span className="mt-2 text-xs font-medium text-primary">Driving lessons →</span>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-10 rounded-2xl border-2 border-primary/25 bg-secondary/50 p-5 shadow-[0_6px_0_0_var(--color-primary)] sm:p-6">
+            <h2 className="font-display text-lg font-semibold text-foreground sm:text-xl">
+              Nearby areas — we can still pick you up
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              Live just outside our main areas, such as South Kensington? No problem. We pick up
+              students from neighbouring areas too — we simply agree a convenient meeting point
+              between us so your lesson starts on time.
+            </p>
+            <Link
+              to="/contact"
+              className="mt-4 inline-flex items-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Ask about a meeting point
+            </Link>
           </div>
         </div>
       </section>
