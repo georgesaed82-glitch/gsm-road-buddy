@@ -291,7 +291,29 @@ function RootComponent() {
 
       const href = link.getAttribute("href");
       if (!href) return;
-      if (href.startsWith("mailto:") || href.startsWith("tel:")) return;
+      if (href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("sms:")) {
+        // Inside an embedded frame (e.g. the editor preview) the browser blocks
+        // tel:/mailto: navigation in the frame, so hand it to a new window the
+        // same way WhatsApp links open. On the real site the default works.
+        let framed = false;
+        try {
+          framed = window.self !== window.top;
+        } catch {
+          framed = true;
+        }
+        if (framed) {
+          e.preventDefault();
+          const w = window.open(href, "_blank");
+          if (!w) {
+            try {
+              window.top!.location.href = href;
+            } catch {
+              window.location.href = href;
+            }
+          }
+        }
+        return;
+      }
 
       let url: URL;
       try {
