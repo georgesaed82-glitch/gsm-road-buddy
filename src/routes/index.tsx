@@ -1019,11 +1019,11 @@ function VideoTipsSection() {
 
 const LOCAL_AREAS: { postcode: string; label: string; slug?: string }[] = [
   { postcode: "W11", label: "Notting Hill", slug: "notting-hill" },
-  { postcode: "W8", label: "Kensington", slug: "kensington" },
+  { postcode: "W8", label: "High Street Kensington", slug: "kensington" },
   { postcode: "W14", label: "Holland Park", slug: "holland-park" },
   { postcode: "W12", label: "Shepherd's Bush", slug: "shepherds-bush" },
   { postcode: "W2", label: "Bayswater", slug: "bayswater" },
-  { postcode: "W10", label: "North Kensington" },
+  { postcode: "W10", label: "North Kensington", slug: "north-kensington" },
 ];
 
 function LocalAreasSection() {
