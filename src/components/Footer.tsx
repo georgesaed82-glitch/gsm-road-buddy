@@ -96,6 +96,9 @@ export function Footer() {
               <a href={`tel:+${business.phone_intl}`} className="inline-flex items-center rounded-lg border border-primary/25 bg-card px-2.5 py-1 text-xs font-extrabold text-primary shadow-[0_3px_0_0_rgba(0,0,0,0.35)] active:translate-y-0.5 active:shadow-none">
                 Call {business.phone}
               </a>
+              <a href={`mailto:${business.email}`} className="inline-flex items-center rounded-lg border border-primary/25 bg-card px-2.5 py-1 text-xs font-extrabold text-primary shadow-[0_3px_0_0_rgba(0,0,0,0.35)] active:translate-y-0.5 active:shadow-none">
+                Email us
+              </a>
             </div>
           )}
         </div>
