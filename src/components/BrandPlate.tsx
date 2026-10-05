@@ -35,15 +35,16 @@ export function BrandPlate({
       <span
         className={cn("relative shrink-0 rounded-full", s.logoWrap)}
         style={{
-          background:
-            "radial-gradient(circle at 30% 30%,#2f6446 0%,#1c3f2c 70%)",
+          background: "#ffffff",
           boxShadow: `0 0 0 2px ${COPPER}, 0 4px 10px -2px rgba(0,0,0,0.6)`,
         }}
       >
         <img
           src={gsmLogo.url}
-          alt="GSM Driving School logo"
-          className="h-full w-full rounded-full object-cover"
+          alt="GSM Driving School — Est. 2005 circular badge"
+          width={853}
+          height={861}
+          className="h-full w-full rounded-full object-contain p-[1px]"
         />
       </span>
 
@@ -80,7 +81,7 @@ export function BrandPlate({
         />
 
         <div className={cn("font-medium tracking-wide text-white/90", s.subtitle)}>
-          George School of Motoring
+          George&apos;s School of Motoring
         </div>
 
         <div className="mt-1.5">
@@ -99,7 +100,7 @@ export function BrandPlate({
                 "0 1px 0 rgba(255,255,255,0.08) inset,0 1px 4px rgba(0,0,0,0.35)",
             }}
           >
-            ESTABLISHED 2005
+            EST. 2005
           </span>
         </div>
       </div>
@@ -164,18 +165,18 @@ export function BrandPlate({
 
 const SIZES = {
   xs: {
-    padding: "p-1 pr-2.5",
-    logoWrap: "h-8 w-8",
-    title: "text-[12px]",
-    subtitle: "text-[9px]",
-    badge: "text-[7.5px]",
+    padding: "p-1.5 pr-2.5",
+    logoWrap: "h-11 w-11",
+    title: "text-[13px]",
+    subtitle: "text-[10px]",
+    badge: "text-[8.5px]",
   },
   sm: {
     padding: "p-1.5 pr-3",
-    logoWrap: "h-10 w-10",
-    title: "text-[14px]",
-    subtitle: "text-[9.5px]",
-    badge: "text-[8px]",
+    logoWrap: "h-12 w-12",
+    title: "text-[16px]",
+    subtitle: "text-[11px]",
+    badge: "text-[9px]",
   },
   md: {
     padding: "p-2.5 pr-4 sm:p-3 sm:pr-5",
@@ -200,7 +201,7 @@ const SIZES = {
   },
   hero: {
     padding: "px-3 py-1.5 pr-4 lg:px-3.5 lg:py-2 lg:pr-5 xl:px-4 xl:py-2 xl:pr-6",
-    logoWrap: "h-[42px] w-[42px] lg:h-[46px] lg:w-[46px] xl:h-[52px] xl:w-[52px]",
+    logoWrap: "h-[52px] w-[52px] lg:h-[56px] lg:w-[56px] xl:h-[60px] xl:w-[60px]",
     title:
       "text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[26px] leading-[1.02] tracking-[-0.02em]",
     subtitle: "text-[10.5px] lg:text-[11px] xl:text-[12px]",
