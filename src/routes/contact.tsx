@@ -84,16 +84,6 @@ function ContactPage() {
       external: true,
     },
     {
-      icon: <Clock className="h-6 w-6" />,
-      label: "Lesson hours",
-      lines: [
-        "Mon & Fri · 7am – 8pm",
-        "Tue & Wed · 7am – 9pm",
-        "Thu · 7am – 8:30pm",
-        "Sat · 7am – 6pm · Sun closed",
-      ],
-    },
-    {
       icon: <WhatsAppIcon className="h-6 w-6" />,
       label: "WhatsApp",
       lines: [business.phone, "Send us a message"],
