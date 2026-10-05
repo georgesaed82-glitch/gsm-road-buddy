@@ -51,8 +51,8 @@ export function Footer() {
           <div className="flex items-center justify-center gap-3 pt-1">
             {[
               { href: social.youtube, label: "GSM Driving School on YouTube", icon: <Youtube className="h-5 w-5 text-youtube" /> },
-              { href: social.facebook, label: "GSM Driving School on Facebook", icon: <FacebookBrandIcon className="h-5 w-5" /> },
-              { href: social.instagram, label: "GSM Driving School on Instagram", icon: <InstagramBrandIcon className="h-5 w-5" /> },
+              { href: social.facebook || "https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr", label: "GSM Driving School on Facebook", icon: <FacebookBrandIcon className="h-5 w-5" /> },
+              { href: social.instagram || "https://www.instagram.com/gsm_driving_school_", label: "GSM Driving School on Instagram", icon: <InstagramBrandIcon className="h-5 w-5" /> },
             ]
               .filter((s) => s.href)
               .map((s) => (
