@@ -48,59 +48,26 @@ export function Footer() {
               George's School of Motoring · Established 2005
             </span>
           </Link>
-          {(
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-              {social.facebook && (
+          <div className="flex items-center justify-center gap-3 pt-1">
+            {[
+              { href: social.youtube, label: "GSM Driving School on YouTube", icon: <Youtube className="h-5 w-5 text-youtube" /> },
+              { href: social.facebook || "https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr", label: "GSM Driving School on Facebook", icon: <FacebookBrandIcon className="h-5 w-5 text-[#1877F2]" /> },
+              { href: social.instagram || "https://www.instagram.com/gsm_driving_school_", label: "GSM Driving School on Instagram", icon: <InstagramBrandIcon className="h-5 w-5 text-[#E1306C]" /> },
+            ]
+              .filter((s) => s.href)
+              .map((s) => (
                 <a
-                  href={social.facebook}
+                  key={s.label}
+                  href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="opacity-80 hover:opacity-100"
+                  aria-label={s.label}
+                  className="grid h-10 w-10 place-items-center rounded-full bg-card shadow-[0_3px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none"
                 >
-                  <FacebookBrandIcon className="h-5 w-5" />
+                  {s.icon}
                 </a>
-              )}
-              {social.instagram && (
-                <a
-                  href={social.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="opacity-80 hover:opacity-100"
-                >
-                  <InstagramBrandIcon className="h-5 w-5" />
-                </a>
-              )}
-              {social.tiktok && (
-                <a
-                  href={social.tiktok}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm opacity-80 hover:opacity-100"
-                >
-                  TikTok
-                </a>
-              )}
-              {social.youtube && (
-                <a
-                  href={social.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GSM Driving School on YouTube"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-youtube px-2.5 py-1 text-xs font-bold text-youtube-foreground shadow-[0_3px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-none"
-                >
-                  <Youtube className="h-4 w-4" aria-hidden="true" /> YouTube
-                </a>
-              )}
-              <a href={`tel:+${business.phone_intl}`} className="inline-flex items-center rounded-lg border border-primary/25 bg-card px-2.5 py-1 text-xs font-extrabold text-primary shadow-[0_3px_0_0_rgba(0,0,0,0.35)] active:translate-y-0.5 active:shadow-none">
-                Call {business.phone}
-              </a>
-              <a href={`mailto:${business.email}`} className="inline-flex items-center rounded-lg border border-primary/25 bg-card px-2.5 py-1 text-xs font-extrabold text-primary shadow-[0_3px_0_0_rgba(0,0,0,0.35)] active:translate-y-0.5 active:shadow-none">
-                Email us
-              </a>
-            </div>
-          )}
+              ))}
+          </div>
         </div>
 
 
