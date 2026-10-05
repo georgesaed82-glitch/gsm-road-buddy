@@ -7,6 +7,7 @@ import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { BookingForm } from "@/components/BookingForm";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { BUSINESS_ADDRESS } from "@/lib/business";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -47,7 +48,8 @@ function ContactPage() {
   const waHref = `https://wa.me/${business.phone_intl}`;
   const telHref = `tel:+${business.phone_intl}`;
   const mailHref = `mailto:${business.email}`;
-  const mapHref = "https://maps.google.com/?cid=12315071950298926858";
+  const mapAddress = business.address?.trim() || BUSINESS_ADDRESS;
+  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapAddress)}`;
 
   type ContactCard = {
     icon: React.ReactNode;
