@@ -160,7 +160,7 @@ export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
           {/* Single menu/dialog owner */}
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
-              <button type="button" aria-label="Open menu" className={circleIconBtn}>
+              <button type="button" aria-label="Open menu" className={cn(circleIconBtn, "border-2 border-primary shadow-[0_3px_0_0_var(--primary),0_6px_10px_-4px_rgba(0,0,0,0.35)] active:translate-y-0.5 active:shadow-[0_1px_0_0_var(--primary)]")}>
                 <MenuIcon className="h-5 w-5 text-accent" />
               </button>
             </SheetTrigger>

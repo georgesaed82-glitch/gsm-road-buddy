@@ -452,7 +452,7 @@ function AuthPage() {
   if (isAdmin) {
     return (
       <div className="flex flex-1 items-center justify-center px-4 py-12">
-        <Card className="w-full max-w-md border-border bg-card text-center">
+        <Card className="w-full max-w-md rounded-2xl border-2 border-primary bg-card text-center shadow-[0_6px_0_0_var(--primary),0_18px_30px_-12px_rgba(0,0,0,0.35)]">
           <CardHeader>
             <CardTitle className="font-display text-2xl">Secure Administrator Login</CardTitle>
             <CardDescription>
