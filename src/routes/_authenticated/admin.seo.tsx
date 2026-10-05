@@ -71,7 +71,7 @@ function SeoPage() {
   useEffect(() => {
     setRating({
       rating: typeof ratingValue.rating === "number" ? ratingValue.rating : 5.0,
-      review_count: typeof ratingValue.review_count === "number" ? ratingValue.review_count : 143,
+      review_count: typeof ratingValue.review_count === "number" ? ratingValue.review_count : 147,
       show: ratingValue.show !== false,
     });
   }, [ratingRow?.updated_at]);
