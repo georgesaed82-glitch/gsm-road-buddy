@@ -188,9 +188,19 @@ export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
                   <p className="hidden text-[11px] font-semibold uppercase tracking-[0.32em] text-accent lg:block">
                     Established 2005
                   </p>
-                  <p className="text-lg font-black tracking-tight lg:mt-3 lg:text-3xl">
-                    GSM Driving School
-                  </p>
+                  <Link
+                    to="/"
+                    onClick={() => setSheetOpen(false)}
+                    aria-label="GSM Driving School — Home"
+                    className="block w-[min(78vw,340px)] overflow-hidden rounded-2xl border-2 border-accent/60 shadow-[0_4px_0_0_rgba(0,0,0,0.35)] lg:mt-3 lg:w-full"
+                  >
+                    <span
+                      role="img"
+                      aria-label="GSM Driving School, West London, Est. 2005 — emblem, wordmark and learner car"
+                      className="block aspect-[3.3/1] w-full bg-no-repeat"
+                      style={{ backgroundImage: `url(${brandArt.url})`, backgroundSize: "150% auto", backgroundPosition: "64% 51%" }}
+                    />
+                  </Link>
                 </div>
 
                 <div className="relative hidden lg:block">
@@ -215,12 +225,12 @@ export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
               </aside>
 
               <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-                <div className="flex items-center justify-between border-b border-border/60 px-4 py-3 lg:px-8 lg:py-4">
+                <div className="flex items-center justify-between border-b border-border/60 px-4 pb-4 pt-3 lg:px-8 lg:py-4">
                   <a
                     href={`tel:+${business.phone_intl}`}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary lg:hidden"
+                    className="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-card px-4 py-2 text-base font-extrabold text-primary shadow-[0_4px_0_0_var(--primary),0_8px_14px_-6px_rgba(0,0,0,0.35)] transition-transform active:translate-y-1 active:shadow-[0_1px_0_0_var(--primary)] lg:hidden"
                   >
-                    <Phone className="h-4 w-4 text-accent" /> {business.phone}
+                    <Phone className="h-5 w-5 text-primary" /> Call {business.phone}
                   </a>
                   <p className="hidden text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground lg:block">
                     Navigate
