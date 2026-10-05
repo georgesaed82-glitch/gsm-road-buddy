@@ -187,7 +187,7 @@ function Home() {
 
   return (
     <div className="flex flex-col">
-      <HomeSectionNav sections={navAnchors} />
+      {/* section chip bar removed */}
       {sections.map((s) => {
         const key = s.section_key ?? s.section_type;
         const anchorId = SECTION_META[s.section_type]?.id;

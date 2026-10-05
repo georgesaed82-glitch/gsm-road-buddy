@@ -16,6 +16,7 @@ import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { useIsNativeApp } from "@/lib/isNativeApp";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { resolveYoutubeUrl } from "@/lib/youtube";
+import { BrandBanner } from "@/components/Header";
 
 const ALL_FOOTER_LINKS = [
   { to: "/services", label: "Explore Services", icon: Car },
@@ -39,17 +40,12 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         {/* Top: logo */}
         <div className="flex flex-col items-center gap-3 text-center">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-primary-foreground/30 font-display text-lg font-semibold">
-              GSM
-            </div>
-            <div className="leading-tight text-left">
-              <div className="font-display text-lg font-semibold">{business.name}</div>
-              <div className="text-[10px] uppercase tracking-[0.18em] opacity-70">
-                {business.tagline}
-              </div>
-            </div>
-          </Link>
+          <div className="w-full max-w-[400px] lg:max-w-[520px]">
+            <BrandBanner />
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-90">
+            George's School of Motoring · Established 2005
+          </p>
           {(social.facebook || social.instagram || social.tiktok || social.youtube) && (
             <div className="flex items-center gap-4 pt-1">
               {social.facebook && (

@@ -47,7 +47,7 @@ const PRIMARY_NAV: NavItem[] = [
 const BLOG_ITEM: NavItem = { to: "/blog", label: "Blog", icon: Newspaper, desc: "News & tips" };
 
 /** The GSM YouTube channel artwork, framed to keep emblem, wordmark and car visible. */
-function BrandBanner() {
+export function BrandBanner() {
   return (
     <Link
       to="/"
