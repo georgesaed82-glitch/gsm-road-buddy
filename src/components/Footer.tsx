@@ -16,7 +16,6 @@ import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { useIsNativeApp } from "@/lib/isNativeApp";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { resolveYoutubeUrl } from "@/lib/youtube";
-import { BrandBanner } from "@/components/Header";
 
 const ALL_FOOTER_LINKS = [
   { to: "/services", label: "Explore Services", icon: Car },
@@ -40,12 +39,15 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         {/* Top: logo */}
         <div className="flex flex-col items-center gap-3 text-center">
-          <div className="w-full max-w-[400px] lg:max-w-[520px]">
-            <BrandBanner />
-          </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-90">
-            George's School of Motoring · Established 2005
-          </p>
+          <Link to="/" aria-label="GSM Driving School — Home" className="inline-block">
+            <span className="block font-display text-3xl font-extrabold uppercase tracking-wide text-primary-foreground [text-shadow:0_2px_0_rgba(0,0,0,0.25),0_4px_0_rgba(0,0,0,0.2),0_8px_14px_rgba(0,0,0,0.45)] sm:text-4xl">
+              GSM Driving School
+            </span>
+            <span className="mx-auto mt-2 block h-1 w-24 rounded-full bg-destructive shadow-[0_2px_0_rgba(0,0,0,0.3)]" />
+            <span className="mt-3 block text-sm font-bold uppercase tracking-[0.16em] text-primary-foreground [text-shadow:0_2px_0_rgba(0,0,0,0.3),0_4px_8px_rgba(0,0,0,0.35)]">
+              George's School of Motoring · Established 2005
+            </span>
+          </Link>
           {(social.facebook || social.instagram || social.tiktok || social.youtube) && (
             <div className="flex items-center gap-4 pt-1">
               {social.facebook && (
@@ -86,7 +88,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GSM Driving School on YouTube"
-                  className="inline-flex items-center gap-1.5 text-sm opacity-80 hover:opacity-100"
+                  className="inline-flex items-center gap-2 rounded-xl bg-destructive px-4 py-2 text-sm font-bold text-destructive-foreground shadow-[0_5px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-none"
                 >
                   <Youtube className="h-5 w-5" aria-hidden="true" /> YouTube
                 </a>
@@ -95,8 +97,8 @@ export function Footer() {
           )}
         </div>
 
-        <p className="mt-6 text-center text-sm">
-          <a href={`tel:+${business.phone_intl}`} className="font-semibold hover:text-accent">
+        <p className="mt-8 text-center">
+          <a href={`tel:+${business.phone_intl}`} className="inline-flex items-center rounded-2xl border-2 border-primary/25 bg-card px-6 py-3 text-lg font-extrabold text-primary shadow-[0_6px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-none">
             Call {business.phone}
           </a>
         </p>
