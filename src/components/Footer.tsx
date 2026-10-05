@@ -99,22 +99,11 @@ export function Footer() {
           )}
         </div>
 
-        {/* Boxed nav grid */}
-        <nav className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-7">
-          {FOOTER_LINKS.map((link) => {
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="flex flex-col items-center justify-center gap-1.5 rounded-lg border border-primary-foreground/20 bg-primary-foreground/5 px-3 py-3 text-center font-display text-xs font-medium transition-colors hover:border-accent/60 hover:bg-primary-foreground/10 hover:text-accent"
-              >
-                <Icon className="h-4 w-4" aria-hidden="true" />
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        <p className="mt-6 text-center text-sm">
+          <a href={`tel:+${business.phone_intl}`} className="font-semibold hover:text-accent">
+            Call {business.phone}
+          </a>
+        </p>
 
         {/* Bottom: copyright + disclaimer */}
         <p className="mt-8 text-center text-xs opacity-70">{footer.copy}</p>

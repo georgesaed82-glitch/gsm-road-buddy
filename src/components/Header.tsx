@@ -37,19 +37,14 @@ type NavItem = {
 
 const PRIMARY_NAV: NavItem[] = [
   { to: "/", label: "Home", icon: Home, desc: "Back to homepage" },
-  { to: "/about", label: "About", icon: Info, desc: "Our story" },
-  { to: "/services", label: "Practical Lessons", icon: Car, desc: "Manual & automatic" },
-  { to: "/pricing", label: "Prices & Packages", icon: CreditCard, desc: "Rates & deals" },
+  { to: "/services", label: "Driving Lessons", icon: Car, desc: "Manual & automatic" },
+  { to: "/pricing", label: "Prices", icon: CreditCard, desc: "Rates & packages" },
   { to: "/youtube", label: "Driving Videos", icon: Youtube, desc: "Free tips on YouTube" },
-  { to: "/reviews", label: "Reviews", icon: Star, desc: "What learners say" },
-  { to: "/instructors", label: "Instructor Team", icon: Users, desc: "Meet the team" },
-  { to: "/contact", label: "Contact Us", icon: Phone, desc: "Call, WhatsApp, email" },
-];
-
-const EXPLORE_NAV: NavItem[] = [
-  { to: "/about", label: "Why GSM", icon: ShieldCheck, desc: "Our approach" },
   { to: "/areas", label: "Areas Covered", icon: MapPin, desc: "West London" },
-  { to: "/reviews", label: "Learner Passes", icon: Trophy, desc: "Reviews from learners" },
+  { to: "/reviews", label: "Reviews", icon: Star, desc: "What learners say" },
+  { to: "/instructors", label: "Instructors", icon: Users, desc: "Meet the team" },
+  { to: "/about", label: "About Us", icon: Info, desc: "Since 2005" },
+  { to: "/contact", label: "Contact Us", icon: Phone, desc: "Call, WhatsApp, email" },
 ];
 
 const BLOG_ITEM: NavItem = { to: "/blog", label: "Blog", icon: Newspaper, desc: "News & tips" };
@@ -120,7 +115,7 @@ export function Header() {
   const circleIconBtn =
     "inline-flex h-9 w-9 items-center justify-center rounded-full border border-accent/80 bg-card text-primary shadow-sm transition-colors hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent xl:h-10 xl:w-10";
 
-  const exploreItems: NavItem[] = BLOG_ENABLED ? [...EXPLORE_NAV, BLOG_ITEM] : EXPLORE_NAV;
+  const navItems: NavItem[] = BLOG_ENABLED ? [...PRIMARY_NAV, BLOG_ITEM] : PRIMARY_NAV;
 
   const renderNavCard = (item: NavItem, opts: { compact?: boolean } = {}) => {
     const Icon = item.icon;
@@ -232,27 +227,12 @@ export function Header() {
                   <p className="hidden text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground lg:block">
                     Navigate
                   </p>
-                  <LanguageSelector variant="icon" side="bottom" align="end" />
                 </div>
 
                 <div className="flex-1 overflow-y-auto px-4 py-4 lg:px-8 lg:py-6">
-                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                    Main
-                  </p>
                   <nav aria-label="Main" className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                    {PRIMARY_NAV.map((item) => renderNavCard(item))}
+                    {navItems.map((item) => renderNavCard(item))}
                   </nav>
-
-                  <p className="mb-2 mt-6 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                    Explore
-                  </p>
-                  <nav aria-label="Explore" className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                    {exploreItems.map((item) => renderNavCard(item, { compact: true }))}
-                  </nav>
-
-                  <div className="mt-6 border-t border-border/60 pt-4">
-                    <LanguageSelector variant="menu-row" side="top" align="end" />
-                  </div>
 
                   {isAuthed ? (
                     <div className="mt-4">
@@ -265,10 +245,6 @@ export function Header() {
               </div>
             </SheetContent>
           </Sheet>
-
-          <span className="hidden sm:inline-flex">
-            <LanguageSelector variant="icon" side="bottom" align="end" />
-          </span>
 
           {isAuthed ? (
             <button type="button" onClick={handleSignOut} aria-label="Sign out" className={circleIconBtn}>
