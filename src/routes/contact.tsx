@@ -140,7 +140,7 @@ function ContactPage() {
                 </>
               );
               const className =
-                "group flex items-center gap-4 rounded-2xl border border-border/70 bg-card p-4 sm:p-5 shadow-[0_2px_14px_-6px_rgba(29,42,34,0.18)] transition-all hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_10px_28px_-14px_rgba(29,42,34,0.35)] min-w-0";
+                "group flex items-center gap-4 rounded-2xl bg-card p-4 sm:p-5 box-3d min-w-0";
               if (c.href) {
                 return (
                   <a
@@ -194,7 +194,7 @@ function ContactPage() {
             <CardContent className="grid gap-3 sm:grid-cols-3">
               <WhatsAppButton phoneIntl={business.phone_intl} />
               <CallButton phoneIntl={business.phone_intl} />
-              <Button asChild size="lg" className="h-10 w-full justify-center gap-2 rounded-xl bg-accent text-accent-foreground shadow-md hover:bg-accent/90">
+              <Button asChild size="lg" className="h-10 w-full justify-center gap-2 rounded-xl bg-youtube text-youtube-foreground btn-3d hover:bg-youtube/90">
                 <Link to="/youtube">
                   <Youtube className="h-5 w-5" /> Driving videos
                 </Link>
@@ -217,7 +217,7 @@ function WhatsAppButton({ phoneIntl }: { phoneIntl: string }) {
     <Button
       asChild
       size="lg"
-      className="h-10 w-full justify-center gap-2 rounded-xl bg-primary text-primary-foreground shadow-md transition-transform hover:bg-primary/90 hover:shadow-lg"
+      className="h-10 w-full justify-center gap-2 rounded-xl bg-primary text-primary-foreground btn-3d transition-transform hover:bg-primary/90 hover:shadow-lg"
     >
       <a
         href={`https://wa.me/${phoneIntl}`}
@@ -238,7 +238,7 @@ function CallButton({ phoneIntl }: { phoneIntl: string }) {
       asChild
       size="lg"
       variant="outline"
-      className="h-10 w-full justify-center gap-2 rounded-xl border-primary bg-background text-primary shadow-md transition-transform hover:bg-secondary hover:text-primary box-3d"
+      className="h-10 w-full justify-center gap-2 rounded-xl border-primary bg-background text-primary btn-3d transition-transform hover:bg-secondary hover:text-primary box-3d"
     >
       <a
         href={`tel:+${phoneIntl}`}

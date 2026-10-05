@@ -90,7 +90,7 @@ function YouTubePage() {
             one-to-one practical lessons around Notting Hill, Kensington and West London.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Button asChild size="lg" className="h-10 rounded-2xl bg-primary px-5 text-primary-foreground">
+            <Button asChild size="lg" className="h-10 rounded-2xl bg-youtube px-5 text-youtube-foreground hover:bg-youtube/90 btn-3d">
               <a href={channel} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
                 <Youtube className="h-5 w-5" /> Watch on YouTube
               </a>
