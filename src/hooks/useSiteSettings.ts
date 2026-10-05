@@ -44,7 +44,7 @@ const DEFAULT_HOURS: OpeningHours = {
   sun: "Closed",
 };
 const DEFAULT_FOOTER = {
-  copy: "© 2005 George's School of Motoring. All rights reserved.",
+  copy: `© ${new Date().getFullYear()} George's School of Motoring. All rights reserved.`,
   disclaimer: "",
   areas_covered: "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater",
 };

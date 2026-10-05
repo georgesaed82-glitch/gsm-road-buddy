@@ -102,7 +102,7 @@ export function Footer() {
 
 
         {/* Bottom: copyright + disclaimer */}
-        <p className="mt-3 text-center text-[10px] opacity-70">{footer.copy}</p>
+        <p className="mt-3 text-center text-[10px] opacity-70">© {new Date().getFullYear()} George's School of Motoring · Established 2005. All rights reserved.</p>
         {/* Theory disclaimer only in the native learning app, not the public website. */}
         {isNative ? (
           <div className="mt-4 border-t border-primary-foreground/10 pt-4">

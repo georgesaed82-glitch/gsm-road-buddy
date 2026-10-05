@@ -76,7 +76,7 @@ function PricingPage() {
             <div className="mt-6 grid gap-3 text-left sm:grid-cols-2">
               {[
                 { icon: Award, title: "Instructor qualifications & experience", body: "PDI, ADI, or senior ADI with decades of West London experience." },
-                { icon: Cog, title: "Manual or automatic", body: "Automatic lessons are priced slightly higher due to demand." },
+                { icon: Cog, title: "Manual or automatic", body: "Prices depend on your instructor and package." },
                 { icon: Package, title: "Lesson duration & packages", body: "Longer lessons and block bookings reduce the hourly rate." },
                 { icon: MapPin, title: "Location & travel time", body: "Pickup postcode and distance from your instructor's base." },
               ].map((f) => {

@@ -62,7 +62,7 @@ function ContactPage() {
     {
       icon: <Phone className="h-6 w-6" />,
       label: "Telephone",
-      lines: [business.phone, "Mon – Sun · 7:00 AM – 9:00 PM"],
+      lines: [business.phone, "Messages any time · replies during lesson hours"],
       href: telHref,
       onClick: () => trackContactClick("phone", "Contact page – card"),
     },
@@ -85,13 +85,18 @@ function ContactPage() {
     },
     {
       icon: <Clock className="h-6 w-6" />,
-      label: "Opening hours",
-      lines: ["Mon – Sun · 7:00 AM – 9:00 PM", "7 days a week"],
+      label: "Lesson hours",
+      lines: [
+        "Mon & Fri · 7am – 8pm",
+        "Tue & Wed · 7am – 9pm",
+        "Thu · 7am – 8:30pm",
+        "Sat · 7am – 6pm · Sun closed",
+      ],
     },
     {
       icon: <WhatsAppIcon className="h-6 w-6" />,
       label: "WhatsApp",
-      lines: [business.phone, "Chat with us instantly"],
+      lines: [business.phone, "Send us a message"],
       href: waHref,
       external: true,
       onClick: () => trackContactClick("whatsapp", "Contact page – card"),
@@ -189,7 +194,7 @@ function ContactPage() {
           {/* Instant CTAs */}
           <Card className="mt-6 bg-card box-3d">
             <CardHeader className="pb-4 text-center">
-              <CardTitle className="font-display text-2xl">Talk to us instantly</CardTitle>
+              <CardTitle className="font-display text-2xl">Send us a message</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3 sm:grid-cols-3">
               <WhatsAppButton phoneIntl={business.phone_intl} />

@@ -113,7 +113,7 @@ export function BookingForm() {
             Book a driving lesson
           </div>
           <h2 className="mt-4 text-balance font-display text-[1.6rem] font-medium leading-[1.1] text-foreground sm:text-4xl lg:text-5xl">
-            Get on the road <span className="italic text-accent">this week.</span>
+            Check lesson <span className="italic text-accent">availability.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
             Tell us where you are, what you prefer, and when you are free. We will reply with

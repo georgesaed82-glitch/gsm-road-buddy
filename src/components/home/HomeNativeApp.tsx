@@ -28,7 +28,7 @@ export function HomeNativeApp() {
               GSM <span className="text-accent">DRIVING SCHOOL</span>
             </div>
             <div className="text-[13px] text-primary-foreground/80">
-              George School of Motoring
+              George’s School of Motoring
             </div>
             <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-accent/90">
               Established 2005
