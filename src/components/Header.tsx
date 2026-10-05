@@ -51,17 +51,17 @@ const PRIMARY_NAV: NavItem[] = [
 const BLOG_ITEM: NavItem = { to: "/blog", label: "Blog", icon: Newspaper, desc: "News & tips" };
 
 /** The GSM YouTube channel artwork, framed to keep emblem, wordmark and car visible. */
-export function BrandBanner() {
+export function BrandBanner({ wide = false }: { wide?: boolean } = {}) {
   return (
     <Link
       to="/"
       aria-label="GSM Driving School — Home"
-      className="block min-w-0 flex-1 overflow-hidden rounded-2xl sm:w-[400px] sm:flex-none lg:w-[520px] border border-accent/50 shadow-md outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      className={`block min-w-0 flex-1 overflow-hidden rounded-2xl sm:w-[400px] sm:flex-none ${wide ? "lg:w-auto lg:flex-1" : "lg:w-[520px]"} border border-accent/50 shadow-md outline-none focus-visible:ring-2 focus-visible:ring-accent`}
     >
       <span
         role="img"
         aria-label="GSM Driving School, West London, Est. 2005 — emblem, wordmark and learner car"
-        className="block aspect-[3.3/1] w-full bg-no-repeat"
+        className={`block aspect-[3.3/1] w-full bg-no-repeat ${wide ? "lg:aspect-auto lg:h-[158px] lg:![background-size:100%_auto] lg:![background-position:50%_51%]" : ""}`}
         style={{
           backgroundImage: `url(${brandArt.url})`,
           backgroundSize: "150% auto",
@@ -157,7 +157,7 @@ export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
   return (
     <header ref={headerRef} className={cn("sticky top-0 w-full bg-background/95", sheetOpen ? "z-40" : "z-[120]")}>
       <div className="mx-auto flex w-full max-w-7xl items-center gap-2 px-2 py-2 sm:gap-3 sm:px-4 lg:max-w-[1220px] lg:px-8">
-        <BrandBanner />
+        <BrandBanner wide={pathname === "/"} />
 
         <div className="grid shrink-0 grid-cols-1 gap-1.5 lg:ml-auto sm:flex sm:items-center sm:gap-2">
           {/* Single menu/dialog owner */}
