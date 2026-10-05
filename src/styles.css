@@ -337,3 +337,18 @@ html[dir="rtl"] video {
     box-shadow: 0 9px 0 0 var(--color-primary), 0 20px 30px -12px color-mix(in oklab, var(--color-primary) 50%, transparent);
   }
 }
+
+:root { --youtube: #ff0000; --youtube-foreground: #ffffff; }
+@theme inline { --color-youtube: var(--youtube); --color-youtube-foreground: var(--youtube-foreground); }
+
+/* Chunky raised button */
+@utility btn-3d {
+  box-shadow: 0 5px 0 0 color-mix(in oklab, black 35%, transparent);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  &:active { transform: translateY(4px); box-shadow: 0 1px 0 0 color-mix(in oklab, black 35%, transparent); }
+}
+/* Raised box for dark green sections */
+@utility box-3d-dark {
+  border: 2px solid color-mix(in oklab, var(--color-primary-foreground) 25%, transparent);
+  box-shadow: 0 6px 0 0 color-mix(in oklab, black 40%, transparent), 0 14px 24px -10px color-mix(in oklab, black 55%, transparent);
+}

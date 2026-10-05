@@ -323,7 +323,7 @@ function HeroSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-10 w-full rounded-2xl bg-primary px-5 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-10 lg:px-6 lg:text-[15px]"
+              className="h-10 w-full rounded-2xl bg-primary px-5 text-primary-foreground btn-3d transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:btn-3d active:translate-y-0 sm:w-auto lg:h-10 lg:px-6 lg:text-[15px]"
             >
               <a
                 href={or(s.cta_primary_href, "/contact")}
@@ -336,7 +336,7 @@ function HeroSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-10 w-full rounded-2xl bg-accent px-5 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-10 lg:px-6 lg:text-[15px]"
+              className="h-10 w-full rounded-2xl bg-youtube px-5 text-youtube-foreground btn-3d transition-all duration-200 hover:-translate-y-0.5 hover:bg-youtube/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-10 lg:px-6 lg:text-[15px]"
             >
               {secondaryIsStale ? (
                 <a
@@ -508,7 +508,7 @@ function MemorableMomentsSection() {
               </div>
             ))}
           </div>
-          <div className="mt-5 rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:mt-8 sm:px-8 sm:py-8 lg:mt-0 lg:px-7 lg:py-7">
+          <div className="mt-5 rounded-3xl box-3d bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:mt-8 sm:px-8 sm:py-8 lg:mt-0 lg:px-7 lg:py-7">
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
               <span className="h-px w-8 bg-accent" />
               About GSM
@@ -538,7 +538,7 @@ function RecentPassSection({ s }: SectionProps) {
               height={1500}
             />
           </div>
-          <div className="rounded-3xl border border-primary/15 bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:px-8 sm:py-8 lg:px-8 lg:py-8">
+          <div className="rounded-3xl box-3d bg-[oklch(0.94_0.03_150)] px-5 py-6 shadow-[0_20px_40px_-24px_rgba(29,42,34,0.45)] sm:px-8 sm:py-8 lg:px-8 lg:py-8">
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground sm:text-[11px]">
             <span className="h-px w-8 bg-accent" />
             {or(s.eyebrow, "About GSM")}
@@ -744,7 +744,7 @@ function PortalSection({ s }: SectionProps) {
               <Button
                 asChild
                 size="lg"
-                className="h-10 rounded-2xl bg-accent px-5 text-accent-foreground shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-xl active:translate-y-0"
+                className="h-10 rounded-2xl bg-accent px-5 text-accent-foreground btn-3d transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-xl active:translate-y-0"
               >
                 <a
                   href="mailto:gsmdrivingschool@outlook.com?subject=Join%20GSM%20Plus%20waiting%20list"
@@ -758,7 +758,7 @@ function PortalSection({ s }: SectionProps) {
                 asChild
                 size="lg"
                 variant="outline"
-                className="h-10 rounded-2xl border-accent/60 bg-transparent px-5 text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/10 active:translate-y-0"
+                className="h-10 rounded-2xl border-accent/60 bg-transparent px-5 text-primary-foreground btn-3d transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/10 active:translate-y-0"
               >
                 <a
                   href={portalHref}
@@ -782,7 +782,7 @@ function PortalSection({ s }: SectionProps) {
           <div className="relative rounded-[2rem] border border-accent/25 bg-primary-foreground/5 p-3 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.6)] backdrop-blur-sm sm:p-4">
             <div className="grid gap-3 sm:grid-cols-2">
               {/* Free */}
-              <div className="rounded-2xl border border-primary-foreground/10 bg-primary-foreground/[0.06] p-5">
+              <div className="rounded-2xl box-3d-dark bg-primary-foreground/[0.06] p-5">
                 <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-primary-foreground/60">
                   Free
                 </div>
@@ -800,7 +800,7 @@ function PortalSection({ s }: SectionProps) {
               </div>
 
               {/* GSM Plus */}
-              <div className="relative rounded-2xl border border-accent/60 bg-accent/12 p-5 ring-1 ring-accent/40">
+              <div className="relative rounded-2xl box-3d-dark bg-accent/12 p-5 ring-1 ring-accent/40">
                 <span className="absolute -top-2 right-3 rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
                   Premium
                 </span>
@@ -854,7 +854,7 @@ function CtaSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-10 rounded-xl bg-primary px-6 text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
+              className="h-10 rounded-xl bg-primary px-6 text-primary-foreground btn-3d transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:btn-3d active:translate-y-0"
             >
               <a
                 href="https://wa.me/447961585231"
@@ -884,7 +884,7 @@ function CtaSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-10 rounded-xl bg-accent px-6 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
+              className="h-10 rounded-xl bg-accent px-6 text-accent-foreground btn-3d transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:btn-3d active:translate-y-0"
             >
               <Link to="/youtube" className="inline-flex items-center justify-center gap-2 font-medium">
                 <Youtube className="h-5 w-5" />
@@ -988,7 +988,7 @@ function VideoTipsSection() {
         </p>
         <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {VIDEO_TOPICS.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-2xl border border-primary-foreground/15 bg-primary-foreground/5 p-5">
+            <div key={title} className="rounded-2xl box-3d-dark bg-primary-foreground/5 p-5">
               <Icon className="h-6 w-6 text-accent" aria-hidden="true" />
               <h3 className="mt-3 font-semibold">{title}</h3>
               <p className="mt-1 text-sm text-primary-foreground/75">{body}</p>
@@ -996,7 +996,7 @@ function VideoTipsSection() {
           ))}
         </div>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Button asChild size="lg" className="h-10 rounded-2xl bg-accent px-6 text-accent-foreground hover:bg-accent/90">
+          <Button asChild size="lg" className="h-10 rounded-2xl bg-youtube px-6 text-youtube-foreground hover:bg-youtube/90 btn-3d">
             <a href={channel} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
               <Youtube className="h-5 w-5" /> Watch on YouTube
             </a>
