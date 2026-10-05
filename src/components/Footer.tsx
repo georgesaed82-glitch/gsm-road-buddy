@@ -6,7 +6,7 @@ import {
   MessageSquare,
   Newspaper,
   HelpCircle,
-  Download,
+  Youtube,
   Bot,
 } from "lucide-react";
 import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
@@ -14,6 +14,7 @@ import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
+import { resolveYoutubeUrl } from "@/lib/youtube";
 
 const ALL_FOOTER_LINKS = [
   { to: "/services", label: "Explore Services", icon: Car },
@@ -23,12 +24,13 @@ const ALL_FOOTER_LINKS = [
   { to: "/blog", label: "Blogs", icon: Newspaper },
   { to: "/faq", label: "FAQ", icon: HelpCircle },
   { to: "/connect", label: "AI Assistant", icon: Bot },
-  { to: "/#download-app", label: "Download", icon: Download },
+  { to: "/youtube", label: "Driving videos", icon: Youtube },
 ];
 const FOOTER_LINKS = ALL_FOOTER_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/blog");
 
 export function Footer() {
-  const { business, social, footer } = useSiteSettings();
+  const { business, social: rawSocial, footer } = useSiteSettings();
+  const social = { ...rawSocial, youtube: resolveYoutubeUrl(rawSocial.youtube) };
 
   return (
     <footer className="border-t border-border bg-primary text-primary-foreground">
@@ -85,9 +87,10 @@ export function Footer() {
                   href={social.youtube}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm opacity-80 hover:opacity-100"
+                  aria-label="GSM Driving School on YouTube"
+                  className="inline-flex items-center gap-1.5 text-sm opacity-80 hover:opacity-100"
                 >
-                  YouTube
+                  <Youtube className="h-5 w-5" aria-hidden="true" /> YouTube
                 </a>
               )}
             </div>

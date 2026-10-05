@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as YoutubeRouteImport } from './routes/youtube'
 import { Route as TheoryRouteImport } from './routes/theory'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
@@ -101,6 +102,11 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as AuthenticatedGsmPlusLessonLessonIdRouteImport } from './routes/_authenticated/gsm-plus.lesson.$lessonId'
 import { Route as AuthenticatedAdminLessonBlocksLessonIdRouteImport } from './routes/_authenticated/admin.lesson-blocks.$lessonId'
 
+const YoutubeRoute = YoutubeRouteImport.update({
+  id: '/youtube',
+  path: '/youtube',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TheoryRoute = TheoryRouteImport.update({
   id: '/theory',
   path: '/theory',
@@ -614,6 +620,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/theory': typeof TheoryRoute
+  '/youtube': typeof YoutubeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -706,6 +713,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/theory': typeof TheoryRoute
+  '/youtube': typeof YoutubeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/ai-videos': typeof AuthenticatedAiVideosRouteWithChildren
@@ -799,6 +807,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/theory': typeof TheoryRoute
+  '/youtube': typeof YoutubeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -893,6 +902,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/theory'
+    | '/youtube'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
@@ -985,6 +995,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/theory'
+    | '/youtube'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/ai-videos'
@@ -1077,6 +1088,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/theory'
+    | '/youtube'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
@@ -1171,6 +1183,7 @@ export interface RootRouteChildren {
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TheoryRoute: typeof TheoryRoute
+  YoutubeRoute: typeof YoutubeRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -1187,6 +1200,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/youtube': {
+      id: '/youtube'
+      path: '/youtube'
+      fullPath: '/youtube'
+      preLoaderRoute: typeof YoutubeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/theory': {
       id: '/theory'
       path: '/theory'
@@ -2023,6 +2043,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TheoryRoute: TheoryRoute,
+  YoutubeRoute: YoutubeRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,

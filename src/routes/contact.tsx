@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, MapPin, Clock, Phone, Download } from "lucide-react";
+import { Mail, MapPin, Clock, Phone, Youtube } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { BookingForm } from "@/components/BookingForm";
 import { trackContactClick } from "@/lib/trackContactClick";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { triggerPwaInstallPrompt } from "@/components/PWAInstallTracker";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -195,7 +194,11 @@ function ContactPage() {
             <CardContent className="grid gap-3 sm:grid-cols-3">
               <WhatsAppButton phoneIntl={business.phone_intl} />
               <CallButton phoneIntl={business.phone_intl} />
-              <DownloadAppButton />
+              <Button asChild size="lg" className="h-14 w-full justify-center gap-2 rounded-xl bg-accent text-accent-foreground shadow-md hover:bg-accent/90">
+                <Link to="/youtube">
+                  <Youtube className="h-5 w-5" /> Driving videos
+                </Link>
+              </Button>
             </CardContent>
           </Card>
 
@@ -245,64 +248,5 @@ function CallButton({ phoneIntl }: { phoneIntl: string }) {
         Call
       </a>
     </Button>
-  );
-}
-
-function detectPlatform() {
-  if (typeof navigator === "undefined") return { ios: false, android: false, standalone: false };
-  const ua = navigator.userAgent || "";
-  const ios = /iPhone|iPad|iPod/i.test(ua);
-  const android = /Android/i.test(ua);
-  const standalone =
-    (typeof window !== "undefined" && window.matchMedia?.("(display-mode: standalone)").matches) ||
-    (navigator as Navigator & { standalone?: boolean }).standalone === true;
-  return { ios, android, standalone };
-}
-
-function DownloadAppButton() {
-  const [platform, setPlatform] = useState({ ios: false, android: false, standalone: false });
-  const [showHelp, setShowHelp] = useState(false);
-
-  useEffect(() => {
-    setPlatform(detectPlatform());
-  }, []);
-
-  const handleClick = async () => {
-    if (platform.ios || platform.standalone) {
-      setShowHelp(true);
-      return;
-    }
-    const shown = await triggerPwaInstallPrompt();
-    if (!shown) setShowHelp(true);
-  };
-
-  return (
-    <>
-      <Button
-        size="lg"
-        onClick={handleClick}
-        className="h-14 w-full justify-center gap-2 rounded-xl bg-accent text-accent-foreground shadow-md transition-transform hover:bg-accent/90 hover:shadow-lg"
-      >
-        <Download className="h-5 w-5" />
-        Download the App
-      </Button>
-      {showHelp && (
-        <div className="col-span-full rounded-lg border border-border bg-muted p-4 text-sm text-muted-foreground">
-          <p className="font-medium text-foreground">Install the GSM app</p>
-          {platform.ios ? (
-            <p className="mt-1">
-              Tap the Share button in Safari, then choose{" "}
-              <strong className="text-foreground">Add to Home Screen</strong>.
-            </p>
-          ) : (
-            <p className="mt-1">
-              Open this site in Chrome, Edge or Samsung Internet, then choose{" "}
-              <strong className="text-foreground">Install app</strong> or{" "}
-              <strong className="text-foreground">Add to Home screen</strong> from the browser menu.
-            </p>
-          )}
-        </div>
-      )}
-    </>
   );
 }

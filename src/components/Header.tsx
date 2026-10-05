@@ -19,6 +19,7 @@ import {
   MapPin,
   ShieldCheck,
   Sparkles,
+  Youtube,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -28,7 +29,6 @@ import { cn } from "@/lib/utils";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
-import { GsmPlus } from "@/components/GsmPlus";
 import { BrandPlate } from "@/components/BrandPlate";
 type NavItem = {
   to: string;
@@ -46,6 +46,7 @@ const PRIMARY_NAV: NavItem[] = [
   { to: "/theory", label: "Theory Training", icon: BookOpen, desc: "Pass the theory test" },
   { to: "/reviews", label: "Reviews", icon: Star, desc: "What learners say" },
   { to: "/instructors", label: "Instructor Team", icon: Users, desc: "Meet the team" },
+  { to: "/youtube", label: "Driving Videos", icon: Youtube, desc: "Free tips on YouTube" },
   { to: "/contact", label: "Contact Us", icon: Phone, desc: "Call, WhatsApp, email" },
 ];
 
@@ -53,7 +54,6 @@ const EXPLORE_NAV: NavItem[] = [
   { to: "/", hash: "why-gsm", label: "Why GSM", icon: ShieldCheck, desc: "Our approach" },
   { to: "/", hash: "areas", label: "Areas Covered", icon: MapPin, desc: "West London" },
   { to: "/", hash: "recent-pass", label: "Recently Passed", icon: Trophy, desc: "Fresh test passes" },
-  { to: "/auth", label: "GSM Plus+", icon: Sparkles, desc: "Coming soon" },
 ];
 
 const BLOG_ITEM: NavItem = { to: "/blog", label: "Blog", icon: Newspaper, desc: "News & tips" };
@@ -204,13 +204,7 @@ export function Header() {
                 Notting Hill, Holland Park &amp; beyond.
               </p>
 
-              <Link
-                to="/auth"
-                onClick={() => setSheetOpen(false)}
-                className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent/60 bg-accent/15 px-4 py-2 text-[12px] font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent/25"
-              >
-                <Sparkles className="h-3.5 w-3.5" /> GSM Plus+ coming soon
-              </Link>
+
             </div>
 
             <div className="relative hidden lg:flex lg:flex-col lg:gap-2 lg:text-[12.5px] lg:text-primary-foreground/80">
@@ -235,32 +229,7 @@ export function Header() {
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 py-4 lg:px-8 lg:py-6">
-              {/* GSM Plus feature card */}
-              <Link
-                to="/auth"
-                onClick={() => setSheetOpen(false)}
-                className="group relative flex items-center gap-3 overflow-hidden rounded-2xl border border-accent/50 bg-gradient-to-br from-primary to-primary/85 px-4 py-3.5 shadow-md transition-transform duration-200 active:scale-[0.98] hover:-translate-y-0.5 lg:hidden"
-                aria-label="GSM Plus+ coming soon — learn more"
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-accent text-primary-foreground shadow-inner">
-                  <GraduationCap className="h-5 w-5" />
-                </span>
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="flex items-center gap-2">
-                    <GsmPlus
-                      className="text-[17px]"
-                      gsmClassName="text-primary-foreground"
-                      plusClassName="text-accent"
-                    />
-                    <span className="rounded-full border border-accent/50 bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
-                      Coming Soon
-                    </span>
-                  </span>
-                  <span className="text-[11px] font-medium text-primary-foreground/80">
-                    New learner portal launching soon
-                  </span>
-                </span>
-              </Link>
+
 
               <div className="mt-4 lg:mt-0">
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
