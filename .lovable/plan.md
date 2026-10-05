@@ -1,86 +1,85 @@
-## Goal
+# Search and AI visibility plan for GSM Driving School
 
-Adopt the screenshot as the new premium direction across mobile app, mobile web, and desktop — one unified design system with a simpler homepage and a persistent bottom tab bar (Home · Lessons · Theory · GSM Plus · Contact).
+The aim is to help Google, Bing and AI assistants clearly understand who GSM is, where you teach and how to book. Nothing will be published and nothing will be posted to YouTube or social media until you approve it. No one can promise rankings or AI recommendations.
 
-## Design system pass
+## What I found
 
-- Lock the palette: forest green `#234B36`, gold accent `#C97845` / `#B8863A`, cream `#F7F3E8`, ink `#1D2A22`.
-- Introduce shared premium primitives in `src/styles.css`:
-  - `.premium-card` — cream card, subtle border, soft shadow, rounded-2xl.
-  - `.premium-cta` — gold pill with hover lift.
-  - `.premium-hero-plate` — forest→deep-green gradient with hairline gold divider (matches the arced header in the screenshot).
-- Apply a consistent page frame to every route (About, Lessons, Prices, Theory, Reviews, Contact, Instructors, GSM Plus): same eyebrow style, same H1 scale, same soft cream background, same section padding.
+- Good foundations are already in place: each page has its own title, there's a sitemap and robots file, business details are marked up for Google, there are area pages, and the YouTube channel is linked.
+- **Details don't match everywhere:**
+  - The AI summary file still says 143 reviews.
+  - It lists Chiswick and Fulham, but leaves out North Kensington.
+  - The area lists differ between pages.
+  - Opening hours and postcodes need checking against one source.
+- **North Kensington (W10)** has no page of its own. It currently only points to Contact.
+- **Videos:** no GSM videos are shown on lesson or area pages yet, because I don't have real video links.
+- **Missing pages:** the sitemap still lists the Downloads page, which is no longer promoted.
+- **Instructor details** can't be checked from the site alone.
 
-## Homepage (only what stays)
+## Proposed website changes (after your approval)
 
-Everything else moves off the homepage and into the Menu / bottom-tab destinations.
+1. **One master list of business details.** Name, phone, email, address, opening hours, prices, areas, "Established 2005" and "20+ years" all come from one place. The pages, Google markup and the AI summary file then all read from it, so they can't drift apart.
+2. **Titles, descriptions and headings.** Natural wording on Home, Lessons, Prices, Areas, Reviews, Instructors, About, Contact and Videos. One main heading per page, with no keyword stuffing.
+3. **Area pages.**
+   - Refresh Notting Hill (W11), High Street Kensington (W8), Holland Park (W14), Shepherd's Bush (W12) and Bayswater (W2) with genuinely local content: real pickup points and practice roads.
+   - Add a proper North Kensington (W10) page.
+   - Keep Chiswick and Fulham only if you still teach there.
+   - No copy-and-paste duplicate pages.
+4. **Videos on pages.**
+   - Show real GSM videos on the matching lesson and area pages, such as parking, roundabouts and junctions.
+   - Each video gets a short summary, plus captions and a transcript where YouTube has them.
+   - Videos only play when tapped, never automatically.
+   - This needs the video links from you.
+5. **Social and YouTube links.** Link only the profiles you confirm are yours (YouTube, Facebook, Instagram, plus any others you confirm), both in the site footer and in the details read by Google.
+6. **Instructors.** Show only the qualifications you confirm, such as an approved driving instructor (ADI) badge.
+7. **Speed and navigation on phones.**
+   - Lighter images and less code loaded on first view.
+   - Keep the simple menu, and make sure every page is reachable within two taps.
+8. **Search engine and AI access.**
+   - Update the sitemap: remove pages you no longer promote and add the North Kensington page.
+   - Keep private pages blocked.
+   - Explicitly allow the main search and AI crawlers (Google, Bing, OpenAI, Anthropic, Perplexity) on public pages.
+   - Refresh the AI summary file with the correct details.
 
-Sections kept:
-1. Hero — Mercedes image (existing `gsm-hero-mercedes.jpg`, refined framing/overlay only, no new image), tagline "Learn. Improve. **Pass with confidence.**", one primary CTA "Book a Lesson".
-2. Slim GSM Plus "Coming Soon" banner (single-line, links to `/auth`).
-3. 3 feature cards: Manual & Automatic · Local Instructors · Proven Success.
-4. Single "Ready to Start?" contact strip.
-5. DVSA disclaimer line above footer.
+## YouTube recommendations (advice only; I won't post anything)
 
-Sections removed from the homepage (still reachable via menu / dedicated routes):
-- Memorable Moments, Recent Passes, Why GSM, Postcodes, Areas, Gallery, Quizzes, Install-app card, Portal section, GSM Plus explainer.
+- **Titles:** start with the skill, then the place, e.g. "How to Do a Bay Park — Driving Lesson Tips | GSM West London".
+- **Descriptions:** add a first line with the website and WhatsApp link, chapter timestamps, and a short "Lessons in Notting Hill, Kensington & West London since 2005".
+- **Playlists:** Parking, Junctions & Roundabouts, Test Tips, Nervous Beginners.
+- **Channel links:** website, WhatsApp, Google Business Profile.
+- Add a pinned comment linking to the lessons page, and upload accurate captions to every video.
 
-The homepage CMS section order stays intact in the database; only the web renderer stops rendering the removed types on `/`. Admin editing continues to work for the other pages that use those sections.
+## Google Business Profile, Bing Places and Search Console
 
-## Bottom tab bar (new, global)
+- I can't see any of these without your access. If you want, I can connect Google Business Profile and Search Console here. You'd approve each step.
+- **Bing Places and Bing Webmaster Tools:** you sign in yourself (or import from Google). Then submit the sitemap.
+- **Checks once connected:** whether pages are indexed, the sitemap status, any errors, and whether your name, address, phone, hours and categories match the website. The main category should be "Driving school".
 
-Persistent bottom nav on every route, mobile + desktop:
+## Earning genuine reviews and links
 
-```text
-Home · Lessons · Theory · GSM Plus · Contact
-```
+- Send a review link after each test pass, with a short WhatsApp template. Never offer incentives or write reviews yourself.
+- Reply to every Google review.
+- Get listed in genuine local places: Yell, Thomson Local, Apple Maps, Bing Places, local community groups and your own instructor association page, all with exactly the same details.
+- Share useful videos with local schools, colleges and residents' newsletters. Never buy links.
 
-- Mounted in `src/routes/__root.tsx` as `<BottomTabBar />`.
-- Fixed bottom, safe-area aware, forest-green surface with gold active tab.
-- Icons: Home, Car, BookOpen, GraduationCap, Phone.
-- Active tab derived from `useRouterState` pathname.
-- Reserves bottom padding on the page so content isn't hidden.
-- The floating BackToTop and HomeButton reposition above it; on `/` the HomeButton hides (already does).
+## How we'll measure progress
 
-## Native app home
+- **Search Console:** search appearances, clicks and average position for "driving lessons Notting Hill" and similar searches, per page.
+- **Google Business Profile:** calls, website clicks and direction requests.
+- **YouTube Studio:** views, clicks to the website and traffic sources.
+- **Website:** the existing tracking of WhatsApp, phone and email taps from each page, reviewed monthly.
+- **AI assistants:** a simple monthly check asking ChatGPT, Claude, Gemini and Perplexity for "driving lessons in Notting Hill", noting whether GSM is mentioned.
 
-`HomeNativeApp.tsx` follows the same 5-section homepage rules (hero → GSM Plus banner → 3 feature cards → Ready to Start → disclaimer). Remove the 7-card nav grid and postcodes block — those live in the menu now. Bottom tab bar takes their place for primary navigation.
+## What I need from you
 
-## Menu (Sheet)
+- Your real opening hours, and whether you still cover Chiswick and Fulham.
+- Instructor names and confirmed qualifications.
+- Any social accounts other than YouTube, Facebook and Instagram that should be linked.
+- The YouTube video links to use on each page.
+- Whether to connect Google Business Profile and Search Console here.
 
-The full-screen menu keeps every existing destination (About, Practical Lessons, Prices & Packages, Theory Training, Reviews, Instructors, Contact, Areas, Recent Passes, GSM Plus, Downloads, FAQ, Legal). No content is lost — it just moves off the homepage.
+## Technical details
 
-## Consistency across pages
-
-Apply the shared premium frame + updated header/section spacing to:
-- `/about`, `/services`, `/pricing`, `/theory`, `/reviews`, `/instructors`, `/contact`, `/auth` (GSM Plus landing), `/faq`, `/downloads`.
-
-No content changes on those pages — visual polish only (eyebrow, H1 scale, cream background, card treatment, CTA style, bottom-tab padding).
-
-## Animations
-
-- Reuse existing `Reveal` fade-in-up for section entry (250ms, ease-out).
-- Tab bar active indicator: 200ms translate + gold underline.
-- Hover: `-translate-y-0.5` on cards/CTAs, `duration-200 ease-out`.
-- No new animation libraries.
-
-## Files touched
-
-Frontend / presentation only.
-
-- New: `src/components/BottomTabBar.tsx`, plus premium utility classes appended to `src/styles.css`.
-- Edit: `src/routes/__root.tsx` (mount tab bar, hide on admin/portal shells if needed).
-- Edit: `src/routes/index.tsx` (filter web section list to hero/gsm-plus banner/features/cta; keep hero refinements).
-- Edit: `src/components/home/HomeNativeApp.tsx` (simplify to the 5-section shape).
-- Edit: `src/components/BackToTop.tsx`, `src/components/HomeButton.tsx` (raise offsets above tab bar).
-- Light polish edits on the listed public pages for premium consistency.
-
-No database, RLS, server-function, or business-logic changes.
-
-## Out of scope
-
-- Generating a new Mercedes image (reusing existing per your answer).
-- Removing content from other pages — just visual consistency.
-- Changing the admin portal or GSM Plus authenticated dashboards.
-
-Approve and I'll implement in one pass.
+- Create a shared business-details module used by the root page's Google markup, the footer, the contact page and `llms.txt`. Keep `sameAs` limited to the confirmed profiles.
+- Add a `VideoObject` description (name, description, thumbnail, upload date, embed URL) only for real video links, plus `BreadcrumbList` on the area pages.
+- Add a W10 area page. Remove `/downloads` from the sitemap. Add explicit `Allow` lines to robots.txt for Googlebot, Bingbot, GPTBot, OAI-SearchBot, ClaudeBot and PerplexityBot.
+- Use click-to-load YouTube embeds (`youtube-nocookie`, poster image first) to keep pages fast.
