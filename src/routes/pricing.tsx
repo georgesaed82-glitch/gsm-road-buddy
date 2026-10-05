@@ -25,17 +25,14 @@ const TERMS = [
   {
     icon: Clock,
     label: "2-hour lessons",
-    text: "All lessons are two hours long and must be paid for in advance at the time of booking.",
   },
   {
     icon: CreditCard,
     label: "Payment in advance when booking",
-    text: "All lessons are two hours long and must be paid for in advance at the time of booking.",
   },
   {
     icon: CalendarX,
     label: "48-hour cancellation notice",
-    text: "Our cancellation policy requires at least 48 hours’ notice to cancel or reschedule a lesson.",
   },
 ];
 
