@@ -140,7 +140,7 @@ function ContactPage() {
                 </>
               );
               const className =
-                "group flex items-center gap-4 rounded-2xl border border-border/70 bg-card p-4 sm:p-5 shadow-[0_2px_14px_-6px_rgba(29,42,34,0.18)] transition-all hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_10px_28px_-14px_rgba(29,42,34,0.35)] min-w-0";
+                "group flex items-center gap-4 rounded-2xl bg-card p-4 sm:p-5 box-3d min-w-0";
               if (c.href) {
                 return (
                   <a
