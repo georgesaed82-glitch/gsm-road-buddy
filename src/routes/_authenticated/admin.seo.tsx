@@ -66,12 +66,12 @@ function SeoPage() {
     review_count?: number;
     show?: boolean;
   };
-  const [rating, setRating] = useState({ rating: 5.0, review_count: 143, show: true });
+  const [rating, setRating] = useState({ rating: 5.0, review_count: 147, show: true });
   const [savingRating, setSavingRating] = useState(false);
   useEffect(() => {
     setRating({
       rating: typeof ratingValue.rating === "number" ? ratingValue.rating : 5.0,
-      review_count: typeof ratingValue.review_count === "number" ? ratingValue.review_count : 143,
+      review_count: typeof ratingValue.review_count === "number" ? ratingValue.review_count : 147,
       show: ratingValue.show !== false,
     });
   }, [ratingRow?.updated_at]);

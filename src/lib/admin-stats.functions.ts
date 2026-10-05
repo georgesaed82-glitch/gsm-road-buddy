@@ -412,7 +412,7 @@ export const getAdminOverview = createServerFn({ method: "POST" })
       theoryLearners,
       theoryLearnersCurrent,
       theoryLearnersPrevious,
-      reviewsTotal: 143,
+      reviewsTotal: 147,
       reviewsCurrent: reviewsCurrent.count ?? 0,
       reviewsPrevious: reviewsPrevious.count ?? 0,
       supportTicketsCurrent: supportCurrent.count ?? 0,

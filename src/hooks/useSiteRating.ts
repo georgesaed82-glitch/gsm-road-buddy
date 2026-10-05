@@ -5,7 +5,7 @@ import { listSiteSettings } from "@/lib/cms.functions";
 
 export type SiteRating = { rating: number; review_count: number; show: boolean };
 
-const DEFAULT: SiteRating = { rating: 5.0, review_count: 143, show: true };
+const DEFAULT: SiteRating = { rating: 5.0, review_count: 147, show: true };
 
 export function useSiteRating(): SiteRating {
   const fn = useServerFn(listSiteSettings);

@@ -41,7 +41,7 @@ export const areas: AreaPage[] = [
     postcode: "W8",
     nearbyPostcodes: ["W11", "W14", "SW7"],
     intro:
-      "Driving lessons in Kensington (W8). Patient, DVSA-approved instruction with 143 five-star Google reviews — manual and automatic, from first lesson to test pass.",
+      "Driving lessons in Kensington (W8). Patient, DVSA-approved instruction with 147 five-star Google reviews — manual and automatic, from first lesson to test pass.",
     highlights: [
       "Pickup from High Street Kensington, Kensington Church Street and Earls Court Road",
       "Built for nervous learners — calm, clear, repeatable lessons",
@@ -69,7 +69,7 @@ export const areas: AreaPage[] = [
       "Driving lessons in Holland Park (W14) with a local instructor who knows every junction. Manual and automatic. Pickup from your door.",
     highlights: [
       "Pickup from Holland Park Avenue, Addison Road and Holland Road",
-      "5.0 average from 143 Google reviews",
+      "5.0 average from 147 Google reviews",
       "Same instructor first lesson to test",
     ],
     routes:
@@ -170,7 +170,7 @@ export const areas: AreaPage[] = [
     highlights: [
       "Pickup across SW6 — Fulham Broadway, Parsons Green, Putney Bridge",
       "Local routes practised every lesson",
-      "Rated 5.0 from 143 Google reviews",
+      "Rated 5.0 from 147 Google reviews",
     ],
     routes:
       "We practise around Parsons Green, the New King's Road, Fulham Palace Road and the Wandsworth Bridge approach — ideal for building real-world confidence.",
