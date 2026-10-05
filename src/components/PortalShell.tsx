@@ -263,10 +263,10 @@ export function PortalShell({
                 </p>
                 <p className="mt-1">
                   <strong>
-                    © {new Date().getFullYear()} George School of Motoring (GSM Driving School).
+                    © {new Date().getFullYear()} George’s School of Motoring (GSM Driving School).
                   </strong>{" "}
                   All images, videos, diagrams, notes, quizzes and audio on this learner portal are
-                  the exclusive property of George School of Motoring (GSM Driving School) and are
+                  the exclusive property of George’s School of Motoring (GSM Driving School) and are
                   protected by copyright.
                 </p>
                 <p className="mt-2">
@@ -277,7 +277,7 @@ export function PortalShell({
                   it in any other course, training material, app, video or publication.
                 </p>
                 <p className="mt-2 text-muted-foreground">
-                  Any other use requires prior written permission from George School of Motoring
+                  Any other use requires prior written permission from George’s School of Motoring
                   (GSM Driving School). Unauthorised use is a breach of copyright and will be
                   enforced.
                 </p>

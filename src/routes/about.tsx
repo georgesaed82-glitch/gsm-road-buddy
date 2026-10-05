@@ -57,7 +57,7 @@ const VALUE_ICONS: Record<string, typeof Shield> = {
 
 const DEFAULT_KEY_POINTS = [
   { id: "dvsa-approved", name: "DVSA-Approved Instructors" },
-  { id: "pass-rate", name: "High Pass Rate & Proven Results" },
+  { id: "pass-rate", name: "Teaching West London since 2005" },
   { id: "flexible", name: "Flexible Lessons to Suit You" },
   { id: "friendly", name: "Patient, Friendly & Supportive" },
 ];
