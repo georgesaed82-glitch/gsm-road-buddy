@@ -17,6 +17,9 @@ function setMeta(attr: "name" | "property", key: string, content: string): Undo 
   el.setAttribute("content", content);
   const node = el;
   return () => {
+    // Only undo our own value; if the router already applied the next route's
+    // head, leave that in place.
+    if (node.getAttribute("content") !== content) return;
     if (created) node.remove();
     else if (prev !== null) node.setAttribute("content", prev);
   };
@@ -34,6 +37,7 @@ function setCanonical(href: string): Undo {
   link.setAttribute("href", href);
   const node = link;
   return () => {
+    if (node.getAttribute("href") !== href) return;
     if (created) node.remove();
     else if (prev !== null) node.setAttribute("href", prev);
   };
@@ -56,8 +60,9 @@ export function PageSeoOverride() {
     const prevTitle = document.title;
     if (seo.title) {
       document.title = seo.title;
+      const ours = seo.title;
       undo.push(() => {
-        document.title = prevTitle;
+        if (document.title === ours) document.title = prevTitle;
       });
     }
     if (seo.description) undo.push(setMeta("name", "description", seo.description));
