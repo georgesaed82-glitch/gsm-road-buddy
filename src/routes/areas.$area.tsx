@@ -158,7 +158,7 @@ function AreaPage() {
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {a.postcode} · West London
           </p>
-          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
             {a.slug === "kensington" ? "Driving lessons in High Street Kensington" : `Driving Lessons in ${a.area}`}
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{a.intro}</p>
