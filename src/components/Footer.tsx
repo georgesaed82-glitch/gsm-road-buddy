@@ -36,20 +36,20 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-primary text-primary-foreground">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8">
         {/* Top: logo */}
-        <div className="flex flex-col items-center gap-3 text-center">
+        <div className="flex flex-col items-center gap-2 text-center">
           <Link to="/" aria-label="GSM Driving School — Home" className="inline-block">
-            <span className="block font-display text-3xl font-extrabold uppercase tracking-wide text-primary-foreground [text-shadow:0_2px_0_rgba(0,0,0,0.25),0_4px_0_rgba(0,0,0,0.2),0_8px_14px_rgba(0,0,0,0.45)] sm:text-4xl">
+            <span className="block font-display text-lg font-extrabold uppercase tracking-wide text-primary-foreground [text-shadow:0_1px_0_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2),0_4px_8px_rgba(0,0,0,0.4)]">
               GSM Driving School
             </span>
-            <span className="mx-auto mt-2 block h-1 w-24 rounded-full bg-destructive shadow-[0_2px_0_rgba(0,0,0,0.3)]" />
-            <span className="mt-3 block text-sm font-bold uppercase tracking-[0.16em] text-primary-foreground [text-shadow:0_2px_0_rgba(0,0,0,0.3),0_4px_8px_rgba(0,0,0,0.35)]">
+            <span className="mx-auto mt-1 block h-0.5 w-14 rounded-full bg-destructive shadow-[0_2px_0_rgba(0,0,0,0.3)]" />
+            <span className="mt-1.5 block text-[10px] font-bold uppercase tracking-[0.14em] text-primary-foreground [text-shadow:0_2px_0_rgba(0,0,0,0.3),0_4px_8px_rgba(0,0,0,0.35)]">
               George's School of Motoring · Established 2005
             </span>
           </Link>
-          {(social.facebook || social.instagram || social.tiktok || social.youtube) && (
-            <div className="flex items-center gap-4 pt-1">
+          {(
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
               {social.facebook && (
                 <a
                   href={social.facebook}
@@ -88,23 +88,21 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GSM Driving School on YouTube"
-                  className="inline-flex items-center gap-2 rounded-xl bg-destructive px-4 py-2 text-sm font-bold text-destructive-foreground shadow-[0_5px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-none"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-youtube px-2.5 py-1 text-xs font-bold text-youtube-foreground shadow-[0_3px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-none"
                 >
-                  <Youtube className="h-5 w-5" aria-hidden="true" /> YouTube
+                  <Youtube className="h-4 w-4" aria-hidden="true" /> YouTube
                 </a>
               )}
+              <a href={`tel:+${business.phone_intl}`} className="inline-flex items-center rounded-lg border border-primary/25 bg-card px-2.5 py-1 text-xs font-extrabold text-primary shadow-[0_3px_0_0_rgba(0,0,0,0.35)] active:translate-y-0.5 active:shadow-none">
+                Call {business.phone}
+              </a>
             </div>
           )}
         </div>
 
-        <p className="mt-8 text-center">
-          <a href={`tel:+${business.phone_intl}`} className="inline-flex items-center rounded-xl border-2 border-primary/25 bg-card px-4 py-2 text-base font-extrabold text-primary shadow-[0_6px_0_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-none">
-            Call {business.phone}
-          </a>
-        </p>
 
         {/* Bottom: copyright + disclaimer */}
-        <p className="mt-8 text-center text-xs opacity-70">{footer.copy}</p>
+        <p className="mt-3 text-center text-[10px] opacity-70">{footer.copy}</p>
         {/* Theory disclaimer only in the native learning app, not the public website. */}
         {isNative ? (
           <div className="mt-4 border-t border-primary-foreground/10 pt-4">
