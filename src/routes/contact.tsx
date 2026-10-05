@@ -194,7 +194,7 @@ function ContactPage() {
             <CardContent className="grid gap-3 sm:grid-cols-3">
               <WhatsAppButton phoneIntl={business.phone_intl} />
               <CallButton phoneIntl={business.phone_intl} />
-              <Button asChild size="lg" className="h-10 w-full justify-center gap-2 rounded-xl bg-accent text-accent-foreground btn-3d hover:bg-accent/90">
+              <Button asChild size="lg" className="h-10 w-full justify-center gap-2 rounded-xl bg-youtube text-youtube-foreground btn-3d hover:bg-youtube/90">
                 <Link to="/youtube">
                   <Youtube className="h-5 w-5" /> Driving videos
                 </Link>
