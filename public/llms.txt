@@ -1,26 +1,34 @@
 # GSM Driving School
 
-> DVSA-approved driving school in West London. Manual and automatic driving lessons in Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and Fulham. Established 2005, rated 5.0 from 143 Google reviews.
+> George's School of Motoring (GSM) — manual and automatic driving lessons in West London since 2005 (20+ years). Based in Notting Hill, W11. Rated 5.0 from 147 Google reviews.
 
-George's School of Motoring (GSM) is a family-run driving school based in W11. We teach learners across postcodes W2, W3, W4, W6, W8, W10, W11, W12, W14 and SW6 in both manual and automatic cars.
+Phone / WhatsApp: 07961 585231 (+44 7961 585231)
+Email: gsmdrivingschool@outlook.com
+Address: 71 Sandbourne House, Dartmouth Close, London W11 1DS
+YouTube: https://www.youtube.com/@GSMDrivingSchool
+Instagram: https://www.instagram.com/gsm_driving_school_
+Facebook: https://www.facebook.com/share/1HySrwY5AA/
+
+Automatic lessons with George; manual lessons with the GSM team. Beginners, nervous drivers, refresher lessons and test preparation. Students from neighbouring areas (e.g. South Kensington) can be picked up from an agreed meeting point. 48 hours' notice is needed to cancel or reschedule.
 
 ## Pages
 
-- [Home](/): Overview, service area, reviews and contact details.
-- [About](/about): Our story, instructor background and why students choose GSM.
-- [Services](/services): Beginner lessons, refresher courses, intensive courses, Pass Plus and motorway lessons.
-- [Pricing](/pricing): Lesson packages and how to enquire about rates.
-- [Instructors](/instructors): Meet the GSM instructor team.
-- [Reviews](/reviews): 143 five-star Google reviews from West London learners.
-- [Areas](/areas): Index of West London areas we cover with local route guides.
-- [Contact](/contact): Phone, WhatsApp, email and address (71 Sandbourne House, London W11 1DS).
+- [Home](https://www.gsmdrivingschool.com/)
+- [About](https://www.gsmdrivingschool.com/about)
+- [Driving lessons](https://www.gsmdrivingschool.com/services)
+- [Prices](https://www.gsmdrivingschool.com/pricing)
+- [Instructors](https://www.gsmdrivingschool.com/instructors)
+- [Reviews](https://www.gsmdrivingschool.com/reviews)
+- [Driving videos](https://www.gsmdrivingschool.com/youtube)
+- [Contact](https://www.gsmdrivingschool.com/contact)
 
-## Areas We Cover
+## Areas we cover
 
-- [Notting Hill](/areas/notting-hill)
-- [Kensington](/areas/kensington)
-- [Holland Park](/areas/holland-park)
-- [Bayswater](/areas/bayswater)
-- [Shepherd's Bush](/areas/shepherds-bush)
-- [Chiswick](/areas/chiswick)
-- [Fulham](/areas/fulham)
+- [Notting Hill (W11)](https://www.gsmdrivingschool.com/areas/notting-hill)
+- [High Street Kensington (W8)](https://www.gsmdrivingschool.com/areas/kensington)
+- [Holland Park (W14)](https://www.gsmdrivingschool.com/areas/holland-park)
+- [North Kensington (W10)](https://www.gsmdrivingschool.com/areas/north-kensington)
+- [Bayswater (W2)](https://www.gsmdrivingschool.com/areas/bayswater)
+- [Shepherd's Bush (W12)](https://www.gsmdrivingschool.com/areas/shepherds-bush)
+- [Chiswick (W4)](https://www.gsmdrivingschool.com/areas/chiswick)
+- [Fulham (SW6)](https://www.gsmdrivingschool.com/areas/fulham)
