@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BUSINESS, BUSINESS_ADDRESS, LESSON_HOURS_TEXT, yearsTeaching } from "@/lib/business";
+import { BUSINESS, BUSINESS_ADDRESS, LESSON_HOURS_TEXT } from "@/lib/business";
 import { publicAreas } from "@/data/areas";
 
 export const Route = createFileRoute("/llms.txt")({
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/llms.txt")({
         const u = BUSINESS.url;
         const body = `# ${BUSINESS.name}
 
-> ${BUSINESS.legalName} (GSM) — manual and automatic driving lessons in West London since ${BUSINESS.foundingYear} (${yearsTeaching()}+ years). Based in Notting Hill, W11.
+> ${BUSINESS.legalName} (GSM) — manual and automatic driving lessons in West London since ${BUSINESS.foundingYear} (over 20 years). Based in Notting Hill, W11.
 
 Phone / WhatsApp: ${BUSINESS.phone} (+${BUSINESS.phoneIntl})
 Email: ${BUSINESS.email}
