@@ -20,6 +20,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as InstructorsRouteImport } from './routes/instructors'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as PassesRouteImport } from './routes/passes'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReviewsRouteImport } from './routes/reviews'
@@ -155,6 +156,11 @@ const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PassesRoute = PassesRouteImport.update({
+  id: '/passes',
+  path: '/passes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -621,6 +627,7 @@ export interface FileRoutesByFullPath {
   '/instructors': typeof InstructorsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
+  '/passes': typeof PassesRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
@@ -715,6 +722,7 @@ export interface FileRoutesByTo {
   '/instructors': typeof InstructorsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
+  '/passes': typeof PassesRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
@@ -810,6 +818,7 @@ export interface FileRoutesById {
   '/instructors': typeof InstructorsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
+  '/passes': typeof PassesRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
@@ -906,6 +915,7 @@ export interface FileRouteTypes {
     | '/instructors'
     | '/llms.txt'
     | '/mcp'
+    | '/passes'
     | '/pricing'
     | '/reset-password'
     | '/reviews'
@@ -1000,6 +1010,7 @@ export interface FileRouteTypes {
     | '/instructors'
     | '/llms.txt'
     | '/mcp'
+    | '/passes'
     | '/pricing'
     | '/reset-password'
     | '/reviews'
@@ -1094,6 +1105,7 @@ export interface FileRouteTypes {
     | '/instructors'
     | '/llms.txt'
     | '/mcp'
+    | '/passes'
     | '/pricing'
     | '/reset-password'
     | '/reviews'
@@ -1190,6 +1202,7 @@ export interface RootRouteChildren {
   InstructorsRoute: typeof InstructorsRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   McpRoute: typeof McpRoute
+  PassesRoute: typeof PassesRoute
   PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ReviewsRoute: typeof ReviewsRoute
@@ -1288,6 +1301,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/passes': {
+      id: '/passes'
+      path: '/passes'
+      fullPath: '/passes'
+      preLoaderRoute: typeof PassesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -2058,6 +2078,7 @@ const rootRouteChildren: RootRouteChildren = {
   InstructorsRoute: InstructorsRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   McpRoute: McpRoute,
+  PassesRoute: PassesRoute,
   PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ReviewsRoute: ReviewsRoute,
