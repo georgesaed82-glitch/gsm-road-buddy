@@ -374,7 +374,7 @@ const FEATURES: { icon: typeof UserRound; title: string; body: string }[] = [
 function FeatureStrip() {
   return (
     <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-12 lg:max-w-6xl lg:px-8 lg:pb-8">
-      <div className="grid grid-cols-2 gap-4 rounded-2xl border border-border/60 bg-card px-4 py-5 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:grid-cols-4 sm:gap-6 sm:px-6 sm:py-6 lg:gap-4 lg:px-5 lg:py-4">
+      <div className="grid grid-cols-2 gap-4 rounded-2xl border /60 bg-card px-4 py-5 shadow-[0_10px_30px_-18px_rgba(29,42,34,0.35)] sm:grid-cols-4 sm:gap-6 sm:px-6 sm:py-6 lg:gap-4 lg:px-5 lg:py-4 box-3d">
         {FEATURES.map(({ icon: Icon, title, body }) => (
           <div
             key={title}
@@ -497,7 +497,7 @@ function MemorableMomentsSection() {
             {photos.map((p) => (
               <div
                 key={p.url}
-                className="overflow-hidden rounded-2xl border border-border bg-background shadow-lg"
+                className="overflow-hidden rounded-2xl border  bg-background shadow-lg box-3d"
               >
                 <img
                   src={p.url}
@@ -870,7 +870,7 @@ function CtaSection({ s }: SectionProps) {
             <Button
               asChild
               size="lg"
-              className="h-14 rounded-xl border border-primary/20 bg-background px-6 text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/5 hover:shadow-lg active:translate-y-0"
+              className="h-14 rounded-xl border  bg-background px-6 text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
             >
               <a
                 href="tel:+447961585231"
@@ -1043,7 +1043,7 @@ function LocalAreasSection() {
                 <Link
                   to="/areas/$area"
                   params={{ area: a.slug }}
-                  className="flex h-full flex-col rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/60"
+                  className="flex h-full flex-col rounded-xl border  bg-card p-4 transition-colors hover: box-3d"
                 >
                   <span className="font-display text-lg font-semibold text-primary">{a.postcode}</span>
                   <span className="text-sm text-muted-foreground">{a.label}</span>
@@ -1051,7 +1051,7 @@ function LocalAreasSection() {
               ) : (
                 <Link
                   to="/contact"
-                  className="flex h-full flex-col rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/60"
+                  className="flex h-full flex-col rounded-xl border  bg-card p-4 transition-colors hover: box-3d"
                 >
                   <span className="font-display text-lg font-semibold text-primary">{a.postcode}</span>
                   <span className="text-sm text-muted-foreground">{a.label} — enquire</span>
@@ -1073,7 +1073,7 @@ function LocalAreasSection() {
 function BuddyNote() {
   return (
     <aside className="mx-auto mb-10 w-full max-w-7xl px-4 sm:px-6 lg:max-w-[1180px] lg:px-8">
-      <div className="rounded-xl border border-border bg-card px-4 py-3 text-sm">
+      <div className="rounded-xl border  bg-card px-4 py-3 text-sm box-3d">
         <p className="font-semibold text-primary">GSM Buddy</p>
         <p className="text-muted-foreground">Progress sheets and driving topics coming soon.</p>
       </div>

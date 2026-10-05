@@ -188,7 +188,7 @@ function AreaPage() {
             {a.highlights.map((h) => (
               <li
                 key={h}
-                className="rounded-lg border border-border bg-card p-5 text-sm text-foreground"
+                className="rounded-lg border  bg-card p-5 text-sm text-foreground box-3d"
               >
                 {h}
               </li>

@@ -164,7 +164,7 @@ function ContactPage() {
           </div>
 
           {/* Detailed hours */}
-          <Card className="mt-8 border-border bg-card">
+          <Card className="mt-8 bg-card box-3d">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-primary" />
@@ -176,7 +176,7 @@ function ContactPage() {
                 {hours.map(({ day, time }) => (
                   <div
                     key={day}
-                    className="flex items-center justify-between rounded-xl border border-border/70 bg-secondary/40 px-4 py-3"
+                    className="flex items-center justify-between rounded-xl border /70 bg-secondary/40 px-4 py-3 box-3d"
                   >
                     <span className="font-medium text-foreground">{day}</span>
                     <span className="text-sm text-muted-foreground">{time}</span>
@@ -187,7 +187,7 @@ function ContactPage() {
           </Card>
 
           {/* Instant CTAs */}
-          <Card className="mt-6 border-border bg-card">
+          <Card className="mt-6 bg-card box-3d">
             <CardHeader className="pb-4 text-center">
               <CardTitle className="font-display text-2xl">Talk to us instantly</CardTitle>
             </CardHeader>
@@ -238,7 +238,7 @@ function CallButton({ phoneIntl }: { phoneIntl: string }) {
       asChild
       size="lg"
       variant="outline"
-      className="h-14 w-full justify-center gap-2 rounded-xl border-primary bg-background text-primary shadow-md transition-transform hover:bg-secondary hover:text-primary"
+      className="h-14 w-full justify-center gap-2 rounded-xl border-primary bg-background text-primary shadow-md transition-transform hover:bg-secondary hover:text-primary box-3d"
     >
       <a
         href={`tel:+${phoneIntl}`}

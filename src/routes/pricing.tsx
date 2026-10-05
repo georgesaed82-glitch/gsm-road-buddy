@@ -54,7 +54,7 @@ function PricingPage() {
           </p>
 
           {/* Transparent pricing band */}
-          <div className="mx-auto mt-8 max-w-3xl rounded-3xl border border-border/60 bg-card p-6 shadow-lg sm:p-8">
+          <div className="mx-auto mt-8 max-w-3xl rounded-3xl border /60 bg-card p-6 shadow-lg sm:p-8 box-3d">
             <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.22em] text-accent">
               <span className="h-px w-6 bg-accent" />
               Lessons from
@@ -82,7 +82,7 @@ function PricingPage() {
               ].map((f) => {
                 const Icon = f.icon;
                 return (
-                  <div key={f.title} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background p-4">
+                  <div key={f.title} className="flex items-start gap-3 rounded-2xl border /60 bg-background p-4 box-3d">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent">
                       <Icon className="h-4 w-4" />
                     </span>
@@ -123,7 +123,7 @@ function PricingPage() {
             {visible.map((pkg) => (
               <Card
                 key={pkg.id}
-                className={`relative border-border bg-card ${pkg.popular ? "ring-2 ring-primary" : ""}`}
+                className={`relative bg-card box-3d ${pkg.popular ? "ring-2 ring-primary" : ""}`}
               >
                 {pkg.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
@@ -181,7 +181,7 @@ function PricingPage() {
             ))}
           </div>
 
-          <div className="mt-16 rounded-lg border border-border bg-card p-8 text-center sm:p-10">
+          <div className="mt-16 rounded-lg border  bg-card p-8 text-center sm:p-10 box-3d">
             <h3 className="font-display text-2xl font-semibold text-foreground">
               Need pricing details?
             </h3>

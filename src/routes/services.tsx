@@ -83,7 +83,7 @@ function ServicesPage() {
             {services.map((service) => {
               const Icon = SERVICE_ICONS[service.id] ?? Car;
               return (
-                <Card key={service.id} className="border-border bg-card">
+                <Card key={service.id} className="border-border bg-card box-3d">
                   <CardHeader className="flex flex-row items-start gap-4 pb-4">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
                       <Icon className="h-5 w-5" />
