@@ -13,6 +13,7 @@ import { InstagramBrandIcon } from "@/components/InstagramBrandIcon";
 import { FacebookBrandIcon } from "@/components/FacebookBrandIcon";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
+import { useIsNativeApp } from "@/lib/isNativeApp";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { resolveYoutubeUrl } from "@/lib/youtube";
 
@@ -30,6 +31,7 @@ const FOOTER_LINKS = ALL_FOOTER_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/b
 
 export function Footer() {
   const { business, social: rawSocial, footer } = useSiteSettings();
+  const isNative = useIsNativeApp();
   const social = { ...rawSocial, youtube: resolveYoutubeUrl(rawSocial.youtube) };
 
   return (
@@ -116,9 +118,12 @@ export function Footer() {
 
         {/* Bottom: copyright + disclaimer */}
         <p className="mt-8 text-center text-xs opacity-70">{footer.copy}</p>
-        <div className="mt-4 border-t border-primary-foreground/10 pt-4">
-          <DVSADisclaimer variant="footer" />
-        </div>
+        {/* Theory disclaimer only in the native learning app, not the public website. */}
+        {isNative ? (
+          <div className="mt-4 border-t border-primary-foreground/10 pt-4">
+            <DVSADisclaimer variant="footer" />
+          </div>
+        ) : null}
       </div>
     </footer>
   );
