@@ -107,9 +107,9 @@ function YouTubePage() {
       {/* Topics */}
       <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <h2 className="font-display text-3xl font-medium text-primary">What the videos cover</h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="mt-6 grid gap-5 sm:grid-cols-2">
           {TOPICS.map((t) => (
-            <div key={t.title} className="rounded-2xl border border-border bg-card p-5">
+            <div key={t.title} className="rounded-2xl border-2 border-primary/25 bg-card p-5 shadow-[0_6px_0_0_var(--color-primary),0_14px_24px_-10px_rgba(19,56,46,0.45)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_10px_0_0_var(--color-primary),0_20px_30px_-12px_rgba(19,56,46,0.5)]">
               <h3 className="flex items-center gap-2 font-semibold text-foreground">
                 <CheckCircle2 className="h-5 w-5 text-accent" /> {t.title}
               </h3>
@@ -133,9 +133,9 @@ function YouTubePage() {
           <p className="mt-3 max-w-2xl text-muted-foreground">
             Videos help — but nothing replaces patient one-to-one time behind the wheel.
           </p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {LESSONS.map(({ icon: Icon, title, body }) => (
-              <div key={title} className="rounded-2xl border border-border bg-background p-5">
+              <div key={title} className="rounded-2xl border-2 border-primary/25 bg-background p-5 shadow-[0_6px_0_0_var(--color-primary),0_14px_24px_-10px_rgba(19,56,46,0.45)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_10px_0_0_var(--color-primary),0_20px_30px_-12px_rgba(19,56,46,0.5)]">
                 <span className="grid h-10 w-10 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent">
                   <Icon className="h-5 w-5" />
                 </span>
@@ -155,60 +155,27 @@ function YouTubePage() {
         </div>
       </section>
 
-      {/* Areas */}
-      <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
-        <h2 className="font-display text-3xl font-medium text-primary">Lessons across West London</h2>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {AREAS.map((a) => (
-            <li key={a.postcode}>
-              {a.slug ? (
-                <Link
-                  to="/areas/$area"
-                  params={{ area: a.slug }}
-                  className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 hover:border-accent/60"
-                >
-                  <MapPin className="h-5 w-5 shrink-0 text-accent" />
-                  <span><span className="font-semibold">{a.postcode}</span> · {a.label}</span>
-                </Link>
-              ) : (
-                <a
-                  href={wa}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 hover:border-accent/60"
-                >
-                  <MapPin className="h-5 w-5 shrink-0 text-accent" />
-                  <span><span className="font-semibold">{a.postcode}</span> · {a.label} — ask us</span>
-                </a>
-              )}
-            </li>
-          ))}
-        </ul>
-        <Link to="/areas" className="mt-4 inline-block text-sm font-medium text-primary underline underline-offset-4 hover:text-accent">
-          All areas we cover
-        </Link>
-      </section>
-
       {/* Enquire */}
       <section className="border-t border-border bg-primary text-primary-foreground">
         <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
-          <h2 className="font-display text-3xl font-medium">Ask about lessons</h2>
+          <div className="rounded-3xl border-2 border-accent/60 bg-primary p-6 shadow-[0_10px_0_0_var(--color-accent),0_24px_40px_-12px_rgba(0,0,0,0.55)] sm:p-8">
+          <h2 className="font-display text-3xl font-bold sm:text-4xl">Ask about lessons</h2>
           <p className="mt-3 max-w-2xl text-primary-foreground/85">
             WhatsApp opens a ready-made message for you to check and send — it asks for your
             postcode, automatic/manual/refresher, experience and availability.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            <Button asChild size="lg" className="h-14 rounded-xl bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button asChild size="lg" className="h-16 rounded-xl shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-base font-bold bg-accent text-accent-foreground hover:bg-accent/90">
               <a href={wa} target="_blank" rel="noopener noreferrer" onClick={() => trackContactClick("whatsapp", "YouTube page")} className="inline-flex items-center justify-center gap-2">
                 <WhatsAppIcon className="h-5 w-5" /> WhatsApp
               </a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-14 rounded-xl border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <Button asChild size="lg" variant="outline" className="h-16 rounded-xl border-2 shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-base font-bold border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
               <a href={`tel:+${business.phone_intl}`} onClick={() => trackContactClick("phone", "YouTube page")} className="inline-flex items-center justify-center gap-2">
                 <Phone className="h-5 w-5" /> Call {business.phone}
               </a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-14 rounded-xl border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <Button asChild size="lg" variant="outline" className="h-16 rounded-xl border-2 shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-base font-bold border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
               <a href={`mailto:${business.email}`} className="inline-flex min-w-0 items-center justify-center gap-2">
                 <Mail className="h-5 w-5 shrink-0" /> Email us
               </a>
@@ -220,6 +187,7 @@ function YouTubePage() {
           <p className="mt-8 font-display text-xl italic text-accent">
             Keep learning, build your confidence, and drive safely.
           </p>
+          </div>
         </div>
       </section>
     </div>
