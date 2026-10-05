@@ -84,7 +84,7 @@ function AreasIndex() {
             </p>
             <Link
               to="/contact"
-              className="mt-4 inline-flex items-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+              className="mt-4 inline-flex items-center rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
             >
               Ask about a meeting point
             </Link>

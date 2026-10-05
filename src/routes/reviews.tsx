@@ -109,7 +109,7 @@ function ReviewsPage() {
               href="https://www.google.com/maps/search/?api=1&query=GSM+Driving+School+71+Sandbourne+House+London+W11+1DS"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-medium text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-medium text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
             >
               <ExternalLink className="h-4 w-4" />
               Read &amp; post on Google
@@ -118,7 +118,7 @@ function ReviewsPage() {
               href="https://www.instagram.com/gsm_driving_school_/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center gap-2 rounded-xl border  bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border  bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
             >
               <Instagram className="h-4 w-4 text-accent" />
               Comments on Instagram
@@ -127,7 +127,7 @@ function ReviewsPage() {
               href="https://www.facebook.com/search/top?q=gsm%20driving%20school%20london"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center gap-2 rounded-xl border  bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border  bg-background px-6 text-sm font-medium text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover: hover:bg-accent/5 hover:shadow-lg active:translate-y-0 box-3d"
             >
               <Facebook className="h-4 w-4 text-accent" />
               Reviews on Facebook
