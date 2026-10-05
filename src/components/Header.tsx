@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { BottomTabBar } from "@/components/BottomTabBar";
 import brandArt from "@/assets/gsm-youtube-branding.png.asset.json";
 
 type NavItem = {
@@ -68,7 +69,7 @@ export function BrandBanner() {
   );
 }
 
-export function Header() {
+export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -123,8 +124,8 @@ export function Header() {
         to={item.to}
         onClick={() => setSheetOpen(false)}
         className={cn(
-          "group relative flex items-center gap-3 overflow-hidden rounded-2xl border bg-card px-3.5 py-3 text-left shadow-sm transition-all duration-200 hover:border-accent/60",
-          active ? "border-accent/70 bg-accent/10 text-primary" : "border-border/60 text-foreground",
+          "group relative flex items-center gap-3 overflow-hidden rounded-2xl border-2 bg-card px-3.5 py-3 text-left shadow-[0_5px_0_0_var(--primary),0_12px_20px_-10px_rgba(0,0,0,0.35)] transition-all duration-150 hover:-translate-y-0.5 hover:border-accent/60 active:translate-y-1 active:shadow-[0_1px_0_0_var(--primary)]",
+          active ? "border-primary bg-accent/10 text-primary" : "border-primary/40 text-foreground",
         )}
       >
         <span
@@ -248,12 +249,13 @@ export function Header() {
               <LogOut className="h-5 w-5" />
             </button>
           ) : (
-            <Link to="/auth" search={{ admin: 1 }} aria-label="Admin login" className={circleIconBtn}>
+            <Link to="/auth" search={{ admin: 1 }} aria-label="Secure admin login" className={cn(circleIconBtn, "border-2 border-primary bg-card shadow-[0_3px_0_0_var(--primary),0_6px_10px_-4px_rgba(0,0,0,0.35)] transition-transform active:translate-y-0.5 active:shadow-[0_1px_0_0_var(--primary)]")}>
               <UserCog className="h-5 w-5" />
             </Link>
           )}
         </div>
       </div>
+      {showTabs ? <BottomTabBar placement="top" /> : null}
     </header>
   );
 }
