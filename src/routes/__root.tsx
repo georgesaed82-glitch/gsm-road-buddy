@@ -343,7 +343,7 @@ function RootComponent() {
             >
               Skip to main content
             </a>
-            {!isNative && <Header />}
+            {!isNative && <Header showTabs={!isPortal} />}
             <NativeAppLanguageButton />
             <main
               id="main-content"
