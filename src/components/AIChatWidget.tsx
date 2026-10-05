@@ -22,14 +22,14 @@ function fixPhoneNumbers(content: string) {
 const DEFAULT_SUGGESTIONS = [
   "What areas do you cover?",
   "Manual or automatic?",
-  "Ask me a theory question",
+  "What areas do you cover?",
   "Help me book a lesson",
 ];
 
 const DEFAULT_GREETING: Msg = {
   role: "assistant",
   content:
-    "Hi! I'm George's AI assistant 👋 I can answer questions about lessons, run a theory practice quiz, or help you book. What can I help with?",
+    "Hi! I'm George's AI assistant 👋 I can answer questions about lessons, share driving tips, or help you book. What can I help with?",
 };
 
 function getFocusableElements(container: HTMLElement | null) {
@@ -338,7 +338,7 @@ export function AIChatWidget() {
                 }
               }}
               rows={1}
-              placeholder="Ask about lessons, theory, booking…"
+              placeholder="Ask about lessons, prices, booking…"
               aria-label="Type your message"
               style={{ fontSize: "16px" }}
               className="ai-chat-input max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl border border-border bg-background px-3 py-3 leading-snug outline-none focus:border-red-600 focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-1 sm:px-4"

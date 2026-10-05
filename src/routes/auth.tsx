@@ -52,18 +52,9 @@ export const Route = createFileRoute("/auth")({
   },
   head: () => ({
     meta: [
-      { title: "GSM Plus — Coming Soon" },
-      {
-        name: "description",
-        content:
-          "GSM Plus is the new premium learner portal from GSM Driving School. Discover what is coming and sign up for updates.",
-      },
-      { property: "og:title", content: "GSM Plus — Coming Soon" },
-      {
-        property: "og:description",
-        content:
-          "GSM Plus will support GSM learners with progress tracking, videos, diagrams, theory practice, mock tests, hazard perception and personalised feedback.",
-      },
+      { title: "Sign in | GSM Driving School" },
+      { name: "description", content: "Staff sign in for GSM Driving School." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: AuthPage,
@@ -490,281 +481,27 @@ function AuthPage() {
 
   return (
     <main className="bg-background">
-      <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-background via-secondary/20 to-background">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:py-24">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
-              <Sparkles className="h-4 w-4" /> GSM Learning Platform
-            </div>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <h1 className="font-display text-4xl font-bold leading-[1.04] text-foreground sm:text-5xl lg:text-6xl">
-                GSM Plus
-              </h1>
-              <Badge
-                variant="secondary"
-                className="rounded-full border border-accent/50 bg-accent px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-accent-foreground shadow-sm"
-              >
-                <Clock className="mr-1.5 h-3.5 w-3.5" />
-                Coming Soon
-              </Badge>
-            </div>
-            <p className="mt-2 font-display text-xl font-semibold text-accent sm:text-2xl">
-              Your Complete Driving Learning Portal
-            </p>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              GSM Plus is an online learning and progress platform designed to support learners
-              alongside their practical driving lessons. It will give students access to lesson
-              progress, driving topics, training videos, diagrams, theory support, mock tests and
-              personalised feedback in one place.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-bold text-primary-foreground shadow-lg hover:bg-primary/90"
-              >
-                Contact support
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <a
-                href="#coming-soon"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-accent/50 bg-card px-6 py-4 font-bold text-primary shadow-sm hover:border-accent"
-              >
-                Learn more
-              </a>
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="rounded-[2rem] border border-border/60 bg-card p-4 shadow-[0_30px_80px_-40px_rgba(29,42,34,0.45)] sm:p-6">
-              <div className="rounded-[1.5rem] bg-primary p-5 text-primary-foreground sm:p-6">
-                <div className="flex items-center justify-between gap-3">
-                  <GsmPlus variant="pill" gsmClassName="text-primary-foreground" />
-                  <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">
-                    In development
-                  </span>
-                </div>
-                <div className="mt-7 grid gap-4 sm:grid-cols-3">
-                  {[
-                    ["Lessons", "—", "planned"],
-                    ["Topics", "—", "planned"],
-                    ["Mocks", "—", "planned"],
-                  ].map(([label, value, caption]) => (
-                    <div key={label} className="rounded-2xl bg-primary-foreground/10 p-4">
-                      <div className="text-xs uppercase tracking-widest text-primary-foreground/65">
-                        {label}
-                      </div>
-                      <div className="mt-2 font-display text-3xl font-bold text-accent">{value}</div>
-                      <div className="text-xs text-primary-foreground/70">{caption}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 space-y-3">
-                  {[
-                    ["Reference points", "—"],
-                    ["Meeting traffic", "—"],
-                    ["Hazard perception", "—"],
-                  ].map(([topic, pct]) => (
-                    <div key={topic}>
-                      <div className="flex justify-between text-sm">
-                        <span>{topic}</span>
-                        <span className="font-semibold text-accent">{pct}</span>
-                      </div>
-                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-primary-foreground/15">
-                        <div className="h-full rounded-full bg-accent" style={{ width: "0%" }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border border-border/60 bg-background p-4">
-                  <BookOpen className="h-5 w-5 text-accent" />
-                  <div className="mt-2 font-semibold text-foreground">Lesson progress</div>
-                  <p className="mt-1 text-sm text-muted-foreground">Track every topic as you develop.</p>
-                </div>
-                <div className="rounded-2xl border border-border/60 bg-background p-4">
-                  <ShieldCheck className="h-5 w-5 text-accent" />
-                  <div className="mt-2 font-semibold text-foreground">Test readiness</div>
-                  <p className="mt-1 text-sm text-muted-foreground">Clear targets before your test day.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+      <section className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6">
+        <h1 className="font-display text-3xl font-semibold text-primary sm:text-4xl">
+          Practical driving lessons &amp; free driving videos
+        </h1>
+        <p className="mt-4 text-muted-foreground">
+          Book patient one-to-one lessons with GSM Driving School, and watch our free driving tips on
+          YouTube in the meantime.
+        </p>
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <Button asChild size="lg" className="rounded-xl">
+            <Link to="/youtube">Driving videos</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="rounded-xl">
+            <Link to="/contact">Contact us</Link>
+          </Button>
         </div>
-      </section>
-
-      {/* Who it's for + Why different */}
-      <section className="border-b border-border/60 bg-background px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2">
-          <div className="rounded-3xl border border-border/60 bg-card p-7 shadow-[0_18px_45px_-32px_rgba(29,42,34,0.35)] sm:p-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
-              <User className="h-3.5 w-3.5" /> Who it's for
-            </div>
-            <h2 className="mt-4 font-display text-2xl font-bold text-foreground sm:text-3xl">
-              Made for GSM learners — from first lesson to test day.
-            </h2>
-            <ul className="mt-5 space-y-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {[
-                "Absolute beginners starting their very first lesson.",
-                "Learners who want to revise between practical sessions.",
-                "Students preparing for the theory or practical test.",
-                "Parents supervising private practice at home.",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-3xl border border-accent/40 bg-primary p-7 text-primary-foreground shadow-[0_25px_60px_-30px_rgba(35,75,54,0.55)] sm:p-8">
-            <div className="inline-flex items-center gap-2 rounded-full bg-accent/20 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
-              <Sparkles className="h-3.5 w-3.5" /> Why it's different
-            </div>
-            <h2 className="mt-4 font-display text-2xl font-bold sm:text-3xl">
-              Built by real GSM instructors — not a generic app.
-            </h2>
-            <ul className="mt-5 space-y-3 text-sm leading-relaxed text-primary-foreground/90 sm:text-base">
-              {[
-                "Every topic is taught the GSM way — MSPSL, POM, reference points and plain-English \"why\" explanations.",
-                "Hazard clips are filmed on the roads you actually drive around West London — not stock footage.",
-                "Your instructor sees the same progress view, so lessons pick up exactly where you left off.",
-                "One place for progress, videos, animations, theory and mock tests — no other app to juggle.",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* All included modules */}
-      <section className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl">
-            <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">
-              All included learning modules
-            </div>
-            <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
-              Everything included in GSM Plus.
-            </h2>
-            <p className="mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg">
-              A complete learning system — every tool you need from day one right through to your practical test.
-            </p>
-          </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {portalFeatures.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.title}
-                  className="rounded-2xl border border-border/60 bg-card p-5 shadow-[0_12px_30px_-24px_rgba(29,42,34,0.35)]"
-                >
-                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent/12 text-accent">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-4 font-display text-lg font-bold text-foreground">{feature.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{feature.body}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Highlight strip — headline modules the user asked to see called out */}
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { icon: PlaySquare, label: "AI Video Library" },
-              { icon: BarChart3, label: "Student Progress System" },
-              { icon: Eye, label: "Hazard Perception" },
-              { icon: Trophy, label: "Theory Tests" },
-              { icon: BookOpen, label: "Highway Code" },
-              { icon: Signpost, label: "Road Signs" },
-              { icon: MonitorPlay, label: "Driving Animations" },
-              { icon: MessageSquareText, label: "Premium Support" },
-            ].map(({ icon: Icon, label }) => (
-              <div
-                key={label}
-                className="flex items-center gap-3 rounded-2xl border border-accent/30 bg-accent/5 px-4 py-3"
-              >
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
-                  <Icon className="h-4 w-4" />
-                </span>
-                <span className="text-sm font-semibold text-foreground">{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-secondary/35 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center">
-            <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary/80">
-              Planned access levels
-            </div>
-            <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
-              Free access vs GSM Plus premium access
-            </h2>
-          </div>
-          <div className="mt-10 grid gap-6 lg:grid-cols-2">
-            <div className="rounded-3xl border border-border/60 bg-card p-7 shadow-[0_18px_45px_-32px_rgba(29,42,34,0.35)] sm:p-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-success/15 px-3 py-1 text-sm font-bold text-success">
-                <CheckCircle2 className="h-4 w-4" /> Free access
-              </div>
-              <p className="mt-4 text-muted-foreground">
-                Basic information and selected learning materials to help visitors and new learners
-                understand the GSM approach.
-              </p>
-              <ul className="mt-6 space-y-3">
-                {freeAccess.map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm font-medium text-foreground">
-                    <CheckCircle2 className="h-4 w-4 text-success" /> {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-3xl border border-accent/60 bg-primary p-7 text-primary-foreground shadow-[0_25px_60px_-30px_rgba(35,75,54,0.65)] sm:p-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-sm font-bold text-accent-foreground">
-                <Sparkles className="h-4 w-4" /> GSM Plus premium access
-              </div>
-              <p className="mt-4 text-primary-foreground/82">
-                Full training topics, videos, animations, progress tracking, theory practice, mock
-                tests, hazard perception and personalised learning support.
-              </p>
-              <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-                {premiumAccess.map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm font-semibold">
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" /> {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="coming-soon" className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-        <div className="mx-auto max-w-3xl">
-          <ComingSoonNotice />
-          <div className="mt-8 rounded-2xl border border-border/60 bg-card p-5 text-center">
-            <div className="flex items-center justify-center gap-2 font-semibold text-foreground">
-              <Mail className="h-5 w-5 text-accent" /> Want to know when it launches?
-            </div>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Contact GSM support and we will let you know as soon as GSM Plus+ is ready.
-            </p>
-            <a
-              href="mailto:gsmdrivingschool@outlook.com?subject=GSM%20Plus%20launch%20notification"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-accent/50 bg-background px-4 py-2 text-sm font-bold text-primary hover:border-accent"
-            >
-              Contact support
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
+        <p className="mt-10 text-xs text-muted-foreground">
+          <Link to="/auth" search={{ admin: 1 }} className="underline underline-offset-4 hover:text-primary">
+            Staff sign in
+          </Link>
+        </p>
       </section>
     </main>
   );

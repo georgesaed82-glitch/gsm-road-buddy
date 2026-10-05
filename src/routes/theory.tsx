@@ -1,3 +1,5 @@
+import { useNavigate } from "@tanstack/react-router";
+import { isNativeApp } from "@/lib/isNativeApp";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -25,7 +27,7 @@ import { OfflineDownloadButton } from "@/components/OfflineDownloadButton";
 import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 
 export const Route = createFileRoute("/theory")({
-  head: () => ({ meta: [{ title: "Theory portal · GSM" }] }),
+  head: () => ({ meta: [{ title: "Theory portal · GSM" }, { name: "robots", content: "noindex, nofollow" }] }),
   validateSearch: (search: Record<string, unknown>): { category?: string } => {
     return typeof search.category === "string" ? { category: search.category } : {};
   },
@@ -33,6 +35,15 @@ export const Route = createFileRoute("/theory")({
 });
 
 function TheoryPage() {
+  // Theory practice is off the public website; web visitors go to Driving Videos.
+  // The native app keeps its existing theory screen.
+  const redirectNav = useNavigate();
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      if (!isNativeApp()) redirectNav({ to: "/youtube", replace: true });
+    }, 250);
+    return () => window.clearTimeout(t);
+  }, [redirectNav]);
   const { category: initialCategory } = Route.useSearch();
   const [active, setActive] = useState<string | null>(
     initialCategory && theoryCategories.some((c) => c.slug === initialCategory)
