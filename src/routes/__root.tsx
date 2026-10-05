@@ -343,11 +343,11 @@ function RootComponent() {
             >
               Skip to main content
             </a>
-            {!isNative && <Header />}
+            {!isNative && <Header showTabs={!isPortal} />}
             <NativeAppLanguageButton />
             <main
               id="main-content"
-              className={`flex-1 ${!isPortal ? "pb-[calc(env(safe-area-inset-bottom,0px)+76px)]" : ""}`}
+              className={`flex-1 ${!isPortal && isNative ? "pb-[calc(env(safe-area-inset-bottom,0px)+76px)]" : ""}`}
               tabIndex={-1}
               suppressHydrationWarning
             >
@@ -357,7 +357,7 @@ function RootComponent() {
             {/* AI chat removed from public site */}
             <BackToTop />
             {isPortal && <HomeButton />}
-            {!isPortal && <BottomTabBar />}
+            {!isPortal && isNative && <BottomTabBar />}
             <Toaster />
             <PageViewTracker />
             <PWAInstallTracker />
