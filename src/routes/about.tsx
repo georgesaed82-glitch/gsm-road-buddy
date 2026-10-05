@@ -144,7 +144,7 @@ function AboutPage() {
                   role="group"
                   tabIndex={0}
                   aria-labelledby={titleId}
-                  className="border-border bg-background transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="bg-background box-3d focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <CardContent className="p-6">
                     <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-primary">
