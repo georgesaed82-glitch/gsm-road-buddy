@@ -3,7 +3,9 @@ import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
-import { Star, ArrowRight, Phone, Download, GraduationCap, UserRound, MapPin, Trophy, LifeBuoy, Sparkles, CheckCircle2, Clock } from "lucide-react";
+import { Star, ArrowRight, Phone, Download, GraduationCap, UserRound, MapPin, Trophy, LifeBuoy, Sparkles, CheckCircle2, Clock, Youtube, ParkingSquare, TrafficCone, RotateCw, Eye } from "lucide-react";
+import { YOUTUBE_SHORTS_URL, resolveYoutubeUrl } from "@/lib/youtube";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
@@ -77,40 +79,17 @@ const DEFAULT_GALLERY_CAPTIONS = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "GSM Driving School — Drive today. Succeed tomorrow." },
-      {
-        name: "description",
-        content:
-          "DVSA-approved manual & automatic driving lessons in Notting Hill, Holland Park & Kensington. 20+ years' experience, 143 five-star Google reviews.",
-      },
-      { property: "og:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
-      {
-        property: "og:description",
-        content:
-          "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 143 five-star Google reviews.",
-      },
-      { property: "og:image", content: heroImage.url },
-      {
-        property: "og:image:alt",
-        content:
-          "GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London.",
-      },
-      { property: "og:image:width", content: "1600" },
-      { property: "og:image:height", content: "1200" },
-      { property: "og:image:type", content: "image/jpeg" },
+      { title: "Manual & Automatic Driving Lessons in West London | GSM Driving School" },
+      { name: "description", content: "Patient manual and automatic driving lessons in Notting Hill, Kensington, Holland Park and West London since 2005. Beginners, refreshers and test preparation." },
+      { property: "og:title", content: "Manual & Automatic Driving Lessons in West London | GSM Driving School" },
+      { property: "og:description", content: "Patient manual and automatic driving lessons in Notting Hill, Kensington, Holland Park and West London since 2005. Beginners, refreshers and test preparation." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.gsmdrivingschool.com/" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "GSM Driving School — Drive today. Succeed tomorrow." },
-      {
-        name: "twitter:description",
-        content:
-          "DVSA-approved driving lessons across Notting Hill, Holland Park and Kensington. Manual & automatic. 20+ years' experience, 143 five-star Google reviews.",
-      },
-      {
-        name: "twitter:image:alt",
-        content:
-          "GSM Driving School student holding a practical driving test pass certificate in front of the GSM car in Notting Hill, West London.",
-      },
+      { name: "twitter:title", content: "Manual & Automatic Driving Lessons in West London | GSM Driving School" },
+      { name: "twitter:description", content: "Patient manual and automatic driving lessons in Notting Hill, Kensington, Holland Park and West London since 2005. Beginners, refreshers and test preparation." },
     ],
+    links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/" }],
   }),
   component: Home,
 });
@@ -158,6 +137,12 @@ const DEFAULT_SECTIONS: Array<
 // helper: return the CMS value if non-empty, else the code default
 const or = (v: string | undefined, def: string) => (v && v.trim().length > 0 ? v : def);
 
+// GSM Plus and app downloads are on hold publicly. Stored CMS text that still
+// advertises them is left untouched in the database but not rendered.
+const STALE_PROMO = /gsm\s*plus|learner\s*(portal|platform)|download|install|#download-app|\bthe app\b/i;
+const publicCopy = (v: string | undefined, def: string) =>
+  v && v.trim().length > 0 && !STALE_PROMO.test(v) ? v : def;
+
 function Home() {
   const isNative = useIsNativeApp();
   const listFn = useServerFn(listPublicHomeSections);
@@ -186,7 +171,11 @@ function Home() {
     cta: { id: "get-in-touch", label: "Get in touch" },
   };
   const scrollAnchors: SectionAnchor[] = sections
-    .map((s) => SECTION_META[s.section_type])
+    .flatMap((s) =>
+      s.section_type === "hero"
+        ? [SECTION_META.hero, { id: "videos", label: "Driving videos" }, { id: "local-areas", label: "Areas" }]
+        : [SECTION_META[s.section_type]],
+    )
     .filter((a): a is SectionAnchor => !!a);
   // Route chips take users to the correct dedicated pages.
   const routeAnchors: SectionAnchor[] = [
@@ -212,7 +201,17 @@ function Home() {
           );
         switch (s.section_type) {
           case "hero":
-            return wrap(<HeroSection s={s} />);
+            return (
+              <div key={key}>
+                {wrap(<HeroSection s={s} />)}
+                <div id="videos" className="scroll-mt-32">
+                  <VideoTipsSection />
+                </div>
+                <div id="local-areas" className="scroll-mt-32">
+                  <LocalAreasSection />
+                </div>
+              </div>
+            );
           case "gsm-plus-explainer":
             return wrap(<GsmPlusExplainer />);
           case "why":
@@ -261,44 +260,17 @@ function renderHeroTitle(title: string) {
 
 function HeroSection({ s }: SectionProps) {
   const rating = useSiteRating();
+  const { social } = useSiteSettings();
+  const youtubeUrl = resolveYoutubeUrl(social.youtube);
+  const secondaryIsStale =
+    !s.cta_secondary_href?.trim() ||
+    !s.cta_secondary_label?.trim() ||
+    STALE_PROMO.test(`${s.cta_secondary_href} ${s.cta_secondary_label}`);
   const heroTitle =
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
     <section className="relative overflow-hidden bg-background">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 pb-8 pt-3 sm:px-6 sm:gap-8 sm:pb-12 sm:pt-5 lg:max-w-[1180px] lg:gap-8 lg:px-8 lg:pb-8 lg:pt-4">
-        {/* 1) GSM PLUS+ premium teaser card */}
-        <Link
-          to="/auth"
-          aria-label="GSM Plus+ coming soon — learn more"
-          className="group relative overflow-hidden rounded-3xl border border-accent/30 bg-gradient-to-br from-primary via-primary to-[color-mix(in_oklab,var(--primary)_88%,black)] px-4 py-4 text-primary-foreground shadow-[0_18px_40px_-24px_rgba(29,42,34,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-xl sm:px-6 sm:py-5"
-        >
-          <span
-            aria-hidden
-            className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-accent/25 blur-2xl"
-          />
-          <span className="relative flex items-center gap-3 sm:gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-accent text-accent-foreground shadow-md sm:h-12 sm:w-12">
-              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="flex flex-wrap items-center gap-2">
-                <GsmPlus
-                  className="text-[20px] sm:text-[24px]"
-                  gsmClassName="text-primary-foreground"
-                  plusClassName="text-accent"
-                />
-                <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
-                  Coming Soon
-                </span>
-              </span>
-              <span className="mt-1 block text-[12px] font-medium text-primary-foreground/85 sm:text-[13px]">
-                The premium GSM learner platform — one place for progress, videos, theory & hazard perception.
-              </span>
-            </span>
-            <ArrowRight className="h-5 w-5 text-accent transition-transform duration-200 group-hover:translate-x-0.5" />
-          </span>
-        </Link>
-
         {/* Desktop: two-column hero (image + copy). Mobile keeps stacked. */}
         <div className="lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-10">
         <div className="overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--primary)_8%,var(--background))] shadow-2xl ring-1 ring-border/40 lg:order-1">
@@ -319,7 +291,10 @@ function HeroSection({ s }: SectionProps) {
             {or(s.eyebrow, "Notting Hill Gate · Holland Park · High Street Kensington · Bayswater")}
           </div>
           <h1 className="mt-3 text-balance font-display text-[32px] font-medium leading-[1.05] text-foreground sm:mt-5 sm:text-5xl lg:mt-3 lg:text-[40px] xl:text-[44px]">
-            {renderHeroTitle(heroTitle)}
+            <span className="mb-2 block font-sans text-[13px] font-semibold uppercase tracking-[0.14em] text-primary sm:text-sm">
+              Manual &amp; automatic driving lessons in Notting Hill, Kensington &amp; West London
+            </span>
+            <span className="block">{renderHeroTitle(heroTitle)}</span>
           </h1>
           <a
             href="https://maps.google.com/?cid=12315071950298926858"
@@ -335,9 +310,9 @@ function HeroSection({ s }: SectionProps) {
             <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
           </a>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mt-4 lg:max-w-none lg:text-[15px]">
-            {or(
+            {publicCopy(
               s.body,
-              "GSM Driving School has taught West London to drive since 2005 — practical lessons, theory prep and GSM Plus, our premium learner platform, from instructors who know these roads.",
+              "GSM Driving School has taught West London to drive since 2005 — patient one-to-one practical lessons, automatic and manual, plus free driving tips on our YouTube channel.",
             )}
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap lg:mt-5 lg:gap-3">
@@ -359,13 +334,22 @@ function HeroSection({ s }: SectionProps) {
               size="lg"
               className="h-14 w-full rounded-2xl bg-accent px-7 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-12 lg:px-6 lg:text-[15px]"
             >
-              <a
-                href={or(s.cta_secondary_href, "/#download-app")}
-                className="inline-flex items-center gap-2 font-medium"
-              >
-                {or(s.cta_secondary_label, "Download the App")}
-                <ArrowRight className="h-4 w-4" />
-              </a>
+              {secondaryIsStale ? (
+                <a
+                  href={youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-medium"
+                >
+                  <Youtube className="h-5 w-5" />
+                  Watch on YouTube
+                </a>
+              ) : (
+                <a href={s.cta_secondary_href} className="inline-flex items-center gap-2 font-medium">
+                  {s.cta_secondary_label}
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              )}
             </Button>
           </div>
         </div>
@@ -379,8 +363,8 @@ function HeroSection({ s }: SectionProps) {
 const FEATURES: { icon: typeof UserRound; title: string; body: string }[] = [
   { icon: UserRound, title: "Experienced", body: "DVSA qualified instructors" },
   { icon: MapPin, title: "Local Expertise", body: "West London specialists" },
-  { icon: Trophy, title: "High Pass Rate", body: "Proven results since 2005" },
-  { icon: LifeBuoy, title: "Full Support", body: "Lessons, theory & learner portal" },
+  { icon: Trophy, title: "Since 2005", body: "Two decades teaching locally" },
+  { icon: LifeBuoy, title: "Patient Lessons", body: "One-to-one, at your pace" },
 ];
 
 function FeatureStrip() {
@@ -855,11 +839,11 @@ function CtaSection({ s }: SectionProps) {
               Ready to start
             </div>
             <h2 className="mt-4 font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl lg:text-[34px]">
-              {or(s.title, "Ready to start? Get in Touch.")}
+              {publicCopy(s.title, "Ready to start? Get in Touch.")}
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground lg:text-[15px]">
-              Message us on WhatsApp, give us a call, or download the app to book your first lesson
-              today.
+              Message us on WhatsApp or give us a call to book your first lesson — and watch our
+              free driving tips on YouTube in the meantime.
             </p>
           </div>
           <div className="grid w-full gap-3 sm:grid-cols-3 lg:w-auto">
@@ -898,13 +882,9 @@ function CtaSection({ s }: SectionProps) {
               size="lg"
               className="h-14 rounded-xl bg-accent px-6 text-accent-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
             >
-              <Link
-                to="/"
-                hash="download-app"
-                className="inline-flex items-center justify-center gap-2 font-medium"
-              >
-                <Download className="h-5 w-5" />
-                {or(s.cta_primary_label, "Download the App")}
+              <Link to="/youtube" className="inline-flex items-center justify-center gap-2 font-medium">
+                <Youtube className="h-5 w-5" />
+                Driving videos
               </Link>
             </Button>
           </div>
@@ -975,6 +955,112 @@ function CustomSection({ s }: SectionProps) {
             )}
           </div>
         )}
+      </div>
+    </section>
+  );
+}
+
+const VIDEO_TOPICS = [
+  { icon: ParkingSquare, title: "Parking", body: "Bay, parallel and pulling up on the left." },
+  { icon: TrafficCone, title: "Junctions & traffic lights", body: "Positioning, timing and safe decisions." },
+  { icon: RotateCw, title: "Roundabouts", body: "Lanes, signals and reading traffic." },
+  { icon: Eye, title: "Observation", body: "Mirrors, blind spots and planning ahead." },
+];
+
+function VideoTipsSection() {
+  const { social } = useSiteSettings();
+  const channel = resolveYoutubeUrl(social.youtube);
+  return (
+    <section className="border-t border-border bg-primary text-primary-foreground">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:max-w-[1180px] lg:px-8 lg:py-12">
+        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/70">
+          <span className="h-px w-8 bg-accent" /> Free driving videos
+        </div>
+        <h2 className="mt-4 font-display text-3xl font-medium leading-tight sm:text-4xl lg:text-[34px]">
+          Learn with GSM on <span className="italic text-accent">YouTube</span>
+        </h2>
+        <p className="mt-3 max-w-2xl text-primary-foreground/80">
+          Short, practical tips from George and the team, filmed on real West London roads.
+        </p>
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {VIDEO_TOPICS.map(({ icon: Icon, title, body }) => (
+            <div key={title} className="rounded-2xl border border-primary-foreground/15 bg-primary-foreground/5 p-5">
+              <Icon className="h-6 w-6 text-accent" aria-hidden="true" />
+              <h3 className="mt-3 font-semibold">{title}</h3>
+              <p className="mt-1 text-sm text-primary-foreground/75">{body}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button asChild size="lg" className="h-12 rounded-2xl bg-accent px-6 text-accent-foreground hover:bg-accent/90">
+            <a href={channel} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+              <Youtube className="h-5 w-5" /> Watch on YouTube
+            </a>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="h-12 rounded-2xl border-primary-foreground/40 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <a href={YOUTUBE_SHORTS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+              Watch the Shorts <ArrowRight className="h-4 w-4" />
+            </a>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="h-12 rounded-2xl border-primary-foreground/40 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <Link to="/youtube" className="inline-flex items-center gap-2">
+              Driving tips &amp; lessons <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const LOCAL_AREAS: { postcode: string; label: string; slug?: string }[] = [
+  { postcode: "W11", label: "Notting Hill", slug: "notting-hill" },
+  { postcode: "W8", label: "Kensington", slug: "kensington" },
+  { postcode: "W14", label: "Holland Park", slug: "holland-park" },
+  { postcode: "W12", label: "Shepherd's Bush", slug: "shepherds-bush" },
+  { postcode: "W2", label: "Bayswater", slug: "bayswater" },
+  { postcode: "W10", label: "North Kensington" },
+];
+
+function LocalAreasSection() {
+  return (
+    <section className="bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:max-w-[1180px] lg:px-8 lg:py-10">
+        <h2 className="font-display text-3xl font-medium text-primary lg:text-[30px]">
+          Driving lessons near you in West London
+        </h2>
+        <p className="mt-2 max-w-2xl text-muted-foreground">
+          Local pick-ups for automatic and manual lessons across these postcodes.
+        </p>
+        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {LOCAL_AREAS.map((a) => (
+            <li key={a.postcode}>
+              {a.slug ? (
+                <Link
+                  to="/areas/$area"
+                  params={{ area: a.slug }}
+                  className="flex h-full flex-col rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/60"
+                >
+                  <span className="font-display text-lg font-semibold text-primary">{a.postcode}</span>
+                  <span className="text-sm text-muted-foreground">{a.label}</span>
+                </Link>
+              ) : (
+                <Link
+                  to="/contact"
+                  className="flex h-full flex-col rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/60"
+                >
+                  <span className="font-display text-lg font-semibold text-primary">{a.postcode}</span>
+                  <span className="text-sm text-muted-foreground">{a.label} — enquire</span>
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-5 flex flex-wrap gap-4 text-sm">
+          <Link to="/areas" className="font-medium text-primary underline underline-offset-4 hover:text-accent">All areas</Link>
+          <Link to="/pricing" className="font-medium text-primary underline underline-offset-4 hover:text-accent">Prices &amp; packages</Link>
+          <Link to="/services" className="font-medium text-primary underline underline-offset-4 hover:text-accent">Practical lessons</Link>
+        </div>
       </div>
     </section>
   );
