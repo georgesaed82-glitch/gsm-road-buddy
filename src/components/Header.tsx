@@ -61,7 +61,7 @@ export function BrandBanner({ wide = false }: { wide?: boolean } = {}) {
       <span
         role="img"
         aria-label="GSM Driving School, West London, Est. 2005 — emblem, wordmark and learner car"
-        className={`block aspect-[3.3/1] w-full bg-no-repeat ${wide ? "lg:aspect-auto lg:h-[158px] lg:bg-cover" : ""}`}
+        className={`block aspect-[3.3/1] w-full bg-no-repeat ${wide ? "lg:aspect-auto lg:h-[158px] lg:![background-size:100%_auto] lg:![background-position:50%_51%]" : ""}`}
         style={{
           backgroundImage: `url(${brandArt.url})`,
           backgroundSize: "150% auto",
