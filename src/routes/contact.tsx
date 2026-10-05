@@ -47,7 +47,7 @@ function ContactPage() {
   const waHref = `https://wa.me/${business.phone_intl}`;
   const telHref = `tel:+${business.phone_intl}`;
   const mailHref = `mailto:${business.email}`;
-  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.address)}`;
+  const mapHref = "https://maps.google.com/?cid=12315071950298926858";
 
   type ContactCard = {
     icon: React.ReactNode;
