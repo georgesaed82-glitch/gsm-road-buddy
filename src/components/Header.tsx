@@ -17,6 +17,7 @@ import {
   MapPin,
   ShieldCheck,
   Youtube,
+  PoundSterling,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -39,6 +40,7 @@ type NavItem = {
 const PRIMARY_NAV: NavItem[] = [
   { to: "/", label: "Home", icon: Home, desc: "Back to homepage" },
   { to: "/about", label: "About Us", icon: Info, desc: "Since 2005" },
+  { to: "/pricing", label: "Pricing", icon: PoundSterling, desc: "£45–£70 per hour" },
   { to: "/reviews", label: "Reviews", icon: Star, desc: "What learners say" },
   { to: "/passes", label: "Passed Students", icon: Trophy, desc: "Test pass photos" },
   { to: "/areas", label: "Areas We Cover", icon: MapPin, desc: "West London" },
