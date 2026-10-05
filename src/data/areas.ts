@@ -37,7 +37,7 @@ export const areas: AreaPage[] = [
   },
   {
     slug: "kensington",
-    area: "Kensington",
+    area: "High Street Kensington",
     postcode: "W8",
     nearbyPostcodes: ["W11", "W14", "SW7"],
     intro:
