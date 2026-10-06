@@ -20,8 +20,10 @@ async function resolveArea(slug: string): Promise<AreaPage & { _rating: SiteRati
   try {
     const rows = await listAreas();
     const enabled = rows.filter((r) => r.enabled);
+    const staticArea = getArea(slug);
     const match = enabled.find((r) => r.slug === slug);
-    if (match) {
+    // Pending (unconfirmed) areas always use static data so noindex is preserved.
+    if (match && !staticArea?.pendingConfirmation) {
       return {
         slug: match.slug,
         area: match.area,
@@ -31,6 +33,7 @@ async function resolveArea(slug: string): Promise<AreaPage & { _rating: SiteRati
         highlights: match.highlights,
         routes: match.routes_text,
         faqs: match.faqs,
+        lastModified: staticArea?.lastModified,
         _rating: ratingVal,
       };
     }
@@ -57,7 +60,7 @@ export const Route = createFileRoute("/areas/$area")({
       : `Driving Lessons ${a.area} (${a.postcode}) | GSM Driving School`;
     const description = isKen
       ? `Driving lessons in High Street Kensington (W8) since 2005. Manual or automatic, two-hour lessons, patient one-to-one tuition and an agreed High Street Kensington meeting point. Rated ${ratingLabel}.`
-      : `Driving lessons in ${a.area} ${a.postcode}. DVSA-approved local instructor, manual & automatic, door-to-door pickup. Rated ${ratingLabel}.`;
+      : `Driving lessons in ${a.area} (${a.postcode}) with GSM Driving School, established 2005. Manual and automatic two-hour lessons from an agreed meeting point. Rated ${ratingLabel}.`;
     const url = `https://www.gsmdrivingschool.com/areas/${a.slug}`;
     return {
       meta: [
@@ -78,31 +81,13 @@ export const Route = createFileRoute("/areas/$area")({
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "@id": `https://www.gsmdrivingschool.com/areas/${a.slug}#business`,
-            name: `GSM Driving School — ${a.area}`,
-            image: "https://www.gsmdrivingschool.com/og-image.jpg",
+            "@type": "Service",
+            "@id": `${url}#service`,
+            name: `Driving lessons in ${a.area} (${a.postcode})`,
+            serviceType: "Manual and automatic driving lessons",
             url,
-            telephone: "+447961585231",
-            email: "gsmdrivingschool@outlook.com",
-            priceRange: "££",
-            address: {
-              "@type": "PostalAddress",
-              streetAddress: "71 Sandbourne House, Dartmouth Close",
-              addressLocality: "London",
-              postalCode: "W11 1DS",
-              addressCountry: "GB",
-            },
-            areaServed: [a.postcode, ...a.nearbyPostcodes].map((pc) => ({
-              "@type": "PostalCodeSpecification",
-              postalCode: pc,
-              addressCountry: "GB",
-            })),
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: rv.rating.toFixed(1),
-              reviewCount: String(rv.review_count),
-            },
+            provider: { "@id": "https://www.gsmdrivingschool.com/#school" },
+            areaServed: { "@type": "Place", name: `${a.area}, London ${a.postcode}` },
           }),
         },
         {
@@ -137,8 +122,8 @@ export const Route = createFileRoute("/areas/$area")({
     <div className="mx-auto max-w-3xl px-4 py-24 text-center">
       <h1 className="font-display text-3xl">Area not found</h1>
       <p className="mt-2 text-muted-foreground">
-        We cover Notting Hill, Kensington, Holland Park, Bayswater, Shepherd's Bush, Chiswick and
-        Fulham.
+        We cover High Street Kensington, Notting Hill, Holland Park, Shepherd's Bush, Bayswater and
+        North Kensington.
       </p>
       <Link to="/areas" className="mt-6 inline-block text-primary underline">
         See all areas
@@ -251,7 +236,7 @@ function AreaPage() {
 
       <section className="bg-secondary/30 py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-2xl font-semibold">Routes we practise in {a.area}</h2>
+          <h2 className="font-display text-2xl font-semibold">What your lessons in {a.area} cover</h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">
             {a.routes}
           </p>
@@ -291,7 +276,7 @@ function AreaPage() {
             Book your first lesson in {a.area}
           </h2>
           <p className="mt-3 opacity-80">
-            Message George on WhatsApp — usually answered the same day.
+            Message us on WhatsApp with your postcode and preferred times.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button
