@@ -279,6 +279,11 @@ function RootComponent() {
   useEffect(() => setHydrated(true), []);
   const isPortal = hydrated && routerIsPortal;
   const isNative = useIsNativeApp();
+  // Compact phone sizing in styles.css applies to the public website only.
+  useEffect(() => {
+    if (isNative) document.documentElement.setAttribute("data-native", "");
+    else document.documentElement.removeAttribute("data-native");
+  }, [isNative]);
 
   useEffect(() => {
     function handleExternalClick(e: MouseEvent) {
