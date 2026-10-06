@@ -355,7 +355,7 @@ html[dir="rtl"] video {
 
 /* Compact public website on phones (~15% slimmer); native app keeps its own scale. */
 @media (max-width: 639px) {
-  html:not([data-native]) {
-    font-size: 14px;
+  html:not([data-native]) body {
+    zoom: 0.88;
   }
 }
