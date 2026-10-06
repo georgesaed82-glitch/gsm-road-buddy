@@ -9,6 +9,8 @@ export interface AreaPage {
   faqs: { q: string; a: string }[];
   /** Hidden from public listings until the owner confirms coverage. */
   pendingConfirmation?: boolean;
+  /** ISO date of the last substantive content change (used for sitemap lastmod). */
+  lastModified?: string;
 }
 
 export const areas: AreaPage[] = [
@@ -17,23 +19,28 @@ export const areas: AreaPage[] = [
     area: "Notting Hill",
     postcode: "W11",
     nearbyPostcodes: ["W2", "W8", "W10", "W14"],
+    lastModified: "2026-10-06",
     intro:
-      "Driving lessons in Notting Hill with a DVSA-approved local instructor. Door-to-door pickup across W11 — manual and automatic, beginners to test ready.",
+      "Driving lessons in Notting Hill (W11) from GSM Driving School, based in W11 and teaching West London since 2005. Automatic lessons with George, manual lessons with the GSM team.",
     highlights: [
-      "Pickup from anywhere in W11 — Portobello Road, Ladbroke Grove, Westbourne Park",
-      "20+ years teaching the Notting Hill, Holland Park and Kensington streets",
-      "Practical lessons routed through real DVSA test areas",
+      "Notting Hill Gate is one of our usual meeting options — the exact point is agreed when you book",
+      "Patient one-to-one lessons for beginners, nervous learners and test preparation",
+      "Two-hour lessons, £45–£70 per hour depending on instructor and area",
     ],
     routes:
-      "We practise the residential streets off Portobello Road and Ladbroke Grove, the busier flow on Holland Park Avenue and Notting Hill Gate, then move toward the test routes used by your chosen centre.",
+      "Each two-hour lesson follows your stage: control and confidence first, then junctions, roundabouts, busier traffic and independent driving, building towards test standard at a pace agreed with your instructor.",
     faqs: [
       {
-        q: "Do you cover all of W11?",
-        a: "Yes — we cover every W11 street and the surrounding W2, W8, W10 and W14 postcodes. Pickup is door-to-door for every lesson.",
+        q: "Where do lessons start in Notting Hill?",
+        a: "Notting Hill Gate is a common meeting option. Tell us your postcode and we'll agree a convenient meeting point and time that suits the instructor's availability.",
       },
       {
-        q: "Which test centre do Notting Hill learners use?",
-        a: "Most Notting Hill learners take their test at Wood Green, Greenford or Goodmayes. We tailor lessons to the routes at whichever centre suits you.",
+        q: "Which test centre will I use?",
+        a: "Test centres are agreed with your instructor. George usually teaches towards Greenford, Southall and Isleworth.",
+      },
+      {
+        q: "What are the lesson terms?",
+        a: "Lessons are two hours, paid in advance when you book, and our public range is £45–£70 per hour depending on the instructor and area. We ask for at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -41,24 +48,33 @@ export const areas: AreaPage[] = [
     slug: "kensington",
     area: "High Street Kensington",
     postcode: "W8",
-    nearbyPostcodes: ["W11", "W14", "SW7"],
+    nearbyPostcodes: ["W11", "W14"],
+    lastModified: "2026-10-06",
     intro:
-      "Driving lessons in Kensington (W8). Patient, DVSA-approved instruction with 147 five-star Google reviews — manual and automatic, from first lesson to test pass.",
+      "Driving lessons in High Street Kensington (W8) with GSM Driving School, established 2005. Patient one-to-one tuition — automatic with George or manual with the GSM team — from an agreed High Street Kensington meeting point.",
     highlights: [
-      "Pickup from High Street Kensington, Kensington Church Street and Earls Court Road",
-      "Built for nervous learners — calm, clear, repeatable lessons",
-      "20+ years of West London experience",
+      "Meet at an agreed point in High Street Kensington — arranged when you book",
+      "Calm, clear teaching for beginners and nervous learners, plus test preparation",
+      "20+ years teaching across West London",
     ],
     routes:
-      "Lessons typically start on the quieter streets behind Kensington Square before progressing to High Street Kensington, Cromwell Road and the Earls Court one-way system.",
+      "Lessons are planned around your level: early sessions focus on car control and confidence, then we build up to busier junctions, roundabouts and independent driving, and finally test preparation.",
     faqs: [
       {
-        q: "How long does it take to pass in Kensington?",
-        a: "Most learners pass within 30–45 hours of lessons. We agree a realistic plan after your first session.",
+        q: "Where will we meet for lessons in High Street Kensington?",
+        a: "We agree a meeting point in High Street Kensington when you book. GSM has no office in W8 — we simply meet you at a convenient, agreed spot.",
       },
       {
-        q: "Do you teach automatic?",
-        a: "Yes — manual and automatic, with the same instructor through to test day.",
+        q: "Do you teach automatic and manual?",
+        a: "Yes. Automatic lessons are with George, and manual lessons are with the GSM team.",
+      },
+      {
+        q: "How do I book?",
+        a: "Call or WhatsApp 07961 585231, or send an enquiry, with your postcode and the times that suit you. We'll confirm availability and a meeting point.",
+      },
+      {
+        q: "What are the lesson terms?",
+        a: "Lessons are two hours, paid in advance when you book, and our public range is £45–£70 per hour depending on the instructor and area. We ask for at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -67,23 +83,28 @@ export const areas: AreaPage[] = [
     area: "Holland Park",
     postcode: "W14",
     nearbyPostcodes: ["W11", "W8", "W12"],
+    lastModified: "2026-10-06",
     intro:
-      "Driving lessons in Holland Park (W14) with a local instructor who knows every junction. Manual and automatic. Pickup from your door.",
+      "Driving lessons in Holland Park (W14) with GSM Driving School, right next to our W11 base. Manual and automatic lessons, one-to-one, from an agreed Holland Park meeting point.",
     highlights: [
-      "Pickup from Holland Park Avenue, Addison Road and Holland Road",
-      "5.0 average from 147 Google reviews",
-      "Same instructor first lesson to test",
+      "Holland Park is one of our usual meeting options — agreed when you book",
+      "Automatic with George, manual with the GSM team",
+      "Teaching West London since 2005",
     ],
     routes:
-      "We use the residential grid off Holland Road for control, Holland Park Roundabout for confidence, and Shepherd's Bush for multi-lane practice.",
+      "We start where you are: quieter practice for first-time drivers, then progressively busier West London traffic, manoeuvres and independent driving as you approach test standard.",
     faqs: [
       {
-        q: "Can you pick me up from Holland Park station?",
-        a: "Yes, station pickup is fine — most learners prefer door pickup from home or work.",
+        q: "Can we meet near Holland Park?",
+        a: "Yes, Holland Park is one of our known meeting options. The exact point and time are agreed with you when you book.",
       },
       {
-        q: "Is the area too busy for beginners?",
-        a: "No — we start on the calmer side streets and only progress to the main roads when you're ready.",
+        q: "Is it suitable for nervous beginners?",
+        a: "Yes. Lessons are patient and one-to-one, and we only move on to busier roads when you're ready.",
+      },
+      {
+        q: "How long is each lesson?",
+        a: "Every lesson is two hours, paid in advance at booking. Please give at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -92,23 +113,28 @@ export const areas: AreaPage[] = [
     area: "North Kensington",
     postcode: "W10",
     nearbyPostcodes: ["W11", "W12", "W2"],
+    lastModified: "2026-10-06",
     intro:
-      "Driving lessons in North Kensington (W10) with GSM Driving School — teaching West London since 2005. Manual and automatic lessons with pickup from home or an agreed meeting point.",
+      "Driving lessons in North Kensington (W10) with GSM Driving School — teaching West London since 2005. Send us an enquiry and we'll agree a convenient meeting point.",
     highlights: [
-      "Pickup across W10 — Ladbroke Grove, Kensal Town and the streets around Westbourne Park",
-      "Next door to our W11 base, so lessons start close to home",
-      "Manual and automatic, beginners to test ready",
+      "Next door to our W11 base — enquire to agree a meeting point",
+      "Automatic with George, manual with the GSM team",
+      "Patient one-to-one lessons, beginners to test preparation",
     ],
     routes:
-      "Lessons start on quieter residential streets, then build up to busier roads such as Ladbroke Grove, Harrow Road and Scrubs Lane, before moving on to the test routes for your chosen centre.",
+      "Two-hour lessons are tailored to your stage, from first-time control through to busier roads, independent driving and test preparation.",
     faqs: [
       {
-        q: "Do you pick up in North Kensington?",
-        a: "Yes. W10 sits right next to our Notting Hill base. We pick up from home or agree a convenient meeting point.",
+        q: "Do you teach in North Kensington?",
+        a: "Yes. Send a WhatsApp or enquiry with your postcode and we'll agree a meeting point and a time that works.",
       },
       {
         q: "Do you offer automatic lessons in W10?",
-        a: "Yes — automatic lessons with George and manual lessons with the team. Send a WhatsApp with your postcode to check availability.",
+        a: "Yes — automatic lessons with George and manual lessons with the GSM team, subject to availability.",
+      },
+      {
+        q: "What do lessons cost?",
+        a: "Lessons are two hours, paid in advance when you book, and our public range is £45–£70 per hour depending on the instructor and area. We ask for at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -116,24 +142,29 @@ export const areas: AreaPage[] = [
     slug: "bayswater",
     area: "Bayswater",
     postcode: "W2",
-    nearbyPostcodes: ["W11", "W10", "NW1"],
+    nearbyPostcodes: ["W11", "W10"],
+    lastModified: "2026-10-06",
     intro:
-      "Driving lessons in Bayswater (W2). DVSA-approved local instructor, door-to-door pickup, manual and automatic.",
+      "Driving lessons in Bayswater (W2) with GSM Driving School, established 2005. Manual and automatic lessons from an agreed Bayswater or Paddington meeting point.",
     highlights: [
-      "Pickup from Queensway, Westbourne Grove and Lancaster Gate",
-      "Calm, structured lessons — ideal for first-time learners",
-      "20+ years teaching the W2 area",
+      "Bayswater and Paddington are usual meeting options — agreed when you book",
+      "Calm, structured lessons — ideal for first-time and nervous learners",
+      "Two-hour lessons paid in advance at booking",
     ],
     routes:
-      "Bayswater Road, the Westbourne Grove backstreets and the Paddington one-way system are our main practice grounds, plus easy access to Marble Arch when you're test-ready.",
+      "Lessons move from the basics to confident everyday driving in central West London traffic, with test preparation once you're ready.",
     faqs: [
       {
-        q: "Do you teach near Paddington?",
-        a: "Yes — Paddington, Lancaster Gate and Queensway are all in our W2 coverage.",
+        q: "Can we meet near Paddington?",
+        a: "Yes — Bayswater and Paddington are both known meeting options. We agree the exact point when you book.",
       },
       {
         q: "How quickly can I start?",
-        a: "Usually within a week. Send a WhatsApp and we'll book your first lesson.",
+        a: "It depends on instructor availability. Message us with your postcode and preferred times and we'll let you know the next available lessons.",
+      },
+      {
+        q: "Which test centre will I use?",
+        a: "Test centres are agreed with your instructor. George usually teaches towards Greenford, Southall and Isleworth.",
       },
     ],
   },
@@ -141,24 +172,29 @@ export const areas: AreaPage[] = [
     slug: "shepherds-bush",
     area: "Shepherd's Bush",
     postcode: "W12",
-    nearbyPostcodes: ["W14", "W11", "W6"],
+    nearbyPostcodes: ["W14", "W11", "W10"],
+    lastModified: "2026-10-06",
     intro:
-      "Driving lessons in Shepherd's Bush (W12). Patient instruction tailored to West London roads. Manual and automatic.",
+      "Driving lessons in Shepherd's Bush (W12) with GSM Driving School. Patient one-to-one tuition, manual and automatic, from an agreed Shepherd's Bush or Westfield meeting point.",
     highlights: [
-      "Pickup across Shepherd's Bush, White City and East Acton",
-      "Practice on Westway, Wood Lane and the Shepherd's Bush roundabout",
-      "Five-star Google rating",
+      "Shepherd's Bush and Westfield are usual meeting options — agreed when you book",
+      "Automatic with George, manual with the GSM team",
+      "Teaching West London since 2005",
     ],
     routes:
-      "We work through Wood Lane, the Shepherd's Bush green one-way system, the Westway slip roads, and the residential streets of East Acton for manoeuvres.",
+      "Each lesson builds on the last — from control and observation to multi-lane traffic, roundabouts, manoeuvres and independent driving, then test preparation.",
     faqs: [
       {
-        q: "Which test centre is closest?",
-        a: "Greenford is the most common choice for W12 learners — we'll teach the local test routes there.",
+        q: "Which test centre will I use?",
+        a: "Test centres are agreed with your instructor. George usually teaches towards Greenford, Southall and Isleworth.",
       },
       {
         q: "Are lessons one-to-one?",
-        a: "Yes — always one-to-one with George, your named DVSA-approved instructor.",
+        a: "Yes, always one-to-one. Automatic lessons are with George; manual lessons are with an instructor from the GSM team.",
+      },
+      {
+        q: "What are the lesson terms?",
+        a: "Lessons are two hours, paid in advance when you book, and our public range is £45–£70 per hour depending on the instructor and area. We ask for at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
