@@ -59,7 +59,7 @@ export function BottomTabBar({ placement = "bottom" }: { placement?: "bottom" | 
           : "fixed inset-x-0 bottom-0 z-40 border-t border-primary-foreground/10 bg-[var(--brand-dark)]"
       }
     >
-      <div className="mx-auto flex max-w-3xl items-stretch justify-between px-2 pt-1.5 sm:px-4">
+      <div data-web-tabs className="mx-auto flex max-w-3xl items-stretch justify-between px-2 pt-1.5 sm:px-4">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = tab.match(pathname);

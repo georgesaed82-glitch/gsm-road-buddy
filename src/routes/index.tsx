@@ -278,7 +278,7 @@ function HeroSection({ s }: SectionProps) {
           <img
             src={heroCarImage.url}
             alt="GSM branded learner car with a GSM roof sign, red L plate and GSM display plate"
-            className="aspect-[1170/659] w-full object-contain"
+            className="aspect-[2/1] w-full object-cover sm:aspect-[1170/659] sm:object-contain"
             width={1170}
             height={659}
             fetchPriority="high"

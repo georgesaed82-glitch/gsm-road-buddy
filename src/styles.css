@@ -352,3 +352,15 @@ html[dir="rtl"] video {
   border: 2px solid color-mix(in oklab, var(--color-primary-foreground) 25%, transparent);
   box-shadow: 0 6px 0 0 color-mix(in oklab, black 40%, transparent), 0 14px 24px -10px color-mix(in oklab, black 55%, transparent);
 }
+
+/* Compact public website on phones (~15% slimmer); native app keeps its own scale. */
+@media (max-width: 639px) {
+  html:not([data-native]) body {
+    zoom: 0.88;
+  }
+  /* Keep principal tab targets >= 44px after the zoom. */
+  html:not([data-native]) [data-web-tabs] > a,
+  html:not([data-native]) [data-web-tabs] > button {
+    min-height: 51px;
+  }
+}
