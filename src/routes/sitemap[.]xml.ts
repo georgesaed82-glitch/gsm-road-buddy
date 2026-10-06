@@ -31,6 +31,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           path: `/areas/${a.slug}`,
           priority: "0.9",
           changefreq: "monthly" as const,
+          lastmod: a.lastModified,
         }));
 
         let postPaths: { path: string; priority: string; changefreq: "monthly" }[] = [];
@@ -45,12 +46,16 @@ export const Route = createFileRoute("/sitemap.xml")({
           // If the blog table read fails, keep the rest of the sitemap intact.
         }
 
-        const all = [...staticPaths, ...areaPaths, ...postPaths];
+        const all: { path: string; priority: string; changefreq: string; lastmod?: string }[] = [
+          ...staticPaths,
+          ...areaPaths,
+          ...postPaths,
+        ];
 
         const urls = all
           .map(
             (e) =>
-              `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`,
+              `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n${e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>\n` : ""}    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`,
           )
           .join("\n");
 
