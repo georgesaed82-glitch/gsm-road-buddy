@@ -114,7 +114,7 @@ export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
   };
 
   const circleIconBtn =
-    "inline-flex h-9 w-9 items-center justify-center rounded-full border border-accent/80 bg-card text-primary shadow-sm transition-colors hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent xl:h-10 xl:w-10";
+    "inline-flex h-[50px] w-[50px] sm:h-9 sm:w-9 items-center justify-center rounded-full border border-accent/80 bg-card text-primary shadow-sm transition-colors hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent xl:h-10 xl:w-10";
 
   const navItems: NavItem[] = BLOG_ENABLED ? [...PRIMARY_NAV, BLOG_ITEM] : PRIMARY_NAV;
 
