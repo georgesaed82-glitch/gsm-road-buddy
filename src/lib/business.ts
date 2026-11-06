@@ -18,6 +18,7 @@ export const BUSINESS = {
   geo: { latitude: 51.5121, longitude: -0.2098 },
   /** Confirmed public profiles only. */
   sameAs: [
+    "https://www.tiktok.com/@gsm.drivingschool",
     "https://www.youtube.com/@GSMDrivingSchool",
     "https://www.instagram.com/gsm_driving_school_",
     "https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr",

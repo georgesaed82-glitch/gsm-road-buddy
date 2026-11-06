@@ -380,3 +380,5 @@ html[dir="rtl"] video {
     & [data-web-tabs] > button { min-height: 48px; }
   }
 }
+:root { --tiktok: #111111; --tiktok-foreground: #ffffff; --tiktok-cyan: #25f4ee; --tiktok-pink: #fe2c55; }
+@theme inline { --color-tiktok: var(--tiktok); --color-tiktok-foreground: var(--tiktok-foreground); --color-tiktok-cyan: var(--tiktok-cyan); --color-tiktok-pink: var(--tiktok-pink); }

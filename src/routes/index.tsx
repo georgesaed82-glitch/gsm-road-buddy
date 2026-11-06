@@ -5,6 +5,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Star, ArrowRight, Phone, Download, GraduationCap, UserRound, MapPin, Trophy, LifeBuoy, Sparkles, CheckCircle2, Clock, Youtube, ParkingSquare, TrafficCone, RotateCw, Eye } from "lucide-react";
 import { YOUTUBE_SHORTS_URL, resolveYoutubeUrl } from "@/lib/youtube";
+import { resolveTiktokUrl } from "@/lib/tiktok";
+import { TikTokIcon } from "@/components/TikTokIcon";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
@@ -974,6 +976,7 @@ const VIDEO_TOPICS = [
 function VideoTipsSection() {
   const { social } = useSiteSettings();
   const channel = resolveYoutubeUrl(social.youtube);
+  const tiktok = resolveTiktokUrl(social.tiktok);
   return (
     <section className="border-t border-border bg-primary text-primary-foreground">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:max-w-[1180px] lg:px-8 lg:py-12">
@@ -981,11 +984,19 @@ function VideoTipsSection() {
           <span className="h-px w-8 bg-accent" /> Free driving videos
         </div>
         <h2 className="mt-4 font-display text-3xl font-medium leading-tight sm:text-4xl lg:text-[34px]">
-          Learn with GSM on <span className="italic text-accent">YouTube</span>
+          Watch GSM on <span className="italic text-accent">TikTok</span>
         </h2>
         <p className="mt-3 max-w-2xl text-primary-foreground/80">
           Clear, practical driving tips from George and the GSM team, with step-by-step visual explanations.
         </p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button asChild size="lg" className="h-12 rounded-2xl bg-tiktok px-6 text-base font-bold text-tiktok-foreground shadow-[-2px_0_0_0_var(--tiktok-cyan),2px_0_0_0_var(--tiktok-pink),0_5px_0_0_rgba(0,0,0,0.45)] transition-transform hover:-translate-y-0.5 hover:bg-tiktok/90 active:translate-y-0.5">
+            <a href={tiktok} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+              <TikTokIcon className="h-5 w-5" /> Watch &amp; follow on TikTok
+            </a>
+          </Button>
+          <span className="text-sm text-primary-foreground/75">@gsm.drivingschool</span>
+        </div>
         <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {VIDEO_TOPICS.map(({ icon: Icon, title, body }) => (
             <div key={title} className="rounded-2xl box-3d-dark bg-primary-foreground/5 p-5">
@@ -995,8 +1006,9 @@ function VideoTipsSection() {
             </div>
           ))}
         </div>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Button asChild size="lg" className="h-10 rounded-2xl bg-youtube px-6 text-youtube-foreground hover:bg-youtube/90 btn-3d">
+        <p className="mt-8 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/70">Also on YouTube</p>
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button asChild size="lg" className="h-11 rounded-2xl bg-youtube px-6 text-youtube-foreground hover:bg-youtube/90 btn-3d">
             <a href={channel} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
               <Youtube className="h-5 w-5" /> Watch on YouTube
             </a>

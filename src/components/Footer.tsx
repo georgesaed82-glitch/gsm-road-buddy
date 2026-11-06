@@ -16,6 +16,8 @@ import { DVSADisclaimer } from "@/components/DVSADisclaimer";
 import { useIsNativeApp } from "@/lib/isNativeApp";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { resolveYoutubeUrl } from "@/lib/youtube";
+import { resolveTiktokUrl } from "@/lib/tiktok";
+import { TikTokIcon } from "@/components/TikTokIcon";
 
 const ALL_FOOTER_LINKS = [
   { to: "/services", label: "Explore Services", icon: Car },
@@ -32,7 +34,7 @@ const FOOTER_LINKS = ALL_FOOTER_LINKS.filter((l) => BLOG_ENABLED || l.to !== "/b
 export function Footer() {
   const { business, social: rawSocial, footer } = useSiteSettings();
   const isNative = useIsNativeApp();
-  const social = { ...rawSocial, youtube: resolveYoutubeUrl(rawSocial.youtube) };
+  const social = { ...rawSocial, youtube: resolveYoutubeUrl(rawSocial.youtube), tiktok: resolveTiktokUrl(rawSocial.tiktok) };
 
   return (
     <footer className="border-t border-border bg-primary text-primary-foreground">
@@ -50,6 +52,7 @@ export function Footer() {
           </Link>
           <div className="flex items-center justify-center gap-3 pt-1">
             {[
+              { href: social.tiktok, label: "Watch & follow GSM Driving School on TikTok", icon: <TikTokIcon className="h-5 w-5 text-tiktok" /> },
               { href: social.youtube, label: "GSM Driving School on YouTube", icon: <Youtube className="h-5 w-5 text-youtube" /> },
               { href: social.facebook || "https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr", label: "GSM Driving School on Facebook", icon: <FacebookBrandIcon className="h-5 w-5 text-[#1877F2]" /> },
               { href: social.instagram || "https://www.instagram.com/gsm_driving_school_", label: "GSM Driving School on Instagram", icon: <InstagramBrandIcon className="h-5 w-5 text-[#E1306C]" /> },

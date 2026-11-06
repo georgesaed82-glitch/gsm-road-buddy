@@ -32,7 +32,7 @@ const DEFAULT_BUSINESS: BusinessInfo = {
 const DEFAULT_SOCIAL: SocialLinks = {
   facebook: "https://www.facebook.com/share/1HySrwY5AA/?mibextid=wwXIfr",
   instagram: "https://www.instagram.com/gsm_driving_school_",
-  tiktok: "",
+  tiktok: "https://www.tiktok.com/@gsm.drivingschool",
   youtube: "https://www.youtube.com/@GSMDrivingSchool",
 };
 

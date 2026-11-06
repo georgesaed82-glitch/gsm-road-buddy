@@ -17,6 +17,7 @@ import {
   MapPin,
   ShieldCheck,
   Youtube,
+  Clapperboard,
   PoundSterling,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { BottomTabBar } from "@/components/BottomTabBar";
+import { TIKTOK_PROFILE_URL } from "@/lib/tiktok";
 import brandArt from "@/assets/gsm-youtube-branding.png.asset.json";
 
 type NavItem = {
@@ -35,6 +37,8 @@ type NavItem = {
   label: string;
   icon: typeof Info;
   desc?: string;
+  /** External destination (opens in a new tab). */
+  href?: string;
 };
 
 const PRIMARY_NAV: NavItem[] = [
@@ -45,6 +49,7 @@ const PRIMARY_NAV: NavItem[] = [
   { to: "/areas", label: "Areas We Cover", icon: MapPin, desc: "West London" },
   { to: "/instructors", label: "Instructors", icon: Users, desc: "Meet the team" },
   { to: "/pricing", label: "Pricing", icon: PoundSterling, desc: "£45–£70 per hour" },
+  { to: "/tiktok", href: TIKTOK_PROFILE_URL, label: "Watch on TikTok", icon: Clapperboard, desc: "Follow @gsm.drivingschool" },
   { to: "/contact", label: "Contact Us", icon: Phone, desc: "Call, WhatsApp, email" },
 ];
 
@@ -121,6 +126,41 @@ export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
   const renderNavCard = (item: NavItem, opts: { compact?: boolean } = {}) => {
     const Icon = item.icon;
     const active = item.to === "/" ? pathname === "/" : pathname === item.to;
+    if (item.href) {
+      return (
+        <a
+          key={item.label}
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setSheetOpen(false)}
+          className={cn(
+          "group relative flex items-center gap-3 overflow-hidden rounded-2xl border-2 bg-card px-3.5 py-3 text-left shadow-[0_5px_0_0_var(--primary),0_12px_20px_-10px_rgba(0,0,0,0.35)] transition-all duration-150 hover:-translate-y-0.5 hover:border-accent/60 active:translate-y-1 active:shadow-[0_1px_0_0_var(--primary)]",
+          "border-primary/40 text-foreground",
+        )}
+      >
+        <span
+          className={cn(
+            "grid shrink-0 place-items-center rounded-full border border-accent/50 bg-primary text-accent",
+            opts.compact ? "h-10 w-10" : "h-11 w-11",
+          )}
+        >
+          <Icon className={cn(opts.compact ? "h-4 w-4" : "h-5 w-5")} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[14.5px] font-semibold leading-tight">
+            {item.label}
+          </span>
+          {item.desc ? (
+            <span className="block truncate text-[11.5px] font-medium text-muted-foreground">
+              {item.desc}
+            </span>
+          ) : null}
+        </span>
+        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-accent" />
+        </a>
+      );
+    }
     return (
       <Link
         key={`${item.label}`}
