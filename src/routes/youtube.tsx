@@ -12,6 +12,9 @@ import {
   Target,
   Youtube,
 } from "lucide-react";
+import { TikTokEmbed } from "@/components/TikTokEmbed";
+import { TikTokIcon } from "@/components/TikTokIcon";
+import { resolveTiktokUrl } from "@/lib/tiktok";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -23,9 +26,9 @@ import {
 } from "@/lib/youtube";
 
 const URL = "https://www.gsmdrivingschool.com/youtube";
-const TITLE = "Driving Tips & YouTube Lessons | GSM Driving School";
+const TITLE = "Driving Videos on TikTok & YouTube | GSM Driving School";
 const DESC =
-  "Free driving tips from GSM Driving School on YouTube — parking, junctions, roundabouts and observation. Then book patient one-to-one lessons in Notting Hill, Kensington and West London.";
+  "Watch free driving tips from GSM Driving School on TikTok (@gsm.drivingschool) and YouTube — parking, junctions, roundabouts and observation. Then book patient one-to-one lessons in Notting Hill, Kensington and West London.";
 
 export const Route = createFileRoute("/youtube")({
   head: () => ({
@@ -73,18 +76,47 @@ function YouTubePage() {
   const { business, social } = useSiteSettings();
   const channel = resolveYoutubeUrl(social.youtube);
   const wa = youtubeWhatsAppHref(business.phone_intl);
+  const tiktok = resolveTiktokUrl(social.tiktok);
 
   return (
     <div className="bg-background">
+      {/* TikTok first */}
+      <section className="border-b border-border bg-primary text-primary-foreground">
+        <div className="mx-auto grid max-w-5xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_340px] lg:items-center lg:px-8">
+          <div>
+            <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary-foreground/70">
+              <span className="h-px w-8 bg-accent" /> GSM on TikTok
+            </p>
+            <h1 className="mt-4 text-balance font-display text-4xl font-medium leading-[1.05] sm:text-5xl">
+              Watch &amp; follow GSM on <span className="italic text-accent">TikTok</span>
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-primary-foreground/80">
+              Short driving tips from George and the GSM team at @gsm.drivingschool. Follow to see new videos first.
+            </p>
+            <Button asChild size="lg" className="mt-7 h-12 w-full rounded-2xl bg-tiktok px-6 text-base font-bold text-tiktok-foreground shadow-[-2px_0_0_0_var(--tiktok-cyan),2px_0_0_0_var(--tiktok-pink),0_5px_0_0_rgba(0,0,0,0.45)] hover:bg-tiktok/90 sm:w-auto">
+              <a href={tiktok} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+                <TikTokIcon className="h-5 w-5" /> Watch &amp; follow on TikTok
+              </a>
+            </Button>
+            <p className="mt-3 text-xs text-primary-foreground/70">
+              If the TikTok preview doesn't load, the button above opens the profile directly.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-card p-2 text-foreground box-3d">
+            <TikTokEmbed />
+          </div>
+        </div>
+      </section>
+
       {/* Intro */}
       <section className="border-b border-border">
         <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             <span className="h-px w-8 bg-accent" /> GSM on YouTube
           </p>
-          <h1 className="mt-4 text-balance font-display text-4xl font-medium leading-[1.05] text-primary sm:text-5xl">
+          <h2 className="mt-4 text-balance font-display text-3xl font-medium leading-[1.05] text-primary sm:text-4xl">
             Found us on YouTube? <span className="italic text-accent">Watch. Learn.</span> Drive with confidence.
-          </h1>
+          </h2>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             Free driving tips from George and the GSM team — then, when you're ready, patient
             one-to-one practical lessons around Notting Hill, Kensington and West London.
