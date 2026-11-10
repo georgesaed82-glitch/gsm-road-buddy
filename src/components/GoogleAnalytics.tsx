@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ANALYTICS_PREFERENCES_EVENT,
@@ -12,7 +12,6 @@ import {
   readAnalyticsConsent,
   resolveAnalyticsPermission,
   saveAnalyticsConsent,
-  trackGoogleAnalyticsEvent,
   type AnalyticsConsentChoice,
   type AnalyticsConsentRecord,
 } from "@/lib/google-analytics";
@@ -38,8 +37,6 @@ export function GoogleAnalytics({ isPublicWebsite }: { isPublicWebsite: boolean 
   const [record, setRecord] = useState<AnalyticsConsentRecord | null>(null);
   const [globalPrivacyControl, setGlobalPrivacyControl] = useState(false);
   const [bannerOpen, setBannerOpen] = useState(false);
-  const [trackingActive, setTrackingActive] = useState(false);
-  const lastTrackedPage = useRef<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();

@@ -190,7 +190,9 @@ export function enableGoogleAnalytics(): boolean {
     window.gtag("set", "developer_id.dZjgwMW", true);
     window.gtag("js", new Date());
     window.gtag("config", MEASUREMENT_ID, {
-      send_page_view: false,
+      // This GA4 web stream measures initial loads and browser-history changes.
+      // Do not add a second manual route page_view or SPA navigations double-count.
+      send_page_view: true,
       allow_google_signals: false,
       allow_ad_personalization_signals: false,
       debug_mode: new URLSearchParams(window.location.search).get("ga_debug") === "1",
