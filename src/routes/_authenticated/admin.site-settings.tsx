@@ -30,7 +30,7 @@ type FooterValue = { copy?: string; disclaimer?: string };
 
 function SiteSettingsPage() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listSiteSettings);
+  const listFn = useServerFn(listAllSiteSettings);
   const saveFn = useServerFn(upsertSiteSetting);
   const { data: rows = [] } = useQuery({ queryKey: ["site-settings"], queryFn: () => listFn() });
 

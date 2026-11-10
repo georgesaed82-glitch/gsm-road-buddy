@@ -20,10 +20,10 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
-  listPageSeo,
+  listAllPageSeo,
   upsertPageSeo,
   deletePageSeo,
-  listSiteSettings,
+  listAllSiteSettings,
   upsertSiteSetting,
 } from "@/lib/cms.functions";
 export const Route = createFileRoute("/_authenticated/admin/seo")({

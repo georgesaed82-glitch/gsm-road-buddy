@@ -85,7 +85,7 @@ function slugify(s: string) {
 function BlogAdmin() {
   const qc = useQueryClient();
   const listPostsFn = useServerFn(listPosts);
-  const listCatsFn = useServerFn(listCategories);
+  const listCatsFn = useServerFn(listAllCategories);
   const saveFn = useServerFn(upsertPost);
   const delFn = useServerFn(deletePost);
   const uploadFn = useServerFn(uploadPostCover);

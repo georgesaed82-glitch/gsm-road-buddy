@@ -33,6 +33,18 @@ export type PageSeoRow = {
 // ---------- site_settings ----------
 export const listSiteSettings = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteSettingsRow[]> => {
+    const { createPublicSupabaseClient } = await import("./public-supabase.server");
+    const { data, error } = await createPublicSupabaseClient()
+      .from("site_settings")
+      .select("key, value, updated_at");
+    if (error) throw new Error(error.message);
+    return (data ?? []) as SiteSettingsRow[];
+  },
+);
+
+export const listAllSiteSettings = createServerFn({ method: "GET" }).handler(
+  async (): Promise<SiteSettingsRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("site_settings")

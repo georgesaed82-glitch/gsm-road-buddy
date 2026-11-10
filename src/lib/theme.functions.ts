@@ -151,6 +151,7 @@ export type BrandAsset = {
 
 export const listBrandAssets = createServerFn({ method: "GET" }).handler(
   async (): Promise<BrandAsset[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("brand_assets")
