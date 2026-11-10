@@ -59,8 +59,8 @@ export const getSiteRating = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteRatingValue> => {
     const fallback: SiteRatingValue = { rating: 5.0, review_count: 147, show: true };
     try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const { data } = await supabaseAdmin
+      const { createPublicSupabaseClient } = await import("./public-supabase.server");
+      const { data } = await createPublicSupabaseClient()
         .from("site_settings")
         .select("value")
         .eq("key", "site_rating")
