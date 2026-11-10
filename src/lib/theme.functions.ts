@@ -54,8 +54,8 @@ export type ThemeSettings = {
 // Public read of published theme — used by the site to apply live styling.
 export const getPublishedTheme = createServerFn({ method: "GET" }).handler(
   async (): Promise<Partial<ThemeTokens>> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
+    const { createPublicSupabaseClient } = await import("./public-supabase.server");
+    const { data, error } = await createPublicSupabaseClient()
       .from("theme_settings")
       .select("published")
       .eq("id", 1)
@@ -151,6 +151,7 @@ export type BrandAsset = {
 
 export const listBrandAssets = createServerFn({ method: "GET" }).handler(
   async (): Promise<BrandAsset[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("brand_assets")

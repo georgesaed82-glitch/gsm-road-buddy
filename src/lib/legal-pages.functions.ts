@@ -15,6 +15,7 @@ export type LegalPageRow = {
 
 export const listLegalPages = createServerFn({ method: "GET" }).handler(
   async (): Promise<LegalPageRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("legal_pages")
@@ -30,8 +31,8 @@ export const listLegalPages = createServerFn({ method: "GET" }).handler(
 export const getLegalPage = createServerFn({ method: "GET" })
   .inputValidator((d) => z.object({ slug: z.string().min(1).max(60) }).parse(d))
   .handler(async ({ data }): Promise<LegalPageRow | null> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin
+    const { createPublicSupabaseClient } = await import("./public-supabase.server");
+    const { data: row, error } = await createPublicSupabaseClient()
       .from("legal_pages")
       .select(
         "slug, title, body_markdown, seo_title, seo_description, enabled, sort_order, updated_at",

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { listSiteSettings, upsertSiteSetting } from "@/lib/cms.functions";
+import { listAllSiteSettings, upsertSiteSetting } from "@/lib/cms.functions";
 export const Route = createFileRoute("/_authenticated/admin/site-settings")({
   head: () => ({ meta: [{ title: "Site settings · Admin" }] }),
   component: SiteSettingsPage,
@@ -30,7 +30,7 @@ type FooterValue = { copy?: string; disclaimer?: string };
 
 function SiteSettingsPage() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listSiteSettings);
+  const listFn = useServerFn(listAllSiteSettings);
   const saveFn = useServerFn(upsertSiteSetting);
   const { data: rows = [] } = useQuery({ queryKey: ["site-settings"], queryFn: () => listFn() });
 

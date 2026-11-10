@@ -20,10 +20,10 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
-  listPageSeo,
+  listAllPageSeo,
   upsertPageSeo,
   deletePageSeo,
-  listSiteSettings,
+  listAllSiteSettings,
   upsertSiteSetting,
 } from "@/lib/cms.functions";
 export const Route = createFileRoute("/_authenticated/admin/seo")({
@@ -47,10 +47,10 @@ const ROUTES: Array<{ path: string; label: string }> = [
 
 function SeoPage() {
   const qc = useQueryClient();
-  const listFn = useServerFn(listPageSeo);
+  const listFn = useServerFn(listAllPageSeo);
   const saveFn = useServerFn(upsertPageSeo);
   const delFn = useServerFn(deletePageSeo);
-  const listSettingsFn = useServerFn(listSiteSettings);
+  const listSettingsFn = useServerFn(listAllSiteSettings);
   const upsertSettingFn = useServerFn(upsertSiteSetting);
 
   const { data: rows = [] } = useQuery({ queryKey: ["page-seo"], queryFn: () => listFn() });

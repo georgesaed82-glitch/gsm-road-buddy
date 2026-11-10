@@ -33,6 +33,18 @@ export type PageSeoRow = {
 // ---------- site_settings ----------
 export const listSiteSettings = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteSettingsRow[]> => {
+    const { createPublicSupabaseClient } = await import("./public-supabase.server");
+    const { data, error } = await createPublicSupabaseClient()
+      .from("site_settings")
+      .select("key, value, updated_at");
+    if (error) throw new Error(error.message);
+    return (data ?? []) as SiteSettingsRow[];
+  },
+);
+
+export const listAllSiteSettings = createServerFn({ method: "GET" }).handler(
+  async (): Promise<SiteSettingsRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("site_settings")
@@ -47,8 +59,8 @@ export const getSiteRating = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteRatingValue> => {
     const fallback: SiteRatingValue = { rating: 5.0, review_count: 147, show: true };
     try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const { data } = await supabaseAdmin
+      const { createPublicSupabaseClient } = await import("./public-supabase.server");
+      const { data } = await createPublicSupabaseClient()
         .from("site_settings")
         .select("value")
         .eq("key", "site_rating")
@@ -147,6 +159,20 @@ export const saveNavItems = createServerFn({ method: "POST" })
 // ---------- page_seo ----------
 export const listPageSeo = createServerFn({ method: "GET" }).handler(
   async (): Promise<PageSeoRow[]> => {
+    const { createPublicSupabaseClient } = await import("./public-supabase.server");
+    const { data, error } = await createPublicSupabaseClient()
+      .from("page_seo")
+      .select(
+        "route, title, description, og_title, og_description, og_image_path, canonical_override, noindex, updated_at",
+      );
+    if (error) throw new Error(error.message);
+    return (data ?? []) as PageSeoRow[];
+  },
+);
+
+export const listAllPageSeo = createServerFn({ method: "GET" }).handler(
+  async (): Promise<PageSeoRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("page_seo")

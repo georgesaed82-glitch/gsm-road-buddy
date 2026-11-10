@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Markdown } from "@/components/Markdown";
 import {
   listPosts,
-  listCategories,
+  listAllCategories,
   upsertPost,
   deletePost,
   uploadPostCover,
@@ -85,7 +85,7 @@ function slugify(s: string) {
 function BlogAdmin() {
   const qc = useQueryClient();
   const listPostsFn = useServerFn(listPosts);
-  const listCatsFn = useServerFn(listCategories);
+  const listCatsFn = useServerFn(listAllCategories);
   const saveFn = useServerFn(upsertPost);
   const delFn = useServerFn(deletePost);
   const uploadFn = useServerFn(uploadPostCover);
