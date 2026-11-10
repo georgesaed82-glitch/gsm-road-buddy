@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Markdown } from "@/components/Markdown";
 import {
   listPosts,
-  listCategories,
+  listAllCategories,
   upsertPost,
   deletePost,
   uploadPostCover,

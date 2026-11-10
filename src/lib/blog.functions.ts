@@ -75,6 +75,19 @@ async function signDownload(path: string): Promise<string | null> {
 // =============== CATEGORIES ===============
 export const listCategories = createServerFn({ method: "GET" }).handler(
   async (): Promise<BlogCategoryRow[]> => {
+    const { createPublicSupabaseClient } = await import("./public-supabase.server");
+    const { data, error } = await createPublicSupabaseClient()
+      .from("blog_categories")
+      .select("id, slug, name, description, order_index")
+      .order("order_index");
+    if (error) throw new Error(error.message);
+    return (data ?? []) as BlogCategoryRow[];
+  },
+);
+
+export const listAllCategories = createServerFn({ method: "GET" }).handler(
+  async (): Promise<BlogCategoryRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("blog_categories")
