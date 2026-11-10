@@ -159,6 +159,20 @@ export const saveNavItems = createServerFn({ method: "POST" })
 // ---------- page_seo ----------
 export const listPageSeo = createServerFn({ method: "GET" }).handler(
   async (): Promise<PageSeoRow[]> => {
+    const { createPublicSupabaseClient } = await import("./public-supabase.server");
+    const { data, error } = await createPublicSupabaseClient()
+      .from("page_seo")
+      .select(
+        "route, title, description, og_title, og_description, og_image_path, canonical_override, noindex, updated_at",
+      );
+    if (error) throw new Error(error.message);
+    return (data ?? []) as PageSeoRow[];
+  },
+);
+
+export const listAllPageSeo = createServerFn({ method: "GET" }).handler(
+  async (): Promise<PageSeoRow[]> => {
+    if (!(await verifyAdminPasswordServer())) throw new Error("Unauthorized");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("page_seo")
