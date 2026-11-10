@@ -15,6 +15,13 @@
       "when": 1794353897954,
       "tag": "0001_scope_public_seo_by_route",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794354144689,
+      "tag": "0002_scope_lesson_file_downloads",
+      "breakpoints": true
     }
   ]
 }
