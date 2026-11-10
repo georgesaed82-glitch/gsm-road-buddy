@@ -18,6 +18,7 @@ import { BLOG_ENABLED } from "@/lib/featureFlags";
 import { resolveYoutubeUrl } from "@/lib/youtube";
 import { resolveTiktokUrl } from "@/lib/tiktok";
 import { TikTokIcon } from "@/components/TikTokIcon";
+import { ANALYTICS_PREFERENCES_EVENT } from "@/lib/google-analytics";
 
 const ALL_FOOTER_LINKS = [
   { to: "/services", label: "Explore Services", icon: Car },

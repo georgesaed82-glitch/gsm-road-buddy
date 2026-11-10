@@ -34,6 +34,7 @@ import { BottomTabBar } from "../components/BottomTabBar";
 import { useIsAdmin } from "../hooks/useIsAdmin";
 import { useRouterState } from "@tanstack/react-router";
 import { PreviewErrorBoundary } from "../components/PreviewErrorBoundary";
+import { GoogleAnalytics } from "../components/GoogleAnalytics";
 
 /**
  * Temporary site-wide access gate. While `MAINTENANCE_MODE` is true, only

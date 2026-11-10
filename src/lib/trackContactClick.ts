@@ -1,4 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
+import { isNativeApp } from "@/lib/isNativeApp";
+import {
+  contactAnalyticsEvent,
+  isPublicAnalyticsPath,
+  trackGoogleAnalyticsEvent,
+} from "@/lib/google-analytics";
 
 export type ContactChannel = "whatsapp" | "email" | "phone" | "portal_view";
 
