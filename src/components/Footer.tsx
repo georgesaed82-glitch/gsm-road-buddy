@@ -75,8 +75,20 @@ export function Footer() {
         </div>
 
 
-        {/* Bottom: copyright + disclaimer */}
+        {/* Bottom: copyright + privacy choices + disclaimer */}
         <p className="mt-3 text-center text-[10px] opacity-70">© {new Date().getFullYear()} George's School of Motoring · Established 2005. All rights reserved.</p>
+        <div className="mt-2 flex min-h-11 items-center justify-center gap-4 text-[11px]">
+          <Link to="/legal/analytics" className="py-2 underline underline-offset-4 opacity-80 hover:opacity-100">
+            Analytics privacy
+          </Link>
+          <button
+            type="button"
+            className="min-h-11 px-1 underline underline-offset-4 opacity-80 hover:opacity-100"
+            onClick={() => window.dispatchEvent(new Event(ANALYTICS_PREFERENCES_EVENT))}
+          >
+            Analytics choices
+          </button>
+        </div>
         {/* Theory disclaimer only in the native learning app, not the public website. */}
         {isNative ? (
           <div className="mt-4 border-t border-primary-foreground/10 pt-4">

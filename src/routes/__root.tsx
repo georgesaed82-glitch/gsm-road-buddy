@@ -390,6 +390,7 @@ function RootComponent() {
             <PageViewTracker />
             <PWAInstallTracker />
             <PageSeoOverride />
+            <GoogleAnalytics isPublicWebsite={hydrated && !isPortal && !isNative} />
           </MaintenanceGate>
         </div>
       </PreviewErrorBoundary>
