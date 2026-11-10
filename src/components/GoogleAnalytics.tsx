@@ -68,36 +68,21 @@ export function GoogleAnalytics({ isPublicWebsite }: { isPublicWebsite: boolean 
 
   useEffect(() => {
     if (!ready || !isPublicWebsite || !isPublicAnalyticsPath(pathname)) {
-      setTrackingActive(false);
       setBannerOpen(false);
-      lastTrackedPage.current = null;
       disableGoogleAnalytics();
       return;
     }
 
     if (!permitted) {
-      setTrackingActive(false);
-      lastTrackedPage.current = null;
       disableGoogleAnalytics(record?.choice === "rejected");
       if (!record && isConsentRegion(region) && !globalPrivacyControl) setBannerOpen(true);
       return;
     }
 
-    const enabled = enableGoogleAnalytics();
-    setTrackingActive(enabled);
-    if (!enabled) lastTrackedPage.current = null;
+    // The verified GA4 stream's enhanced measurement emits both the initial
+    // page_view and browser-history page_view events. No extra route event here.
+    enableGoogleAnalytics();
   }, [ready, isPublicWebsite, pathname, permitted, record, region, globalPrivacyControl]);
-
-  useEffect(() => {
-    if (!trackingActive || !isPublicWebsite || !isPublicAnalyticsPath(pathname)) return;
-    if (lastTrackedPage.current === pathname) return;
-    lastTrackedPage.current = pathname;
-    trackGoogleAnalyticsEvent("page_view", {
-      page_path: pathname,
-      page_location: `${window.location.origin}${pathname}`,
-      page_title: document.title,
-    });
-  }, [trackingActive, isPublicWebsite, pathname]);
 
   const choose = useCallback(
     (choice: AnalyticsConsentChoice) => {
