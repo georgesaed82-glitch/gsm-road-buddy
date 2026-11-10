@@ -32,9 +32,11 @@ function AnalyticsPrivacyPage() {
           <h2 className="font-display text-xl font-bold">What Analytics measures</h2>
           <p className="mt-3 leading-relaxed text-muted-foreground">
             When Analytics is permitted, GSM Driving School uses Google Analytics to measure public
-            website page views and clicks on telephone and WhatsApp links. Google receives page and
-            interaction information together with technical browser, device and cookie information.
-            We use these measurements to understand website use and improve the information we provide.
+            website page views and clicks on telephone and WhatsApp links. The property’s standard
+            enhanced measurement may also record interactions such as scrolling and starting a form;
+            these do not confirm that an enquiry was completed. Google receives page and interaction
+            information together with technical browser, device and cookie information. We use these
+            measurements to understand website use and improve the information we provide.
           </p>
         </section>
 
