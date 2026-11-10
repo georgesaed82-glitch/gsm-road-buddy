@@ -8,6 +8,13 @@
       "when": 1794353813497,
       "tag": "0000_restrict_selected_permissive_read_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794353897954,
+      "tag": "0001_scope_public_seo_by_route",
+      "breakpoints": true
     }
   ]
 }
