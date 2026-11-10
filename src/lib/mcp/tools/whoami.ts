@@ -19,7 +19,7 @@ export default defineTool({
       userId: ctx.getUserId(),
       email: ctx.getUserEmail() ?? null,
       clientId: ctx.getClientId() ?? null,
-      role: (claims as Record<string, unknown>).role ?? null,
+      role: typeof (claims as Record<string, unknown>).role === "string" ? ((claims as Record<string, unknown>).role as string) : null,
     };
     return {
       content: [{ type: "text", text: JSON.stringify(info, null, 2) }],
