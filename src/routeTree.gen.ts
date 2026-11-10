@@ -57,6 +57,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as DevSignVariantsRouteImport } from './routes/dev.sign-variants'
 import { Route as LegalSlugRouteImport } from './routes/legal.$slug'
+import { Route as LegalAnalyticsRouteImport } from './routes/legal.analytics'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -350,6 +351,11 @@ const DevSignVariantsRoute = DevSignVariantsRouteImport.update({
 const LegalSlugRoute = LegalSlugRouteImport.update({
   id: '/legal/$slug',
   path: '/legal/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalAnalyticsRoute = LegalAnalyticsRouteImport.update({
+  id: '/legal/analytics',
+  path: '/legal/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
@@ -669,6 +675,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
   '/legal/$slug': typeof LegalSlugRoute
+  '/legal/analytics': typeof LegalAnalyticsRoute
   '/areas/': typeof AreasIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -764,6 +771,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
   '/legal/$slug': typeof LegalSlugRoute
+  '/legal/analytics': typeof LegalAnalyticsRoute
   '/areas': typeof AreasIndexRoute
   '/blog': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -862,6 +870,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/dev/sign-variants': typeof DevSignVariantsRoute
   '/legal/$slug': typeof LegalSlugRoute
+  '/legal/analytics': typeof LegalAnalyticsRoute
   '/areas/': typeof AreasIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -960,6 +969,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/dev/sign-variants'
     | '/legal/$slug'
+    | '/legal/analytics'
     | '/areas/'
     | '/blog/'
     | '/.lovable/oauth/consent'
@@ -1055,6 +1065,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/dev/sign-variants'
     | '/legal/$slug'
+    | '/legal/analytics'
     | '/areas'
     | '/blog'
     | '/.lovable/oauth/consent'
@@ -1152,6 +1163,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/dev/sign-variants'
     | '/legal/$slug'
+    | '/legal/analytics'
     | '/areas/'
     | '/blog/'
     | '/.lovable/oauth/consent'
@@ -1230,6 +1242,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   DevSignVariantsRoute: typeof DevSignVariantsRoute
   LegalSlugRoute: typeof LegalSlugRoute
+  LegalAnalyticsRoute: typeof LegalAnalyticsRoute
   AreasIndexRoute: typeof AreasIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -1573,6 +1586,13 @@ declare module '@tanstack/react-router' {
       path: '/legal/$slug'
       fullPath: '/legal/$slug'
       preLoaderRoute: typeof LegalSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/analytics': {
+      id: '/legal/analytics'
+      path: '/legal/analytics'
+      fullPath: '/legal/analytics'
+      preLoaderRoute: typeof LegalAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.lovable/oauth/consent': {
@@ -2116,6 +2136,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   DevSignVariantsRoute: DevSignVariantsRoute,
   LegalSlugRoute: LegalSlugRoute,
+  LegalAnalyticsRoute: LegalAnalyticsRoute,
   AreasIndexRoute: AreasIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,

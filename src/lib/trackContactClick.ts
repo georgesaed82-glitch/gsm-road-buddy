@@ -1,9 +1,25 @@
 import { supabase } from "@/integrations/supabase/client";
+import { isNativeApp } from "@/lib/isNativeApp";
+import {
+  contactAnalyticsEvent,
+  isPublicAnalyticsPath,
+  trackGoogleAnalyticsEvent,
+} from "@/lib/google-analytics";
 
 export type ContactChannel = "whatsapp" | "email" | "phone" | "portal_view";
 
 export function trackContactClick(channel: ContactChannel, pkg?: string) {
   if (typeof window === "undefined") return;
+
+  const analyticsEvent = contactAnalyticsEvent(channel);
+  if (analyticsEvent && !isNativeApp() && isPublicAnalyticsPath(window.location.pathname)) {
+    trackGoogleAnalyticsEvent(analyticsEvent, {
+      page_path: window.location.pathname,
+      link_location: pkg ?? "not_set",
+      transport_type: "beacon",
+    });
+  }
+
   // Fire and forget — never block the navigation.
   void supabase.from("contact_clicks").insert({
     channel,
