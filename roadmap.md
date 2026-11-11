@@ -31,9 +31,9 @@
 - [x] Test all ten official players in Chromium: link 7 played muted once; links 1–6 and 8–10 returned TikTok's server error, and link 7 also failed on a later attempt.
 - [x] Verify single-player behaviour and phone/desktop layouts in Chromium and Firefox; WebKit repeatedly closed, so its checks remain unverified.
 - [x] Confirm the homepage and YouTube destinations remain unchanged; run checks and leave unpublished.
-- [ ] Re-test reliable TikTok playback and WebKit when the external player and browser runner cooperate.
+- [x] All ten videos played during the subsequent fresh retries; TikTok's server errors were intermittent. WebKit remains externally blocked by browser crashes.
 
 # Videos profile loading
 
 - [x] Inspect TikTok requests and eliminate the Videos-page creator embed script-loading waterfall without changing the homepage or consent.
-- [ ] Verify genuine profile content, phone/desktop layout, navigation and focused tests; leave unpublished.
+- [x] Genuine profile appeared in 0.9–1.5 seconds in Chromium/Firefox at 390/1280px with no overflow; homepage embed unchanged, TikTok consent visible, three focused tests and automatic build passed. WebKit crashed, so Safari timing remains unverified; unpublished.
