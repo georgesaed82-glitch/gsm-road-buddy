@@ -16,4 +16,4 @@
 
 - [x] Reuse the agreed GSM branded showcase on both pages with the same live embed and responsive behaviour.
 - [x] Centre the requested explanatory sentence at the bottom of both TikTok sections.
-- [ ] Verify both pages on phone and desktop, run relevant checks, and leave unpublished.
+- [x] Verify both pages on phone and desktop, run relevant checks, and leave unpublished.
