@@ -5,3 +5,9 @@
 - [x] Apply minimal fixes for each distinct remaining cause without weakening tests or changing website behaviour; no additional recent cause found.
 - [x] Rerun affected checks and report verified results, unresolved items, and any input needed; runs #302 and #303 passed Chromium, Firefox and WebKit, including a warm-cache WebKit run.
 - [x] Do not publish.
+
+# Homepage TikTok showcase
+
+- [x] Match the uploaded desktop reference around the live TikTok embed using existing GSM artwork.
+- [x] Hide side decorations and centre the embed on phones; change no other section.
+- [x] Verify phone and desktop preview, Analytics/consent preservation, and leave unpublished.
