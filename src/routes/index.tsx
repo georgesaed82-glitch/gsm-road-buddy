@@ -7,6 +7,7 @@ import { Star, ArrowRight, Phone, Download, GraduationCap, UserRound, MapPin, Tr
 import { YOUTUBE_SHORTS_URL, resolveYoutubeUrl } from "@/lib/youtube";
 import { resolveTiktokUrl } from "@/lib/tiktok";
 import { TikTokIcon } from "@/components/TikTokIcon";
+import { TikTokEmbed } from "@/components/TikTokEmbed";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
@@ -263,12 +264,6 @@ function renderHeroTitle(title: string) {
 
 function HeroSection({ s }: SectionProps) {
   const rating = useSiteRating();
-  const { social } = useSiteSettings();
-  const youtubeUrl = resolveYoutubeUrl(social.youtube);
-  const secondaryIsStale =
-    !s.cta_secondary_href?.trim() ||
-    !s.cta_secondary_label?.trim() ||
-    STALE_PROMO.test(`${s.cta_secondary_href} ${s.cta_secondary_label}`);
   const heroTitle =
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
@@ -334,28 +329,6 @@ function HeroSection({ s }: SectionProps) {
                 {or(s.cta_primary_label, "Get in touch")}
                 <ArrowRight className="h-4 w-4" />
               </a>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              className="h-10 w-full rounded-2xl bg-youtube px-5 text-youtube-foreground btn-3d transition-all duration-200 hover:-translate-y-0.5 hover:bg-youtube/90 hover:shadow-lg active:translate-y-0 sm:w-auto lg:h-10 lg:px-6 lg:text-[15px]"
-            >
-              {secondaryIsStale ? (
-                <a
-                  href={youtubeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-medium"
-                >
-                  <Youtube className="h-5 w-5" />
-                  Watch on YouTube
-                </a>
-              ) : (
-                <a href={s.cta_secondary_href} className="inline-flex items-center gap-2 font-medium">
-                  {s.cta_secondary_label}
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-              )}
             </Button>
           </div>
         </div>
@@ -997,6 +970,12 @@ function VideoTipsSection() {
           </Button>
           <span className="text-sm text-primary-foreground/75">@gsm.drivingschool</span>
         </div>
+        <div className="mt-6 max-w-[360px] rounded-2xl bg-card p-2 text-foreground box-3d">
+          <TikTokEmbed />
+        </div>
+        <p className="mt-3 text-xs text-primary-foreground/70">
+          If the TikTok preview doesn't load, the button above opens the profile directly.
+        </p>
         <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {VIDEO_TOPICS.map(({ icon: Icon, title, body }) => (
             <div key={title} className="rounded-2xl box-3d-dark bg-primary-foreground/5 p-5">
