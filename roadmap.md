@@ -32,3 +32,8 @@
 - [x] Verify single-player behaviour and phone/desktop layouts in Chromium and Firefox; WebKit repeatedly closed, so its checks remain unverified.
 - [x] Confirm the homepage and YouTube destinations remain unchanged; run checks and leave unpublished.
 - [ ] Re-test reliable TikTok playback and WebKit when the external player and browser runner cooperate.
+
+# Videos profile loading
+
+- [x] Inspect TikTok requests and eliminate the Videos-page creator embed script-loading waterfall without changing the homepage or consent.
+- [ ] Verify genuine profile content, phone/desktop layout, navigation and focused tests; leave unpublished.

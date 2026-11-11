@@ -79,7 +79,7 @@ function YouTubePage() {
   return (
     <div className="bg-background">
       {/* TikTok first */}
-      <GsmTikTokShowcase headingLevel="h1" />
+      <GsmTikTokShowcase headingLevel="h1" eagerProfile />
       <GsmVideoGallery />
 
       {/* Intro */}
