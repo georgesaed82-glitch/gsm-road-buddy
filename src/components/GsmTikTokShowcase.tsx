@@ -37,7 +37,7 @@ export function GsmTikTokShowcase({ headingLevel = "h2", children }: GsmTikTokSh
           <span className="text-sm text-primary-foreground/75">@gsm.drivingschool</span>
         </div>
         <div className="mt-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)_minmax(0,1fr)] lg:items-center lg:gap-4">
-          <div className="hidden min-w-0 flex-col items-center text-center lg:flex" aria-hidden="true">
+          <div className="hidden min-w-0 flex-col items-center text-center lg:flex lg:items-end" aria-hidden="true">
             <img
               src={gsmLogo.url}
               alt=""
@@ -52,7 +52,7 @@ export function GsmTikTokShowcase({ headingLevel = "h2", children }: GsmTikTokSh
           <div className="mx-auto w-full max-w-[360px] rounded-2xl bg-card p-2 text-foreground box-3d lg:max-w-[500px]">
             <TikTokEmbed />
           </div>
-          <div className="hidden min-w-0 flex-col items-center text-center lg:flex" aria-hidden="true">
+          <div className="hidden min-w-0 flex-col items-center text-center lg:flex lg:items-start" aria-hidden="true">
             <p className="font-display text-6xl font-extrabold tracking-tight text-primary-foreground lg:text-5xl">GSM</p>
             <p className="mt-1 whitespace-nowrap font-display text-lg font-semibold uppercase tracking-[0.18em] text-primary-foreground lg:text-sm">
               Driving School
