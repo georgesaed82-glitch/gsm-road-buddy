@@ -11,3 +11,9 @@
 - [x] Match the uploaded desktop reference around the live TikTok embed using existing GSM artwork.
 - [x] Hide side decorations and centre the embed on phones; change no other section.
 - [x] Verify phone and desktop preview, Analytics/consent preservation, and leave unpublished.
+
+# Shared homepage and Videos TikTok showcase
+
+- [x] Reuse the agreed GSM branded showcase on both pages with the same live embed and responsive behaviour.
+- [x] Centre the requested explanatory sentence at the bottom of both TikTok sections.
+- [x] Verify both pages on phone and desktop, run relevant checks, and leave unpublished.
