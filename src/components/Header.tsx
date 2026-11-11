@@ -61,7 +61,7 @@ export function BrandBanner({ wide = false }: { wide?: boolean } = {}) {
     <Link
       to="/"
       aria-label="GSM Driving School — Home"
-      className={`block min-w-0 flex-1 overflow-hidden rounded-2xl sm:w-[400px] sm:flex-none ${wide ? "lg:w-auto lg:flex-1" : "lg:w-[520px]"} border border-accent/50 shadow-md outline-none focus-visible:ring-2 focus-visible:ring-accent`}
+      className={`block min-w-0 flex-1 overflow-hidden rounded-2xl bg-card sm:w-[400px] sm:flex-none ${wide ? "lg:w-auto lg:flex-1" : "lg:w-[520px]"} border border-accent/50 shadow-md outline-none focus-visible:ring-2 focus-visible:ring-accent`}
     >
       <span
         role="img"
@@ -73,6 +73,9 @@ export function BrandBanner({ wide = false }: { wide?: boolean } = {}) {
           backgroundPosition: "64% 51%",
         }}
       />
+      <span className="block border-t border-accent/40 px-2 py-[3px] text-center text-[10px] font-semibold leading-tight tracking-[0.1em] text-primary sm:text-[11px] lg:text-[12px]">
+        George&apos;s School of Motoring
+      </span>
     </Link>
   );
 }
