@@ -22,4 +22,4 @@
 
 - [x] Enlarge the shared laptop/desktop TikTok embed about 40% and reduce/bring in both side branding columns.
 - [x] Move the explanatory sentence below the heading on laptop/desktop only; retain the existing mobile order and sizing.
-- [ ] Check homepage and Videos page at phone, laptop and desktop widths; run regression checks and leave unpublished.
+- [x] Check homepage and Videos page at phone, laptop and desktop widths; run regression checks and leave unpublished.
