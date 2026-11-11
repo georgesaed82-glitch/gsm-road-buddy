@@ -13,6 +13,7 @@ import {
   Youtube,
 } from "lucide-react";
 import { GsmTikTokShowcase } from "@/components/GsmTikTokShowcase";
+import { GsmVideoGallery } from "@/components/GsmVideoGallery";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -79,6 +80,7 @@ function YouTubePage() {
     <div className="bg-background">
       {/* TikTok first */}
       <GsmTikTokShowcase headingLevel="h1" />
+      <GsmVideoGallery />
 
       {/* Intro */}
       <section className="border-b border-border">

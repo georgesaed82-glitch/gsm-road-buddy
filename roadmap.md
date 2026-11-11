@@ -23,3 +23,12 @@
 - [x] Enlarge the shared laptop/desktop TikTok embed about 40% and reduce/bring in both side branding columns.
 - [x] Move the explanatory sentence below the heading on laptop/desktop only; retain the existing mobile order and sizing.
 - [x] Check homepage and Videos page at phone, laptop and desktop widths; run regression checks and leave unpublished.
+
+# Videos-only TikTok gallery
+
+- [x] Resolve ten supplied short links to ten distinct GSM video IDs and verify official oEmbed support.
+- [x] Add genuine TikTok covers, responsive thumbnails, one official muted player at a time, and per-video TikTok fallbacks to the Videos page only.
+- [x] Test all ten official players in Chromium: link 7 played muted once; links 1–6 and 8–10 returned TikTok's server error, and link 7 also failed on a later attempt.
+- [x] Verify single-player behaviour and phone/desktop layouts in Chromium and Firefox; WebKit repeatedly closed, so its checks remain unverified.
+- [x] Confirm the homepage and YouTube destinations remain unchanged; run checks and leave unpublished.
+- [ ] Re-test reliable TikTok playback and WebKit when the external player and browser runner cooperate.
