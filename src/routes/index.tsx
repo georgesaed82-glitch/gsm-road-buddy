@@ -28,6 +28,7 @@ import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
 import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import heroCarImage from "@/assets/gsm-video-car.jpeg.asset.json";
+import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
 import studentPassImage from "@/assets/gsm-student-pass.jpeg.asset.json";
 import memorable1 from "@/assets/memorable-1.jpg.asset.json";
 import memorable2 from "@/assets/memorable-2.jpg.asset.json";
