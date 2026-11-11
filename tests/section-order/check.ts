@@ -12,7 +12,7 @@
  *   BASE_URL=http://localhost:8080/ BROWSER=chromium bun tests/section-order/check.ts
  */
 import { chromium, firefox, webkit } from "playwright";
-import type { BrowserType } from "playwright";
+import type { BrowserType, Page } from "playwright";
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:8080/";
 const VIEWPORTS = [
@@ -25,6 +25,35 @@ const EXPECTED_ORDER = ["top", "videos", "local-areas", "gsm-buddy", "get-in-tou
 const REMOVED_IDS = ["training", "portal", "install-app", "gsm-plus-explainer"];
 const REMOVED_TEXT = [/free theory practice/i, /download (the )?(gsm )?app/i, /gsm plus\+? learner portal/i];
 
+async function readHomepageStructure(page: Page) {
+  // Vite's first dependency optimization may reload the page during evaluation.
+  // Retry only that lifecycle error, not failed assertions or other exceptions.
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await page.waitForSelector("#get-in-touch", { timeout: 45000 });
+      return await page.evaluate(
+        ({ order, removed }) => {
+          const tops = order.map((id) => {
+            const el = document.getElementById(id);
+            return el ? el.getBoundingClientRect().top + window.scrollY : null;
+          });
+          return {
+            tops,
+            present: removed.filter((id) => document.getElementById(id)),
+            text: document.body.innerText,
+            overflow: document.documentElement.scrollWidth - window.innerWidth,
+          };
+        },
+        { order: EXPECTED_ORDER, removed: REMOVED_IDS },
+      );
+    } catch (error) {
+      if (attempt >= 2 || !(error instanceof Error) || !error.message.includes("Execution context was destroyed")) throw error;
+      console.log(`Startup navigation interrupted inspection; retrying (${attempt + 1}/2).`);
+      await page.waitForLoadState("domcontentloaded");
+    }
+  }
+}
+
 async function main() {
   const name = (process.env.BROWSER || "chromium").toLowerCase();
   const launcher = ({ chromium, firefox, webkit } as Record<string, BrowserType>)[name];
@@ -36,22 +65,7 @@ async function main() {
     const ctx = await browser.newContext({ viewport: { width: w, height: h } });
     const page = await ctx.newPage();
     await page.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60000 });
-    await page.waitForSelector("#get-in-touch", { timeout: 45000 });
-    const r = await page.evaluate(
-      ({ order, removed }) => {
-        const tops = order.map((id) => {
-          const el = document.getElementById(id);
-          return el ? el.getBoundingClientRect().top + window.scrollY : null;
-        });
-        return {
-          tops,
-          present: removed.filter((id) => document.getElementById(id)),
-          text: document.body.innerText,
-          overflow: document.documentElement.scrollWidth - window.innerWidth,
-        };
-      },
-      { order: EXPECTED_ORDER, removed: REMOVED_IDS },
-    );
+    const r = await readHomepageStructure(page);
     const errs: string[] = [];
     r.tops.forEach((t, i) => t === null && errs.push(`missing #${EXPECTED_ORDER[i]}`));
     for (let i = 1; i < r.tops.length; i++) {
