@@ -971,8 +971,32 @@ function VideoTipsSection() {
           </Button>
           <span className="text-sm text-primary-foreground/75">@gsm.drivingschool</span>
         </div>
-        <div className="mt-6 max-w-[360px] rounded-2xl bg-card p-2 text-foreground box-3d sm:mx-auto">
-          <TikTokEmbed />
+        <div className="mt-6 lg:grid lg:grid-cols-[minmax(0,1fr)_360px_minmax(0,1fr)] lg:items-center lg:gap-8">
+          <div className="hidden min-w-0 flex-col items-center text-center lg:flex" aria-hidden="true">
+            <img
+              src={gsmLogo.url}
+              alt=""
+              width={853}
+              height={861}
+              className="h-36 w-36 rounded-full bg-card object-contain ring-4 ring-accent shadow-xl"
+            />
+            <p className="mt-5 max-w-[280px] font-display text-xl font-semibold uppercase leading-snug tracking-[0.12em] text-primary-foreground">
+              George&apos;s School<br />of Motoring
+            </p>
+          </div>
+          <div className="mx-auto w-full max-w-[360px] rounded-2xl bg-card p-2 text-foreground box-3d">
+            <TikTokEmbed />
+          </div>
+          <div className="hidden min-w-0 flex-col items-center text-center lg:flex" aria-hidden="true">
+            <p className="font-display text-6xl font-extrabold tracking-tight text-primary-foreground">GSM</p>
+            <p className="mt-1 whitespace-nowrap font-display text-lg font-semibold uppercase tracking-[0.18em] text-primary-foreground">
+              Driving School
+            </p>
+            <span className="mt-4 h-0.5 w-full max-w-[260px] bg-accent" />
+            <p className="mt-4 whitespace-nowrap text-xs font-medium uppercase tracking-[0.2em] text-primary-foreground/85">
+              West London · Est. 2005
+            </p>
+          </div>
         </div>
         <p className="mt-3 text-xs text-primary-foreground/70">
           If the TikTok preview doesn't load, the button above opens the profile directly.
