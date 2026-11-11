@@ -17,3 +17,9 @@
 - [x] Reuse the agreed GSM branded showcase on both pages with the same live embed and responsive behaviour.
 - [x] Centre the requested explanatory sentence at the bottom of both TikTok sections.
 - [x] Verify both pages on phone and desktop, run relevant checks, and leave unpublished.
+
+# Desktop TikTok embed refinement
+
+- [x] Enlarge the shared laptop/desktop TikTok embed about 40% and reduce/bring in both side branding columns.
+- [x] Move the explanatory sentence below the heading on laptop/desktop only; retain the existing mobile order and sizing.
+- [ ] Check homepage and Videos page at phone, laptop and desktop widths; run regression checks and leave unpublished.

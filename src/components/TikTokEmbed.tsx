@@ -17,7 +17,7 @@ export function TikTokEmbed() {
     return () => { s.remove(); };
   }, []);
   return (
-    <div ref={ref} className="mx-auto w-full max-w-[340px] overflow-hidden">
+    <div ref={ref} className="mx-auto w-full max-w-[340px] overflow-hidden lg:max-w-[480px]">
       <blockquote
         className="tiktok-embed"
         cite={TIKTOK_PROFILE_URL}
