@@ -1,7 +1,7 @@
 # Workflow recovery
 
 - [x] Fix Ubuntu 26.04 / WebKit ICU incompatibility and isolate browser caches; run #302 passed all browsers.
-- [ ] Inspect recent failed workflows and group repeats by root cause.
-- [ ] Apply minimal fixes for each distinct remaining cause without weakening tests or changing website behaviour.
-- [ ] Rerun affected checks and report verified results, unresolved items, and any input needed.
+- [x] Inspect recent failed workflows and group repeats by root cause: runs #294–#301 share the WebKit ICU launch failure; other active checks are green.
+- [x] Apply minimal fixes for each distinct remaining cause without weakening tests or changing website behaviour; no additional recent cause found.
+- [ ] Rerun affected checks and report verified results, unresolved items, and any input needed; cold-cache run #302 passed, warm-cache rerun pending.
 - [ ] Do not publish.
