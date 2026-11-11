@@ -28,5 +28,7 @@
 
 - [x] Resolve ten supplied short links to ten distinct GSM video IDs and verify official oEmbed support.
 - [x] Add genuine TikTok covers, responsive thumbnails, one official muted player at a time, and per-video TikTok fallbacks to the Videos page only.
-- [ ] Verify public playback, consent, single-player behaviour and layouts in Chromium, Firefox and WebKit on phone and desktop.
-- [ ] Confirm the homepage and YouTube destinations remain unchanged; run checks and leave unpublished.
+- [x] Test all ten official players in Chromium: link 7 played muted once; links 1–6 and 8–10 returned TikTok's server error, and link 7 also failed on a later attempt.
+- [x] Verify single-player behaviour and phone/desktop layouts in Chromium and Firefox; WebKit repeatedly closed, so its checks remain unverified.
+- [x] Confirm the homepage and YouTube destinations remain unchanged; run checks and leave unpublished.
+- [ ] Re-test reliable TikTok playback and WebKit when the external player and browser runner cooperate.
