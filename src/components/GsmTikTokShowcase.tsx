@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { resolveTiktokUrl } from "@/lib/tiktok";
 import gsmLogo from "@/assets/gsm-logo.jpeg.asset.json";
+import { EagerTikTokProfile } from "@/components/EagerTikTokProfile";
 
 type GsmTikTokShowcaseProps = {
   headingLevel?: "h1" | "h2";
   children?: ReactNode;
+  eagerProfile?: boolean;
 };
 
-export function GsmTikTokShowcase({ headingLevel = "h2", children }: GsmTikTokShowcaseProps) {
+export function GsmTikTokShowcase({ headingLevel = "h2", children, eagerProfile = false }: GsmTikTokShowcaseProps) {
   const { social } = useSiteSettings();
   const tiktok = resolveTiktokUrl(social.tiktok);
   const Heading = headingLevel;
@@ -50,7 +52,7 @@ export function GsmTikTokShowcase({ headingLevel = "h2", children }: GsmTikTokSh
             </p>
           </div>
           <div className="mx-auto w-full max-w-[360px] rounded-2xl bg-card p-2 text-foreground box-3d lg:max-w-[500px]">
-            <TikTokEmbed />
+            {eagerProfile ? <EagerTikTokProfile /> : <TikTokEmbed />}
           </div>
           <div className="hidden min-w-0 flex-col items-center text-center lg:flex lg:items-start" aria-hidden="true">
             <p className="font-display text-6xl font-extrabold tracking-tight text-primary-foreground lg:text-5xl">GSM</p>
