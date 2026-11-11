@@ -57,9 +57,9 @@ jobs:
           path: ~/.cache/ms-playwright
           # Never restore a browser built for another runner image or browser:
           # WebKit links against image-specific system libraries such as ICU.
-          key: playwright-${{ runner.os }}-${{ runner.imageVersion }}-${{ matrix.browser }}-${{ hashFiles('bun.lock', 'package.json') }}
+          key: playwright-ubuntu-24.04-${{ matrix.browser }}-${{ hashFiles('bun.lock', 'package.json') }}
           restore-keys: |
-            playwright-${{ runner.os }}-${{ runner.imageVersion }}-${{ matrix.browser }}-
+            playwright-ubuntu-24.04-${{ matrix.browser }}-
       - name: Install dependencies
         run: bun install --frozen-lockfile
       - name: Install Playwright browsers
