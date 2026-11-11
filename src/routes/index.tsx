@@ -970,7 +970,7 @@ function VideoTipsSection() {
           </Button>
           <span className="text-sm text-primary-foreground/75">@gsm.drivingschool</span>
         </div>
-        <div className="mt-6 max-w-[360px] rounded-2xl bg-card p-2 text-foreground box-3d">
+        <div className="mt-6 max-w-[360px] rounded-2xl bg-card p-2 text-foreground box-3d sm:mx-auto">
           <TikTokEmbed />
         </div>
         <p className="mt-3 text-xs text-primary-foreground/70">
