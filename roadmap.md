@@ -8,6 +8,6 @@
 
 # Homepage TikTok showcase
 
-- [ ] Match the uploaded desktop reference around the live TikTok embed using existing GSM artwork.
-- [ ] Hide side decorations and centre the embed on phones; change no other section.
-- [ ] Verify phone and desktop preview, Analytics/consent preservation, and leave unpublished.
+- [x] Match the uploaded desktop reference around the live TikTok embed using existing GSM artwork.
+- [x] Hide side decorations and centre the embed on phones; change no other section.
+- [x] Verify phone and desktop preview, Analytics/consent preservation, and leave unpublished.
