@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -111,14 +111,14 @@ async function loadAdmin() {
   return supabaseAdmin;
 }
 
-async function reqInfo(): Promise<{ ip: string | null; ua: string | null }> {
+const reqInfo = createServerOnlyFn(async (): Promise<{ ip: string | null; ua: string | null }> => {
   try {
     const { reqMeta } = await import("./auth-guard.server");
     return reqMeta();
   } catch {
     return { ip: null, ua: null };
   }
-}
+});
 
 // ---------------------------------------------------------------------------
 // My profile + permissions

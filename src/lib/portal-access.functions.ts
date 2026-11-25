@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 import {
   evaluateAttemptState,
   fingerprintCode,
@@ -20,7 +20,7 @@ async function admin() {
  * signatures (which still declare a `password` field for backwards compat)
  * continue to compile. Do not use the argument for any auth decision.
  */
-export async function verifyAdminPasswordServer(_password?: string): Promise<boolean> {
+export const verifyAdminPasswordServer = createServerOnlyFn(async (_password?: string): Promise<boolean> => {
   try {
     const { getBearerToken } = await import("./auth-guard.server");
     const token = getBearerToken();
@@ -40,7 +40,7 @@ export async function verifyAdminPasswordServer(_password?: string): Promise<boo
   } catch {
     return false;
   }
-}
+});
 
 async function requireAdmin() {
   if (!(await verifyAdminPasswordServer())) {

@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 
 const WINDOW_MINUTES = 15;
 // Keep the learner flow simple: only trigger captcha after many failures in
@@ -21,14 +21,14 @@ async function hashIp(ip: string | null): Promise<string | null> {
     .join("");
 }
 
-async function reqMeta(): Promise<{ ip: string | null; ua: string | null }> {
+const reqMeta = createServerOnlyFn(async (): Promise<{ ip: string | null; ua: string | null }> => {
   try {
     const { reqMeta: rm } = await import("./auth-guard.server");
     return rm();
   } catch {
     return { ip: null, ua: null };
   }
-}
+});
 
 /**
  * Cloudflare Turnstile site keys always start with `0x` and are ~24 chars.
