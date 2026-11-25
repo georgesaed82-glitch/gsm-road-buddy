@@ -17,6 +17,7 @@ import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as HowITeachRouteImport } from './routes/how-i-teach'
 import { Route as InstructorsRouteImport } from './routes/instructors'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -141,6 +142,11 @@ const DownloadsRoute = DownloadsRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowITeachRoute = HowITeachRouteImport.update({
+  id: '/how-i-teach',
+  path: '/how-i-teach',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstructorsRoute = InstructorsRouteImport.update({
@@ -623,6 +629,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
+  '/how-i-teach': typeof HowITeachRoute
   '/instructors': typeof InstructorsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
@@ -718,6 +725,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
+  '/how-i-teach': typeof HowITeachRoute
   '/instructors': typeof InstructorsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
@@ -814,6 +822,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/downloads': typeof DownloadsRoute
   '/faq': typeof FaqRoute
+  '/how-i-teach': typeof HowITeachRoute
   '/instructors': typeof InstructorsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/mcp': typeof McpRoute
@@ -911,6 +920,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/downloads'
     | '/faq'
+    | '/how-i-teach'
     | '/instructors'
     | '/llms.txt'
     | '/mcp'
@@ -1006,6 +1016,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/downloads'
     | '/faq'
+    | '/how-i-teach'
     | '/instructors'
     | '/llms.txt'
     | '/mcp'
@@ -1101,6 +1112,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/downloads'
     | '/faq'
+    | '/how-i-teach'
     | '/instructors'
     | '/llms.txt'
     | '/mcp'
@@ -1198,6 +1210,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DownloadsRoute: typeof DownloadsRoute
   FaqRoute: typeof FaqRoute
+  HowITeachRoute: typeof HowITeachRoute
   InstructorsRoute: typeof InstructorsRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   McpRoute: typeof McpRoute
@@ -1278,6 +1291,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-i-teach': {
+      id: '/how-i-teach'
+      path: '/how-i-teach'
+      fullPath: '/how-i-teach'
+      preLoaderRoute: typeof HowITeachRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/instructors': {
@@ -2075,6 +2095,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DownloadsRoute: DownloadsRoute,
   FaqRoute: FaqRoute,
+  HowITeachRoute: HowITeachRoute,
   InstructorsRoute: InstructorsRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   McpRoute: McpRoute,

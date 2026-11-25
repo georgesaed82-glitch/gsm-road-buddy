@@ -4,13 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin, Star } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
-import { useSiteRating } from "@/hooks/useSiteRating";
 import { areas, getArea, type AreaPage } from "@/data/areas";
 import { listAreas } from "@/lib/local-content.functions";
 import { getSiteRating, type SiteRatingValue } from "@/lib/cms.functions";
 
 async function resolveArea(slug: string): Promise<AreaPage & { _rating: SiteRatingValue }> {
-  const fallbackRating: SiteRatingValue = { rating: 5.0, review_count: 147, show: true };
+  const fallbackRating: SiteRatingValue = { rating: 5.0, review_count: 0, show: true };
   let ratingVal: SiteRatingValue = fallbackRating;
   try {
     ratingVal = await getSiteRating();
@@ -52,15 +51,13 @@ export const Route = createFileRoute("/areas/$area")({
   head: ({ loaderData }) => {
     const a = loaderData;
     if (!a) return { meta: [] };
-    const rv = a._rating ?? { rating: 5, review_count: 147 };
-    const ratingLabel = `${rv.rating.toFixed(1)} from ${rv.review_count} Google reviews`;
     const isKen = a.slug === "kensington";
     const title = isKen
       ? "Driving Lessons in High Street Kensington (W8) | GSM Driving School"
       : `Driving Lessons ${a.area} (${a.postcode}) | GSM Driving School`;
     const description = isKen
-      ? `Driving lessons in High Street Kensington (W8) since 2005. Manual or automatic, two-hour lessons, patient one-to-one tuition and an agreed High Street Kensington meeting point. Rated ${ratingLabel}.`
-      : `Driving lessons in ${a.area} (${a.postcode}) with GSM Driving School, established 2005. Manual and automatic two-hour lessons from an agreed meeting point. Rated ${ratingLabel}.`;
+      ? `Driving lessons in High Street Kensington (W8) since 2005. Patient driving instructor in Kensington — automatic lessons with George, manual with the GSM team, calm one-to-one tuition and an agreed High Street Kensington meeting point.`
+      : `Driving lessons in ${a.area} (${a.postcode}) with GSM Driving School, established 2005. Patient, structured automatic and manual lessons for beginners and nervous learners, from an agreed meeting point.`;
     const url = `https://www.gsmdrivingschool.com/areas/${a.slug}`;
     return {
       meta: [
@@ -134,7 +131,6 @@ export const Route = createFileRoute("/areas/$area")({
 
 function AreaPage() {
   const a = Route.useLoaderData() as AreaPage;
-  const rating = useSiteRating();
 
   return (
     <div className="flex flex-col">
@@ -149,9 +145,9 @@ function AreaPage() {
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{a.intro}</p>
           <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
             <Star className="h-4 w-4 fill-accent text-accent" />
-            <span>
-              Rated {rating.rating.toFixed(1)} from {rating.review_count} Google reviews
-            </span>
+            <a href="https://maps.google.com/?cid=12315071950298926858" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-primary">
+              Read our reviews on Google
+            </a>
           </div>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button
@@ -163,7 +159,7 @@ function AreaPage() {
                 href="https://wa.me/447961585231"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackContactClick("whatsapp", `Area page – ${a.area}`)}
+                onClick={() => trackContactClick("whatsapp", `Area page – ${a.area}`)} data-track-location="area_hero"
               >
                 <WhatsAppIcon className="mr-2 h-4 w-4" />
                 WhatsApp 07961 585231
@@ -172,7 +168,7 @@ function AreaPage() {
             <Button asChild size="lg" variant="outline" className="rounded-none">
               <a
                 href="tel:+447961585231"
-                onClick={() => trackContactClick("phone", `Area page – ${a.area}`)}
+                onClick={() => trackContactClick("phone", `Area page – ${a.area}`)} data-track-location="area_hero"
               >
                 <Phone className="mr-2 h-4 w-4" />
                 Call 07961 585231
@@ -196,9 +192,9 @@ function AreaPage() {
               </p>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                 <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Manual or automatic</strong><span className="block text-sm text-muted-foreground">Choose the car that suits you; both are available.</span></li>
-                <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Two-hour lessons</strong><span className="block text-sm text-muted-foreground">Every lesson is two hours, paid in advance when you book.</span></li>
+                <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Flexible lesson length</strong><span className="block text-sm text-muted-foreground">Length is agreed when you book; lessons are paid before they take place.</span></li>
                 <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Patient tuition</strong><span className="block text-sm text-muted-foreground">Calm, clear teaching for beginners and nervous learners alike.</span></li>
-                <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Fair, simple prices</strong><span className="block text-sm text-muted-foreground">£45–£70 per hour with 48 hours' notice to cancel or reschedule.</span></li>
+                <li className="rounded-xl border bg-background p-4"><strong className="text-foreground">Fair, simple prices</strong><span className="block text-sm text-muted-foreground">George's automatic lessons from £70 per hour on weekdays; 48 hours' notice to cancel or reschedule.</span></li>
               </ul>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Button asChild className="btn-3d rounded-2xl bg-primary text-primary-foreground">
@@ -254,6 +250,28 @@ function AreaPage() {
         </div>
       </section>
 
+      <section className="bg-secondary/30 py-12">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="box-3d rounded-2xl bg-card p-6 sm:p-8">
+            <h2 className="font-display text-2xl font-semibold text-primary">
+              Patient, structured lessons in {a.area}
+            </h2>
+            <p className="mt-3 max-w-3xl text-base leading-relaxed text-muted-foreground">
+              George teaches gently and carefully: we agree a manageable goal, start somewhere quiet
+              and suitable, explain why each skill matters and build up to safe, confident,
+              independent driving. Driving lessons for nervous beginners in West London are
+              welcome, as is support after an unsuccessful test.
+            </p>
+            <Link
+              to="/how-i-teach"
+              className="mt-4 inline-flex min-h-11 items-center font-semibold text-primary underline underline-offset-4"
+            >
+              Read how George teaches
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <h2 className="font-display text-2xl font-semibold">{a.area} driving lessons — FAQ</h2>
@@ -288,7 +306,7 @@ function AreaPage() {
                 href="https://wa.me/447961585231"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackContactClick("whatsapp", `Area page CTA – ${a.area}`)}
+                onClick={() => trackContactClick("whatsapp", `Area page CTA – ${a.area}`)} data-track-location="area_bottom_cta"
               >
                 <WhatsAppIcon className="mr-2 h-4 w-4" />
                 WhatsApp now

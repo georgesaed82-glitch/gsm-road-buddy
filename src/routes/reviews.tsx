@@ -6,31 +6,30 @@ import { useContentOverrides } from "@/hooks/useContentOverrides";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { listReviews } from "@/lib/local-content.functions";
-import { useSiteRating } from "@/hooks/useSiteRating";
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/reviews" }],
     meta: [
       { property: "og:url", content: "https://www.gsmdrivingschool.com/reviews" },
-      { title: "Reviews — GSM Driving School (147 five-star Google reviews)" },
+      { title: "Reviews — GSM Driving School learner feedback" },
       {
         name: "description",
         content:
-          "Read 147 verified five-star Google reviews from GSM Driving School learners across Notting Hill, Holland Park, Kensington and West London.",
+          "Selected learner feedback for GSM Driving School from learners across Notting Hill, Holland Park, Kensington and West London.",
       },
-      { property: "og:title", content: "147 five-star Google reviews — GSM Driving School" },
+      { property: "og:title", content: "Learner reviews — GSM Driving School" },
       {
         property: "og:description",
         content:
-          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Rated 5.0 from 147 Google reviews.",
+          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Read our reviews on Google.",
       },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "147 five-star Google reviews — GSM Driving School" },
+      { name: "twitter:title", content: "Learner reviews — GSM Driving School" },
       {
         name: "twitter:description",
         content:
-          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Rated 5.0 from 147 Google reviews.",
+          "Real student stories from West London first-time passes, intensive courses and refresher lessons. Read our reviews on Google.",
       },
     ],
   }),
@@ -40,7 +39,7 @@ export const Route = createFileRoute("/reviews")({
 function ReviewsPage() {
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(18);
-  const rating = useSiteRating();
+
   const { get } = useContentOverrides();
   const listFn = useServerFn(listReviews);
   const { data: dbRows } = useQuery({
@@ -99,7 +98,7 @@ function ReviewsPage() {
             What learners say
           </div>
           <h1 className="mt-4 max-w-3xl font-display text-5xl font-medium leading-[1.05] sm:text-6xl">
-            {source.length} five-star reviews from West London learners.
+            Selected feedback from West London learners.
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-primary-foreground/80">
             Verified students from Notting Hill, Holland Park, Kensington and beyond. First-time
@@ -137,8 +136,8 @@ function ReviewsPage() {
           </div>
 
           <div className="mt-10 grid max-w-3xl grid-cols-3 gap-6 border-t border-primary-foreground/15 pt-8">
-            <Stat value={rating.rating.toFixed(1)} label="Google rating" />
-            <Stat value={String(rating.review_count)} label="Reviews on Google" />
+            <Stat value="Google" label="Read our reviews" />
+            <Stat value="Since 2005" label="Teaching West London" />
             <Stat value="20+ yrs" label="Teaching in W11" />
           </div>
         </div>

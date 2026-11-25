@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BUSINESS, BUSINESS_ADDRESS, LESSON_HOURS_TEXT } from "@/lib/business";
+import { BUSINESS, BUSINESS_ADDRESS, LESSON_HOURS_TEXT, PRICE_SUMMARY, GEORGE_AVAILABILITY } from "@/lib/business";
 import { publicAreas } from "@/data/areas";
 
 export const Route = createFileRoute("/llms.txt")({
@@ -17,7 +17,7 @@ Address: ${BUSINESS_ADDRESS}
 Lesson hours: ${LESSON_HOURS_TEXT}. Messages welcome any time.
 Profiles: ${BUSINESS.sameAs.join(", ")}
 
-Automatic lessons with George; manual lessons with the GSM team. Beginners, nervous drivers, refresher lessons and test preparation. Learners in neighbouring areas (e.g. South Kensington) can be picked up from an agreed meeting point. 48 hours' notice is needed to cancel or reschedule. Prices depend on the instructor and package — see the prices page.
+Automatic lessons with George; manual lessons with the GSM team. Beginners, nervous drivers, refresher lessons and test preparation. Learners in neighbouring areas (e.g. South Kensington) can be picked up from an agreed meeting point. ${PRICE_SUMMARY} Lessons are paid before they take place, lesson length is agreed when booking, and 48 hours' notice is needed to cancel or reschedule. ${GEORGE_AVAILABILITY} George's teaching is patient and structured, including support after an unsuccessful test. Reviews: see the Google listing; we do not quote a review total.
 
 ## Pages
 
@@ -25,6 +25,7 @@ Automatic lessons with George; manual lessons with the GSM team. Beginners, nerv
 - [About](${u}/about)
 - [Driving lessons](${u}/services)
 - [Prices](${u}/pricing)
+- [How George teaches](${u}/how-i-teach)
 - [Instructors](${u}/instructors)
 - [Reviews](${u}/reviews)
 - [Driving videos](${u}/youtube)

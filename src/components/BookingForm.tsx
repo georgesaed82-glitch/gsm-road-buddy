@@ -1,23 +1,30 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { trackContactClick } from "@/lib/trackContactClick";
+import { trackContactLinkTap } from "@/lib/contactLinkTracking";
+
+const TRANSMISSIONS = { automatic: "Automatic", manual: "Manual", unsure: "Not sure yet" } as const;
+const EXPERIENCE = {
+  none: "Complete beginner",
+  some: "Some lessons or practice",
+  test_ready: "Nearly test-ready / refresher",
+  after_test: "Had an unsuccessful test",
+} as const;
+const HEARD_FROM = ["Google", "ChatGPT", "Social media", "A recommendation", "Other"] as const;
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export function BookingForm() {
   const { business } = useSiteSettings();
   const waNumber = business.phone_intl;
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    postcode: "",
-    transmission: "manual",
+    area: "",
+    transmission: "automatic",
+    experience: "none",
     availability: "",
-    message: "",
+    heardFrom: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
@@ -35,18 +42,9 @@ export function BookingForm() {
 
   const validate = () => {
     const next: Record<string, string> = {};
-    const name = form.name.trim();
-    if (name.length < 2 || name.length > 100) next.name = "Enter your full name (2-100 characters)";
-    const email = form.email.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255)
-      next.email = "Enter a valid email address";
-    const phone = form.phone.trim();
-    if (!/^[\d\s+()-]{7,20}$/.test(phone)) next.phone = "Enter a valid phone number";
-    const postcode = form.postcode.trim();
-    if (!postcode || postcode.length > 20)
-      next.postcode = "Enter your postcode (max 20 characters)";
+    const area = form.area.trim();
+    if (!area || area.length > 60) next.area = "Tell us your area (e.g. Notting Hill or W11)";
     if (form.availability.trim().length > 200) next.availability = "Keep under 200 characters";
-    if (form.message.trim().length > 500) next.message = "Keep under 500 characters";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -55,17 +53,16 @@ export function BookingForm() {
     e.preventDefault();
     if (!validate()) return;
     const text = [
-      `Hi ${business.name}, I'd like to book a driving lesson.`,
+      "Hi George, I'd like to ask about driving lessons.",
       "",
-      `Name: ${form.name.trim()}`,
-      `Email: ${form.email.trim().toLowerCase()}`,
-      `Phone: ${form.phone.trim()}`,
-      `Postcode: ${form.postcode.trim().toUpperCase()}`,
-      `Transmission: ${form.transmission === "manual" ? "Manual" : "Automatic"}`,
-      `Preferred times: ${form.availability.trim() || "Anytime"}`,
-      ...(form.message.trim() ? [`Message: ${form.message.trim()}`] : []),
+      `Area: ${form.area.trim()}`,
+      `Transmission: ${TRANSMISSIONS[form.transmission as keyof typeof TRANSMISSIONS]}`,
+      `Experience: ${EXPERIENCE[form.experience as keyof typeof EXPERIENCE]}`,
+      `Preferred times: ${form.availability.trim() || "Flexible"}`,
+      ...(form.heardFrom ? [`Heard about GSM via: ${form.heardFrom}`] : []),
     ].join("\n");
-    trackContactClick("whatsapp", "Book a driving lesson form");
+    trackContactClick("whatsapp", "Enquiry form");
+    trackContactLinkTap("whatsapp", "enquiry_form");
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`, "_blank");
     setSuccess(true);
   };
@@ -80,8 +77,8 @@ export function BookingForm() {
           Your message is ready
         </h2>
         <p className="mx-auto mt-3 max-w-md text-center text-muted-foreground">
-          A WhatsApp chat has opened with your details. Send the message and George will confirm
-          your availability.
+          WhatsApp has opened with your enquiry. Please review it and press send yourself — this is
+          an enquiry, not a confirmed booking. George will reply with availability.
         </p>
         <div className="mt-8 text-center">
           <Button
@@ -126,101 +123,45 @@ export function BookingForm() {
           className="grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2"
         >
           <div className="sm:col-span-2">
-            <Label htmlFor="name">Full name</Label>
+            <Label htmlFor="area">Your area</Label>
             <Input
-              id="name"
-              value={form.name}
-              onChange={(e) => update("name", e.target.value)}
-              placeholder="Your name"
-              className="mt-1.5 rounded-none border-border bg-transparent"
+              id="area"
+              value={form.area}
+              onChange={(e) => update("area", e.target.value)}
+              placeholder="e.g. Notting Hill, Kensington or W11"
+              className="mt-1.5 h-11 rounded-none border-border bg-transparent"
             />
-            {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name}</p>}
+            {errors.area && <p className="mt-1 text-xs text-destructive">{errors.area}</p>}
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              placeholder="you@email.com"
-              className="mt-1.5 rounded-none border-border bg-transparent"
-            />
-            {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
+            <Label htmlFor="transmission">Transmission</Label>
+            <select id="transmission" value={form.transmission} onChange={(e) => update("transmission", e.target.value)} className="mt-1.5 h-11 w-full rounded-none border border-border bg-transparent px-3 text-sm text-foreground">
+              {Object.entries(TRANSMISSIONS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            </select>
           </div>
           <div>
-            <Label htmlFor="phone">Phone</Label>
-            <Input
-              id="phone"
-              type="tel"
-              value={form.phone}
-              onChange={(e) => update("phone", e.target.value)}
-              placeholder="07..."
-              className="mt-1.5 rounded-none border-border bg-transparent"
-            />
-            {errors.phone && <p className="mt-1 text-xs text-destructive">{errors.phone}</p>}
-          </div>
-          <div>
-            <Label htmlFor="postcode">Postcode</Label>
-            <Input
-              id="postcode"
-              value={form.postcode}
-              onChange={(e) => update("postcode", e.target.value)}
-              placeholder="W11 1DS"
-              className="mt-1.5 rounded-none border-border bg-transparent"
-            />
-            {errors.postcode && <p className="mt-1 text-xs text-destructive">{errors.postcode}</p>}
-          </div>
-          <div>
-            <Label>Transmission</Label>
-            <div className="mt-1.5 flex gap-4">
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="radio"
-                  name="transmission"
-                  value="manual"
-                  checked={form.transmission === "manual"}
-                  onChange={(e) => update("transmission", e.target.value)}
-                  className="h-4 w-4 accent-primary"
-                />
-                Manual
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="radio"
-                  name="transmission"
-                  value="automatic"
-                  checked={form.transmission === "automatic"}
-                  onChange={(e) => update("transmission", e.target.value)}
-                  className="h-4 w-4 accent-primary"
-                />
-                Automatic
-              </label>
-            </div>
+            <Label htmlFor="experience">Experience</Label>
+            <select id="experience" value={form.experience} onChange={(e) => update("experience", e.target.value)} className="mt-1.5 h-11 w-full rounded-none border border-border bg-transparent px-3 text-sm text-foreground">
+              {Object.entries(EXPERIENCE).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            </select>
           </div>
           <div className="sm:col-span-2">
-            <Label htmlFor="availability">Preferred days / times</Label>
+            <Label htmlFor="availability">Preferred lesson times</Label>
             <Input
               id="availability"
               value={form.availability}
               onChange={(e) => update("availability", e.target.value)}
-              placeholder="e.g. Weekday evenings or Saturday mornings"
-              className="mt-1.5 rounded-none border-border bg-transparent"
+              placeholder="e.g. Weekday mornings"
+              className="mt-1.5 h-11 rounded-none border-border bg-transparent"
             />
-            {errors.availability && (
-              <p className="mt-1 text-xs text-destructive">{errors.availability}</p>
-            )}
+            {errors.availability && <p className="mt-1 text-xs text-destructive">{errors.availability}</p>}
           </div>
           <div className="sm:col-span-2">
-            <Label htmlFor="message">Anything else we should know?</Label>
-            <Textarea
-              id="message"
-              value={form.message}
-              onChange={(e) => update("message", e.target.value)}
-              placeholder="Previous experience, test date, or special requirements..."
-              className="mt-1.5 min-h-[100px] rounded-none border-border bg-transparent"
-            />
-            {errors.message && <p className="mt-1 text-xs text-destructive">{errors.message}</p>}
+            <Label htmlFor="heardFrom">How did you hear about us? (optional)</Label>
+            <select id="heardFrom" value={form.heardFrom} onChange={(e) => update("heardFrom", e.target.value)} className="mt-1.5 h-11 w-full rounded-none border border-border bg-transparent px-3 text-sm text-foreground">
+              <option value="">Prefer not to say</option>
+              {HEARD_FROM.map((h) => <option key={h} value={h}>{h}</option>)}
+            </select>
           </div>
           <div className="sm:col-span-2">
             <Button
@@ -229,10 +170,10 @@ export function BookingForm() {
               className="h-14 w-full rounded-none bg-primary px-8 text-primary-foreground hover:bg-primary/90"
             >
               <WhatsAppIcon className="mr-2 h-5 w-5" />
-              Request availability on WhatsApp
+              Prepare WhatsApp message
             </Button>
             <p className="mt-3 text-center text-xs text-muted-foreground">
-              We will reply with available slots and pricing.
+              You review and send the message yourself in WhatsApp.
             </p>
           </div>
         </form>

@@ -1,3 +1,4 @@
+import { installContactLinkTracking } from "@/lib/contactLinkTracking";
 import { BUSINESS, LESSON_HOURS } from "@/lib/business";
 import { publicAreas } from "@/data/areas";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -152,7 +153,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       const rating = await getSiteRating();
       return { rating };
     } catch {
-      return { rating: { rating: 5.0, review_count: 147, show: true } };
+      return { rating: { rating: 5.0, review_count: 0, show: true } };
     }
   },
   head: ({ loaderData }) => ({
@@ -166,13 +167,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "GSM Driving School — Notting Hill & West London" },
       {
         name: "description",
-        content: `DVSA-approved driving lessons in Notting Hill, Kensington & West London. Manual & automatic. Rated ${(loaderData?.rating.rating ?? 5).toFixed(1)} from ${loaderData?.rating.review_count ?? 147} Google reviews.`,
+        content: `DVSA-approved driving lessons in Notting Hill, Kensington & West London. Manual & automatic. Read our reviews on Google.`,
       },
       { name: "author", content: "GSM Driving School" },
       { property: "og:title", content: "GSM Driving School — Notting Hill & West London" },
       {
         property: "og:description",
-        content: `DVSA-approved driving lessons in Notting Hill, Kensington & West London. Manual & automatic. Rated ${(loaderData?.rating.rating ?? 5).toFixed(1)} from ${loaderData?.rating.review_count ?? 147} Google reviews.`,
+        content: `DVSA-approved driving lessons in Notting Hill, Kensington & West London. Manual & automatic. Read our reviews on Google.`,
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "GSM Driving School" },
@@ -180,7 +181,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "GSM Driving School — Notting Hill & West London" },
       {
         name: "twitter:description",
-        content: `DVSA-approved manual and automatic driving lessons across West London. Rated ${(loaderData?.rating.rating ?? 5).toFixed(1)} from ${loaderData?.rating.review_count ?? 147} five-star Google reviews.`,
+        content: `DVSA-approved manual and automatic driving lessons across West London. Read our reviews on Google.`,
       },
       { name: "theme-color", content: "#1f3a2e" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
@@ -243,11 +244,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             opens: h.opens,
             closes: h.closes,
           })),
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: (loaderData?.rating.rating ?? 5).toFixed(1),
-            reviewCount: String(loaderData?.rating.review_count ?? 147),
-          },
           sameAs: [...BUSINESS.sameAs],
         }),
       },
@@ -285,6 +281,10 @@ function RootComponent() {
     if (isNative) document.documentElement.setAttribute("data-native", "");
     else document.documentElement.removeAttribute("data-native");
   }, [isNative]);
+
+  useEffect(() => {
+    installContactLinkTracking();
+  }, []);
 
   useEffect(() => {
     function handleExternalClick(e: MouseEvent) {

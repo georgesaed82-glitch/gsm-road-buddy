@@ -22,7 +22,6 @@ import { HomeNativeApp } from "@/components/home/HomeNativeApp";
 import { useIsNativeApp } from "@/lib/isNativeApp";
 import { listPublicHomeSections, type HomeSectionRow } from "@/lib/home-cms.functions";
 import { usePageBlocks, usePageBlockStrings } from "@/hooks/usePageBlocks";
-import { useSiteRating, formatRating } from "@/hooks/useSiteRating";
 import { listStudentPassPhotosPublic } from "@/lib/student-passes.functions";
 import heroImage from "@/assets/gsm-hero-student.jpeg.asset.json";
 import heroCarImage from "@/assets/gsm-video-car.jpeg.asset.json";
@@ -81,14 +80,14 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Driving Lessons High Street Kensington W8 | Manual & Automatic | GSM" },
-      { name: "description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — manual and automatic, two-hour lessons with patient local instructors. Call 07961 585231." },
+      { name: "description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — patient, structured automatic and manual lessons for beginners and nervous learners. Call 07961 585231." },
       { property: "og:title", content: "Driving Lessons High Street Kensington W8 | Manual & Automatic | GSM" },
-      { property: "og:description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — manual and automatic, two-hour lessons with patient local instructors. Call 07961 585231." },
+      { property: "og:description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — patient, structured automatic and manual lessons for beginners and nervous learners. Call 07961 585231." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.gsmdrivingschool.com/" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Driving Lessons High Street Kensington W8 | Manual & Automatic | GSM" },
-      { name: "twitter:description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — manual and automatic, two-hour lessons with patient local instructors. Call 07961 585231." },
+      { name: "twitter:description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — patient, structured automatic and manual lessons for beginners and nervous learners. Call 07961 585231." },
     ],
     links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/" }],
   }),
@@ -261,7 +260,6 @@ function renderHeroTitle(title: string) {
 }
 
 function HeroSection({ s }: SectionProps) {
-  const rating = useSiteRating();
   const heroTitle =
     s.title && s.title.trim().length > 0 ? s.title : "Drive today. Succeed tomorrow.";
   return (
@@ -306,7 +304,7 @@ function HeroSection({ s }: SectionProps) {
                 <Star key={i} className="h-4 w-4 fill-accent" />
               ))}
             </div>
-            <span className="text-sm text-muted-foreground">{formatRating(rating)}</span>
+            <span className="text-sm text-muted-foreground">Read our reviews on Google</span>
           </a>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mt-4 lg:max-w-none lg:text-[15px]">
             {publicCopy(
@@ -833,7 +831,7 @@ function CtaSection({ s }: SectionProps) {
                 href="https://wa.me/447961585231"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackContactClick("whatsapp", "Home bottom CTA")}
+                onClick={() => trackContactClick("whatsapp", "Home bottom CTA")} data-track-location="home_bottom_cta"
                 className="inline-flex items-center justify-center gap-2 font-medium"
               >
                 <WhatsAppIcon className="h-5 w-5" />
@@ -847,7 +845,7 @@ function CtaSection({ s }: SectionProps) {
             >
               <a
                 href="tel:+447961585231"
-                onClick={() => trackContactClick("phone", "Home bottom CTA")}
+                onClick={() => trackContactClick("phone", "Home bottom CTA")} data-track-location="home_bottom_cta"
                 className="inline-flex items-center justify-center gap-2 font-medium"
               >
                 <Phone className="h-5 w-5" />

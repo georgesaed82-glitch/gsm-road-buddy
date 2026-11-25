@@ -127,7 +127,7 @@ function ContactTab({ active }: { active: boolean }) {
         <Phone className={cn("h-5 w-5", active && "scale-110")} strokeWidth={active ? 2.5 : 2} />
         <span className="tracking-tight">Contact</span>
       </PopoverTrigger>
-      <PopoverContent align="end" className="z-[150] w-64 space-y-2 rounded-2xl border-2 border-primary bg-background p-3">
+      <PopoverContent data-track-location="contact_tab_menu" align="end" className="z-[150] w-64 space-y-2 rounded-2xl border-2 border-primary bg-background p-3">
         <a href={`tel:+${business.phone_intl}`} className={quickBtn}>
           <Phone className="h-4 w-4" /> Call {business.phone}
         </a>

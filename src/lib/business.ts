@@ -52,3 +52,23 @@ export const OPENING_HOURS_BY_DAY = {
   sat: "7:00 – 18:00",
   sun: "Closed",
 } as const;
+
+/** George's confirmed automatic lesson prices (other instructors: confirmed on enquiry). */
+export const GEORGE_PRICES = [
+  { label: "Weekdays", price: "£70", unit: "per hour", note: "Pay as you go" },
+  { label: "Weekday package", price: "£780", unit: "for 12 hours", note: "Paid in advance · equivalent to £65 per hour" },
+  { label: "Weekends", price: "£80", unit: "per hour", note: "Pay as you go" },
+  { label: "Weekend package", price: "£900", unit: "for 12 hours", note: "Paid in advance · equivalent to £75 per hour" },
+] as const;
+
+export const LESSON_TERMS = [
+  "Lessons are paid for before they take place.",
+  "Please give at least 48 hours' notice to cancel or reschedule a lesson.",
+  "Lesson length is agreed when you book — longer sessions are possible.",
+] as const;
+
+export const GEORGE_AVAILABILITY =
+  "George usually teaches Monday to Thursday, 09:30–18:00. Friday and weekend lessons are by prior arrangement. Other instructors' availability varies.";
+
+export const PRICE_SUMMARY =
+  "George's automatic lessons: £70/hour weekdays (£780 for 12 hours prepaid), £80/hour weekends (£900 for 12 hours prepaid). Other instructors' prices confirmed on enquiry.";

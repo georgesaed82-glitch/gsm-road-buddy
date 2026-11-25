@@ -222,7 +222,7 @@ function WhatsAppButton({ phoneIntl }: { phoneIntl: string }) {
         href={`https://wa.me/${phoneIntl}`}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")}
+        onClick={() => trackContactClick("whatsapp", "Contact page – instant CTA")} data-track-location="contact_page"
       >
         <WhatsAppIcon className="h-5 w-5" />
         WhatsApp
@@ -241,7 +241,7 @@ function CallButton({ phoneIntl }: { phoneIntl: string }) {
     >
       <a
         href={`tel:+${phoneIntl}`}
-        onClick={() => trackContactClick("phone", "Contact page – instant CTA")}
+        onClick={() => trackContactClick("phone", "Contact page – instant CTA")} data-track-location="contact_page"
       >
         <Phone className="h-5 w-5" />
         Call

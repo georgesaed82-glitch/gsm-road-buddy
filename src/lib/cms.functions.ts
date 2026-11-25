@@ -57,7 +57,7 @@ export const listAllSiteSettings = createServerFn({ method: "GET" }).handler(
 export type SiteRatingValue = { rating: number; review_count: number; show: boolean };
 export const getSiteRating = createServerFn({ method: "GET" }).handler(
   async (): Promise<SiteRatingValue> => {
-    const fallback: SiteRatingValue = { rating: 5.0, review_count: 147, show: true };
+    const fallback: SiteRatingValue = { rating: 5.0, review_count: 0, show: true };
     try {
       const { createPublicSupabaseClient } = await import("./public-supabase.server");
       const { data } = await createPublicSupabaseClient()

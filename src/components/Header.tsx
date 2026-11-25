@@ -19,6 +19,7 @@ import {
   Youtube,
   Clapperboard,
   PoundSterling,
+  HeartHandshake,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -47,8 +48,9 @@ const PRIMARY_NAV: NavItem[] = [
   { to: "/reviews", label: "Reviews", icon: Star, desc: "What learners say" },
   { to: "/passes", label: "Passed Students", icon: Trophy, desc: "Test pass photos" },
   { to: "/areas", label: "Areas We Cover", icon: MapPin, desc: "West London" },
+  { to: "/how-i-teach", label: "How I Teach", icon: HeartHandshake, desc: "Patient, structured lessons" },
   { to: "/instructors", label: "Instructors", icon: Users, desc: "Meet the team" },
-  { to: "/pricing", label: "Pricing", icon: PoundSterling, desc: "£45–£70 per hour" },
+  { to: "/pricing", label: "Pricing", icon: PoundSterling, desc: "George's prices from £70/hour" },
   { to: "/tiktok", href: TIKTOK_PROFILE_URL, label: "Watch on TikTok", icon: Clapperboard, desc: "Follow @gsm.drivingschool" },
   { to: "/contact", label: "Contact Us", icon: Phone, desc: "Call, WhatsApp, email" },
 ];
@@ -262,6 +264,7 @@ export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
                 <div className="relative hidden lg:flex lg:flex-col lg:gap-2 lg:text-[12.5px] lg:text-primary-foreground/85">
                   <a
                     href={`tel:+${business.phone_intl}`}
+                    data-track-location="menu"
                     className="inline-flex items-center gap-2 hover:text-accent"
                   >
                     <Phone className="h-3.5 w-3.5 text-accent" /> {business.phone}
@@ -274,6 +277,7 @@ export function Header({ showTabs = true }: { showTabs?: boolean } = {}) {
                 <div className="flex items-center justify-between border-b border-border/60 px-4 pb-4 pt-3 lg:px-8 lg:py-4">
                   <a
                     href={`tel:+${business.phone_intl}`}
+                    data-track-location="menu"
                     className="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-card px-4 py-2 text-base font-extrabold text-primary shadow-[0_4px_0_0_var(--primary),0_8px_14px_-6px_rgba(0,0,0,0.35)] transition-transform active:translate-y-1 active:shadow-[0_1px_0_0_var(--primary)] lg:hidden"
                   >
                     <Phone className="h-5 w-5 text-primary" /> Call {business.phone}

@@ -172,12 +172,12 @@ function YouTubePage() {
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <Button asChild size="lg" className="h-10 rounded-xl shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-sm font-bold bg-accent text-accent-foreground hover:bg-accent/90">
-              <a href={wa} target="_blank" rel="noopener noreferrer" onClick={() => trackContactClick("whatsapp", "YouTube page")} className="inline-flex items-center justify-center gap-2">
+              <a href={wa} target="_blank" rel="noopener noreferrer" onClick={() => trackContactClick("whatsapp", "YouTube page")} data-track-location="videos_page" className="inline-flex items-center justify-center gap-2">
                 <WhatsAppIcon className="h-5 w-5" /> WhatsApp
               </a>
             </Button>
             <Button asChild size="lg" variant="outline" className="h-10 rounded-xl border-2 shadow-[0_5px_0_0_rgba(0,0,0,0.35)] active:translate-y-1 active:shadow-none text-sm font-bold border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-              <a href={`tel:+${business.phone_intl}`} onClick={() => trackContactClick("phone", "YouTube page")} className="inline-flex items-center justify-center gap-2">
+              <a href={`tel:+${business.phone_intl}`} onClick={() => trackContactClick("phone", "YouTube page")} data-track-location="videos_page" className="inline-flex items-center justify-center gap-2">
                 <Phone className="h-5 w-5" /> Call {business.phone}
               </a>
             </Button>

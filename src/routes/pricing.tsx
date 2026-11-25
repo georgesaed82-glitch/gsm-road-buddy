@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Clock, CreditCard, CalendarX, MessageCircle } from "lucide-react";
+import { CreditCard, CalendarX, Clock, Phone, HeartHandshake } from "lucide-react";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { BUSINESS, GEORGE_AVAILABILITY, GEORGE_PRICES } from "@/lib/business";
 
-const TITLE = "Driving Lesson Prices West London | GSM Driving School";
+const TITLE = "Driving Lesson Prices West London | George's Automatic Lessons | GSM";
 const DESC =
-  "Our prices range from £45–£70 per hour, depending on the instructor’s experience and your area. Two-hour lessons, paid in advance, 48 hours’ cancellation notice.";
+  "George's automatic driving lesson prices in West London: £70/hour weekdays or £780 for 12 hours, £80/hour weekends or £900 for 12 hours. Payment before lessons, 48 hours' notice.";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -22,34 +24,36 @@ export const Route = createFileRoute("/pricing")({
 });
 
 const TERMS = [
-  {
-    icon: Clock,
-    label: "2-hour lessons",
-  },
-  {
-    icon: CreditCard,
-    label: "Payment in advance when booking",
-  },
-  {
-    icon: CalendarX,
-    label: "48-hour cancellation notice",
-  },
+  { icon: CreditCard, label: "Payment before lessons" },
+  { icon: CalendarX, label: "48 hours' notice to cancel or reschedule" },
+  { icon: Clock, label: "Lesson length agreed when you book" },
 ];
 
 function PricingPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
+    <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
       <h1 className="text-center font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
         Driving Lesson Prices
       </h1>
+      <p className="mx-auto mt-3 max-w-2xl text-center text-base text-muted-foreground sm:text-lg">
+        These are George's prices for automatic lessons. Prices and availability for other GSM
+        instructors, including manual lessons, are confirmed when you enquire.
+      </p>
 
-      <section className="box-3d mt-8 rounded-3xl bg-primary px-5 py-8 text-center text-primary-foreground sm:px-10 sm:py-10">
-        <p className="text-sm font-semibold uppercase tracking-widest text-accent">Standard price range</p>
-        <p className="mt-2 font-display text-5xl font-extrabold leading-none sm:text-7xl">£45–£70</p>
-        <p className="mt-1 text-xl font-bold sm:text-2xl">per hour</p>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed sm:text-lg">
-          Our prices range from £45–£70 per hour, depending on the instructor’s experience and your area.
+      <section className="box-3d mt-8 rounded-3xl bg-primary px-5 py-7 text-primary-foreground sm:px-8 sm:py-9">
+        <p className="text-center text-sm font-semibold uppercase tracking-widest text-accent">
+          George's automatic prices
         </p>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {GEORGE_PRICES.map((p) => (
+            <div key={p.label} className="rounded-2xl bg-primary-foreground/10 p-5 text-center ring-1 ring-primary-foreground/20">
+              <p className="text-sm font-semibold uppercase tracking-wider">{p.label}</p>
+              <p className="mt-1 font-display text-4xl font-extrabold leading-none sm:text-5xl">{p.price}</p>
+              <p className="mt-1 text-lg font-bold">{p.unit}</p>
+              <p className="mt-2 text-sm opacity-90">{p.note}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <div className="mt-8 grid gap-5 sm:grid-cols-3">
@@ -64,18 +68,35 @@ function PricingPage() {
       </div>
 
       <div className="box-3d mt-8 space-y-3 rounded-2xl bg-card p-5 text-base leading-relaxed text-foreground sm:p-6 sm:text-lg">
-        <p>All lessons are two hours long and must be paid for in advance at the time of booking.</p>
-        <p>Our cancellation policy requires at least 48 hours’ notice to cancel or reschedule a lesson.</p>
+        <p>Lessons are paid for before they take place. Packages are paid in advance.</p>
+        <p>Our cancellation policy requires at least 48 hours' notice to cancel or reschedule a lesson.</p>
+        <p>Lesson length is agreed when you book, and longer sessions are possible.</p>
+        <p className="text-muted-foreground">{GEORGE_AVAILABILITY}</p>
       </div>
 
-      <div className="mt-8 text-center">
-        <Link
-          to="/contact"
-          className="btn-3d inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-bold text-primary-foreground"
+      <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a
+          href={`tel:+${BUSINESS.phoneIntl}`}
+          data-track-location="pricing"
+          className="btn-3d inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-bold text-primary-foreground"
         >
-          <MessageCircle className="h-5 w-5" /> Ask about lessons
-        </Link>
+          <Phone className="h-5 w-5" /> Call George
+        </a>
+        <a
+          href={`https://wa.me/${BUSINESS.phoneIntl}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-track-location="pricing"
+          className="btn-3d inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-base font-bold text-accent-foreground"
+        >
+          <WhatsAppIcon className="h-5 w-5" /> WhatsApp George
+        </a>
       </div>
+      <p className="mt-6 text-center">
+        <Link to="/how-i-teach" className="inline-flex items-center gap-2 font-semibold text-primary underline underline-offset-4">
+          <HeartHandshake className="h-4 w-4" /> How George teaches
+        </Link>
+      </p>
     </main>
   );
 }

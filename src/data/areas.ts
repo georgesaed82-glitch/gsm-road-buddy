@@ -25,10 +25,10 @@ export const areas: AreaPage[] = [
     highlights: [
       "Notting Hill Gate is one of our usual meeting options — the exact point is agreed when you book",
       "Patient one-to-one lessons for beginners, nervous learners and test preparation",
-      "Two-hour lessons, £45–£70 per hour depending on instructor and area",
+      "George's automatic lessons from £70 per hour on weekdays; lesson length agreed when you book",
     ],
     routes:
-      "Each two-hour lesson follows your stage: control and confidence first, then junctions, roundabouts, busier traffic and independent driving, building towards test standard at a pace agreed with your instructor.",
+      "Each lesson follows your stage: control and confidence first, then junctions, roundabouts, busier traffic and independent driving, building towards test standard at a pace agreed with your instructor.",
     faqs: [
       {
         q: "Where do lessons start in Notting Hill?",
@@ -40,7 +40,7 @@ export const areas: AreaPage[] = [
       },
       {
         q: "What are the lesson terms?",
-        a: "Lessons are two hours, paid in advance when you book, and our public range is £45–£70 per hour depending on the instructor and area. We ask for at least 48 hours' notice to cancel or reschedule.",
+        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Other instructors' prices are confirmed on enquiry. Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -74,7 +74,7 @@ export const areas: AreaPage[] = [
       },
       {
         q: "What are the lesson terms?",
-        a: "Lessons are two hours, paid in advance when you book, and our public range is £45–£70 per hour depending on the instructor and area. We ask for at least 48 hours' notice to cancel or reschedule.",
+        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Other instructors' prices are confirmed on enquiry. Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -104,7 +104,7 @@ export const areas: AreaPage[] = [
       },
       {
         q: "How long is each lesson?",
-        a: "Every lesson is two hours, paid in advance at booking. Please give at least 48 hours' notice to cancel or reschedule.",
+        a: "Lessons are paid before they take place and the length is agreed when you book. Please give at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -122,7 +122,7 @@ export const areas: AreaPage[] = [
       "Patient one-to-one lessons, beginners to test preparation",
     ],
     routes:
-      "Two-hour lessons are tailored to your stage, from first-time control through to busier roads, independent driving and test preparation.",
+      "Lessons are tailored to your stage, from first-time control through to busier roads, independent driving and test preparation.",
     faqs: [
       {
         q: "Do you teach in North Kensington?",
@@ -134,7 +134,7 @@ export const areas: AreaPage[] = [
       },
       {
         q: "What do lessons cost?",
-        a: "Lessons are two hours, paid in advance when you book, and our public range is £45–£70 per hour depending on the instructor and area. We ask for at least 48 hours' notice to cancel or reschedule.",
+        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Other instructors' prices are confirmed on enquiry. Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -149,7 +149,7 @@ export const areas: AreaPage[] = [
     highlights: [
       "Bayswater and Paddington are usual meeting options — agreed when you book",
       "Calm, structured lessons — ideal for first-time and nervous learners",
-      "Two-hour lessons paid in advance at booking",
+      "Payment before lessons; lesson length agreed at booking",
     ],
     routes:
       "Lessons move from the basics to confident everyday driving in central West London traffic, with test preparation once you're ready.",
@@ -194,7 +194,37 @@ export const areas: AreaPage[] = [
       },
       {
         q: "What are the lesson terms?",
-        a: "Lessons are two hours, paid in advance when you book, and our public range is £45–£70 per hour depending on the instructor and area. We ask for at least 48 hours' notice to cancel or reschedule.",
+        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Other instructors' prices are confirmed on enquiry. Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
+      },
+    ],
+  },
+  {
+    slug: "brook-green",
+    area: "Brook Green",
+    postcode: "W14",
+    nearbyPostcodes: ["W6", "W12", "W11"],
+    lastModified: "2026-11-25",
+    intro:
+      "Driving lessons in Brook Green (W14) with GSM Driving School. Patient, structured lessons for beginners and nervous learners — automatic with George, manual with the GSM team.",
+    highlights: [
+      "A patient driving instructor for Brook Green learners, close to Holland Park and Shepherd's Bush",
+      "Lessons start somewhere quiet and suitable, then build at your pace",
+      "Meeting point agreed when you book",
+    ],
+    routes:
+      "Lessons begin with the foundations — seating, mirrors, controls, moving off and stopping — then progress through junctions, roundabouts and busier West London roads as your confidence grows.",
+    faqs: [
+      {
+        q: "Do you teach nervous beginners in Brook Green?",
+        a: "Yes. We start with a conversation about your experience and any worries, agree a manageable goal and begin somewhere quiet. Explanations are given while safely stopped, with short, timely guidance while driving.",
+      },
+      {
+        q: "Are lessons automatic or manual?",
+        a: "Automatic lessons are with George. Manual lessons are with an instructor from the GSM team, and their prices and availability are confirmed on enquiry.",
+      },
+      {
+        q: "What are the lesson terms?",
+        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
       },
     ],
   },
@@ -235,7 +265,6 @@ export const areas: AreaPage[] = [
     highlights: [
       "Pickup across SW6 — Fulham Broadway, Parsons Green, Putney Bridge",
       "Local routes practised every lesson",
-      "Rated 5.0 from 147 Google reviews",
     ],
     routes:
       "We practise around Parsons Green, the New King's Road, Fulham Palace Road and the Wandsworth Bridge approach — ideal for building real-world confidence.",
