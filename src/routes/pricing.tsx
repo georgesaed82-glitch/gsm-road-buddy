@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CreditCard, CalendarX, Clock, Phone, HeartHandshake } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
-import { BUSINESS, GEORGE_AVAILABILITY, GEORGE_PRICES } from "@/lib/business";
+import { TeamLessonPricing } from "@/components/TeamLessonPricing";
+import { BUSINESS, GEORGE_AVAILABILITY, GEORGE_PRICES, TEAM_PRICE_SUMMARY } from "@/lib/business";
 
 const TITLE = "Driving Lesson Prices West London | George's Automatic Lessons | GSM";
 const DESC =
@@ -36,8 +37,7 @@ function PricingPage() {
         Driving Lesson Prices
       </h1>
       <p className="mx-auto mt-3 max-w-2xl text-center text-base text-muted-foreground sm:text-lg">
-        These are George's prices for automatic lessons. Prices and availability for other GSM
-        instructors, including manual lessons, are confirmed when you enquire.
+        {TEAM_PRICE_SUMMARY}
       </p>
 
       <section className="box-3d mt-8 rounded-3xl bg-primary px-5 py-7 text-primary-foreground sm:px-8 sm:py-9">
@@ -55,6 +55,8 @@ function PricingPage() {
           ))}
         </div>
       </section>
+
+      <TeamLessonPricing location="pricing_team" />
 
       <div className="mt-8 grid gap-5 sm:grid-cols-3">
         {TERMS.map(({ icon: Icon, label }) => (

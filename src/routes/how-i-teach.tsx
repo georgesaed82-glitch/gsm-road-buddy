@@ -24,15 +24,14 @@ export const Route = createFileRoute("/how-i-teach")({
   component: HowITeachPage,
 });
 
-const VALUES = [
-  "I am gentle, kind, patient and encouraging.",
-  "I explain things carefully and give you time to understand.",
-  "I teach the foundations to a high standard.",
-  "I explain why a skill matters, where and when to use it, and how to do it safely.",
-  "I adapt each lesson to your experience, understanding and confidence.",
-  "I give specific, honest praise and help you recognise your progress.",
-  "My aim is safe, confident, independent driving.",
-];
+const QUESTIONS = [
+  ["What?", "What are you learning, and what are you trying to achieve?"],
+  ["Why?", "Why does it matter, and how does it help keep people safe?"],
+  ["Where?", "Where does the skill apply, and what should you notice about the road and surroundings?"],
+  ["When?", "When should you observe, prepare, decide and act?"],
+  ["How?", "How do you carry out the skill safely, step by step?"],
+  ["Who?", "Who else could be affected, and how can you take their needs into account?"],
+] as const;
 
 const STEPS = [
   "Assess understanding and agree on the goal.",
@@ -46,12 +45,9 @@ const STEPS = [
 ];
 
 const AFTER_TEST = [
-  "Review your actual test report, the examiner's feedback and your own account of the drive.",
-  "Explain the recorded faults in plain English, the driving standard being assessed and the skills that need improving.",
-  "Separate what the report confirms from anything that needs further assessment — I never guess at an examiner's reasoning.",
-  "Begin with a check of the basics in a quiet, safe setting so you feel comfortable again.",
-  "Work through the specific difficulty in manageable stages.",
-  "Practise until you can apply the skill confidently and safely.",
+  "If you have had an unsuccessful test, we begin by reviewing your test report and any examiner feedback with you. We explain the recorded faults, the driving skills being assessed and how to work on them.",
+  "We check the relevant foundations in a suitable, quiet setting so you feel comfortable before tackling the difficulty. Whether it involves a roundabout, junction, observations or another skill, we break it down into manageable steps.",
+  "We explain and guide you first, then use questions and prompts, gradually reducing support as your confidence and understanding improve. You practise applying the skill independently under supervision and in different suitable situations.",
 ];
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -64,21 +60,25 @@ function HowITeachPage() {
       <header className="text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">How I teach</p>
         <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Patient, structured lessons that build real confidence
+          Patient teaching that helps you understand every step
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
-          I'm George, and I've been teaching West London learners since 2005. Here is how I help
-          people become safe, confident and independent drivers.
+          At George’s School of Motoring (GSM), we take time to explain what you are learning,
+          why it matters, where and when to use it, and how to do it safely. We also help you
+          understand who else could be affected by your decisions, including pedestrians,
+          cyclists and other drivers.
         </p>
       </header>
 
       <Card>
         <h2 className="flex items-center gap-2 font-display text-2xl font-semibold text-primary">
-          <HeartHandshake className="h-6 w-6" /> What you can expect from me
+          <HeartHandshake className="h-6 w-6" /> The questions behind every driving skill
         </h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-          {VALUES.map((v) => (
-            <li key={v} className="rounded-xl border bg-background p-4 text-foreground">{v}</li>
+          {QUESTIONS.map(([question, explanation]) => (
+            <li key={question} className="rounded-xl border bg-background p-4 text-base leading-relaxed text-foreground">
+              <strong className="block text-primary">{question}</strong>{explanation}
+            </li>
           ))}
         </ul>
       </Card>
@@ -87,18 +87,19 @@ function HowITeachPage() {
         <h2 className="font-display text-2xl font-semibold text-primary">Starting with a novice learner</h2>
         <div className="mt-4 space-y-3 text-base leading-relaxed text-foreground">
           <p>
-            With a novice learner, we first talk about their experience, any concerns and their goals.
-            Together we agree a manageable objective for the lesson and begin somewhere quiet and
-            suitable for their ability.
+            We build strong foundations from the beginning. For a novice learner, this means starting
+            somewhere quiet and suitable, becoming comfortable with the car and developing the basic
+            skills at a manageable pace. We explain clearly, check understanding and give you time to ask questions.
           </p>
           <p>
-            We cover the foundations: seating position, mirrors, the controls, observations, moving
-            off, stopping, steering, speed control and awareness of other road users. Instruction
-            always matches the car — automatic or manual.
+            We guide you through each skill, demonstrate where appropriate, and help you practise.
+            As your understanding develops, we use gentle questions and prompts to encourage you
+            to think ahead and make your own decisions. We gradually reduce our help until you can
+            carry out the task independently, with your instructor still supervising.
           </p>
           <p>
-            Unfamiliar terms are explained in plain English. Detailed explanations happen while we
-            are safely stopped; while driving, guidance is short and timely.
+            We recognise your progress, praise what you do well and explain your next step clearly.
+            Our aim is to help you become a safe, confident and considerate driver.
           </p>
         </div>
         <h3 className="mt-6 font-display text-xl font-semibold">How each skill is taught</h3>
@@ -119,19 +120,17 @@ function HowITeachPage() {
           <ShieldCheck className="h-6 w-6" /> When mistakes happen
         </h2>
         <blockquote className="mt-4 rounded-xl border-l-4 border-accent bg-background p-4 text-lg italic text-foreground">
-          "It's okay to need another attempt. Let's look at what happened, choose one thing to
-          improve and practise it again when it's safe."
+          “Don’t worry—we can work through this together. Let’s understand what happened and try again when it’s safe.”
         </blockquote>
         <p className="mt-4 text-base leading-relaxed text-foreground">
-          Mistakes are handled calmly. First we keep the situation safe. Then I explain what
-          happened, we identify the cause and practise the relevant skill again. I'll reassure you —
-          but I won't brush aside anything that matters for safety.
+          If you make a mistake, we stay calm and help you learn from it. We explain what happened,
+          identify what to improve and practise again when it is safe.
         </p>
       </Card>
 
       <Card>
         <h2 className="flex items-center gap-2 font-display text-2xl font-semibold text-primary">
-          <RotateCcw className="h-6 w-6" /> After an unsuccessful driving test
+          <RotateCcw className="h-6 w-6" /> Support after an unsuccessful driving test
         </h2>
         <p className="mt-3 text-base text-foreground">
           Failing a test can knock your confidence. This is how I help you get back on track:

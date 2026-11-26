@@ -70,5 +70,17 @@ export const LESSON_TERMS = [
 export const GEORGE_AVAILABILITY =
   "George usually teaches Monday to Thursday, 09:30–18:00. Friday and weekend lessons are by prior arrangement. Other instructors' availability varies.";
 
+export const TEAM_STARTING_RATE = 45;
+export const TEAM_PRICE_SUMMARY =
+  `Lessons with other GSM instructors start from £${TEAM_STARTING_RATE} per hour, depending on the instructor. Individual prices are available on enquiry. George’s prices are listed separately.`;
+export const INSTRUCTOR_ENQUIRY_PRICES =
+  "Prices available on enquiry. Please contact us for this instructor’s current rates and availability.";
+
+export function instructorPricing(name: string) {
+  return /^george\b/i.test(name.trim())
+    ? { kind: "george" as const, prices: GEORGE_PRICES }
+    : { kind: "enquiry" as const, message: INSTRUCTOR_ENQUIRY_PRICES };
+}
+
 export const PRICE_SUMMARY =
-  "George's automatic lessons: £70/hour weekdays (£780 for 12 hours prepaid), £80/hour weekends (£900 for 12 hours prepaid). Other instructors' prices confirmed on enquiry.";
+  `George's automatic lessons: £70/hour weekdays (£780 for 12 hours prepaid), £80/hour weekends (£900 for 12 hours prepaid). ${TEAM_PRICE_SUMMARY}`;

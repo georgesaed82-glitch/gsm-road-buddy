@@ -3,13 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Award, ArrowRight } from "lucide-react";
+import { BUSINESS, instructorPricing } from "@/lib/business";
+import { TeamLessonPricing } from "@/components/TeamLessonPricing";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { Award, ArrowRight, Phone } from "lucide-react";
 import { listInstructors, type InstructorRow } from "@/lib/catalog.functions";
 
 export const Route = createFileRoute("/instructors")({
   head: () => ({
     links: [{ rel: "canonical", href: "https://www.gsmdrivingschool.com/instructors" }],
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { property: "og:url", content: "https://www.gsmdrivingschool.com/instructors" },
       { title: "Our Instructors | GSM Driving School" },
       {
@@ -52,7 +57,8 @@ function InstructorsPage() {
 
       <section className="py-10 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <TeamLessonPricing location="instructors_team" />
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((instructor) => (
               <InstructorCard key={instructor.id} instructor={instructor} />
             ))}
@@ -86,6 +92,7 @@ function parseBio(bio: string): BioParts {
 
 function InstructorCard({ instructor }: { instructor: InstructorRow }) {
   const bio = parseBio(instructor.bio ?? "");
+  const pricing = instructorPricing(instructor.name);
   return (
     <Card className="flex h-full flex-col overflow-hidden bg-card box-3d">
       <CardContent className="flex h-full flex-col p-6">
@@ -137,6 +144,30 @@ function InstructorCard({ instructor }: { instructor: InstructorRow }) {
           ))}
         </div>
 
+        <div className="mt-5 border-t border-border pt-4 text-sm leading-relaxed text-foreground">
+          {pricing.kind === "george" ? (
+            <>
+              <h3 className="font-semibold text-primary">George’s automatic prices</h3>
+              <ul className="mt-2 space-y-2">
+                {pricing.prices.map((price) => (
+                  <li key={price.label}>
+                    <strong>{price.label}: {price.price} {price.unit}</strong>
+                    <span className="block text-muted-foreground">{price.note}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link to="/pricing" className="mt-2 inline-block font-semibold text-primary underline">Prices and lesson terms</Link>
+            </>
+          ) : <p>{pricing.message}</p>}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button asChild className="min-h-11">
+              <a href={`tel:+${BUSINESS.phoneIntl}`} data-track-location="instructor_pricing"><Phone /> Call</a>
+            </Button>
+            <Button asChild variant="outline" className="min-h-11">
+              <a href={`https://wa.me/${BUSINESS.phoneIntl}`} target="_blank" rel="noopener noreferrer" data-track-location="instructor_pricing"><WhatsAppIcon /> WhatsApp</a>
+            </Button>
+          </div>
+        </div>
         <div className="mt-auto pt-6">
           <Button asChild className="w-full">
             <Link to={instructor.cta_href || "/contact"}>

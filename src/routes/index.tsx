@@ -7,6 +7,7 @@ import { Star, ArrowRight, Phone, Download, GraduationCap, UserRound, MapPin, Tr
 import { YOUTUBE_SHORTS_URL, resolveYoutubeUrl } from "@/lib/youtube";
 import { GsmTikTokShowcase } from "@/components/GsmTikTokShowcase";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { TEAM_PRICE_SUMMARY } from "@/lib/business";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { InstallAppCard } from "@/components/InstallAppCard";
@@ -84,6 +85,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Driving Lessons High Street Kensington W8 | Manual & Automatic | GSM" },
       { property: "og:description", content: "Driving lessons in High Street Kensington (W8) and across West London since 2005 — patient, structured automatic and manual lessons for beginners and nervous learners. Call 07961 585231." },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: heroCarImage.url },
+      { name: "twitter:image", content: heroCarImage.url },
       { property: "og:url", content: "https://www.gsmdrivingschool.com/" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Driving Lessons High Street Kensington W8 | Manual & Automatic | GSM" },
@@ -307,10 +310,19 @@ function HeroSection({ s }: SectionProps) {
             <span className="text-sm text-muted-foreground">Read our reviews on Google</span>
           </a>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:mt-4 lg:max-w-none lg:text-[15px]">
-            {publicCopy(
-              s.body,
-              "GSM Driving School has taught West London to drive since 2005 — patient one-to-one practical lessons, automatic and manual, plus free driving tips on our YouTube channel.",
-            )}
+            At George’s School of Motoring (GSM), patient teaching helps you understand every step:
+            what you are learning, why it matters, where and when to use it, how to do it safely,
+            and who else could be affected — pedestrians, cyclists and other drivers.
+            We build strong foundations, explain clearly and gradually reduce our help as you
+            learn to make your own decisions under supervision.
+          </p>
+          <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+            {TEAM_PRICE_SUMMARY}
+          </p>
+          <p className="mt-3 text-base font-semibold text-primary">
+            <Link to="/how-i-teach" className="underline underline-offset-4">Our patient teaching approach</Link>
+            <span className="mx-2" aria-hidden="true">·</span>
+            <Link to="/pricing" className="underline underline-offset-4">See lesson prices</Link>
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap lg:mt-5 lg:gap-3">
             <Button

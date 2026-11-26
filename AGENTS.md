@@ -12,3 +12,4 @@
 - Site settings merge ignores blank saved values over confirmed defaults (`mergeNonEmpty` in useSiteSettings). Why: empty CMS social fields previously blanked confirmed links.
 - Videos-page creator profile uses the same official TikTok iframe eagerly with origin/source-checked resize messages; homepage retains its script embed. Why: eliminate the script-loading waterfall on Videos without changing homepage behaviour or bypassing TikTok consent.
 - Phone/WhatsApp GA4 events (phone_click/whatsapp_click) are sent only by the delegated listener in src/lib/contactLinkTracking.ts; trackContactClick must not also send GA. Why: one event per tap, covers dynamic links, no PII.
+- Keep team pricing facts and individual pricing selection in business.ts and reuse TeamLessonPricing for team enquiry sections; this keeps school-wide starting rates separate from individual instructor rates.

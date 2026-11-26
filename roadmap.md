@@ -1,5 +1,11 @@
 # Workflow recovery
 
+# Visible teaching and instructor pricing
+
+- [x] Update homepage and teaching page with the six teaching questions and calm, supervised progression.
+- [x] Add team-level lessons from £45/hour while preserving George's four prices and named profiles; retain tracked enquiry links.
+- [x] Check phone/desktop pages and pricing rules: 11 tests passed, homepage regression passed at 320/390/820/1440, all five profiles visible; leave preview unpublished.
+
 - [x] Fix Ubuntu 26.04 / WebKit ICU incompatibility and isolate browser caches; run #302 passed all browsers.
 - [x] Inspect recent failed workflows and group repeats by root cause: runs #294–#301 share the WebKit ICU launch failure; other active checks are green.
 - [x] Apply minimal fixes for each distinct remaining cause without weakening tests or changing website behaviour; no additional recent cause found.

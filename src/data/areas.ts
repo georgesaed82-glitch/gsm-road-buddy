@@ -1,3 +1,5 @@
+import { TEAM_PRICE_SUMMARY } from "@/lib/business";
+
 export interface AreaPage {
   slug: string;
   area: string;
@@ -40,7 +42,7 @@ export const areas: AreaPage[] = [
       },
       {
         q: "What are the lesson terms?",
-        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Other instructors' prices are confirmed on enquiry. Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
+        a: `George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). ${TEAM_PRICE_SUMMARY} Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.`,
       },
     ],
   },
@@ -74,7 +76,7 @@ export const areas: AreaPage[] = [
       },
       {
         q: "What are the lesson terms?",
-        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Other instructors' prices are confirmed on enquiry. Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
+        a: `George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). ${TEAM_PRICE_SUMMARY} Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.`,
       },
     ],
   },
@@ -134,7 +136,7 @@ export const areas: AreaPage[] = [
       },
       {
         q: "What do lessons cost?",
-        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Other instructors' prices are confirmed on enquiry. Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
+        a: `George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). ${TEAM_PRICE_SUMMARY} Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.`,
       },
     ],
   },
@@ -194,7 +196,7 @@ export const areas: AreaPage[] = [
       },
       {
         q: "What are the lesson terms?",
-        a: "George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). Other instructors' prices are confirmed on enquiry. Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.",
+        a: `George's automatic lessons are £70 per hour on weekdays (or £780 for 12 hours prepaid) and £80 per hour at weekends (or £900 for 12 hours prepaid). ${TEAM_PRICE_SUMMARY} Lessons are paid before they take place, lesson length is agreed when you book, and we ask for at least 48 hours' notice to cancel or reschedule.`,
       },
     ],
   },
